@@ -1,0 +1,8 @@
+name:       Bipolar
+pygments:   true
+port:       3000
+exclude:    [Gemfile, Gemfile.lock]
+assets:
+  compress:
+    js:   uglifier
+    css:  sass

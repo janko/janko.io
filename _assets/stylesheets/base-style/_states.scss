@@ -1,0 +1,31 @@
+// bleeding
+
+.is-bleeding {
+  @include bleed;
+}
+
+// interaction
+
+.is-unselectable {
+  @include user-select(none);
+}
+
+// animation
+
+.is-transitiony {
+  @include transition(.2s);
+}
+
+// visibility
+
+.is-hidden {
+  @extend .hidden;
+}
+
+.is-visually-hidden {
+  @extend .visuallyhidden;
+}
+
+.is-invisible {
+  @extend .invisible;
+}

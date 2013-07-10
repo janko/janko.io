@@ -1,0 +1,12 @@
+.l-container {
+  @extend .cf;
+  @if not $fluid-layout {
+    max-width: $site-width;
+  }
+  @if $centered-layout {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  padding-left: $site-padding;
+  padding-right: $site-padding;
+}

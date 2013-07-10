@@ -1,0 +1,29 @@
+// float left
+
+.l-fl {
+  @extend .cf;
+  > * {
+    float: left;
+  }
+}
+
+// float right
+
+.l-fr {
+  @extend .cf;
+  > * {
+    float: right;
+  }
+}
+
+// float diverge
+
+.l-fd {
+  > *:first-child {
+    float: left;
+  }
+
+  > *:last-child {
+    float: right;
+  }
+}
