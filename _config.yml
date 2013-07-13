@@ -2,7 +2,20 @@ name:       Bipolar
 pygments:   true
 port:       3000
 exclude:    [Gemfile, Gemfile.lock]
-assets:
-  compress:
-    js:   uglifier
-    css:  sass
+authors:
+  matija:
+    name: "Matija Marohnić"
+    personality: "matija"
+    email: "matija.marohnic@gmail.com"
+    twitter: "silvenon"
+    github: "silvenon"
+  janko:
+    name: "Janko Marohnić"
+    personality: "janko"
+    email: "janko.marohnic@gmail.com"
+    twitter: "m_janko"
+    github: "janko-m"
+# assets:
+#   compress:
+#     js:   uglifier
+#     css:  sass

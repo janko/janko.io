@@ -1,0 +1,11 @@
+.brand {
+  @include font-size(32px);
+  margin-bottom: 0;
+  margin-left: - $bsu;
+  font-weight: normal;
+
+  a {
+    display: inline-block;
+    text-decoration: none;
+  }
+}

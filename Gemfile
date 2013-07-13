@@ -5,6 +5,10 @@ source "https://rubygems.org"
 gem "jekyll"
 gem "jekyll-assets"
 
+gem "guard"
+gem "guard-jekyll"
+gem "guard-sass"
+
 gem "sass"
 gem "bourbon"
 gem "neat"

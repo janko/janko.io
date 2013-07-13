@@ -1,0 +1,17 @@
+html.personality-matija {
+  background-color: $color-bg-matija;
+  color: $color-text-matija;
+
+  a {
+    @include color-link(nth($color-link-matija, 1), nth($color-link-matija, 2));
+  }
+}
+
+.header {
+  .personality-matija {
+    a {
+      @include color-link($color-text-matija);
+      background-color: $color-bg-matija;
+    }
+  }
+}

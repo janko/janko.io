@@ -1,9 +1,16 @@
 ---
 layout: default
 ---
-<h2>{{ page.title }}</h2>
-<p class="meta">{{ page.date | date_to_string }}</p>
 
-<div class="post">
-  {{ content }}
-</div>
+{% assign author = site.authors[page.author] %}
+<article class="entry">
+  <header>
+    <h2>{{ page.title }}</h2>
+    <p class="date">{{ page.date | date_to_string }}</p>
+    <p class="byline">by {{ author.name }}</p>
+  </header>
+
+  <div class="post">
+    {{ content }}
+  </div>
+</article>

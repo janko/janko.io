@@ -1,0 +1,17 @@
+html.personality-janko {
+  background-color: $color-bg-janko;
+  color: $color-text-janko;
+
+  a {
+    @include color-link(nth($color-link-janko, 1), nth($color-link-janko, 2));
+  }
+}
+
+.header {
+  .personality-janko {
+    a {
+      @include color-link($color-text-janko);
+      background-color: $color-bg-janko;
+    }
+  }
+}

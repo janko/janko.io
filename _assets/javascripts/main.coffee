@@ -3,4 +3,4 @@
 
 do ($ = Zepto) ->
 
-  console.log "Hello!"
+  $(".brand a").lettering()

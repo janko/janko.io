@@ -1,3 +1,14 @@
 html {
-  font-family: $janko-font-family;
+  font-family: $font-family-base;
+}
+
+a {
+  display: inline-block;
+  border-bottom: 1px solid inherit;
+  text-decoration: none;
+}
+
+pre,
+code {
+  font-family: $font-family-mono;
 }

@@ -1,3 +1,14 @@
-$matija-font-family:  "ff-meta-serif-web-pro", $georgia;
-$janko-font-family:   "ff-meta-web-pro", $helvetica;
-$mono-font-family:    "inconsolata", $monospace;
+// type
+
+$font-family-base:    "myriad-pro", $helvetica;
+$font-family-mono:    "inconsolata", $monospace;
+
+// colors
+
+$color-bg-janko:      hsla(238, 31%, 23%, 1);
+$color-text-janko:    white;
+$color-link-janko:    hsla(283, 31%, 67%, 1) white;
+
+$color-bg-matija:     white;
+$color-text-matija:   rgba(black, .8);
+$color-link-matija:   rgba(black, .5) rgba(black, .8);

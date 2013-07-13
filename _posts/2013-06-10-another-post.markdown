@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Welcome to Jekyll!"
-author: janko
+title: "Another Post"
+author: matija
 ---
 
 You'll find this post in your `_posts` directory - edit this post and re-build (or run with the `-w` switch) to see your changes!
