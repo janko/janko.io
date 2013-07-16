@@ -1,3 +1,5 @@
 _site
+/js
+/css
 .bundle
 .sass-cache
