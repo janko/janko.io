@@ -1,0 +1,13 @@
+.media {
+  @extend .cf;
+}
+
+  .media-object {
+    float: left;
+    margin-top: $hsu;
+    margin-right: $bsu;
+  }
+
+  .media-body {
+    overflow: hidden;
+  }

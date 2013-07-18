@@ -1,11 +1,25 @@
 .brand {
-  @include font-size(32px);
-  margin-bottom: 0;
-  margin-left: - $bsu;
-  font-weight: normal;
-
-  a {
-    display: inline-block;
-    text-decoration: none;
-  }
+  background-color: $color-primary;
+  color: rgba(white, .75);
 }
+
+  .brand-logo {
+    @include font-size(32px);
+    margin-bottom: 0;
+    font-weight: bold;
+
+    a {
+      @include color-link(white);
+      display: inline-block;
+      margin-left: - $hsu;
+      padding: $hsu;
+      text-decoration: none;
+    }
+  }
+
+  .brand-tagline {
+    margin-top: 1.25 * $bsu;
+    font-weight: 300;
+
+    strong { color: white; }
+  }

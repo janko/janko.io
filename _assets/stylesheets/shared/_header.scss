@@ -1,12 +1,11 @@
 .header {
-  .l-container {
-    > * {
-      float: left;
-    }
-  }
+  margin-bottom: $bsu;
 
   a {
-    display: block;
-    padding: $bsu;
+    border-bottom: none;
+
+    #{$interact} {
+      background-color: transparent;
+    }
   }
 }

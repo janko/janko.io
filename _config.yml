@@ -5,13 +5,13 @@ exclude:    [Gemfile, Gemfile.lock, Guardfile, bin, _assets]
 authors:
   matija:
     name: "Matija Marohnić"
-    personality: "matija"
+    nick: "matija"
     email: "matija.marohnic@gmail.com"
     twitter: "silvenon"
     github: "silvenon"
   janko:
     name: "Janko Marohnić"
-    personality: "janko"
+    nick: "janko"
     email: "janko.marohnic@gmail.com"
     twitter: "m_janko"
     github: "janko-m"
