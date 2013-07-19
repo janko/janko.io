@@ -1104,6 +1104,9 @@ you can use the generic selector below, but it's slower:
 .media-body {
   overflow: hidden; }
 
+.post {
+  margin-bottom: 72px; }
+
 .post-header {
   margin-bottom: 24px;
   text-align: center; }
