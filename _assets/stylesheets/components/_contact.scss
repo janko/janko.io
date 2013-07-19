@@ -1,0 +1,44 @@
+.contact {
+}
+
+  .contact-item {
+    display: inline-block;
+    margin-left: - $hsu/2;
+    margin-bottom: $hsu;
+
+    > * {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    a {
+      display: block;
+      padding: 0 $hsu/2;
+      border-bottom: none;
+      border-radius: 4px;
+
+      #{$interact} {
+        background-color: transparent;
+      }
+    }
+
+    i {
+      font-size: 32px;
+    }
+  }
+
+  .contact-medium {
+    font-family: icomoon;
+  }
+
+  @each $medium in  (twitter   $twitter-color),
+                    (github    $github-color),
+                    (facebook  $facebook-color),
+                    (email     $gmail-color) {
+
+    .contact-#{nth($medium, 1)} {
+      a {
+        @include color-link(rgba(black, .3), nth($medium, 2));
+      }
+    }
+  }

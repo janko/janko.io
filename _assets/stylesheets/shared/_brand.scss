@@ -4,7 +4,7 @@
 }
 
   .brand-logo {
-    @include font-size(32px);
+    @include font-size(48px);
     margin-bottom: 0;
     font-weight: bold;
 
@@ -18,8 +18,10 @@
   }
 
   .brand-tagline {
-    margin-top: 1.25 * $bsu;
-    font-weight: 300;
+    @include font-size(18px);
+    text-transform: lowercase;
+    font-variant: small-caps;
+    letter-spacing: 2px;
 
     strong { color: white; }
   }
