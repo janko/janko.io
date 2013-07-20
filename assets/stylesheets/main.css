@@ -579,7 +579,7 @@ textarea {
 html {
   height: 100%;
   background-color: white;
-  font: 1em/1.5 serif;
+  font: 1.125em/1.55556 serif;
   color: rgba(0, 0, 0, 0.8);
   overflow-y: scroll; }
 
@@ -602,11 +602,11 @@ ul, ol, dl,
 p, blockquote, address,
 form, table, figure,
 pre {
-  margin-bottom: 24px; }
+  margin-bottom: 28px; }
 
 ul, ol,
 dd {
-  margin-left: 36px; }
+  margin-left: 42px; }
 
 img, iframe {
   max-width: 100%; }
@@ -661,42 +661,42 @@ table {
   display: inline-block; }
 
 .s-top {
-  margin-top: 24px; }
+  margin-top: 28px; }
 
 .s-half-top {
-  margin-top: 12px; }
+  margin-top: 14px; }
 
 .s-quart-top {
-  margin-top: 6px; }
+  margin-top: 7px; }
 
 .s-right {
-  margin-right: 24px; }
+  margin-right: 28px; }
 
 .s-half-right {
-  margin-right: 12px; }
+  margin-right: 14px; }
 
 .s-quart-right {
-  margin-right: 6px; }
+  margin-right: 7px; }
 
 .s-bottom {
-  margin-bottom: 24px; }
+  margin-bottom: 28px; }
 
 .s-half-bottom {
-  margin-bottom: 12px; }
+  margin-bottom: 14px; }
 
 .s-quart-bottom {
-  margin-bottom: 6px; }
+  margin-bottom: 7px; }
 
 .s-left {
-  margin-left: 24px; }
+  margin-left: 28px; }
 
 .s-half-left {
-  margin-left: 12px; }
+  margin-left: 14px; }
 
 .s-quart-left {
-  margin-left: 6px; }
+  margin-left: 7px; }
 
-.list-unstyled {
+.list-unstyled, .list, .list-posts {
   margin: 0;
   list-style: none; }
 
@@ -707,7 +707,7 @@ table {
   background: white; }
 
 .header {
-  margin-bottom: 48px;
+  margin-bottom: 56px;
   text-align: center; }
   .header a {
     border-bottom: none; }
@@ -717,21 +717,22 @@ table {
     display: inline-block; }
 
 .main {
-  padding-bottom: 24px; }
+  padding-bottom: 28px; }
 
 .nav {
-  font-size: 20px;
-  font-size: 1.25rem;
-  line-height: 1.2;
   background-color: #92495a;
-  margin-left: -12px;
+  margin-left: -14px;
   text-transform: lowercase;
   font-variant: small-caps;
+  font-size: 0;
   letter-spacing: 1px; }
   .nav a {
+    font-size: 20px;
+    font-size: 1.11111rem;
+    line-height: 1.4;
     color: white;
     display: inline-block;
-    padding: 12px; }
+    padding: 14px; }
     .nav a:hover, .nav a:focus {
       color: white; }
     .nav a:hover, .nav a:focus {
@@ -743,23 +744,23 @@ table {
 
 .brand-logo {
   font-size: 48px;
-  font-size: 3rem;
-  line-height: 1;
+  font-size: 2.66667rem;
+  line-height: 1.16667;
   margin-bottom: 0;
   font-weight: bold; }
   .brand-logo a {
     color: white;
     display: inline-block;
-    margin-left: -12px;
-    padding: 12px;
+    margin-left: -14px;
+    padding: 14px;
     text-decoration: none; }
     .brand-logo a:hover, .brand-logo a:focus {
       color: white; }
 
 .brand-tagline {
   font-size: 18px;
-  font-size: 1.125rem;
-  line-height: 1.33333;
+  font-size: 1rem;
+  line-height: 1.55556;
   text-transform: lowercase;
   font-variant: small-caps;
   letter-spacing: 2px; }
@@ -772,18 +773,19 @@ html {
 h1, h2, h3, h4, h5, h6 {
   font-weight: normal; }
 
-h2 {
+h1 {
   font-size: 42px;
-  font-size: 2.625rem;
-  line-height: 1.14286; }
+  font-size: 2.33333rem;
+  line-height: 1.33333; }
 
-h3 {
-  font-size: 28px;
-  font-size: 1.75rem;
-  line-height: 1.71429;
-  margin-bottom: 12px;
+h2 {
+  font-size: 32px;
+  font-size: 1.77778rem;
+  line-height: 1.75;
+  margin-bottom: 14px;
   text-transform: lowercase;
-  font-variant: small-caps; }
+  font-variant: small-caps;
+  letter-spacing: 2px; }
 
 a {
   color: #c36278;
@@ -1029,16 +1031,16 @@ pre .il {
 /* Literal.Number.Integer.Long */
 pre {
   font-size: 14px;
-  font-size: 0.875rem;
-  line-height: 1.71429;
-  padding: 12px;
+  font-size: 0.77778rem;
+  line-height: 2;
+  padding: 14px;
   border-radius: 4px; }
 
 p code {
   font-size: 14px;
-  font-size: 0.875rem;
-  line-height: 1.71429;
-  padding: 2px 6px;
+  font-size: 0.77778rem;
+  line-height: 2;
+  padding: 2px 7px;
   background-color: #f2f2f2;
   border: 1px solid #cccccc;
   border-radius: 4px; }
@@ -1096,40 +1098,16 @@ you can use the generic selector below, but it's slower:
   color: transparent !important;
   text-shadow: none !important; }
 
-.media-object {
-  float: left;
-  margin-top: 12px;
-  margin-right: 24px; }
-
-.media-body {
-  overflow: hidden; }
-
-.post {
-  margin-bottom: 72px; }
-
-.post-header {
-  margin-bottom: 24px;
-  text-align: center; }
-
-.post-title {
-  margin-bottom: 12px; }
-
-.post-meta > * {
-  display: inline-block; }
-
-.post-date {
-  font-weight: bold; }
-
 .contact-item {
   display: inline-block;
-  margin-left: -6px;
-  margin-bottom: 12px; }
+  margin-left: -7px;
+  margin-bottom: 14px; }
   .contact-item > * {
     display: inline-block;
     vertical-align: middle; }
   .contact-item a {
     display: block;
-    padding: 0 6px;
+    padding: 0 7px;
     border-bottom: none;
     border-radius: 4px; }
     .contact-item a:hover, .contact-item a:focus {
@@ -1159,3 +1137,35 @@ you can use the generic selector below, but it's slower:
   color: rgba(0, 0, 0, 0.3); }
   .contact-email a:hover, .contact-email a:focus {
     color: #d72c2c; }
+
+.list-posts-item {
+  font-size: 18px;
+  font-size: 1rem;
+  line-height: 1.55556; }
+
+.list-posts-date {
+  color: rgba(0, 0, 0, 0.5); }
+
+.media-object {
+  float: left;
+  margin-top: 14px;
+  margin-right: 28px; }
+
+.media-body {
+  overflow: hidden; }
+
+.post {
+  margin-bottom: 84px; }
+
+.post-header {
+  margin-bottom: 28px;
+  text-align: center; }
+
+.post-title {
+  margin-bottom: 14px; }
+
+.post-meta > * {
+  display: inline-block; }
+
+.post-date {
+  font-weight: bold; }

@@ -2,3 +2,15 @@
 layout: default
 title: "Posts by Matija"
 ---
+
+{% assign author = site.authors[janko] %}
+<ol class="list-posts">
+  {% for post in site.posts %}
+    {% if post.author == 'matija' %}
+      <li class="list-posts-item">
+        <span class="list-posts-date">{{ post.date | date_to_string }}</span> &raquo;
+        <a href="{{ post.url }}" class="list-posts-title">{{ post.title }}</a>
+      </li>
+    {% endif %}
+  {% endfor %}
+</ol>

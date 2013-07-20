@@ -1,0 +1,15 @@
+.list {
+  @extend .list-unstyled;
+}
+
+  .list-posts {
+    @extend .list-unstyled;
+  }
+
+    .list-posts-item {
+      @include font-size(18px);
+    }
+
+    .list-posts-date {
+      color: rgba(black, .5);
+    }
