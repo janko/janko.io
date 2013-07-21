@@ -3,11 +3,22 @@ layout: default
 title: "Bipolar"
 ---
 
-<ol class="list-posts">
+<div class="list-posts">
   {% for post in site.posts %}
-    <li class="list-posts-item">
-      <span class="list-posts-date">{{ post.date | date_to_string }}</span> &raquo;
-      <a href="{{ post.url }}" class="list-posts-title">{{ post.title }}</a>
-    </li>
+    <div class="list-posts-item">
+      <div class="list-posts-meta">
+        <div class="list-posts-date">
+          {{ post.date | date_to_string }}
+        </div>
+
+        <h2 class="list-posts-title">
+          <a href="{{ post.url }}">{{ post.title }}</a>
+        </h2>
+      </div>
+
+      <div class="list-posts-excerpt">
+        {{ post.excerpt }}
+      </div>
+    </div>
   {% endfor %}
-</ol>
+</div>

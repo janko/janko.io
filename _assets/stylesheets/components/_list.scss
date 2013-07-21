@@ -3,13 +3,26 @@
 }
 
   .list-posts {
-    @extend .list-unstyled;
   }
 
     .list-posts-item {
-      @include font-size(18px);
+      margin-bottom: $bsu;
+    }
+
+    .list-posts-meta {
+      margin-bottom: $hsu;
     }
 
     .list-posts-date {
       color: rgba(black, .5);
+    }
+
+    .list-posts-title {
+      line-height: 1 * $bsu;
+
+      a { padding-bottom: $hsu/2; }
+    }
+
+    .list-posts-excerpt {
+      p { margin-bottom: 0; }
     }
