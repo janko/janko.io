@@ -3,6 +3,13 @@ pygments:   true
 markdown:   redcarpet
 port:       3000
 exclude:    [Gemfile, Gemfile.lock, Guardfile, bin, _assets]
+navigation:
+  -
+    text: "Blog"
+    url: "/index.html"
+  -
+    text: "About"
+    url: "/about/index.html"
 authors:
   matija:
     name: "Matija Marohnić"

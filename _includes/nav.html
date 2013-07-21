@@ -1,6 +1,13 @@
 <nav class="nav">
   <div class="l-container">
-    <a href="/">Blog</a>
-    <a href="/about">About</a>
+    {% for link in site.navigation %}
+      {% assign current = nil %}
+
+      {% if page.url == link.url %}
+        {% assign current = 'active' %}
+      {% endif %}
+
+      <a href="{{ link.url }}" class="{{ current }}">{{ link.text }}</a>
+    {% endfor %}
   </div>
 </nav>
