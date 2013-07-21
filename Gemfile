@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 gem "jekyll"
 
+gem "redcarpet"
 gem "sass"
 gem "coffee-script"
 gem "uglifier"

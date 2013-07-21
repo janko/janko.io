@@ -9,14 +9,18 @@ To add new posts, simply add a file in the `_posts` directory that follows the c
 
 Jekyll also offers powerful support for code snippets:
 
-{% highlight css %}
+```css
 h1 {
   /* %extend .is-transitiony;
   @include clearfix; */
   font-size: 14px;
   background-image: url(some-url.png);
 }
-{% endhighlight %}
+```
+
+```html
+<p class="blah">Blah</p>
+```
 
 Check out the [Jekyll docs][jekyll] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll's GitHub repo][jekyll-gh].
 

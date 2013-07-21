@@ -1,13 +1,21 @@
 pre {
+  margin-bottom: 0;
+}
+
+.highlight,
+p code {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.highlight {
   @include font-size(14px);
+  margin-bottom: $bsu;
   padding: $hsu;
-  border-radius: 4px;
 }
 
 p code {
   @include font-size(14px);
   padding: 2px $hsu/2;
-  background-color: shade(white, 5%);
-  border: 1px solid shade(white, 20%);
-  border-radius: 4px;
 }
