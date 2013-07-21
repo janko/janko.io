@@ -13,6 +13,11 @@ p code {
   @include font-size(14px);
   margin-bottom: $bsu;
   padding: $hsu;
+
+  @include media-query(palm) {
+    @include bleed;
+    border-radius: 0;
+  }
 }
 
 p code {
