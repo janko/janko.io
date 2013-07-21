@@ -766,6 +766,8 @@ table {
   letter-spacing: 2px; }
   .brand-tagline strong {
     color: white; }
+  .brand-tagline i {
+    margin-right: -2px; }
 
 html {
   font-family: "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif; }
