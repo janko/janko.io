@@ -1197,6 +1197,10 @@ you can use the generic selector below, but it's slower:
   line-height: 1.3;
   margin-bottom: 39px;
   color: black; }
+  .post-body p:first-child code {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.625; }
 
 .list-posts-item {
   margin-bottom: 26px; }

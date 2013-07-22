@@ -2,4 +2,8 @@
   @include font-size(20px);
   margin-bottom: 1.5 * $bsu;
   color: black;
+
+  code {
+    @include font-size(16px);
+  }
 }
