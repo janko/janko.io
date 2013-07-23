@@ -1,13 +1,12 @@
 .nav {
   background-color: shade($color-primary, 25%);
   margin-left: - $hsu;
-  text-transform: lowercase;
-  font-variant: small-caps;
+  text-transform: uppercase;
   font-size: 0;
   letter-spacing: 1px;
 
   a {
-    @include font-size(20px);
+    @include font-size(16px);
     @include color-link(white);
     display: inline-block;
     padding: $hsu;

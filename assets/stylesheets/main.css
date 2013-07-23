@@ -708,7 +708,9 @@ table {
 
 .header {
   margin-bottom: 52px;
-  text-align: center; }
+  text-align: center;
+  font-family: "icomoon", "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; }
   .header a {
     border-bottom: none; }
     .header a:hover, .header a:focus {
@@ -722,14 +724,13 @@ table {
 .nav {
   background-color: #92495a;
   margin-left: -13px;
-  text-transform: lowercase;
-  font-variant: small-caps;
+  text-transform: uppercase;
   font-size: 0;
   letter-spacing: 1px; }
   .nav a {
-    font-size: 20px;
-    font-size: 1.25rem;
-    line-height: 1.3;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.625;
     color: white;
     display: inline-block;
     padding: 13px; }
@@ -740,7 +741,7 @@ table {
 
 .brand {
   background-color: #c36278;
-  color: rgba(255, 255, 255, 0.75); }
+  color: rgba(255, 255, 255, 0.8); }
 
 .brand-logo {
   font-size: 48px;
@@ -760,14 +761,7 @@ table {
 .brand-tagline {
   font-size: 18px;
   font-size: 1.125rem;
-  line-height: 1.44444;
-  text-transform: lowercase;
-  font-variant: small-caps;
-  letter-spacing: 2px; }
-  .brand-tagline strong {
-    color: white; }
-  .brand-tagline i {
-    margin-right: -2px; }
+  line-height: 1.44444; }
 
 html {
   font-family: "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif; }
@@ -1142,7 +1136,7 @@ you can use the generic selector below, but it's slower:
   content: "\e002"; }
 
 .icon-ampersand:before {
-  content: "\e003"; }
+  content: "\26"; }
 
 .icon-gmail:before {
   content: "\f150"; }

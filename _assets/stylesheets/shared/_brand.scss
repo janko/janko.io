@@ -1,6 +1,6 @@
 .brand {
   background-color: $color-primary;
-  color: rgba(white, .75);
+  color: rgba(white, .8);
 }
 
   .brand-logo {
@@ -19,10 +19,4 @@
 
   .brand-tagline {
     @include font-size(18px);
-    text-transform: lowercase;
-    font-variant: small-caps;
-    letter-spacing: 2px;
-
-    strong { color: white; }
-    i { margin-right: -2px; }
   }
