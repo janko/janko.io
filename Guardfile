@@ -9,7 +9,7 @@ guard "sprockets", root_file: "_assets/javascripts/main.js", destination: "asset
   watch(%r{_assets/javascripts/(.+\.js)$})
 end
 
-guard "jekyll", serve: true do
+guard "jekyll-plus", extensions: ["scss", "js", "coffee"], serve: true do
   watch /.*/
   ignore /^_site/
 end
