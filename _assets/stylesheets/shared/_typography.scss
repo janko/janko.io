@@ -12,7 +12,7 @@ h1 {
 }
 
 h2 {
-  @include font-size(24px);
+  @include font-size(22px);
   margin-bottom: $hsu;
   text-transform: uppercase;
   letter-spacing: 2px;
