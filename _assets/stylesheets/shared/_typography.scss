@@ -12,10 +12,9 @@ h1 {
 }
 
 h2 {
-  @include font-size(32px);
+  @include font-size(24px);
   margin-bottom: $hsu;
-  text-transform: lowercase;
-  font-variant: small-caps;
+  text-transform: uppercase;
   letter-spacing: 2px;
 }
 
@@ -29,4 +28,12 @@ a {
     background-color: rgba($color-link, .1);
     border-bottom-color: rgba($color-link-hover, .5);
   }
+}
+
+// ampersand
+
+.header,
+h1, h2, h3, h4, h5, h6 {
+  font-family: "icomoon", $font-family-base;
+  -webkit-font-smoothing: antialiased;
 }

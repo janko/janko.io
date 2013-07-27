@@ -708,9 +708,7 @@ table {
 
 .header {
   margin-bottom: 52px;
-  text-align: center;
-  font-family: "icomoon", "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased; }
+  text-align: center; }
   .header a {
     border-bottom: none; }
     .header a:hover, .header a:focus {
@@ -776,12 +774,11 @@ h1 {
   line-height: 1.2381; }
 
 h2 {
-  font-size: 32px;
-  font-size: 2rem;
-  line-height: 1.625;
+  font-size: 24px;
+  font-size: 1.5rem;
+  line-height: 1.08333;
   margin-bottom: 13px;
-  text-transform: lowercase;
-  font-variant: small-caps;
+  text-transform: uppercase;
   letter-spacing: 2px; }
 
 a {
@@ -794,6 +791,11 @@ a {
   a:hover, a:focus {
     background-color: rgba(195, 98, 120, 0.1);
     border-bottom-color: rgba(146, 73, 90, 0.5); }
+
+.header,
+h1, h2, h3, h4, h5, h6 {
+  font-family: "icomoon", "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; }
 
 .highlight .hll {
   background-color: #ffffcc; }
