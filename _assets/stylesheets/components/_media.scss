@@ -3,9 +3,13 @@
 }
 
   .media-object {
-    float: left;
-    margin-top: $hsu;
-    margin-right: $bsu;
+    &.fl { margin-right: $bsu; }
+    &.fr { margin-left: $bsu; }
+  }
+
+  .media-object-small {
+    &.fl { margin-right: $hsu; }
+    &.fr { margin-left: $hsu; }
   }
 
   .media-body {

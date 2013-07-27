@@ -1198,6 +1198,12 @@ you can use the generic selector below, but it's slower:
     font-size: 1rem;
     line-height: 1.625; }
 
+.fl {
+  float: left; }
+
+.fr {
+  float: right; }
+
 .list-posts-item {
   margin-bottom: 26px; }
 
@@ -1215,10 +1221,15 @@ you can use the generic selector below, but it's slower:
 .list-posts-excerpt p {
   margin-bottom: 0; }
 
-.media-object {
-  float: left;
-  margin-top: 13px;
+.media-object.fl {
   margin-right: 26px; }
+.media-object.fr {
+  margin-left: 26px; }
+
+.media-object-small.fl {
+  margin-right: 13px; }
+.media-object-small.fr {
+  margin-left: 13px; }
 
 .media-body {
   overflow: hidden; }
