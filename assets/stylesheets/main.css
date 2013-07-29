@@ -1150,7 +1150,7 @@ you can use the generic selector below, but it's slower:
 .contact-item {
   display: inline-block;
   margin-left: -6.5px;
-  margin-bottom: 13px; }
+  margin-bottom: 26px; }
   .contact-item > * {
     display: inline-block;
     vertical-align: middle; }
