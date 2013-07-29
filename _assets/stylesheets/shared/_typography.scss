@@ -1,5 +1,6 @@
 html {
   font-family: $font-family-base;
+  color: rgba(black, .7);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -14,8 +15,6 @@ h1 {
 h2 {
   @include font-size(22px);
   margin-bottom: $hsu;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 a {

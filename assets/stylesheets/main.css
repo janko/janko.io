@@ -762,7 +762,8 @@ table {
   line-height: 1.44444; }
 
 html {
-  font-family: "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  font-family: "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: rgba(0, 0, 0, 0.7); }
 
 h1, h2, h3, h4, h5, h6 {
   color: black;
@@ -777,9 +778,7 @@ h2 {
   font-size: 22px;
   font-size: 1.375rem;
   line-height: 1.18182;
-  margin-bottom: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1px; }
+  margin-bottom: 13px; }
 
 a {
   color: #c36278;
