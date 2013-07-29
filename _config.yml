@@ -3,6 +3,7 @@ pygments:   true
 markdown:   redcarpet
 port:       3000
 exclude:    [Gemfile, Gemfile.lock, Guardfile, bin, _assets]
+permalink:  /:year/:month/:title/
 navigation:
   -
     text: "Home"
