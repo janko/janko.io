@@ -109,6 +109,13 @@ Ready? Let's do it!
 
 Your (re)compilation time should now remind you of Speedy Gonzales.
 
+## Caveats
+
+  1. You won't be able to `@extend` accross stylesheets, but [SMACSS][smacss] advises against that anyway. Pretty much the only case when you would have to do that is when you want to extend a clearfix class or placeholder. **Solution**: use a clearfix mixin (Bourbon and Compass have one). The difference in the amount of generated CSS will be subtle. If you don't care about legacy browsers and if there are no fancy box shadows in the container, you can use `overflow: hidden` as a clearfix.
+  2. When you update `import-me`, **all** stylesheets will have to recompile, because they all use it. But you won't update it very often anyway and when you do update it, chances are that you probably won't be in such a hurry to see the results on the site.
+
+There may be more caveats, I only recently started to use this approach. You can let me know if you find more.
+
 ## Conclusion
 
 This solution may feel somewhat hacky at the beginning, but I think the gain is really worth it.
@@ -122,3 +129,4 @@ I haven't seen anyone using something like this or even talking about it. Are yo
 [bootstrap]:            //twitter.github.io/bootstrap/
 [bootstrap-sass-rails]: //github.com/yabawock/bootstrap-sass-rails
 [bourbon]:              http://bourbon.io/
+[smacss]:               http://smacss.com/

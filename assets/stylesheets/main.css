@@ -792,6 +792,9 @@ a {
     background-color: rgba(195, 98, 120, 0.1);
     border-bottom-color: rgba(146, 73, 90, 0.5); }
 
+li {
+  margin-bottom: 13px; }
+
 .header,
 h1, h2, h3, h4, h5, h6 {
   font-family: "icomoon", "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1068,8 +1071,7 @@ h1, h2, h3, h4, h5, h6 {
 pre {
   margin-bottom: 0; }
 
-.highlight,
-p code {
+.highlight {
   background-color: #f8f8f8;
   border: 1px solid #ddd;
   border-radius: 3px; }
@@ -1088,11 +1090,14 @@ p code {
       padding-right: 12px;
       border-radius: 0; } }
 
-p code {
+p code, ul code, ol code {
   font-size: 14px;
   font-size: 0.875rem;
   line-height: 1.85714;
-  padding: 2px 3.25px; }
+  padding: 2px 3.25px;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 3px; }
 
 @font-face {
   font-family: icomoon;
