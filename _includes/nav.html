@@ -7,7 +7,7 @@
         {% assign current = 'active' %}
       {% endif %}
 
-      <a href="{{ link.url }}" class="{{ current }}">{{ link.text }}</a>
+      <a href="{{ link.url | remove: 'index.html' }}" class="{{ current }}">{{ link.text }}</a>
     {% endfor %}
   </div>
 </nav>
