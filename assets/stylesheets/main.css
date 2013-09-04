@@ -1273,8 +1273,24 @@ you can use the generic selector below, but it's slower:
 .post-title {
   margin-bottom: 13px; }
 
-.post-meta > * {
+.post-byline {
   display: inline-block; }
 
 .post-date {
+  display: inline-block;
   font-weight: bold; }
+
+.post-updated {
+  display: inline-block; }
+
+.text-left {
+  text-align: left; }
+
+.text-center {
+  text-align: center; }
+
+.text-right {
+  text-align: right; }
+
+.text-muted {
+  color: rgba(0, 0, 0, 0.4); }

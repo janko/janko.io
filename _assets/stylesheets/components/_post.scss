@@ -12,14 +12,17 @@
   }
 
   .post-meta {
-    > * {
-      display: inline-block;
-    }
   }
 
   .post-byline {
+    display: inline-block;
   }
 
   .post-date {
+    display: inline-block;
     font-weight: bold;
+  }
+
+  .post-updated {
+    display: inline-block;
   }

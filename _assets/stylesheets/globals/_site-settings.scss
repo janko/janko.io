@@ -8,5 +8,6 @@ $font-family-mono:    "inconsolata", $monospace;
 $color-primary:       #C36278;
 $color-info:          $color-primary;
 
+$color-text:          rgba(black, .8);
 $color-link:          $color-primary;
 $color-link-hover:    shade($color-link, 25%);

@@ -1,0 +1,12 @@
+.text {
+}
+
+  @each $dir in left, center, right {
+    .text-#{$dir} {
+      text-align: $dir;
+    }
+  }
+
+  .text-muted {
+    color: rgba(black, .4);
+  }
