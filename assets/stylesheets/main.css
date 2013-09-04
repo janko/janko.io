@@ -1158,6 +1158,24 @@ you can use the generic selector below, but it's slower:
   color: transparent !important;
   text-shadow: none !important; }
 
+.alert {
+  padding: 13px;
+  background-color: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  margin-bottom: 26px; }
+  .alert > *:last-child {
+    margin-bottom: 0; }
+
+.alert-title {
+  color: inherit;
+  font-weight: bold; }
+
+.alert-info {
+  background-color: rgba(195, 98, 120, 0.1);
+  border-color: rgba(195, 98, 120, 0.5);
+  color: #c36278; }
+
 .contact-item {
   display: inline-block;
   margin-left: -6.5px;

@@ -6,6 +6,7 @@ $font-family-mono:    "inconsolata", $monospace;
 // colors
 
 $color-primary:       #C36278;
+$color-info:          $color-primary;
 
 $color-link:          $color-primary;
 $color-link-hover:    shade($color-link, 25%);
