@@ -1,13 +1,17 @@
 @each $dir in top, right, bottom, left {
   .s-#{$dir} {
-    margin-#{$dir}: $bsu;
+    margin-#{$dir}: $bsu !important;
   }
 
   .s-half-#{$dir} {
-    margin-#{$dir}: $hsu;
+    margin-#{$dir}: $hsu !important;
   }
 
   .s-quart-#{$dir} {
-    margin-#{$dir}: $hsu/2;
+    margin-#{$dir}: $hsu/2 !important;
+  }
+
+  .no-s-#{$dir} {
+    margin-#{$dir}: 0 !important;
   }
 }
