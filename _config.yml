@@ -1,11 +1,11 @@
-name:       Bipolar
-pygments:   true
-markdown:   redcarpet
+name:         Bipolar
+pygments:     true
+markdown:     redcarpet
 redcarpet:
   extensions: ["smart", "superscript", "autolink"]
-port:       3000
-exclude:    [Gemfile, Gemfile.lock, Guardfile, bin, .sass-cache, _assets, _vendor]
-permalink:  /:year/:month/:title/
+port:         3000
+exclude:      [Gemfile, Gemfile.lock, Guardfile, .gitignore, bin, .sass-cache, _assets, _vendor]
+permalink:    /:year/:month/:title/
 navigation:
   -
     text: "Home"

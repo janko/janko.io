@@ -1,6 +1,7 @@
 # A sample Guardfile
 # More info at https://github.com/guard/guard#readme
 
+require "bootstrap-sass"
 require "coffee_script"
 
 guard "sass",

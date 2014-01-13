@@ -1,5 +1,8 @@
 pre {
+  @include font-size(14px);
   margin-bottom: 0;
+  padding: 0;
+  border: none;
 }
 
 .highlight {
@@ -10,10 +13,10 @@ pre {
 
 .highlight {
   @include font-size(14px);
-  margin-bottom: $bsu;
-  padding: $hsu;
+  margin-bottom: $sub;
+  padding: $suh;
 
-  @include media-query(palm) {
+  @media (max-width: $screen-xs-max) {
     @include bleed;
     border-radius: 0;
   }
@@ -22,7 +25,7 @@ pre {
 p, ul, ol {
   code {
     @include font-size(14px);
-    padding: 2px $hsu/4;
+    padding: 2px $suh/4;
     background-color: #f8f8f8;
     border: 1px solid #ddd;
     border-radius: 3px;

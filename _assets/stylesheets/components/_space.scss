@@ -1,0 +1,59 @@
+// Generates spacer classes based on the spacing unit used in
+// the vertical rhythm of the design. Usually same as the
+// line height of the main body text.
+
+// spacing units
+
+$spacing-unit-base: 20px;
+$spacing-unit-half: $spacing-unit-base / 2;
+
+// shortcuts
+
+$sub: $spacing-unit-base;
+$suh: $spacing-unit-half;
+
+// The Generator. Produces classes such as:
+//
+// .m-top-db              = top double margin
+// .p-bottom-hl           = bottom half padding
+// .p-right(-sg)          = right single padding
+// .no-m-left             = no left margin
+// .p-top-3qt             = top three quarters padding
+// ...
+
+@each $type in margin, padding {
+  $letter: "";
+  @if $type == margin {
+    $letter: m
+  } @else {
+    $letter: p
+  }
+
+  @each $dir in top, right, bottom, left {
+    .#{$letter}-#{$dir},
+    .#{$letter}-#{$dir}-sg {
+      #{$type}-#{$dir}: $sub;
+    }
+
+    .#{$letter}-#{$dir}-db {
+      #{$type}-#{$dir}: 2 * $sub;
+    }
+
+    .#{$letter}-#{$dir}-hl {
+      #{$type}-#{$dir}: $suh;
+    }
+
+    .#{$letter}-#{$dir}-qt,
+    .#{$letter}-#{$dir}-1qt {
+      #{$type}-#{$dir}: $suh/2;
+    }
+
+    .#{$letter}-#{$dir}-3qt {
+      #{$type}-#{$dir}: 3 * $suh/2;
+    }
+
+    .no-#{$letter}-#{$dir} {
+      #{$type}-#{$dir}: 0;
+    }
+  }
+}

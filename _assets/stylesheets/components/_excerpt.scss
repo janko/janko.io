@@ -1,6 +1,6 @@
 .post-body p:first-child {
-  @include font-size(20px);
-  margin-bottom: 1.5 * $bsu;
+  @include font-size(20px, 1);
+  margin-bottom: 1.5 * $sub;
   color: black;
 
   code {

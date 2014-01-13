@@ -1,46 +1,41 @@
-html {
-  font-family: $font-family-base;
-  color: rgba(black, .7);
-}
-
 h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
   color: black;
   font-weight: normal;
 }
 
 h1 {
-  @include font-size(42px);
+  @include font-size(42px, 2);
 }
 
 h2 {
   @include font-size(22px);
-  margin-bottom: $hsu;
+  margin-bottom: $suh;
 }
 
 h3 {
   @include font-size(18px);
   text-transform: uppercase;
-  margin-bottom: $hsu;
+  margin-bottom: $suh;
 
   h2 + & {
-    margin-top: $bsu;
+    margin-top: $suh;
   }
 }
 
 a {
-  @include color-link($color-link, $color-link-hover);
   display: inline-block;
-  border-bottom: 1px solid rgba($color-link, .5);
-  text-decoration: none;
+  border-bottom: 1px solid rgba($link-color, .5);
 
   #{$interact} {
-    background-color: rgba($color-link, .1);
-    border-bottom-color: rgba($color-link-hover, .5);
+    background-color: rgba($link-color, .1);
+    border-bottom-color: rgba($link-hover-color, .5);
+    text-decoration: none;
   }
 }
 
 li {
-  margin-bottom: $hsu;
+  margin-bottom: $suh;
 }
 
 // ampersand

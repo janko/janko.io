@@ -1,27 +1,28 @@
-@import
-  "config/base-style",
+@import "bootstrap";
 
-  "bourbon/bourbon",
-  "base-style/base-style",
+@import "bourbon/bourbon";
 
-  "globals/site-settings",
+@import "globals/variables";
+@import "globals/mixins";
 
-  "shared/header",
-  "shared/main",
-  "shared/nav",
-  "shared/brand",
-  "shared/typography",
-  "shared/media",
-  "shared/syntax",
-  "shared/code",
-  "shared/icons",
-  "shared/wf",
+@import "shared/header";
+@import "shared/main";
+@import "shared/nav";
+@import "shared/brand";
+@import "shared/typography";
+@import "shared/media";
+@import "shared/syntax";
+@import "shared/code";
+@import "shared/icons";
+@import "shared/wf";
 
-  "components/alert",
-  "components/contact",
-  "components/excerpt",
-  "components/float",
-  "components/list",
-  "components/media",
-  "components/post",
-  "components/text"
+@import "components/alert";
+@import "components/contact";
+@import "components/container";
+@import "components/excerpt";
+@import "components/float";
+@import "components/list";
+@import "components/media";
+@import "components/post";
+@import "components/space";
+@import "components/text";

@@ -1,5 +1,5 @@
 .header {
-  margin-bottom: 2 * $bsu;
+  margin-bottom: 2 * $sub;
   text-align: center;
 
   a {
@@ -8,9 +8,5 @@
     #{$interact} {
       background-color: transparent;
     }
-  }
-
-  .l-container {
-    display: inline-block;
   }
 }

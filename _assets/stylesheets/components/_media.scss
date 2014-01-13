@@ -3,13 +3,13 @@
 }
 
   .media-object {
-    &.fl { margin-right: $bsu; }
-    &.fr { margin-left: $bsu; }
+    &.fl { margin-right: $sub; }
+    &.fr { margin-left: $sub; }
   }
 
   .media-object-small {
-    &.fl { margin-right: $hsu; }
-    &.fr { margin-left: $hsu; }
+    &.fl { margin-right: $suh; }
+    &.fr { margin-left: $suh; }
   }
 
   .media-body {

@@ -6,11 +6,11 @@
   }
 
     .list-posts-item {
-      margin-bottom: $bsu;
+      margin-bottom: $sub;
     }
 
     .list-posts-meta {
-      margin-bottom: $hsu;
+      margin-bottom: $suh;
     }
 
     .list-posts-date {
@@ -18,9 +18,9 @@
     }
 
     .list-posts-title {
-      line-height: 1 * $bsu;
+      line-height: 1 * $sub;
 
-      a { padding-bottom: $hsu/2; }
+      a { padding-bottom: $suh/2; }
     }
 
     .list-posts-excerpt {

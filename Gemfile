@@ -7,6 +7,7 @@ gem "github-pages"
 gem "thin"
 
 gem "sass"
+gem "bootstrap-sass"
 gem "uglifier"
 gem "coffee-script"
 

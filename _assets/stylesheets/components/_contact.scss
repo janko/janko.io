@@ -3,8 +3,8 @@
 
   .contact-item {
     display: inline-block;
-    margin-left: - $hsu/2;
-    margin-bottom: $bsu;
+    margin-left: - $suh/2;
+    margin-bottom: $sub;
 
     > * {
       display: inline-block;
@@ -13,7 +13,7 @@
 
     a {
       display: block;
-      padding: 0 $hsu/2;
+      padding: 0 $suh/2;
       border-bottom: none;
       border-radius: 4px;
 
@@ -31,10 +31,10 @@
     font-family: icomoon;
   }
 
-  @each $medium in  (twitter   $twitter-color),
-                    (github    $github-color),
-                    (facebook  $facebook-color),
-                    (email     $gmail-color) {
+  @each $medium in  (twitter   $color-twitter),
+                    (github    $color-github),
+                    (facebook  $color-facebook),
+                    (email     $color-gmail) {
 
     .contact-#{nth($medium, 1)} {
       a {
