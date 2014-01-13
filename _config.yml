@@ -6,6 +6,7 @@ redcarpet:
 port:         3000
 exclude:      [Gemfile, Gemfile.lock, Guardfile, .gitignore, bin, .sass-cache, _assets, _vendor]
 permalink:    /:year/:month/:title/
+history:      "//github.com/twin/twin.github.io/commits/master/"
 navigation:
   -
     text: "Home"

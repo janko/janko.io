@@ -25,4 +25,20 @@
 
   .post-updated {
     display: inline-block;
+
+    a {
+      @include position(relative);
+      @include color-link(inherit, rgba(black, .6));
+      border-bottom: none;
+
+      #{$interact} {
+        background: transparent;
+
+        &:after {
+          @include position(absolute, 0 (- $sub) 0 0);
+          font-family: "icomoon";
+          content: "\e002";
+        }
+      }
+    }
   }
