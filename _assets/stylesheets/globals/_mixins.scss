@@ -17,7 +17,7 @@
 
 // Demo: http://codepen.io/silvenon/pen/mKEFd
 
-@mixin bleed($side: both, $amount: $grid-gutter-width) {
+@mixin bleed($side: both, $amount: $grid-gutter-width/2) {
   @if $side == left {
     margin-left:  - $amount;
     padding-left:   $amount;
