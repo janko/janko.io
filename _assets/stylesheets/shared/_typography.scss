@@ -19,7 +19,7 @@ h3 {
   margin-bottom: $suh;
 
   h2 + & {
-    margin-top: $suh;
+    margin-top: $sub;
   }
 }
 
@@ -32,10 +32,6 @@ a {
     border-bottom-color: rgba($link-hover-color, .5);
     text-decoration: none;
   }
-}
-
-li {
-  margin-bottom: $suh;
 }
 
 // ampersand
