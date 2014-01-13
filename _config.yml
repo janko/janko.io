@@ -1,8 +1,10 @@
 name:       Bipolar
 pygments:   true
 markdown:   redcarpet
+redcarpet:
+  extensions: ["smart", "superscript", "autolink"]
 port:       3000
-exclude:    [Gemfile, Gemfile.lock, Guardfile, bin, _assets]
+exclude:    [Gemfile, Gemfile.lock, Guardfile, bin, .sass-cache, _assets, _vendor]
 permalink:  /:year/:month/:title/
 navigation:
   -

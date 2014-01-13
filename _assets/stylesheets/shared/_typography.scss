@@ -17,6 +17,16 @@ h2 {
   margin-bottom: $hsu;
 }
 
+h3 {
+  @include font-size(18px);
+  text-transform: uppercase;
+  margin-bottom: $hsu;
+
+  h2 + & {
+    margin-top: $bsu;
+  }
+}
+
 a {
   @include color-link($color-link, $color-link-hover);
   display: inline-block;
