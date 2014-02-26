@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Speedy Sass with @import & Sprockets"
+title: Speedy Sass with @import & Sprockets
 author: matija
 updated: 17.1.2014.
 ---
