@@ -1,0 +1,10 @@
+.post {
+  hr {
+    + ul,
+    + ol {
+      @include font-size(13px);
+      list-style: none;
+      padding-left: 0;
+    }
+  }
+}
