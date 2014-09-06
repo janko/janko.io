@@ -5,7 +5,9 @@ url:              "http://twin.github.io"
 
 port:             4000
 highlighter:      pygments
-markdown:         kramdown
+markdown:         redcarpet
+redcarpet:
+  extensions:     ["smart", "superscript", "autolink"]
 exclude:          [Gemfile, Gemfile.lock, .gitignore, .sass-cache]
 permalink:        /:year/:month/:title/
 history:          "//github.com/twin/twin.github.io/commits/master/"
