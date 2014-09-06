@@ -1,27 +1,8 @@
 ---
 layout: default
-title: "Posts by Matija"
+title: Posts by Matija
+label: By Matija
+order: 1
 ---
 
-{% assign author = site.authors[janko] %}
-<div class="list-posts">
-  {% for post in site.posts %}
-    {% if post.author == 'matija' %}
-      <div class="list-posts-item">
-        <div class="list-posts-meta">
-          <div class="list-posts-date">
-            {{ post.date | date_to_string }}
-          </div>
-
-          <h2 class="list-posts-title">
-            <a href="{{ post.url }}">{{ post.title }}</a>
-          </h2>
-        </div>
-
-        <div class="list-posts-excerpt">
-          {{ post.excerpt }}
-        </div>
-      </div>
-    {% endif %}
-  {% endfor %}
-</div>
+{% include posts.html author='matija' %}

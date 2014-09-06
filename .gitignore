@@ -1,6 +1,4 @@
 .DS_Store
 _site
-/js
-/css
 .bundle
 .sass-cache

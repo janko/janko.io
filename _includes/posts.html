@@ -1,0 +1,17 @@
+{% for post in site.posts %}
+  {% if post.author == include.author %}
+    <article class="post-short">
+      <time class="post-short-date" datetime="{{ post.date }}">
+        {{ post.date | date_to_string }}
+      </time>
+
+      <h1 class="post-short-title">
+        <a href="{{ post.url }}">{{ post.title }}</a>
+      </h1>
+
+      <div class="post-short-body">
+        {{ post.excerpt }}
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}

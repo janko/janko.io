@@ -1,26 +1,29 @@
 ---
 layout: default
-title: "Contact"
+title: Contact
+label: About & Contact
+order: 3
 ---
 
 <h1>About this blog</h1>
 
-<div class="m-bottom">
-  <p>
-    <img src="/assets/images/about.jpg">
-  </p>
+<p><img src="{{ site.baseurl }}/images/about.jpg"></p>
+<p>This is a blog written by two <a href="//en.wikipedia.org/wiki/Twin#Monozygotic_.28.22identical.22.29_twins">identical twins</a>, Matija and Janko. One is a web designer and the other one is a web developer. Because people often joke how identical twins are actually one person, we named this blog "Bipolar" to suggest that this blog is actually written by a single, bipolar person, sometimes writing about design and other times about development.</p>
 
-  <p>This is a blog written by two <a href="//en.wikipedia.org/wiki/Twin#Monozygotic_.28.22identical.22.29_twins">identical twins</a>, Matija and Janko. One is a web designer and the other one is a web developer. Because people often joke how identical twins are actually one person, we named this blog "Bipolar" to suggest that this blog is actually written by a single, bipolar person, sometimes writing about design and other times about development.</p>
-</div>
+<div class="social">
+  {% for author in site.authors %}
+    <div class="social-card">
+      <h2>{{ author[1].name }}</h2>
 
-<div class="l-fd">
-  <div>
-    <h2>Janko Marohnić</h2>
-    {% include social-janko.html %}
-  </div>
-
-  <div>
-    <h2>Matija Marohnić</h2>
-    {% include social-matija.html %}
-  </div>
+      <ul class="social-networks">
+        {% for network in author[1].social %}
+          <li class="social-network {{ network[0] | downcase }}">
+            <a href="{{ network[1] }}" title="{{ network[0] }}">
+              <i class="icon icon-{{ network[0] | downcase }}"></i>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
 </div>

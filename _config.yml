@@ -1,35 +1,36 @@
-name:         Bipolar
-pygments:     true
-markdown:     redcarpet
-redcarpet:
-  extensions: ["smart", "superscript", "autolink"]
-port:         3000
-exclude:      [Gemfile, Gemfile.lock, Guardfile, .gitignore, bin, .sass-cache, _assets, _vendor]
-permalink:    /:year/:month/:title/
-history:      "//github.com/twin/twin.github.io/commits/master/"
-navigation:
-  -
-    text: "Home"
-    url: "/index.html"
-  -
-    text: "By Matija"
-    url: "/matija/index.html"
-  -
-    text: "By Janko"
-    url: "/janko/index.html"
-  -
-    text: "About & Contact"
-    url: "/about-and-contact/index.html"
+name:             Bipolar
+description:      "A Ruby/Node-oriented blog about design & development."
+baseurl:          ""
+url:              "http://twin.github.io"
+
+port:             4000
+highlighter:      pygments
+markdown:         kramdown
+exclude:          [Gemfile, Gemfile.lock, .gitignore, .sass-cache]
+permalink:        /:year/:month/:title/
+history:          "//github.com/twin/twin.github.io/commits/master/"
+
+sass:
+  sass_dir:       styles
+
 authors:
-  matija:
-    name: "Matija Marohnić"
-    nick: "matija"
-    email: "matija.marohnic@gmail.com"
-    twitter: "silvenon"
-    github: "silvenon"
   janko:
-    name: "Janko Marohnić"
-    nick: "janko"
-    email: "janko.marohnic@gmail.com"
-    twitter: "jankomarohnic"
-    github: "janko-m"
+    name:         "Janko Marohnić"
+    identifier:   "janko"
+    social:
+      Twitter:    "//twitter.com/jankomarohnic"
+      GitHub:     "//github.com/janko-m"
+      Email:      "mailto:janko.marohnic@gmail.com"
+      Facebook:   "//facebook.com/janko.marohnic"
+
+  matija:
+    name:         "Matija Marohnić"
+    identifier:   "matija"
+    social:
+      Twitter:    "//twitter.com/silvenon"
+      GitHub:     "//github.com/silvenon"
+      Email:      "mailto:matija.marohnic@gmail.com"
+      Instagram:  "//instagram.com/silvenon"
+      Vine:       "//vine.co/silvenon"
+      SoundCloud: "//soundcloud.com/silvenon"
+      Facebook:   "//facebook.com/matijamm"
