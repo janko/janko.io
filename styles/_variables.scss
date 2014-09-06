@@ -1,6 +1,9 @@
 $font-family-base:    "myriad-pro", "helvetica neue", "helvetica", "arial", sans-serif;
 $font-family-mono:    "inconsolata", "monaco", "consolas", "lucida console", monospace;
 
+$color-primary-light: #c36278;
+$color-primary-dark:  #92495a;
+
 $screen-xs-min:       480px;
 $screen-sm-min:       768px;
 $screen-md-min:       992px;
@@ -17,7 +20,7 @@ $network-colors: (
   vimeo:       #1bb7ea,
   youtube:     #e14d40,
   github:      #000000,
-  gmail:       #d72c2c,
+  email:       #d72c2c,
   linked-in:   #0274b3,
   instagram:   #2c6e8e,
   vine:        #00a478,

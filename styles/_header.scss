@@ -1,0 +1,27 @@
+.header {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  background-color: $color-primary-light;
+  text-align: center;
+  color: #fff;
+
+  &-compact {
+    padding-top: .5em;
+    padding-bottom: .5em;
+  }
+
+  p {
+    font-size: 1.2em;
+  }
+
+  a {
+    font-size: 2em;
+    font-weight: 700;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .icon {
+    font-size: 12px;
+  }
+}

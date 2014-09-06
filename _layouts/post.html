@@ -13,7 +13,10 @@ layout: default
         By <a href="{{ site.baseurl }}/{{ author.identifier }}">{{ author.name }}</a> on
         <time class="post-date" datetime="{{ page.date }}">{{ page.date | date_to_string }}</time>
         {% if page.updated %}
-          {% include update.html %}
+          <span class="post-updated">
+            <a target="_blank" href="{{ site.history }}{{ page.path }}">Last edit on {{ page.updated | date_to_string }}</a>
+            <i class="icon icon-github"></i>
+          </span>
         {% endif %}
       </p>
     </div>

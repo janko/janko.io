@@ -1,5 +1,5 @@
 {% for post in site.posts %}
-  {% if post.author == include.author %}
+  {% if post.author == include.author or include.author == null %}
     <article class="post-short">
       <time class="post-short-date" datetime="{{ post.date }}">
         {{ post.date | date_to_string }}

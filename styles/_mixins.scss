@@ -53,3 +53,18 @@
   padding: 0;
   list-style-type: none;
 }
+
+@mixin font-smoothing {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin bleed {
+  margin-left: -1rem;
+  margin-right: -1rem;
+
+  @include query(md) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

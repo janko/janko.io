@@ -1,0 +1,40 @@
+.post {
+  margin-bottom: 2rem;
+
+  &-meta {
+    margin-bottom: 1rem;
+    font-size: 0.9em;
+    color: #777;
+  }
+
+  &-updated {
+    &::before {
+      content: "\2014";
+    }
+
+    a {
+      color: inherit;
+
+      &:hover,
+      &:focus {
+        color: #333;
+
+        + i {
+          color: #333;
+          transform: scale(1);
+        }
+      }
+    }
+
+    i {
+      position: relative;
+      top: 2px;
+      text-decoration: none;
+      color: transparent;
+      transition: all .2s;
+      transform: scale(0.001);
+    }
+  }
+
+  @import "post-short";
+}
