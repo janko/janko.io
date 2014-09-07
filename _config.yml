@@ -12,6 +12,9 @@ exclude:          [Gemfile, Gemfile.lock, .gitignore, .sass-cache]
 permalink:        /:year/:month/:title/
 history:          "//github.com/twin/twin.github.io/commits/master/"
 
+gems:
+  - jemoji
+
 sass:
   sass_dir:       styles
 
