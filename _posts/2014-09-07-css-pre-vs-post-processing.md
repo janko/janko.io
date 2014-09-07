@@ -198,6 +198,10 @@ Now after the task runs we will end up with the following rule:
 Hideous… but exactly what we wanted. Now when we decide we don't care about IE 8
 anymore, we can just plug out our processor from the Gulp task.
 
+If you don't really feel like writing a processor for every hack or fallback you
+plan to use and are looking for an all-in-one processor, [Pleeease!][pleeease]
+does vendor prefixing, rem fallbacks, opacity filters and more.
+
 ## So when do we use CSS pre- vs. post-processors?
 
 Avoid using preprocessors for cross-browser fixes like vendor prefixes and
@@ -226,3 +230,4 @@ I'm really excited about this, how about you?
 [gulp]:               http://gulpjs.com/
 [ellipsis]:           http://css-tricks.com/snippets/css/truncate-string-with-ellipsis/
 [gradient]:           http://stackoverflow.com/a/4920565/1247274
+[pleeease]:           http://pleeease.io/
