@@ -65,7 +65,7 @@ compiled CSS will get parsed and necessary vendor prefixes will be added:
 }
 ```
 
-There are at least 3 benefits of this approach:
+There are at least 4 benefits of this approach:
 
   1. You don't have to think about whether the current rule needs to be prefixed
      or not, i.e. whether you should use a mixin.
@@ -73,7 +73,10 @@ There are at least 3 benefits of this approach:
   2. You can later change the browsers you want to support just by configuring
      Autoprefixer. More on that below.
 
-  3. It's faster than Sass.
+  3. If you happen to be working on a non-prefixed codebase, you don't have to
+     locate every CSS3 declaration and replace it with a mixin.
+
+  4. It's faster than Sass.
 
 Autoprefixer has an excellent support for [just about any][autoprefixer-usage]
 build tool you might be using. For my further examples I'll be using
