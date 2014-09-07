@@ -9,10 +9,10 @@
   ol, ul {
     @include list-unstyled;
     @include clearfix;
+  }
 
-    li {
-      display: inline-block;
-    }
+  li {
+    display: inline-block;
   }
 
   a {
@@ -25,5 +25,10 @@
     &:focus {
       color: #fff;
     }
+  }
+
+  .active a {
+    font-weight: 700;
+    color: #fff;
   }
 }
