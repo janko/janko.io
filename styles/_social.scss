@@ -10,13 +10,16 @@
   }
 
   &-card {
+    text-align: center;
+
     @include query(sm) {
+      text-align: left;
       float: left;
       width: 50%;
-    }
 
-    &:last-child {
-      text-align: right;
+      &:last-child {
+        text-align: right;
+      }
     }
   }
 

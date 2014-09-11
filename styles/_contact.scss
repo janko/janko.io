@@ -1,0 +1,11 @@
+.contact {
+  &-photo {
+    text-align: center;
+
+    img {
+      padding: 1em;
+      border: 1px solid darken(#fff, 20%);
+      background-color: darken(#fff, 5%);
+    }
+  }
+}

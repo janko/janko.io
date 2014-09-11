@@ -1,0 +1,28 @@
+---
+layout: default
+title: Contact
+label: Contact
+order: 3
+---
+
+<div class="contact-photo">
+  <img src="{{ site.baseurl }}/images/about.jpg">
+</div>
+
+<div class="social">
+  {% for author in site.authors %}
+    <div class="social-card">
+      <h2>{{ author[1].name }}</h2>
+
+      <ul class="social-networks">
+        {% for network in author[1].social %}
+          <li class="social-network {{ network[0] | downcase }}">
+            <a href="{{ network[1] }}" title="{{ network[0] }}">
+              <i class="icon icon-{{ network[0] | downcase }}"></i>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</div>
