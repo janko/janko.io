@@ -19,6 +19,7 @@
     display: inline-block;
     padding: .25em;
     color: mix($color-primary-dark, #fff, 35%);
+    color: rgba(#fff, .65);
     text-decoration: none;
 
     &:hover,
