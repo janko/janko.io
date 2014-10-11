@@ -2,16 +2,18 @@
 layout: post
 title: Simple layouting with Gulp
 author: matija
+updated: 11.10.2014.
 tags: short gulp node layout template
 ---
 
-Have you ever wanted to make a simple website using Gulp with repeating
-components like header and footer, but didn't quite manage to find a good
-layouting system? I've gone a bit crazy after a while of searching, so crazy
-that I ended up with Ember, which is not even a layouting system, it's a MVC
-framework and not at all what I wanted. For Grunt there's [Assemble][assemble],
-but even if it existed for Gulp (it [kinda does][gulp-assemble]) it's still to
-complicated. The solution is really dead simple—[gulp-wrap][gulp-wrap].
+Have you ever wanted to make a really quick and simple website using Gulp with
+repeating components like header and footer, but didn't quite manage to find a
+good layouting system? I've gone a bit crazy after a while of searching, so
+crazy that I ended up with Ember, which is not even a layouting system, it's a
+MVC framework and not at all what I wanted. For Grunt there's
+[Assemble][assemble], but even if it existed for Gulp (it [kinda
+does][gulp-assemble]) it's still to complicated. The solution is really dead
+simple—[gulp-wrap][gulp-wrap].
 
 First I thought I wanted a system where I could add partials, but what I really
 wanted was just a single layout file which wraps around pages. Ruby developers
@@ -147,9 +149,55 @@ ensured that `layout` will always run first.
 This is a partial example, somewhere along the way you would build this into a
 directory, I'll leave it up to you :wink:
 
-[assemble]:      http://assemble.io/
-[gulp-assemble]: https://github.com/assemble/gulp-assemble
-[gulp-wrap]:     https://github.com/adamayres/gulp-wrap
-[connect]:       https://github.com/senchalabs/connect
-[serve-static]:  https://github.com/expressjs/serve-static
-[serve-index]:   https://github.com/expressjs/serve-index
+## Caveats
+
+With this setup you won't be able to do anything slightly more fancy, like
+changing the page title or designing the current navigation link. For that I
+suggest a cool templating engine I found recently, [Nunjucks][nunjucks], which
+is easy to grasp simple to use.
+
+Your `layout` task should instead use
+[gulp-nunjucks-render][gulp-nunjucks-render]:
+
+```sh
+$ npm install --save-dev gulp-nunjucks-render
+```
+
+```js
+var nunjucksRender = require('gulp-nunjucks-render');
+
+gulp.task('layout', function () {
+  nunjucksRender.nunjucks.configure(['app']);
+
+  return gulp.src(['app/**/*.html', '!app/layout.html'])
+    .pipe(nunjucksRender())
+    .pipe(gulp.dest('.tmp'));
+});
+```
+
+{% raw %}
+In your `layout.html` you can replace `<%= contents %>` with `{% block content
+%}{% endblock %}`.
+
+Lastly, your pages should look something like this:
+
+```html
+{% extends "layout.html" %}
+
+{% block content %}
+  <!-- page content -->
+{% endblock %}
+```
+{% endraw %}
+
+For more features, check out the [docs][nunjucks-docs]!
+
+[assemble]:             http://assemble.io/
+[gulp-assemble]:        https://github.com/assemble/gulp-assemble
+[gulp-wrap]:            https://github.com/adamayres/gulp-wrap
+[connect]:              https://github.com/senchalabs/connect
+[serve-static]:         https://github.com/expressjs/serve-static
+[serve-index]:          https://github.com/expressjs/serve-index
+[nunjucks]:             http://mozilla.github.io/nunjucks/
+[nunjucks-docs]:        http://mozilla.github.io/nunjucks/templating.html
+[gulp-nunjucks-render]: https://github.com/carlosl/gulp-nunjucks-render
