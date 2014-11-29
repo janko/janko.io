@@ -1,4 +1,4 @@
-name:             Bipolar
+title:            Bipolar
 description:      "A Ruby/Node-oriented blog about design & development."
 baseurl:          ""
 url:              "http://twin.github.io"
