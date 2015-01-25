@@ -11,6 +11,19 @@ code {
   padding: 0 .25em;
 }
 
+a {
+  code {
+    border-color: rgba($color-primary-light, .25);
+  }
+
+  &:hover,
+  &:focus {
+    code {
+      border-color: rgba($color-primary-light, .5);
+    }
+  }
+}
+
 .highlight {
   margin-top: 1rem;
   margin-bottom: 1rem;
