@@ -1,4 +1,5 @@
 .navigation {
+  @include font-smoothing;
   margin-bottom: 2em;
   padding-top: .5em;
   padding-bottom: .5em;
