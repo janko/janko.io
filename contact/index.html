@@ -5,9 +5,14 @@ label: Contact
 order: 3
 ---
 
-<div class="contact-photo">
-  <img src="{{ site.baseurl }}/images/about.jpg">
-</div>
+<figure class="contact-photo">
+  <img src="{{ site.baseurl }}/images/about-1600.jpg"
+       sizes="calc(100vw - 4rem - 2px)"
+       srcset="{{ site.baseurl }}/images/about-320.jpg 320w,
+               {{ site.baseurl }}/images/about-800.jpg 800w,
+               {{ site.baseurl }}/images/about-1600.jpg 1600w">
+  <figcaption class="contact-photo-caption"><small>Photography by <a href="http://fotozine.org/?omen=Airamana">Anamaria Kudrna</a>.</small></figcaption>
+</figure>
 
 <div class="social">
   {% for author in site.authors %}
