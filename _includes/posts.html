@@ -1,9 +1,14 @@
 {% for post in site.posts %}
   {% if post.author == include.author or include.author == null %}
+    {% assign author = site.authors[post.author] %}
+
     <article class="post-short">
-      <time class="post-short-date" datetime="{{ post.date }}">
-        {{ post.date | date_to_string }}
-      </time>
+      <div class="post-short-byline">
+        By <a class="post-short-author" href="{{ site.baseurl }}/{{ author.identifier }}">{{ author.name }}</a>
+        on <time class="post-short-date" datetime="{{ post.date }}">
+          {{ post.date | date_to_string }}
+        </time>
+      </div>
 
       <h1 class="post-short-title">
         <a href="{{ post.url }}">{{ post.title }}</a>
