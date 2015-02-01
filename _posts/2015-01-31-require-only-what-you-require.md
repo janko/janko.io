@@ -70,6 +70,7 @@ What if instead lib/rake.rb looked like this?
 
 require "rake/application"
 require "rake/task"
+require "rake/win32"
 
 module Rake
   class << self
@@ -97,11 +98,9 @@ module Rake
     end
   end
 end
-
-require "rake/win32"
 ```
 
-I think this looks *much* nicer. We see that the two main parts of Rake are the **application** (the CLI runner) and the **tasks**. By inlining [rake/rake_module.rb](https://github.com/ruby/rake/blob/8cc7349ffbdf97345e5da15e1a05058c6dbcefec/lib/rake/rake_module.rb) like this, we also immediately see the main entry point to Rake, which is useful if we're developing a 3rd-party gem which integrates with Rake. Lastly, we see that Rake also maintains Windows compatibility.
+I think this looks *much* nicer. We see that the two main parts of Rake are the **application** (the CLI runner) and the **tasks**. We also see that Rake maintains Windows compatibility. Lastly, by inlining [rake/rake_module.rb](https://github.com/ruby/rake/blob/8cc7349ffbdf97345e5da15e1a05058c6dbcefec/lib/rake/rake_module.rb) like this, we also immediately see the main entry point to Rake, which is useful if we're developing a 3rd-party gem which integrates with Rake.
 
 ## 3. It hides dependencies of individual classes
 
