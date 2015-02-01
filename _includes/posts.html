@@ -4,8 +4,10 @@
 
     <article class="post-short">
       <div class="post-short-byline">
-        By <a class="post-short-author" href="{{ site.baseurl }}/{{ author.identifier }}">{{ author.name }}</a>
-        on <time class="post-short-date" datetime="{{ post.date }}">
+        {% unless include.author %}
+          By <a class="post-short-author" href="{{ site.baseurl }}/{{ author.identifier }}">{{ author.name }}</a> on
+        {% endunless %}
+        <time class="post-short-date" datetime="{{ post.date }}">
           {{ post.date | date_to_string }}
         </time>
       </div>
