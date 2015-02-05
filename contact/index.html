@@ -22,7 +22,7 @@ order: 3
       <ul class="social-networks">
         {% for network in author[1].social %}
           <li class="social-network {{ network[0] | downcase }}">
-            <a href="{{ network[1] }}" title="{{ network[0] }}">
+            <a href="{{ network[1].url }}{{ network[1].username }}" title="{{ network[0] }}">
               <i class="icon icon-{{ network[0] | downcase }}"></i>
             </a>
           </li>

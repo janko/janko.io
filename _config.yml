@@ -23,19 +23,41 @@ authors:
     name:         "Janko Marohnić"
     identifier:   "janko"
     social:
-      Twitter:    "//twitter.com/jankomarohnic"
-      GitHub:     "//github.com/janko-m"
-      Email:      "mailto:janko.marohnic@gmail.com"
-      Facebook:   "//facebook.com/janko.marohnic"
+      Twitter:
+        url:      "//twitter.com/"
+        username: "jankomarohnic"
+      GitHub:
+        url:      "//github.com/"
+        username: "janko-m"
+      Email:
+        url:      "mailto:"
+        username: "janko.marohnic@gmail.com"
+      Facebook:
+        url:      "//facebook.com/"
+        username: "janko.marohnic"
 
   matija:
     name:         "Matija Marohnić"
     identifier:   "matija"
     social:
-      Twitter:    "//twitter.com/silvenon"
-      GitHub:     "//github.com/silvenon"
-      Email:      "mailto:matija.marohnic@gmail.com"
-      Instagram:  "//instagram.com/silvenon"
-      Vine:       "//vine.co/silvenon"
-      SoundCloud: "//soundcloud.com/silvenon"
-      Facebook:   "//facebook.com/matijamm"
+      Twitter:
+        url:      "//twitter.com/"
+        username: "silvenon"
+      GitHub:
+        url:      "//github.com/"
+        username: "silvenon"
+      Email:
+        url:      "mailto:"
+        username: "matija.marohnic@gmail.com"
+      Instagram:
+        url:      "//instagram.com/"
+        username: "silvenon"
+      Vine:
+        url:      "//vine.co/"
+        username: "silvenon"
+      SoundCloud:
+        url:      "//soundcloud.com/"
+        username: "silvenon"
+      Facebook:
+        url:      "//facebook.com/"
+        username: "matijamm"
