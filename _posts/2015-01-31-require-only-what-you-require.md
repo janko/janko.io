@@ -61,7 +61,7 @@ If each file requires only what it needs, then we have a nice overview of each f
 
 ## 2. It hides the important parts of the library
 
-When we look at this file, it is difficult to tell which are the main components Rake is made of. rake/**linked\_list**? rake/**cpu\_error**? rake/**rule\_recursion\_overflow\_error**?! :rage:
+When we look at this file, it is difficult to tell which are the main components Rake is made of. I don't think that "linked\_list", "cpu\_error" or "rule\_recursion\_overflow\_error" is something I should immediately know about when reading Rake.
 
 What if instead lib/rake.rb looked like this?
 
