@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Require only what you require
+updated: 12.2.2015.
 author: janko
 tags: ruby design
 ---
@@ -63,6 +64,22 @@ If each file requires only what it needs, then we have a nice overview of each f
 
 When we look at this file, it is difficult to tell which are the main components Rake is made of. I don't think that "linked\_list", "cpu\_error" or "rule\_recursion\_overflow\_error" is something I should immediately know about when reading Rake.
 
+Requiring everything at the top level also encourages a flat structure of the gem. The main file is suddenly responsible for everything, instead letting its main parts require what they need. Then it's easier to realize which classes belong in which namespaces (directories), and structure becomes more clear.
+
+## 3. It hides dependencies of individual classes
+
+If files don't require their own dependencies, it's more difficult to get a design feedback. If each file would require its own dependencies, we could identify which classes have potentially high coupling by looking at the number of their dependencies.
+
+Furthermore, if each class has its dependencies listed on the top of the file, it's easier to understand its code. For example, in the implementation of that class I see a call to `#shellescape`, without context I wouldn't know which library it could belong to. However, if I see `require "shellwords"` at the top of the file, I would most likely try looking in there, where I would find the wanted method.
+
+## 4. Code is still loaded after it is no longer used
+
+Why are `ostruct`, `monitor` and `singleton` being required here as well? These are all implementation details of Rake's internal classes. Now, if these internal classes by any chance get refactored, and stop needing one of these dependencies, who will remember to remove these `require` statements? Any code that gets loaded when it isn't used is harmful, because it adds to the load time of the gem (and memory).
+
+There are some cases where something is being used in almost every file, and remembering to require it in every file would be tedious, in which case it makes perfect sense to require it in the top level. But seriously, how often do you use `singleton`?
+
+## Solution
+
 What if instead lib/rake.rb looked like this?
 
 ```rb
@@ -101,18 +118,6 @@ end
 ```
 
 I think this looks *much* nicer. We see that the two main parts of Rake are the **application** (the CLI runner) and the **tasks**. We also see that Rake maintains Windows compatibility. Lastly, by inlining [rake/rake_module.rb](https://github.com/ruby/rake/blob/8cc7349ffbdf97345e5da15e1a05058c6dbcefec/lib/rake/rake_module.rb) like this, we also immediately see the main entry point to Rake, which is useful if we're developing a 3rd-party gem which integrates with Rake.
-
-## 3. It hides dependencies of individual classes
-
-If files don't require their own dependencies, it's more difficult to get a design feedback. If each file would require its own dependencies, we could identify which classes have potentially high coupling by looking at the number of their dependencies.
-
-Furthermore, if each class has its dependencies listed on the top of the file, it's easier to understand its code. For example, in the implementation of that class I see a call to `#shellescape`, without context I wouldn't know which library it could belong to. However, if I see `require "shellwords"` at the top of the file, I would most likely try looking in there, where I would find the wanted method.
-
-## 4. Code is still loaded after it is no longer used
-
-Why are `ostruct`, `monitor` and `singleton` being required here as well? These are all implementation details of Rake's internal classes. Now, if these internal classes by any chance get refactored, and stop needing one of these dependencies, who will remember to remove these `require` statements? Any code that gets loaded when it isn't used is harmful, because it adds to the load time of the gem (and memory).
-
-There are some cases where something is being used in almost every file, and remembering to require it in every file would be tedious, in which case it makes perfect sense to require it in the top level. But seriously, how often do you use `singleton`?
 
 ## Conclusion
 
