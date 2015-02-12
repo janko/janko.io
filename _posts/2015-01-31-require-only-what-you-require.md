@@ -64,6 +64,33 @@ If each file requires only what it needs, then we have a nice overview of each f
 
 When we look at this file, it is difficult to tell which are the main components Rake is made of. I don't think that "linked\_list", "cpu\_error" or "rule\_recursion\_overflow\_error" is something I should immediately know about when reading Rake.
 
+```rb
+require 'rake/linked_list'  # <-------------------
+require 'rake/cpu_counter'  # <-------------------
+require 'rake/scope'
+require 'rake/task_argument_error'
+require 'rake/rule_recursion_overflow_error' # <--
+require 'rake/rake_module'
+require 'rake/trace_output'  # <------------------
+require 'rake/pseudo_status'  # <-----------------
+require 'rake/task_arguments'
+require 'rake/invocation_chain'
+require 'rake/task'
+require 'rake/file_task'
+require 'rake/file_creation_task'
+require 'rake/multi_task'
+require 'rake/dsl_definition'
+require 'rake/file_utils_ext' # <-----------------
+require 'rake/file_list'
+require 'rake/default_loader'
+require 'rake/early_time' # <---------------------
+require 'rake/late_time'  # <---------------------
+require 'rake/name_space'
+require 'rake/task_manager'
+require 'rake/application'
+require 'rake/backtrace'
+```
+
 Requiring everything at the top level also encourages a flat structure of the gem. The main file is suddenly responsible for everything, instead letting its main parts require what they need. Then it's easier to realize which classes belong in which namespaces (directories), and structure becomes more clear.
 
 ## 3. It hides dependencies of individual classes
@@ -71,6 +98,15 @@ Requiring everything at the top level also encourages a flat structure of the ge
 If files don't require their own dependencies, it's more difficult to get a design feedback. If each file would require its own dependencies, we could identify which classes have potentially high coupling by looking at the number of their dependencies.
 
 Furthermore, if each class has its dependencies listed on the top of the file, it's easier to understand its code. For example, in the implementation of that class I see a call to `#shellescape`, without context I wouldn't know which library it could belong to. However, if I see `require "shellwords"` at the top of the file, I would most likely try looking in there, where I would find the wanted method.
+
+```rb
+require "shellwords"
+
+# ...
+command = "ls #{File.expand_path(__dir__)}"
+command.shellescape
+# ...
+```
 
 ## 4. Code is still loaded after it is no longer used
 
