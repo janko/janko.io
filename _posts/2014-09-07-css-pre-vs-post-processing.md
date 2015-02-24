@@ -3,6 +3,7 @@ layout: post
 title: CSS pre- vs. post-processing
 author: matija
 tags: css sass less postcss autoprefixer gulp node
+redirect_from: /2014/09/css-pre-vs-post-processing/
 ---
 
 CSS preprocessors are awesome, the've revolutionized CSS authoring. Writing

@@ -4,6 +4,7 @@ title: Simple layouting with Gulp
 author: matija
 updated: 11.10.2014.
 tags: short gulp node layout template
+redirect_from: /2014/09/simple-layouting-with-gulp/
 ---
 
 Have you ever wanted to make a really quick and simple website using Gulp with
