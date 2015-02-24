@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule ^\d{4,}/\d{2,}/\d{2,}(/.*)$ $1 [R=301,L]

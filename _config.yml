@@ -9,7 +9,7 @@ markdown:         redcarpet
 redcarpet:
   extensions:     ["smart", "superscript", "autolink"]
 exclude:          [Gemfile, Gemfile.lock, .gitignore, .sass-cache]
-permalink:        /:year/:month/:title/
+permalink:        /:title/
 history:          "//github.com/twin/twin.github.io/commits/master/"
 
 gems:
