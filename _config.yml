@@ -14,6 +14,7 @@ history:          "//github.com/twin/twin.github.io/commits/master/"
 
 gems:
   - jemoji
+  - jekyll-redirect-from
 
 sass:
   sass_dir:       styles
