@@ -1,8 +1,9 @@
 ---
 layout: post
-title: Node Selenium testing with WebdriverIO
+title: Selenium testing workflow with WebdriverIO
 author: matija
 tags: node test gulp webdriver selenium mocha
+redirect_from: /node-selenium-testing-with-webdriverio/
 ---
 
 This was my goal --- to run a single command (say `npm test`) which would install necessary Selenium drivers, fire up Selenium and HTTP servers, run integration tests (with Mocha), and finally close both servers. I didn't find a straightforward tutorial for this, so here's my own.
