@@ -13,7 +13,7 @@ while this was more than enough, but because we are obsessive, mentally deranged
 control-freaks we want more. Always more. MOOOOAAAAR. Say hello to CSS
 postprocessing!
 
-## **Post**processing?! I'm so confused!
+## "Postprocessing"?! I'm so confused!
 
 That's understandable, I don't think "postprocessing" is really an official
 term, but this is how I would explain it---CSS **pre**processors (Sass, Less
