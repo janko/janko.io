@@ -279,7 +279,7 @@ At the end of each test you should call `.call(done)`, which signifies that the 
 
 ## Other Goodies
 
-- If you want to do some regression testing, check out [WebdriverCSS], a plugin for WebdriverIO based on [PhantomCSS].
+- If you want to do some regression testing, check out [WebdriverCSS], a plugin for WebdriverIO inspired by [PhantomCSS].
 - WebdriverIO also integrates with services like [SauceLabs], [BrowserStack] and [TestingBot].
 
 ## Conclusion
