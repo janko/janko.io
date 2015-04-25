@@ -286,6 +286,10 @@ At the end of each test you should call `.call(done)`, which signifies that the 
 
 It's all about callbacks, baby.
 
+## Credits
+
+Thanks to Christian Bromann, the maintainer of WebdriverIO, for reviewing this tutorial.
+
 [webdriverio]:         http://webdriver.io/
 [webdrivercss]:        http://webdriver.io/guide/plugins/webdrivercss.html
 [webdriverjs]:         https://code.google.com/p/selenium/wiki/WebDriverJs
