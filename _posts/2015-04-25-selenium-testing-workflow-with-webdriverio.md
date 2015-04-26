@@ -175,13 +175,13 @@ Now we can run our tests with `gulp test`. Though if we add this to our `package
 
 ```js
 "scripts": {
-  "test": "node_modules/.bin/gulp test"
+  "test": "gulp test"
 },
 ```
 
 we can run them with `npm test`. If we ever decide to switch to another task runner (which happens fairly often :stuck_out_tongue:), our test command will stay the same.
 
-I'm using `node_modules/.bin/gulp` instead of `gulp` so people who don't have gulp installed won't have to run `npm install --global gulp` before running my tests.
+This command will work even if gulp isn't installed globally, because npm will first look inside your local `node_modules/.bin` before traversing up the directory tree. (Thanks, @niksy!)
 
 ## Fixtures
 
@@ -288,7 +288,7 @@ It's all about callbacks, baby.
 
 ## Credits
 
-Thanks to Christian Bromann, the maintainer of WebdriverIO, for reviewing this tutorial.
+Thanks to @christian-bromann, the maintainer of WebdriverIO, for reviewing this tutorial.
 
 [webdriverio]:         http://webdriver.io/
 [webdrivercss]:        http://webdriver.io/guide/plugins/webdrivercss.html
