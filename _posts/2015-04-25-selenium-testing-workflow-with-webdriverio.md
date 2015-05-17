@@ -181,7 +181,7 @@ Now we can run our tests with `gulp test`. Though if we add this to our `package
 
 we can run them with `npm test`. If we ever decide to switch to another task runner (which happens fairly often :stuck_out_tongue:), our test command will stay the same.
 
-This command will work even if gulp isn't installed globally, because npm will first look inside your local `node_modules/.bin` before traversing up the directory tree. (Thanks, @niksy!)
+This command will work even if gulp isn't installed globally, because npm will first look inside your local `node_modules/.bin` before traversing up the directory tree. (Thanks, [@niksy]!)
 
 ## Fixtures
 
@@ -288,7 +288,7 @@ It's all about callbacks, baby.
 
 ## Credits
 
-Thanks to @christian-bromann, the maintainer of WebdriverIO, for reviewing this tutorial.
+Thanks to [@christian-bromann], the maintainer of WebdriverIO, for reviewing this tutorial.
 
 [webdriverio]:         http://webdriver.io/
 [webdrivercss]:        http://webdriver.io/guide/plugins/webdrivercss.html
@@ -307,3 +307,6 @@ Thanks to @christian-bromann, the maintainer of WebdriverIO, for reviewing this 
 [saucelabs]:           https://github.com/webdriverio/webdriverio/blob/492c5ee7e5c5a592744b3e417caff26cfbf7b9cf/examples/webdriverio.saucelabs.js
 [browserstack]:        https://github.com/webdriverio/webdriverio/blob/492c5ee7e5c5a592744b3e417caff26cfbf7b9cf/examples/webdriverio.browserstack.js
 [testingbot]:          https://github.com/webdriverio/webdriverio/blob/492c5ee7e5c5a592744b3e417caff26cfbf7b9cf/examples/webdriverio.testingbot.js
+
+[@niksy]:              https://github.com/niksy
+[@christian-bromann]:  https://github.com/christian-bromann
