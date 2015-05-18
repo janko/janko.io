@@ -2,6 +2,7 @@
 layout: post
 title: Let's keep frontend outside of Ruby
 author: janko
+updated: 18.5.2015.
 tags: ruby rails javascript frameworks
 ---
 
@@ -72,12 +73,14 @@ Sass, which compiles **10x faster** than ruby Sass? Did you know that even Libsa
 isn't the best way to write CSS?
 [PostCSS](https://github.com/postcss/postcss) lets you write regular CSS, and
 what it does is just corrects your CSS during compilation to be cross-browser.
-Now, wait for it... PostCSS is **3x faster** than Libsass. Does Sprockets have
-support for Libsass or PostCSS? Of course not, we like our ruby Sass, even
-though frontend developers aren't using it anymore. I hope you have worked
-in a codebase with a bit more frontend code to know how compilation time can
-grow fast, and how keeping it fast is essential for productivity (analogous to
-how speed of our tests is essential to our productivity).
+Now, wait for it... PostCSS is **3x faster** than Libsass. So, PostCSS is both
+the best way to write CSS *and* the fastest option.
+
+Does Sprockets have support for Libsass or PostCSS? Of course not, we like our
+ruby Sass, even though frontend developers aren't using it anymore. I hope you
+have worked in a codebase with a bit more frontend code to know how compilation
+time can grow fast, and how keeping it fast is essential for productivity
+(analogous to how speed of our tests is essential to our productivity).
 
 We just can't keep up with the JavaScript world and continue making
 `sprockets-*` extensions for every new thing, it's much better to just use
