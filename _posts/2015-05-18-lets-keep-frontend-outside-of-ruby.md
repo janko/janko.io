@@ -43,7 +43,7 @@ in the backend world alone.
 
 Many job descriptions ask for full-stack developers, from which they require
 vast knowledge in both backend and frontend. That's insane, it's impossible to
-know both fields well, espcially since JavaScript worls is developing so
+know both fields well, espcially since JavaScript world is developing so
 rapidly. I have an idea, why not just hire 2 developers instead, each for one
 part? They will cost the same in total, and the application will have actually
 quality frontend. It's an enormous difference whether the frontend is written
