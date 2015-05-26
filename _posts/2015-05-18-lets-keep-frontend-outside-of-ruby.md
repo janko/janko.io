@@ -2,18 +2,18 @@
 layout: post
 title: Let's keep frontend outside of Ruby
 author: janko
-updated: 18.5.2015.
+updated: 27.5.2015.
 tags: ruby rails javascript frameworks
 ---
 
 Rails started as an excellent full-stack web framework. It made web development
 incredibly easy and fast, especially when the asset pipeline came along. However,
-JavaScript has evolved significantly since then, and it is able to take care of
-itself now.
+the JavaScript world has evolved significantly since then, and it is able to
+take care of itself now.
 
 I think it's time we hand over frontend to the Node.js ecosystem of build tools
-and JavaScript frameworks (instead of having spaghetti code), use our Rails
-apps only for JSON API. What are the advantages of this design?
+and JavaScript frameworks, and use our Rails apps only for JSON API. What are
+the advantages of this design?
 
 ## Ability to focus on the backend
 
