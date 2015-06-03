@@ -3,6 +3,7 @@ layout: post
 title: Selenium testing workflow with WebdriverIO
 author: matija
 tags: node test gulp webdriver selenium mocha
+updated: 27.5.2015.
 redirect_from: /node-selenium-testing-with-webdriverio/
 ---
 
@@ -40,7 +41,7 @@ gulp.task('serve:test', function (done) {
 });
 ```
 
-BrowserSync has ton of awesome features, but for testing purposes we can turn off most of them. So why did I choose BrowserSync if I'm not using any of its fancy features? That's a good question, I'm glad you asked.
+BrowserSync has ton of awesome features, but for testing purposes we can turn off most of them. So why did I choose BrowserSync if I'm not using any of its fancy features? Out of convenience, I guess, I'm already using it for development so no need for another dependency.
 
 Next, the `done` callback is necessary, otherwise we don't know when the server started. Our tests must **not** run before we have a server running.
 
@@ -277,6 +278,62 @@ This tests if the page title is equal to `"Example"`.
 
 At the end of each test you should call `.call(done)`, which signifies that the test is over.
 
+## Travis CI
+
+I was struggling to get this to work on [Travis CI], then I came across [this][react-travis] article, which pointed out that Travis CI uses an older version of PhantomJS, not 2.x, the one I had locally. In my frontend code I was using `Function.prototype.bind`, which isn't supported by that version and was causing my tests to fail on Travis CI.
+
+This is the `.travis.yml` configuration that worked for me:
+
+```yaml
+language: node_js
+
+node_js:
+  - node
+
+before_install:
+  - mkdir travis-phantomjs
+  - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -O $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+  - tar -xvf $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -C $PWD/travis-phantomjs
+  - export PATH=$PWD/travis-phantomjs:$PATH
+```
+
+An alternative is to use a service, like [Cross Browser Testing][cbt] or [Sauce Labs], which you should for serious testing.
+
+Also, in order to debug future errors easier, I suggest turn logging on for both the Selenium server and WebdriverIO.
+
+```js
+gulp.task('selenium', function (done) {
+  selenium.install({
+    logger: function (message) { }
+  }, function (err) {
+    if (err) return done(err);
+    // this
+    if (process.env.TRAVIS) {
+      child.stderr.on('data', function(data){
+        console.log(data.toString());
+      });
+    }
+    selenium.start(function (err, child) {
+      if (err) return done(err);
+      selenium.child = child;
+      done();
+    });
+  });
+});
+```
+
+```js
+var client = require('webdriverio').remote({
+  // this
+  logLevel: process.env.TRAVIS ? 'command' : 'silent',
+  desiredCapabilities: {
+    browserName: 'phantomjs'
+  }
+}).init();
+```
+
+It will produce a lot of output, but you'll only really have to look at eat when the tests fail, which is when you will need it anyway.
+
 ## Other Goodies
 
 - If you want to do some regression testing, check out [WebdriverCSS], a plugin for WebdriverIO inspired by [PhantomCSS].
@@ -307,6 +364,10 @@ Thanks to [@christian-bromann], the maintainer of WebdriverIO, for reviewing thi
 [saucelabs]:           https://github.com/webdriverio/webdriverio/blob/492c5ee7e5c5a592744b3e417caff26cfbf7b9cf/examples/webdriverio.saucelabs.js
 [browserstack]:        https://github.com/webdriverio/webdriverio/blob/492c5ee7e5c5a592744b3e417caff26cfbf7b9cf/examples/webdriverio.browserstack.js
 [testingbot]:          https://github.com/webdriverio/webdriverio/blob/492c5ee7e5c5a592744b3e417caff26cfbf7b9cf/examples/webdriverio.testingbot.js
+[travis ci]:           https://travis-ci.org/
+[react-travis]:        https://mediocre.com/forum/topics/phantomjs-2-and-travis-ci-we-beat-our-heads-against-a-wall-so-you-dont-have-to
+[cbt]:                 https://crossbrowsertesting.com/
+[sauce labs]:          http://saucelabs.com/
 
 [@niksy]:              https://github.com/niksy
 [@christian-bromann]:  https://github.com/christian-bromann
