@@ -332,7 +332,7 @@ var client = require('webdriverio').remote({
 }).init();
 ```
 
-It will produce a lot of output, but you'll only really have to look at eat when the tests fail, which is when you will need it anyway.
+It will produce a lot of output, but you'll only really have to look at it when the tests fail, which is when you will need it anyway.
 
 ## Other Goodies
 
