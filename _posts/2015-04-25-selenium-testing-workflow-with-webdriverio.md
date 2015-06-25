@@ -203,7 +203,7 @@ A basic fixture we'll be running our tests on:
 
 ## Tests
 
-Now we can start writing our example test at `test/spect/example.js`.
+Now we can start writing our example test at `test/spec/example.js`.
 
 For assertions we can use the built-in `assert` library:
 
