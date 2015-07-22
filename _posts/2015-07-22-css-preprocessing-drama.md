@@ -25,12 +25,13 @@ Because it's an established language, syntax highlighting and dedicated linters 
 
 ## When to Use PostCSS?
 
-Even though you can do **anything** with PostCSS, even [re-implement Sass][precss], I think it's best to use it sparingly—mostly for vendor prefixing, fallbacks and hacks, something that should eventually work in browsers without extra effort, but currently isn't.
+Even though you can do **anything** with PostCSS, even [re-implement Sass][precss], I think it's best to use it sparingly—mostly for vendor prefixing, fallbacks, hacks, linting and analysis.
 
 There are some plugins I would **not** recommend using, especially the ones which:
 
-  * fix your mistakes, linters should be doing that, because your original code will still be wrong
-  * invent new features, because it can make your code less accessible and break syntax highlighting
+  * **fix** your mistakes, instead use a PostCSS linter (like [stylelint]), which point them out to you
+  * invent new unfamiliar features (like [rucksack]), because it can make your code less accessible and break syntax highlighting
+  * can't guarantee that your CSS will work as intended (like [mqpacker])
 
 [Autoprefixer] is a great example where using a PostCSS plugin is a much better idea than using Sass:
 
@@ -50,9 +51,7 @@ As you can see, using a mixin still forces us to remember that there should be s
 
 ### But PostCSS Can't Do Icon Sprites!
 
-Not true. And neither can Sass. Read its [docs][sass-docs] and I'm pretty sure you won't find this feature.
-
-The Ruby part of [Compass] is the one composing the icons. A PostCSS plugin can do that as well (Node.js can modify the file system just fine), but I think this feature might be better suited for a separate library, like [sprity].
+[Not true][sprites]. And neither can Sass. The Ruby part of [Compass] is the one composing the icons. And even if there isn't a PostCSS plugin, there are other ways to do it, e.g. [sprity].
 
 ## cssnext
 
@@ -91,6 +90,10 @@ Sass was designed to help us with some of the shortcomings of CSS, now that thos
 [postcss]: https://github.com/postcss/postcss
 [postcss-plugins]: https://github.com/postcss/postcss#plugins
 [precss]: https://github.com/jonathantneal/precss
+[stylelint]: https://github.com/stylelint/stylelint
+[rucksack]: https://github.com/simplaio/rucksack
+[mqpacker]: https://github.com/hail2u/node-css-mqpacker#known-issues
+[sprites]: https://github.com/2createStudio/postcss-sprites
 [autoprefixer]: https://github.com/postcss/autoprefixer
 [cssnext]: http://cssnext.io/
 [`:has()`]: https://drafts.csswg.org/selectors-4/#relational
