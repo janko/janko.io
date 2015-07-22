@@ -25,7 +25,7 @@ Because it's an established language, syntax highlighting and dedicated linters 
 
 ## When to Use PostCSS?
 
-Even though you can do **anything** with PostCSS, even re-implement Sass, I think it's best to use it sparingly—mostly for vendor prefixing, fallbacks and hacks, something that should eventually work in browsers without extra effort, but currently isn't.
+Even though you can do **anything** with PostCSS, even [re-implement Sass][precss], I think it's best to use it sparingly—mostly for vendor prefixing, fallbacks and hacks, something that should eventually work in browsers without extra effort, but currently isn't.
 
 There are some plugins I would **not** recommend using, especially the ones which:
 
@@ -55,6 +55,8 @@ Not true. And neither can Sass. Read its [docs][sass-docs] and I'm pretty sure y
 The Ruby part of [Compass] is the one composing the icons. A PostCSS plugin can do that as well (Node.js can modify the file system just fine), but I think this feature might be better suited for a separate library, like [sprity].
 
 ## cssnext
+
+It's important to state that cssnext is just a collection of PostCSS plugins, PostCSS never said that it's only about future syntax polyfills.
 
 cssnext is a pretty cool and a very well-executed idea. Even though most of the CSS features I crave for can't be polyfilled, like the [`:has()`] selector, I can still enjoy other future features, like [filters].
 
@@ -88,6 +90,7 @@ Sass was designed to help us with some of the shortcomings of CSS, now that thos
 [sprity]: https://www.npmjs.com/package/sprity
 [postcss]: https://github.com/postcss/postcss
 [postcss-plugins]: https://github.com/postcss/postcss#plugins
+[precss]: https://github.com/jonathantneal/precss
 [autoprefixer]: https://github.com/postcss/autoprefixer
 [cssnext]: http://cssnext.io/
 [`:has()`]: https://drafts.csswg.org/selectors-4/#relational
