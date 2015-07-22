@@ -6,7 +6,10 @@ tags: ruby rails orm
 ---
 
 In Ruby applications it is considered good practice to encapsulate your
-ActiveRecord querying logic. So, instead of this:
+ActiveRecord querying logic. To achieve this, it's natural to use ActiveRecord
+scopes.
+
+So, instead of this:
 
 ```rb
 # app/models/quiz.rb
