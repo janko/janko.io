@@ -5,7 +5,7 @@ author: matija
 tags: css sass postcss polyfill
 ---
 
-Lately there has been some talking on the Twitters about Sass, PostCSS, cssnext etc., even Chris Coyer wrote a [CSS-Tricks post](https://css-tricks.com/the-trouble-with-preprocessing-based-on-future-specs/) about it. I think this is a non-issue, but there's nothing wrong with a little bit of #hotdrama :wink:
+Lately there has been some talking on the Twitters about Sass, PostCSS, cssnext etc., even Chris Coyer wrote a [CSS-Tricks post](https://css-tricks.com/the-trouble-with-preprocessing-based-on-future-specs/) about it. People use PostCSS for [all sorts][postcss-plugins] of stuff, but I'll focus mainly on Chris' post. I think this is a non-issue, but there's nothing wrong with a little bit of #hotdrama :wink:
 
 ## Terminology
 
