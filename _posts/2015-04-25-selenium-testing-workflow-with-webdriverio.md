@@ -3,7 +3,7 @@ layout: post
 title: Selenium testing workflow with WebdriverIO
 author: matija
 tags: node test gulp webdriver selenium mocha
-updated: 27.5.2015.
+updated: 23.7.2015.
 redirect_from: /node-selenium-testing-with-webdriverio/
 ---
 
@@ -18,6 +18,68 @@ For this quick tutorial, I'm going to use:
   - [Mocha] as the testing framework
 
 Let's say we have a `test` directory which contains everything we need --- tests, fixtures and all necessary assets.
+
+<div class="alert">
+{% capture alert %}
+
+**Update**: [gulp-webdriver](https://github.com/webdriverio/gulp-webdriver) is finally released, and it runs the Selenium server and Mocha out-of-the-box! So our `gulpfile.js` can now be as simple as:
+
+```js
+var gulp = require('gulp');
+var browserSync = require('browser-sync');
+var webdriver = require('gulp-webdriver');
+
+gulp.task('serve:test', function (done) {
+  browserSync({
+    logLevel: 'silent',
+    notify: false,
+    open: false,
+    port: 9000,
+    server: {
+      baseDir: ['test']
+    },
+    ui: false
+  }, done);
+});
+
+gulp.task('test', ['serve:test'], function () {
+  return gulp.src('test/spec/**/*.js', {read: false})
+    .pipe(webdriver({
+      desiredCapabilities: {
+        browserName: 'phantomjs'
+      }
+    }))
+    .once('end', function () {
+      browserSync.exit();
+    });
+});
+```
+
+and our `test/spec/example.js` can be reduced to:
+
+```js
+var assert = require('assert');
+
+describe('example', function () {
+  before(function (done) {
+    browser.url('http://localhost:9000/index.html', done);
+  });
+
+  it('tests a feature', function (done) {
+    browser
+      .getTitle(function (err, title) {
+        assert.equal(title, 'Example');
+      })
+      .call(done);
+  });
+});
+```
+
+The client is defined in our `gulpfile.js` and exposed globally as `browser`. Note that WebdriverIO v3 has been released, so you might want to check out the [changelog](http://webdriver.io/guide/getstarted/v3.html).
+
+{% endcapture %}
+{{ alert | markdownify }}
+</div>
 
 ## Tasks
 

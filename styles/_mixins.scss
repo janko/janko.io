@@ -62,9 +62,4 @@
 @mixin bleed {
   margin-left: -1rem;
   margin-right: -1rem;
-
-  @include query(md) {
-    margin-left: 0;
-    margin-right: 0;
-  }
 }
