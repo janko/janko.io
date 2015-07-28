@@ -125,7 +125,7 @@ resulting code is often very unreadable][arel code] (even with [arel-helpers]).
 
 On the other hand, Sequel allows you to write low-level queries using the
 **exact same** query interface you use for models! Instead of going through
-models, You can go through the the `Sequel::Database` object directly, and the
+models, You can go through the `Sequel::Database` object directly, and the
 records will be returned as simple Ruby hashes.
 
 ```rb
