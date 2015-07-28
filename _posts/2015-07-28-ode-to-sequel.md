@@ -43,7 +43,7 @@ While ActiveRecord is one monolithic gem, Sequel utilizes a [plugin system].
 Sequel consists of a relatively thin **core**, which gives you the most common
 behaviour, and you can then choose to add additional functionality via
 **plugins**. Each plugin corresponds to a single file included in the gem, but
-which is required only when the plugins is loaded.
+which is required only when the plugin is loaded.
 
 <img src="/images/sequel-plugin_system.png" alt="Sequel's plugin system" height=250 style="float: right" />
 
