@@ -82,10 +82,10 @@ Movie.where(name: /future/i) # Case insensitive match
 This means that you can simply replace all your ugly LIKE queries with
 beautiful regular expressions!
 
-### Virtual rows
+### Virtual row blocks
 
 Most of Sequel's query methods, in addition to arguments, also support blocks
-(so-called "virtual rows") which gives you a DSL for more advanced queries.
+(so-called "virtual row blocks") which gives you a DSL for more advanced queries.
 
 ```rb
 Movie.where{year >= 2010}                        # inequality operators
@@ -102,12 +102,12 @@ You may be familiar with this syntax if you've ever used the [Squeel] gem. This
 is because Squeel originally borrowed this syntax from Sequel (hence the play of
 characters in the name). But the problem with Squeel is that it's essentially
 an ActiveRecord hack, so it [breaks][squeel1] [with][squeel2] [every][squeel3]
-ActiveRecord update. Virtual rows are a part of Sequel core, so they will
+ActiveRecord update. Virtual row blocks are a part of Sequel core, so they will
 always remain fully stable.
 
 While in ActiveRecord you often have to switch to SQL strings (OR query, LIKE
-query, any non-canonic JOIN etc.), with Sequel's virtual rows you essentially
-**never have to write SQL strings**.
+query, any non-canonic JOIN etc.), with Sequel's virtual row blocks you
+essentially **never have to write SQL strings**.
 
 ### Low-level usage
 
