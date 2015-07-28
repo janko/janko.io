@@ -100,7 +100,10 @@ Movie.order{date.extract(:year)}                 # special methods
 
 You may be familiar with this syntax if you've ever used the [Squeel] gem. This
 is because Squeel originally borrowed this syntax from Sequel (hence the play of
-characters in the name).
+characters in the name). But the problem with Squeel is that it's essentially
+an ActiveRecord hack, so it [breaks][squeel1] [with][squeel2] [every][squeel3]
+ActiveRecord update. Virtual rows are a part of Sequel core, so they will
+always remain fully stable.
 
 While in ActiveRecord you often have to switch to SQL strings (OR query, LIKE
 query, any non-canonic JOIN etc.), with Sequel's virtual rows you essentially
@@ -312,3 +315,6 @@ your database. I urge you to give it a try!
 [pg\_array\_associations]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/PgArrayAssociations.html
 [plugin system]: http://sequel.jeremyevans.net/plugins.html
 [sequel_pg performance]: https://github.com/jeremyevans/sequel_pg#real-world-difference
+[squeel1]: https://github.com/activerecord-hackery/squeel/issues/196
+[squeel2]: https://github.com/activerecord-hackery/squeel/issues/307
+[squeel3]: https://github.com/activerecord-hackery/squeel/pull/354
