@@ -140,9 +140,9 @@ DB[:movies].where(title: "Matrix").first #=> {title: "Matrix", year: 1999, ...}
 # DB[:movies].sql #=> "SELECT * FROM movies"
 ```
 
-This means that with Sequel you can write very readable migrations, [without
-having to redefine your models][redefining models], and have them be
-blazing-fast!
+This means that with Sequel you can write very readable migrations (because you
+don't have to [redefine your models inside migrations][redefining models]), and
+have them be blazing-fast!
 
 ## Model design
 
