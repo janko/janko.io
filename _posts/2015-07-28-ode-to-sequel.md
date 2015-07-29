@@ -285,6 +285,25 @@ implement paging if enabled.
   in a Postgres array column instead
 * and many more...
 
+## Switching from ActiveRecord
+
+Sequel has a very exhaustive guide "[Sequel for ActiveRecord Users]", which is
+aimed at helping ActiveRecord users transition to Sequel. The guide first
+explains how *each* ActiveRecord feature is implemented in Sequel, and mentions
+some Sequel plugins you could use in your transition to make Sequel more
+similar to ActiveRecord. Then it lists how *each and every* ActiveRecord's
+method and option correspond to Sequel. Pretty good, huh?
+
+There is a [sequel-rails] gem which is actively maintained, which helps you keep
+the same development workflow as you had with Rails. It provides:
+
+* Database Rake tasks (for migrations and such)
+* Migration/model generators
+* `Sequel::NoMatchingRow` error is returned as 404 (some other errors are
+  mapped as well)
+* Logging is integrated into Rails logs
+* And more...
+
 ## Conclusion
 
 Even after all of this, I have only scratched the surface of Sequel's amazing
@@ -323,3 +342,5 @@ try!
 [squeel2]: https://github.com/activerecord-hackery/squeel/issues/307
 [squeel3]: https://github.com/activerecord-hackery/squeel/pull/354
 [benchmark]: https://github.com/jeremyevans/simple_orm_benchmark
+[sequel-rails]: https://github.com/TalentBox/sequel-rails
+[sequel for activerecord users]: http://sequel.jeremyevans.net/rdoc/files/doc/active_record_rdoc.html
