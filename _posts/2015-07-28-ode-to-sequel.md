@@ -80,7 +80,10 @@ Movie.where(name: /future/i) # Case insensitive match
 ```
 
 This means that you can simply replace all your ugly LIKE queries with
-beautiful regular expressions!
+beautiful regular expressions! Just note that regex matches are usually slower
+than LIKE queries (in my benchmarks they were twice as slow), so be sure to
+measure in your application how this impacts the performance. If it does, LIKE
+queries are still nicer to write in Sequel (see below).
 
 ### Virtual row blocks
 
@@ -94,8 +97,8 @@ Movie.where{(title =~ "Batman") | (year < 2010)} # OR query
 # WHERE ((title = 'Batman') OR (year < 2010))
 Movie.where{rating >= avg(rating)}               # functions get translated to SQL
 # WHERE (rating >= avg(rating)
-Movie.order{date.extract(:year)}                 # special methods
-# ORDER BY extract(year FROM date)
+Movie.where{title.like("%Future%")}              # special methods
+# WHERE (title LIKE '%FUTURE%')
 ```
 
 You may be familiar with this syntax if you've ever used the [Squeel] gem. This
