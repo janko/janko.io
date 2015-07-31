@@ -1,8 +1,0 @@
-.wf-loading {
-  @include query(sm) {
-    *, *:before, *:after {
-      color: transparent !important;
-      text-shadow: none !important;
-    }
-  }
-}
