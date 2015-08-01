@@ -17,7 +17,7 @@ the advantages of this design?
 
 ## Ability to focus on the backend
 
-We Ruby developers like to have puns with JavaScript, but the truth is, we
+We Ruby developers like to have punts with JavaScript, but the truth is, we
 simply aren't good at writing it. That's because we're so busy with our
 backends, since we have to know so many things:
 
