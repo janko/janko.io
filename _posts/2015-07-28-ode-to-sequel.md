@@ -329,7 +329,7 @@ try!
 [json operators]: http://www.postgresql.org/docs/9.4/static/functions-json.html#FUNCTIONS-JSON-OP-TABLE
 [thoughtbot search]: https://robots.thoughtbot.com/implementing-multi-table-full-text-search-with-postgres
 [materialized views]: http://www.postgresql.org/docs/9.4/static/rules-materializedviews.html
-[materialized post]: http://www.matchingnotes.com/caching-with-postgres-materialized-views.html
+[materialized post]: http://webcache.googleusercontent.com/search?q=cache:8OnCH9RMeocJ:www.matchingnotes.com/caching-with-postgres-materialized-views.html+&cd=1&hl=en&ct=clnk&gl=us
 [find_each]: http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-find_each
 [postgres cursors]: http://www.postgresql.org/docs/9.4/static/plpgsql-cursors.html
 [sequel\_pg]: https://github.com/jeremyevans/sequel_pg
