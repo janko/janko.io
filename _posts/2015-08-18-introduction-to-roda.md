@@ -338,9 +338,11 @@ string that will be written as the response body. For example, a `POST
 ```rb
 require "mail"
 
-route do |r|
-  r.post "contact" do
-    Mail.deliver { ... }
+class App < Roda
+  route do |r|
+    r.post "contact" do
+      Mail.deliver { ... }
+    end
   end
 end
 ```
