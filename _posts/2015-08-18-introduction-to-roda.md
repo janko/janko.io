@@ -3,6 +3,7 @@ layout: post
 title: Introduction to Roda
 author: janko
 tags: ruby framework rails roda web
+updated: 19.8.2015.
 ---
 
 When I decided that I want to move away from Rails, I have investigated
@@ -10,9 +11,10 @@ and experimented with a lot of other Ruby web frameworks (Sinatra, Grape and
 Lotus), but this one really stood out in every regard, and it became my
 framework of choice. That's why I want to show it to you.
 
-[Roda] is a web framework built on top of Rack, that started as a fork of
-[Cuba] and was inspired by [Sinatra]. The following is the simplest app you can
-make in Roda, which returns "Hello world!" for every request:
+[Roda] is a web framework built on top of Rack, created by Jeremy Evans, that
+started as a fork of [Cuba] and was inspired by [Sinatra]. The following is the
+simplest app you can make in Roda, which returns "Hello world!" for every
+request:
 
 ```rb
 # config.ru
