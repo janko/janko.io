@@ -99,17 +99,16 @@ end
 ```
 
 Since all of these 3 "/albums/:id" routes have to first find the album, we can
-do assign the album as soon as we know that the path is going to be
-"albums/:id", which we can then reference anywhere down that branch. We can
-also require login for any "/albums\*" requests. In other web frameworks you
-would solve this with before filters in order to avoid duplication, but that
-splits code that should be together into different lexical scopes, making it
-harder to follow. With Roda you can write DRY code in a very readable way.
+assign the album as soon as we know that the path is going to be "albums/:id",
+and then we reference it anywhere down that branch. We can also require login
+for any "/albums\*" requests. In other web frameworks you would solve this with
+before filters in order to avoid duplication, but that splits code that should
+be together into different lexical scopes, making it harder to follow. With
+Roda you can write DRY code in a very readable way.
 
-You may not see it yet, but this opens a whole new world of routing
-possibilities. From other web frameworks we are used to routing only by the
-request path and method. But why not also route by request *headers* or
-*parameters*?
+This is a new concept, and it opens a whole new world of routing possibilities.
+From other web frameworks we are used to routing only by the request path and
+method. But why not also route by request *headers* or *parameters*?
 
 ```rb
 class App < Roda
@@ -358,7 +357,7 @@ that you handled the request.
 
 ## Conclusion
 
-I'm really amazed by Roda's design, how carefully that framework was thought
+I'm really amazed by Roda's design, how carefully the framework was thought
 through, and the arsenal of its features (I only covered 1/10 of Roda's
 plugins). I love the completely new approach to routing with the routing tree,
 I think this power becomes more and more useful as the application grows in
