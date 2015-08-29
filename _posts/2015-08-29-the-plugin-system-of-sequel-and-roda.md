@@ -45,13 +45,13 @@ a "**plugin system**".
 
 ## The plugin system
 
-The plugin system of Sequel and Roda is a gem design pattern; it was first
-invented in Sequel, and later the idea was reused in Roda. This pattern is
-generally unkown in the Ruby community, I studied it while using Sequel and
-Roda, and was amazed by how powerful it is. I want to give you a deep dive into
-it and show you exactly how it works and why it is awesome. This is not one of
-those dives for purely educational purposes, this is a very practical and
-generic pattern which you can use in your next gem.
+The plugin system of Sequel and Roda is a pattern for designing gems; it was
+first invented in Sequel, and later the idea was reused in Roda. This pattern
+is generally unkown in the Ruby community, I studied it when I switched to
+Sequel and Roda, and was amazed by how powerful it is. I want to give you a
+deep dive into it and show you exactly how it works and why it is awesome. This
+is not one of those dives for purely educational purposes, I want to teach you
+a very practical and generic pattern which you can use in your next gem.
 
 Since Sequel and Roda have a very similar plugin system, it's enough to
 demonstrate one of them, so we'll choose Roda. I think the best way to show you
@@ -69,18 +69,18 @@ end
 ```
 
 (If it's eating you up inside why isn't it `Roda::Request` and
-`Roda::Response`, [see the reasoning])
+`Roda::Response`, [see the reasoning].)
 
 ### A plugin
 
-We want to design a plugin system where "plugins" can extend and override
-Roda's behaviour. Since a gem's behaviour is entirely defined by it's methods
-and classes, our "plugins" simply need to be able to override instance and
-class methods for each class in Roda.
+We want to design a plugin system where a "plugin" can extend/override any part
+of Roda's functionality. Since a gem's functionality is defined entirely by
+it's methods and classes, our "plugins" simply need to be able to override
+instance and class methods for each class in Roda.
 
 Let's define what exactly a "plugin" will be. Since we want a "plugin" to be an
-individual, isolated unit of behaviour, it makes sense to package it as Ruby
-module.
+individual, isolated unit of behaviour, it makes sense to package it as a
+simple Ruby module.
 
 We can now define a `Roda.plugin` method, which applies a given plugin:
 
@@ -102,9 +102,9 @@ end
 Roda.plugin MyPlugin
 ```
 
-This is a pretty direct and straightforward implementation of what we'd
-discussed just now. Now if we want a plugin to override a certain Roda class,
-we simply need to define a module inside it with the appropriate name (remember
+This is a pretty direct and straightforward implementation of what we've
+discussed just now. If we want a plugin to override a certain Roda class, we
+simply need to define a module inside it with the appropriate name (remember
 that `plugin` is a Ruby module, so `plugin::` simply references a constant
 inside that module). As you see, this is why it's an important design decision
 to limit yourself to only a few core classes, because now they can all be
@@ -267,20 +267,21 @@ Roda.instance_method(:render).owner           # Roda::RodaPlugins::Render::Insta
 Roda.instance_method(:render).source_location # ~/.rbenv/.../roda/plugins/render.rb:213
 ```
 
-This design pattern allows us to approach gem design from a new perspective.
-With the standard design it can happen that one part of the method/class belongs
-to one feature, and the other to another feature. Also, your gem can quickly
-start to grow out of proportions, which you may then try to solve with
-autoloading, and that really sucks. On the other hand, the plugin system
-motivates you to identify the essential functionality of your gem, and allows
-you to build your gem by adding features which are logically and physically
-separated from each other, producing nice and readable modular design.
+This design pattern motivates you to identify the essential functionality of
+your gem, and divide your gem into **features** which are logically and
+physically separated from each other (rendering, caching, assets, flash,
+websockets etc.), producing nice and readable modular design.
+
+I did see a somewhat similar pattern in gems like [CarrierWave], where the
+functionality is stacked with module inclusion. But these modules aren't
+clearly divided into features, and even if they were, you cannot decide which
+ones to pick (they're all included).
 
 ## Conclusion
 
-By designing your gem using the plugin system pattern, you give your users all
-the simplicity they want, and at the same time all the features they want. If
-you start working on your next big gem, consider using this pattern, it can
+By designing your gem using this "plugin system" pattern, you give your users
+all the simplicity they want, and at the same time all the features they want.
+If you start working on your next big gem, consider using this pattern, it can
 really improve the quality of your design.
 
 ## Related reading
@@ -295,3 +296,4 @@ really improve the quality of your design.
 [roda]: https://github.com/jeremyevans/roda
 [previous post]: http://twin.github.io/introduction-to-roda/
 [see the reasoning]: http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Pollution
+[carrierwave]: https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/uploader.rb
