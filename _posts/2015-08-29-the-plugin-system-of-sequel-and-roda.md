@@ -68,6 +68,9 @@ class Roda                                    # 1: Roda
 end
 ```
 
+(If it's eating you up inside why isn't it `Roda::Request` and
+`Roda::Response`, [see the reasoning])
+
 ### A plugin
 
 We want to design a plugin system where "plugins" can extend and override
@@ -291,3 +294,4 @@ really improve the quality of your design.
 [sequel]: https://github.com/jeremyevans/sequel
 [roda]: https://github.com/jeremyevans/roda
 [previous post]: http://twin.github.io/introduction-to-roda/
+[see the reasoning]: http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Pollution
