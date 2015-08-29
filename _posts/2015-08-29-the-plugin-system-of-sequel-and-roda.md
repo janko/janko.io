@@ -220,7 +220,7 @@ how much of that you want to require.
 ### Configuration
 
 Finally, it would be nice if the plugins were configurable, and that they
-are able to load any other plugins they potentially depend on:
+are able to load any other plugins they might potentially depend on:
 
 ```rb
 class Roda
@@ -238,10 +238,10 @@ class Roda
 end
 ```
 
-We load dependency plugins before we include/extend the modules, because the
-plugin will potentially want to override its dependency plugins. We also
-provide a configuration method, where the plugin can accept additional options
-for its functionality.
+We load dependency plugins before we include/extend the modules, so that the
+plugin is able to later override those dependency plugins. We also provide a
+configuration method, where the plugin can accept additional options for its
+functionality.
 
 The above is roughly how `Roda.plugin` actually looks like, with the addition
 of handling `Roda` subclassing and freezing for thread-safety.
@@ -249,11 +249,11 @@ of handling `Roda` subclassing and freezing for thread-safety.
 ## Overview
 
 Let's see again what we gain with the plugin system pattern. We are able to
-give the gem a very small core providing only the essentials, but still provide
+give the gem a very small core providing only the essentials, but still give
 the ability to load additional features via plugins (which will only be
-`require`d if the user needs them).
+required if the user needs them).
 
-These plugins allow us to override any part of Roda and also other plugins,
+These plugins allow us to override any part of Roda as well as other plugins,
 which gives us maximum flexibility. Since all methods come from module
 inclusion, they are nicely introspectable:
 
@@ -264,14 +264,14 @@ Roda.instance_method(:render).owner           # Roda::RodaPlugins::Render::Insta
 Roda.instance_method(:render).source_location # ~/.rbenv/.../roda/plugins/render.rb:213
 ```
 
-This design pattern allows us to approach gem design in a new way. With the
-standard design it happens that one part of the method/class belongs to one
-feature, and the other to another feature. Also, your gem can quickly start to
-grow out of proportions, which you may then try to solve with autoloading, which
-sucks. The plugin system motivates you to identify the essential functionality
-of your gem, and allows you to build your gem by adding features which are and
-logically and physically separated from each other, producing nice and readable
-modular design.
+This design pattern allows us to approach gem design from a new perspective.
+With the standard design it can happen that one part of the method/class belongs
+to one feature, and the other to another feature. Also, your gem can quickly
+start to grow out of proportions, which you may then try to solve with
+autoloading, and that really sucks. On the other hand, the plugin system
+motivates you to identify the essential functionality of your gem, and allows
+you to build your gem by adding features which are logically and physically
+separated from each other, producing nice and readable modular design.
 
 ## Conclusion
 
