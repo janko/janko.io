@@ -148,13 +148,18 @@ end
 
 This is because plugins use module inclusion, which cannot override direct
 method definitions, because included modules follow the same rules as
-superclasses. As for [`Module#prepend`], it would work for `Roda`, but not for
-`RodaRequest` and `RodaResponse`, because it wouldn't be possible to override
-behaviour inherited from `Rack::Request` and `Rack::Response`.
+superclasses.
 
-We previously established that plugins can already override each other. What if
-we then make the core functionality *itself* a plugin (a "base" plugin), which
-automatically gets applied when Roda is required?
+If you thought about [`Module#prepend`], it would work (thanks @jrochkind for
+the [correction]), but it would bump Roda's required Ruby version to 2.0 or
+higher. And also, there is no equivalent for `Module#extend`, so we would have
+to call `singleton_class.prepend MyPlugin::ClassMethods`, which isn't
+pretty.
+
+There is a more elegant solution. We previously established that plugins can
+already override each other. What if we then make the core functionality
+*itself* a plugin (a "base" plugin), which automatically gets applied when Roda
+is required?
 
 ```rb
 class Roda
@@ -331,3 +336,4 @@ want. If you start working on your next big gem, consider using this pattern.
 [found huge amounts of missing requires in ActiveSupport]: https://github.com/rails/rails/commit/f28bd9557c669cd63c31704202a46dd83f0a4102
 [`Module#prepend`]: http://dev.af83.com/2012/10/19/ruby-2-0-module-prepend.html
 [200 LOC]: https://github.com/janko-m/as-duration
+[correction]:  http://twin.github.io/the-plugin-system-of-sequel-and-roda/#comment-2227674746
