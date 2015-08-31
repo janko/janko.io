@@ -306,8 +306,8 @@ think that your gem will likely grow (e.g. an "uploader" gem), then using this
 pattern can really improve the quality of the gem's design.
 
 One alternative to this pattern is providing the ability to simply "require"
-additional features of a gem. While this probably can work, ActiveSupport is an
-example where this idea really failed:
+additional features of a gem. There is maybe a possibility that this could
+work, but ActiveSupport is an example where this idea really failed:
 
 1. **Some files forgot to require all their dependencies** – This oversight is
    understandable, since it's impossible to test this if you run your tests in
