@@ -148,9 +148,9 @@ end
 
 This is because plugins use module inclusion, which cannot override direct
 method definitions, because included modules follow the same rules as
-superclasses. [`Module#prepend`] wouldn't work for `RodaRequest` and
-`RodaResponse`, because then it wouldn't be possible override behaviour
-inherited from `Rack::Request` and `Rack::Response`.
+superclasses. As for [`Module#prepend`], it would work for `Roda`, but not for
+`RodaRequest` and `RodaResponse`, because it wouldn't be possible to override
+behaviour inherited from `Rack::Request` and `Rack::Response`.
 
 We previously established that plugins can already override each other. What if
 we then make the core functionality *itself* a plugin (a "base" plugin), which
