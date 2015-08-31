@@ -3,6 +3,7 @@ layout: post
 title: The plugin system of Sequel and Roda
 author: janko
 tags: ruby framework orm roda sequel web plugins design
+updated: 31.8.2015.
 ---
 
 When developing gems, often one of the difficult problems to solve is creating
@@ -133,8 +134,8 @@ First notice that our plugins can already override each other's behaviour
 for achieving complete extensibility is to allow plugins to also override
 Roda's core behaviour, the one Roda has without loading any plugins.
 
-Firstly, if this core behaviour is defined directly on core classes, it is not
-possible for a plugin to override it:
+The problem is that, if this core behaviour is defined directly on core
+classes, it is not possible for a plugin to override it:
 
 ```rb
 class Roda
@@ -149,26 +150,9 @@ This is because plugins use module inclusion, which cannot override direct
 method definitions, because included modules follow the same rules as
 superclasses.
 
-Secondly, it might be tempting to call `super` inside of `Roda.route`, which
-would call any `.route` method that plugins could have redefined. But this is
-wrong for 3 reasons: **a)** we would have to call `super` in every method we
-define in the core, **b)** `super` will fail if no plugin has overriden that
-method, so we would have to handle that case, and **c)** we actually want it
-the other way around, we want *plugins* to be able to call `super` when
-overriding behaviour.
-
-Thirdly, you might think: "Hey, this is a perfect use case for
-[`Module#prepend`]!". This idea *almost* works, but it doesn't for 2 reasons:
-**a)** plugins wouldn't be able to override methods inherited from subclassed
-`Rack::Request` and `Rack::Response`, because of where `Module#prepend`
-positions the module, and **b)** there isn't an equivalent for `Module#extend`,
-so then you would have to use `Roda.singleton_class.prepend ClassMethods`,
-which isn't pretty.
-
-There is a much simpler solution. We previously established that plugins can
-already override each other. What if we then make the core functionality
-*itself* a plugin (a "base" plugin), which automatically gets applied when Roda
-is required?
+We previously established that plugins can already override each other. What if
+we then make the core functionality *itself* a plugin (a "base" plugin), which
+automatically gets applied when Roda is required?
 
 ```rb
 class Roda
@@ -342,6 +326,5 @@ want. If you start working on your next big gem, consider using this pattern.
 [carrierwave]: https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/uploader.rb
 [minitest]: https://github.com/seattlerb/minitest#writing-extensions
 [rubygems]: http://guides.rubygems.org/plugins/
-[`Module#prepend`]: http://dev.af83.com/2012/10/19/ruby-2-0-module-prepend.html
 [found huge amounts of missing requires in ActiveSupport]: https://github.com/rails/rails/commit/f28bd9557c669cd63c31704202a46dd83f0a4102
 [200 LOC]: https://github.com/janko-m/as-duration
