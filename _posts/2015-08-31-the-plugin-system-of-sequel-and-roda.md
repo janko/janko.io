@@ -297,7 +297,7 @@ focused, obviously there is no need to introduce this pattern. However, if you
 think that your gem will likely grow (e.g. an "uploader" gem), then using this
 pattern can really improve the quality of the gem's design.
 
-One alternative to this pattern is providing the ability to simply "require"
+One alternative to this pattern is providing the ability to simply `require`
 additional features of a gem. There is maybe a possibility that this could
 work, but ActiveSupport is an example where this idea really failed:
 
