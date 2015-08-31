@@ -14,13 +14,15 @@ code {
 
 a {
   code {
-    border-color: rgba($color-primary-light, .25);
+    border-color: rgba($color-primary-light, .5);
+    color: $color-primary-light;
   }
 
   &:hover,
   &:focus {
     code {
-      border-color: rgba($color-primary-light, .5);
+      border-color: $color-primary-light;
+      color: $color-primary-dark;
     }
   }
 }
