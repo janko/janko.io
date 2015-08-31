@@ -58,7 +58,7 @@ reused this plugin system. I found about this plugin system after switching to
 the Roda/Sequel stack, and I want to give you a deep dive into it to show you
 exactly how it works and why it is awesome. Note that this is not one of those
 dives for purely educational purposes, I want to teach you a very practical and
-generic pattern which you can use in your next gem.
+generic design pattern which you can use in your next gem.
 
 Since Sequel and Roda have a very similar plugin system, it's enough to
 demonstrate one of them, so we'll choose Roda. Roda is a web framework that
@@ -297,6 +297,29 @@ where the functionality is also stacked with module inclusion. But these
 modules aren't clearly divided into features, and even if they were, you cannot
 decide which ones to pick (they're all included).
 
+### Standard gem design
+
+Finally, I want to briefly mention when the "plugin system" design pattern can
+work better than standard gem design. If you know your gem will be small and
+focused, obviously there is no need to introduce this pattern. However, if you
+think that your gem will likely grow (e.g. an "uploader" gem), then using this
+pattern can really improve the quality of the gem's design.
+
+One alternative to this pattern is providing the ability to simply "require"
+additional features of a gem. While this probably can work, ActiveSupport is an
+example where this idea really failed:
+
+1. **Some files forgot to require all their dependencies** – This oversight is
+   understandable, since it's impossible to test this if you run your tests in
+   the same processs. Jose Valim wrote an isolated test runner for Rails, and
+   [found huge amounts of missing requires in ActiveSupport].
+2. **Some features are not clearly divided** – I once wanted to require
+   the `1.day.ago` helpers in my non-Rails project, and it took me a lot of
+   source code diving to figure out how (and now I forgot again how to do it).
+3. **Some features are entangled with dependencies** – Once you figure out how
+   to require the `1.day.ago` helpers, it turnes out you have to require 5000
+   LOC, even though the feature itself only has [200 LOC].
+
 ## Conclusion
 
 By designing your gem using this "plugin system" pattern, you can give your
@@ -319,3 +342,5 @@ want. If you start working on your next big gem, consider using this pattern.
 [minitest]: https://github.com/seattlerb/minitest#writing-extensions
 [rubygems]: http://guides.rubygems.org/plugins/
 [`Module#prepend`]: http://dev.af83.com/2012/10/19/ruby-2-0-module-prepend.html
+[found huge amounts of missing requires in ActiveSupport]: https://github.com/rails/rails/commit/f28bd9557c669cd63c31704202a46dd83f0a4102
+[200 LOC]: https://github.com/janko-m/as-duration
