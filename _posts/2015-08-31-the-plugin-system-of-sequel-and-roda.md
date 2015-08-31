@@ -187,9 +187,10 @@ class Roda
 end
 ```
 
-This is roughly how Roda is implemented. All of Roda's behaviour is contained
-in the "Base" plugin (*even* the `Roda.plugin` method), which gives plugins the
-ability to override *any* part of Roda.
+Now all plugins can override the core behaviour ("Base"), because it's a plugin
+like any other. This is roughly how Roda is implemented. All of Roda's
+behaviour is contained in the "Base" plugin (*even* the `Roda.plugin` method),
+which gives plugins the ability to override *any* part of Roda.
 
 ### Requiring
 
