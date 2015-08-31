@@ -317,7 +317,7 @@ work, but ActiveSupport is an example where this idea really failed:
    the `1.day.ago` helpers in my non-Rails project, and it took me a lot of
    source code diving to figure out how (and now I forgot again how to do it).
 3. **Some features are entangled with dependencies** – Once you figure out how
-   to require the `1.day.ago` helpers, it turnes out you have to require 5000
+   to require the `1.day.ago` helpers, it turns out you have to require 5000
    LOC, even though the feature itself only has [200 LOC].
 
 ## Conclusion
