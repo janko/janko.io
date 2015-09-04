@@ -1,10 +1,5 @@
 .brand {
   &-tagline {
-    display: none;
     margin-bottom: 0;
-
-    @include query(sm) {
-      display: block;
-    }
   }
 }
