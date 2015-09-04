@@ -10,6 +10,7 @@ code,
 code {
   display: inline-block;
   padding: 0 .25em;
+  text-transform: none; // resetting in case the parent is uppercase
 }
 
 a {
