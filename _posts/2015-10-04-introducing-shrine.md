@@ -90,7 +90,7 @@ end
 
 Shrine cares a lot about performance. For example, it allows you to minimize
 file copying by moving files instead, which is useful when dealing with larger
-files, and also means that no temporary files will be left behing.
+files, and also means that no temporary files will be left behind.
 
 Shrine also comes with a `parallelize` plugin, which uploads and deletes files
 in parallel. This is used when you have multiple versions of your files.
@@ -206,10 +206,10 @@ changed, and if it did it doesn't do the replacement.
 
 ## Conclusion
 
-Shrine ships with a lot of other plugins that I haven't managed to
-cover here, but I encourage you to check them out. I spent a lot of time
-studying other solutions and their open issues, and hopefully I managed to
-build the next level of file uploads.
+Shrine ships with a lot of other plugins that I haven't managed to cover here,
+but I encourage you to check them out. I spent a lot of time studying other
+solutions and their open issues, and hopefully Shrine is the next level of file
+uploads.
 
 [Shrine]: https://github.com/janko-m/shrine
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
