@@ -8,7 +8,8 @@ tags: ruby web file upload
 I'm really excited about this. I've just released [Shrine], a new solution for
 handling file uploads in Ruby applications. It was heavily inspired by Refile,
 most notably its idea of backends. However, unlike Refile, it is designed
-primarily for upfront processing (as opposed to on-the-fly).
+primarily for upfront processing (as opposed to on-the-fly). It's also inspired
+by CarrierWave's idea of uploaders.
 
 ## Flexibility
 
