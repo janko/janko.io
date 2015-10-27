@@ -32,7 +32,7 @@ end
 ```
 ```rb
 class User < Sequel::Model
-  include ImageUploader[:avatar]
+  include ImageUploader[:avatar] # creates and includes an attachment module
 end
 ```
 ```rb
@@ -54,10 +54,8 @@ class ImageUploader < Shrine
   plugin :versions, names: [:small, :medium, :large]
 
   def process(io, context)
-    return if context[:record].guest?
-
-    case context[:phase]
-    when :store
+    return if context[:record].guest? # we have access to the record
+    if context[:phase] == :store
       size_800 = io.download                         #
       size_500 = resize_to_limit(size_800, 500, 500) # instances of Tempfile
       size_300 = resize_to_limit(size_500, 300, 300) #
@@ -72,7 +70,7 @@ This method gets called whenever a file is uploaded, so you can just use regular
 Ruby to specify exactly how and when processing is done. You can also choose
 to do some processing on caching as well.
 
-Validations are used in a similar fashion:
+Validations are done in a similar fashion:
 
 ```rb
 class ImageUploader < Shrine
@@ -82,6 +80,7 @@ class ImageUploader < Shrine
     # Evaluated inside an instance of Shrine::Attacher.
     unless record.admin?
       validate_max_size 2*1024*1024, message: "is too large (max is 2 MB)"
+      validate_mime_type_inclusion ["image/jpg", "image/png", "image/gif"]
     end
   end
 end
@@ -91,8 +90,10 @@ end
 
 Shrine cares a lot about performance. For example, it allows you to minimize
 file copying by moving files instead, which is useful when dealing with larger
-files, and also means that no temporary files will be left behing. Shrine also
-comes with a `parallelize` plugin, which uploads and deletes files in parallel.
+files, and also means that no temporary files will be left behing.
+
+Shrine also comes with a `parallelize` plugin, which uploads and deletes files
+in parallel. This is used when you have multiple versions of your files.
 
 ### Background jobs
 
@@ -135,12 +136,18 @@ write your own job classes, but as you can see, Shrine makes the implementation
 very simple. In this example I used Sidekiq, but obviously you can just as well
 use any other backgrounding library.
 
-The end user exprience was the main factor in Shrine's design. Before the file
-is moved to store, the record is first saved with the cached version of the
-file. This means that, while the file is being processed and stored in the
+The end user exprience was the main guidance in Shrine's design. Before the
+file is moved to store, the record is first saved with the cached version of
+the file. This means that, while the file is being processed and stored in the
 background, the end user will immediately see the image they uploaded, because
-the URL will point to the cached version. So from the user's perspective, the
-file upload is already finished.
+the URL will point to the cached version. So from the user's perspective, at
+this moment the file upload is finished!
+
+```rb
+user.avatar.url #=> "/uploads/dso3432kdw032.jpg"
+# ... Background job is done storing ...
+user.avatar.url #=> "https://s3-sa-east-1.amazonaws.com/my-bucket/0943sf8gfk13.jpg"
+```
 
 When the background job finishes, the record will be updated with the stored
 version, but the user won't notice that the URL has changed, because they
@@ -151,7 +158,7 @@ completely unaware of the internal complexity.
 
 Like Refile, Shrine also supports direct uploads. This means you can cache
 files using AJAX, before the form is submitted. This generally provides the best
-user experience, because the UI isn't blocked, and the  user knows how much
+user experience, because the UI isn't blocked, and the user knows how much
 they have to wait (assuming you give them a progress bar). The endpoint for
 direct uploads is provided by the `direct_upload` plugin.
 
@@ -191,18 +198,18 @@ validation, which is a huge security flaw since it allows attackers to easily
 DoS your application by uploading large images ([#1320]).
 
 Shrine also implements `background_helpers` in a very safe way. For example, it
-could potentially happen that the user changes the attachment before it's
-finished processing and storing. In this situation a naive implementation would
-replace a new file with an old stored one, but Shrine, once it's done with
-processing and storing, checks if the attachment has changed, and if it did it
-doesn't do the replacement.
+could potentially happen that the user changes the attachment before the
+background job is finished processing and storing. In this situation a naive
+implementation would replace a new file with an old stored one, but Shrine,
+once it's done with processing and storing, checks if the attachment has
+changed, and if it did it doesn't do the replacement.
 
 ## Conclusion
 
-I felt like file uploads haven't been solved yet in Ruby, and I wanted to
-change that. Shrine ships with a lot of other plugins that I haven't managed to
-cover here, but I encourage you to check them out. Shrine will definitely help
-me write better file uploads, I hope it will for you too.
+Shrine ships with a lot of other plugins that I haven't managed to
+cover here, but I encourage you to check them out. I spent a lot of time
+studying other solutions and their open issues, and hopefully I managed to
+build the next level of file uploads.
 
 [Shrine]: https://github.com/janko-m/shrine
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
