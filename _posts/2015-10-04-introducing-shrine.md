@@ -87,6 +87,11 @@ class ImageUploader < Shrine
 end
 ```
 
+Also, while CarrierWave depends on activemodel and mime-types (which is 9
+dependencies in total), and Refile on rest-client, sinatra and mime-types
+(which is 12 dependencies in total), Shrine only has 1 small dependency for
+downloading files.
+
 ## Performance
 
 Shrine cares a lot about performance. For example, it allows you to minimize
