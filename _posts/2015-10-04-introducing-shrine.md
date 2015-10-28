@@ -87,10 +87,9 @@ class ImageUploader < Shrine
 end
 ```
 
-Also, while CarrierWave depends on activemodel and mime-types (which is 9
-dependencies in total), and Refile on rest-client, sinatra and mime-types
-(which is 12 dependencies in total), Shrine only has 1 small dependency for
-downloading files.
+Another difference from other gems is number of obligatory dependencies.  While
+CarrierWave, Refile and Paperlip have 9-12 depedencies in total, Shrine by
+default has only 1 small dependency for downloading files.
 
 ## Performance
 
