@@ -212,7 +212,7 @@ changed, and if it did it doesn't do the replacement.
 
 ## Conclusion
 
-Shrine ships with a lot of other plugins that I haven't managed to cover here,
+Shrine ships with [a lot of other plugins] that I haven't managed to cover here,
 but I encourage you to check them out. I spent a lot of time studying other
 solutions and their open issues, and hopefully Shrine is the next level of file
 uploads.
@@ -222,6 +222,7 @@ uploads.
 [Roda]: https://github.com/jeremyevans/roda
 [Sequel]: https://github.com/jeremyevans/sequel
 [over 25 plugins]: http://shrinerb.com#plugins
+[a lot of other plugins]: http://shrinerb.com#plugins
 [carrierwave_backgrounder]: https://github.com/lardawge/carrierwave_backgrounder
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [example app]: https://github.com/janko-m/shrine-example
