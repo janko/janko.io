@@ -214,8 +214,8 @@ changed, and if it did it doesn't do the replacement.
 
 Shrine ships with [a lot of other plugins] that I haven't managed to cover here,
 but I encourage you to check them out. I spent a lot of time studying other
-solutions and their open issues, and hopefully Shrine is the next level of file
-uploads.
+solutions and their open issues, and hopefully I succeeded in making Shrine the
+next level of file uploads.
 
 [Shrine]: https://github.com/janko-m/shrine
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
