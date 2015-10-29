@@ -28,7 +28,7 @@ you to build an uploading flow that suits your needs.
 class ImageUploader < Shrine
   plugin :sequel
   plugin :pretty_location
-  plugin :remote_url, max_size: 5*1024*1024
+  plugin :logging, format: :json
 end
 ```
 ```rb
