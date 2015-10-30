@@ -20,7 +20,7 @@ features come as plugins which can be loaded when needed. Shrine ships with
 
 This design makes Shrine extremely versatile. File uploads are very delicate,
 and need to be handled differently depending on what types of files are being
-uploaded, whether there is processing or not, what storages are used etc.
+uploaded, whether there is processing or not, what storage is used etc.
 Instead of having an opinion on how you want to do your upload, Shrine allows
 you to build an uploading flow that suits your needs.
 
