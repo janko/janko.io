@@ -51,10 +51,16 @@ Deleting:
 2. Deleting the file(s) is kicked into a background job
 3. Record is deleted instantaneously
 
-Utilizing this asynchronicity is crucial for good user experience and
+Even though caching of the file via AJAX still takes the same time as if it was
+done synchronously on form submit, users are now much happier since their UI
+isn't blocked, allowing them to do other things until the upload finishes. In
+the meanwhile they ideally see a nice progress bar letting them know when the
+upload will finish.
+
+Utilizing this asynchronous workflow is crucial for good user experience and
 maintaining your application's throughput. In the continuation of this post I
-want take a look at existing file upload libraries, and analyze their
-abilities for asynchronicity, having the following criteria in mind:
+want take a look at existing file upload libraries and analyze their abilities
+for asynchronicity, having the following criteria in mind:
 
 * **Direct upload** -- Is it possible to implement direct (AJAX) uploads?
 * **Storing** -- Can storing be put into a background job?
