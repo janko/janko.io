@@ -264,6 +264,10 @@ class DeleteJob
 end
 ```
 
+The `UploadJob` is triggered when the file is "promoted" (moved from cache to
+store), while the `DeleteJob` is triggered when: **a)** record is destroyed, **b)**
+attachment is removed, or **c)** attachment is replaced.
+
 At first glance it might seem that the setup is more complicated than in other
 solutions. However, if you observe *what* code you are required to write,
 you'll notice it's actually quite minimal. The only thing Shrine requires from
