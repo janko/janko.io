@@ -229,8 +229,8 @@ Refile doesn't have support for storing in background, for the same reasons as
 Dragonfly, because it does on-the-fly processing. If you're using S3 for both
 cache and store, Refile will store the cached file by issuing an S3 COPY command
 (instead of reuploading the file). This is fast, but you're still making an
-HTTP request inside a transaction. There is currently an open issue on Refile
-for adding backgrounding, but it in my opinion it would require a rewrite.
+HTTP request inside a transaction. There is currently an [open issue on Refile
+for adding backgrounding], but it in my opinion it would require a rewrite.
 
 ### Shrine
 
@@ -311,3 +311,4 @@ implementation is robust and transparent.
 [Refile]: https://github.com/refile/refile
 [4 attachment columns]: https://github.com/thoughtbot/paperclip/blob/bd016009dbf74fc8f999e78a68c9e5869eb0dd6a/README.md#usage
 [breaking CarrierWave's ability to remove attachments]: https://github.com/lardawge/carrierwave_backgrounder/pull/169
+[open issue on Refile for adding backgrounding]: https://github.com/refile/refile/issues/167
