@@ -19,7 +19,7 @@ application's throughput is reduced.
 
 Even if through some miracle you only have to deal with plaintext files, you
 will likely still start experiencing these problems when your user traffic
-increases. Synchronous uploads was acceptable in early ages of web, but today
+increases. Synchronous uploads were acceptable in early ages of web, but today
 we're better than that.
 
 ## Theory
