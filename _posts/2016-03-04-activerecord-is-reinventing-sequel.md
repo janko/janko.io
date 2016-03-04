@@ -350,8 +350,8 @@ popular is because it's part of Rails, not because it's better. There is a
 reason why [hanami-model] and [ROM] use Sequel under-the-hood and not
 ActiveRecord. It hurts me that so many developer hours are put into
 ActiveRecord, and I don't see for what purpose; a better tool already exists
-and is excellently maintainted. Let's direct our energy towards these better
-tools.
+and is excellently maintainted. Let's direct our energy towards the better
+tool.
 
 [Sequel]: http://github.com/jeremyevans/sequel
 [Active Record pattern]: http://www.martinfowler.com/eaaCatalog/activeRecord.html
