@@ -7,7 +7,8 @@ tags: ruby web rails framework orm activerecord sequel
 
 For those who don't know, [Sequel] is an ORM very similar to ActiveRecord, in a
 way that it also implements the [Active Record pattern]. As of this writing
-it's 9 years old. I've already written about why [Sequel is awesome].
+it's 9 years old. I've already [written](http://twin.github.io/ode-to-sequel/)
+about some of the main advantages of Sequel over ActiveRecord.
 
 I'm using Sequel for over a year now, and am finding it to be consistently
 better than ActiveRecord. But that's just my opinion, right? You can't really
@@ -353,7 +354,6 @@ and is excellently maintainted. Let's direct our energy towards these better
 tools.
 
 [Sequel]: http://github.com/jeremyevans/sequel
-[Sequel is awesome]: http://twin.github.io/ode-to-sequel/
 [Active Record pattern]: http://www.martinfowler.com/eaaCatalog/activeRecord.html
 [Adequate Record]: https://tenderlovemaking.com/2014/02/19/adequaterecord-pro-like-activerecord.html
 [ORM benchmark]: https://github.com/jeremyevans/simple_orm_benchmark
