@@ -272,13 +272,9 @@ ActiveRecord 3.2 added `ActiveRecord::Relation#pluck` in 2011
 ([commit](https://github.com/rails/rails/commit/a382d60f6abc94b6a965525872f858e48abc00de)),
 and added support for multiple columns in 2012 ([commit](https://github.com/rails/rails/commit/2e379c1e63b3646f9aff4d7e242ca37b4a57f529)).
 
-Sequel's equivalent `Sequel::Dataset#map` existed since 2007
-([code](https://github.com/jeremyevans/sequel/blob/305b965a2790675bc920f8d2d1a3bc194e366af4/core/lib/sequel/dataset/convenience.rb#L86)),
+Sequel's equivalent `Sequel::Dataset#select_map` existed since 2009
+([commit](https://github.com/jeremyevans/sequel/commit/ee3445294f5a83fdc02d5f03129eac839fdc74d2)),
 and support for multiple columns was added in 2011 ([commit](https://github.com/jeremyevans/sequel/commit/3075880a2e0c4b42cc064cb5c342eb879bd809a1)).
-To my initial surprise, Sequel's `map` doesn't automatically SELECT only the
-columns it needs. But then I've realized that it actually provides more
-flexibility, since it can be used with custom SELECTs and isn't limited only
-to columns.
 
 ### Uniq
 
