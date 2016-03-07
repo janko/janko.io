@@ -111,11 +111,11 @@ carrierwave_backgrounder breaks removing attachments).
 Shrine, on the other hand, embraces that putting phases of file upload into
 background jobs is essential for good user experience and scaling, and is
 designed from the very beginning with this in mind. It comes with a
-`background_helpers` plugin, which allows you to put processing, storing and
+`backgrounding` plugin, which allows you to put processing, storing and
 deleting into a background job:
 
 ```rb
-Shrine.plugin :background_helpers
+Shrine.plugin :backgrounding
 Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
 Shrine::Attacher.delete { |data| Delete.perform_async(data) }
 ```
@@ -202,7 +202,7 @@ on your situation). I mention this because CarrierWave does processing *before*
 validation, which is a huge security flaw since it allows attackers to easily
 DoS your application by uploading large images ([#1320]).
 
-Shrine also implements `background_helpers` in a very safe way. For example, it
+Shrine also implements `backgrounding` in a very safe way. For example, it
 could potentially happen that the user changes the attachment before the
 background job is finished processing and storing. In this situation a naive
 implementation would replace a new file with an old stored one, but Shrine,
