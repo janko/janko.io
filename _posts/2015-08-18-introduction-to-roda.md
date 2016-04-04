@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Introduction to Roda
 author: janko
 tags: ruby framework rails roda web
@@ -25,7 +24,7 @@ run Roda.app
 
 Let's explain what the official Roda description means:
 
-> Roda is a <u>**routing tree**</u> web framework <u>**toolkit**</u>.
+> Roda is a **routing tree** web framework **toolkit**.
 
 ## The routing tree
 

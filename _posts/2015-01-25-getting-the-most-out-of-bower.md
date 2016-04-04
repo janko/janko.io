@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Getting the most out of Bower
 author: matija
 tags: bower wiredep gulp grunt

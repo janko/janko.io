@@ -1,0 +1,55 @@
+.highlight {
+  border: 1px solid rgba(#000, 0.1);
+  border-radius: .5rem;
+  background-color: #f8f8f8;
+  font-size: 15px;
+  color: #333;
+}
+
+code {
+  display: inline-block;
+  padding: 0 .25em;
+  border: 1px solid rgba(#000, 0.1);
+  border-radius: .25rem;
+  background-color: #f8f8f8;
+  color: #333;
+  text-transform: none; // resetting in case the parent is uppercase
+}
+
+a {
+  code {
+    color: $color-primary-light;
+  }
+
+  &:hover,
+  &:focus {
+    code {
+      color: $color-primary-dark;
+    }
+  }
+}
+
+.highlight {
+  @include bleed;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-left-style: none;
+  border-right-style: none;
+  border-radius: 0;
+  overflow-x: auto;
+
+  @include query(800px) {
+    margin-left: 0;
+    margin-right: 0;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-radius: .5rem;
+  }
+
+  code {
+    border-style: none;
+    border-radius: 0;
+    background-color: transparent;
+  }
+}

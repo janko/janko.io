@@ -1,5 +1,4 @@
 ---
-layout: post
 title: GitHub Pages file name clash
 author: matija
 tags: short github github-pages gh-pages

@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Finder Objects
 author: janko
 tags: ruby rails orm

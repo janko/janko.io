@@ -75,6 +75,10 @@ blockquote {
   font-style: italic;
   color: rgba(#000, 0.5);
 
+  strong, b {
+    color: #666;
+  }
+
   @include query(sm) {
     padding-left: 1em;
     border-left: 0.25em solid rgba(#000, 0.1);

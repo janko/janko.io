@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Ode to Sequel
 author: janko
 tags: ruby orm postgresql activerecord

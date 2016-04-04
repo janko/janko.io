@@ -1,5 +1,4 @@
 ---
-layout: post
 title: The plugin system of Sequel and Roda
 author: janko
 tags: ruby framework orm roda sequel web plugins design
@@ -9,16 +8,16 @@ updated: 31.8.2015.
 When developing gems, often one of the difficult problems to solve is creating
 a good ratio between *simplicity*, *convenience* and *flexibility*.
 
-> A <u>**simple**</u> gem is easy to understand, both in public interface and
+> A **simple** gem is easy to understand, both in public interface and
 > internal implementation. This gem is usually more focused and tries not to do
 > too much. It often has less LOC and little or no dependencies, which means it
 > loads faster and uses less memory.
 
-> A <u>**convenient**</u> gem comes with many features out-of-the-box which
+> A **convenient** gem comes with many features out-of-the-box which
 > cover common scenarios, so that users don't have to reimplement them over and
 > over again.
 
-> A <u>**flexible**</u> gem provides good defaults, but allows its behaviour to
+> A **flexible** gem provides good defaults, but allows its behaviour to
 > be overriden and extended with custom functionality.
 
 By definition simplicity and convenience are inversely proportional; in

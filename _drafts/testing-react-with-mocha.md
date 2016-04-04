@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Testing React with Mocha
 author: matija
 tags: react test mocha jsdom

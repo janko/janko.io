@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Let's keep frontend outside of Ruby
 author: janko
 updated: 27.5.2015.

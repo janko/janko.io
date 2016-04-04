@@ -1,8 +1,8 @@
 ---
-layout: default
 title: Contact
-label: Contact
-order: 3
+nav:
+  name: Contact
+  order: 3
 ---
 
 <figure class="contact-photo">
@@ -15,19 +15,32 @@ order: 3
 </figure>
 
 <div class="social">
-  {% for author in site.authors %}
-    <div class="social-card">
-      <h2>{{ author[1].name }}</h2>
+  {% for author in site.data.authors %}
+  <div class="social-card">
+    <h2>{{ author[1].name }}</h2>
 
-      <ul class="social-networks">
-        {% for network in author[1].social %}
-          <li class="social-network {{ network[0] | downcase }}">
-            <a href="{{ network[1].url }}{{ network[1].username }}" title="{{ network[0] }}">
-              <i class="icon icon-{{ network[0] | downcase }}"></i>
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
+    <ul class="social-networks">
+      <li class="social-network github">
+        <a href="https://github.com/{{ author[1].github }}" title="GitHub profile">
+          <i class="icon icon-github"></i>
+        </a>
+      </li>
+      <li class="social-network twitter">
+        <a href="https://twitter.com/{{ author[1].twitter }}" title="Twitter profile">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li class="social-network email">
+        <a href="mailto:{{ author[1].email }}" title="Email address">
+          <i class="icon icon-email"></i>
+        </a>
+      </li>
+      <li class="social-network facebook">
+        <a href="https://facebook.com/{{ author[1].facebook }}" title="Facebook profile">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
   {% endfor %}
 </div>

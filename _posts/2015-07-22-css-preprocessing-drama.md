@@ -1,5 +1,4 @@
 ---
-layout: post
 title: CSS Preprocessing Drama
 author: matija
 tags: css sass postcss polyfill

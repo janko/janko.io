@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Simple layouting with Gulp
 author: matija
 updated: 11.10.2014.

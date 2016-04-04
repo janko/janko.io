@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Selenium testing workflow with WebdriverIO
 author: matija
 tags: node test gulp webdriver selenium mocha

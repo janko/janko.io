@@ -1,5 +1,4 @@
 ---
-layout: post
 title: CSS pre- vs. post-processing
 author: matija
 tags: css sass less postcss autoprefixer gulp node

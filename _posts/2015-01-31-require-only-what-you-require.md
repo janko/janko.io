@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Require only what you require
 updated: 12.2.2015.
 author: janko

@@ -1,65 +1,45 @@
-title:            Bipolar
-description:      "A Ruby/Node-oriented blog about design & development."
-baseurl:          ""
-url:              "http://twin.github.io"
-
-port:             4000
-highlighter:      pygments
-markdown:         redcarpet
-redcarpet:
-  extensions:     ["smart", "superscript", "autolink"]
-exclude:          [Gemfile, Gemfile.lock, .gitignore, .sass-cache]
-permalink:        /:title/
-history:          "//github.com/twin/twin.github.io/commits/master/"
+title: Bipolar
+description: A frontend & backend blog written by a pair of twin developers.
 
 gems:
   - jemoji
   - jekyll-redirect-from
-  # - jekyll-mentions
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
 
-sass:
-  sass_dir:       styles
+baseurl: ""
+url: http://twin.github.io
+permalink: /:title/
+github:
+  url: https://github.com/twin/twin.github.io
 
 authors:
-  janko:
-    name:         "Janko Marohnić"
-    identifier:   "janko"
-    social:
-      Twitter:
-        url:      "//twitter.com/"
-        username: "jankomarohnic"
-      GitHub:
-        url:      "//github.com/"
-        username: "janko-m"
-      Email:
-        url:      "mailto:"
-        username: "janko.marohnic@gmail.com"
-      Facebook:
-        url:      "//facebook.com/"
-        username: "janko.marohnic"
+  - janko
+  - matija
 
-  matija:
-    name:         "Matija Marohnić"
-    identifier:   "matija"
-    social:
-      Twitter:
-        url:      "//twitter.com/"
-        username: "silvenon"
-      GitHub:
-        url:      "//github.com/"
-        username: "silvenon"
-      Email:
-        url:      "mailto:"
-        username: "matija.marohnic@gmail.com"
-      Instagram:
-        url:      "//instagram.com/"
-        username: "silvenon"
-      Vine:
-        url:      "//vine.co/"
-        username: "silvenon"
-      SoundCloud:
-        url:      "//soundcloud.com/"
-        username: "silvenon"
-      Facebook:
-        url:      "//facebook.com/"
-        username: "matijamm"
+defaults:
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: default
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+  - scope:
+      path: ""
+      type: drafts
+    values:
+      layout: post
+
+
+logo: /images/logo.png
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - .gitignore
+  - .sass-cache

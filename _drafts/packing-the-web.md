@@ -1,7 +1,6 @@
 ---
-layout: post
 title: Packing the Web
-subtitle: The Ultimate Guide to Managing and Consuming Front-end Packages
+subtitle: The Ultimate Guide to Managing and Consuming Packages on the Web
 author: matija
 tags: package npm node browserify webpack bower jspm component
 ---
@@ -11,8 +10,6 @@ This post aims to help everyone to get up an running with JavaScript modules usi
 ## Why Do We Hate Globals?
 
 ### Pollution
-
-
 
 ### Manually Ordering `<script>`s
 
@@ -40,7 +37,7 @@ console.log('Buy our ' + superb() + ' product!');
 
 This should be the authoring experience of dealing with modules, our tools will do the rest.
 
-Let's see how we can make this work using [Babel][1] and module loaders.
+Let's see how we can make this work using [Babel][1] and module loaders/bundlers.
 
 [0]: http://www.ecma-international.org/ecma-262/6.0/#sec-modules
 [1]: https://babeljs.io/
@@ -119,6 +116,10 @@ What is more, you can patch most libraries with [browserify-shim][2]. It may be 
 [3]: https://github.com/thlorenz/browserify-shim#multi-shim-example-including-dependencies
 
 ## [webpack][0]
+
+Webpack has the advantage of not dealing only with JavaScript, but with other assets as well, which makes it very powerful. Using it I managed to completely replace gulp with a much smaller configuration. Another advantage is hot reloading, which allows you to e.g. make live updates to your React application, without having to refresh and replicate the state every time you change something.
+
+The only downside of webpack is that it has a rather steep learning curve. It took me three attempts before finally making the switch, just because the configuration was so overwhelming to me or something. I think the documentation deserves some :heart:
 
 ### Shimming
 
