@@ -1,6 +1,8 @@
-$font-family-base:    "roboto", "helvetica neue", "helvetica", "arial", sans-serif;
-$font-family-cond:    "roboto condensed", "helvetica neue", "helvetica", "arial", sans-serif;
-$font-family-mono:    "source code pro", "monaco", "consolas", "lucida console", monospace;
+$helvetica:           "helvetica neue", "helvetica", "arial", sans-serif;
+$monaco:              "monaco", "consolas", "lucida console", monospace;
+$font-family-base:    "roboto", $helvetica;
+$font-family-cond:    "roboto condensed", $helvetica;
+$font-family-mono:    "source code pro", $monaco;
 
 $color-primary-light: #c36278;
 $color-primary-dark:  #92495a;

@@ -33,9 +33,12 @@
       right: 0;
       padding: 0.5em;
       background: rgba(#000, 0.5);
-      font-family: $font-family-cond;
       font-size: 1.25em;
       color: #fff;
+
+      .wf-active & {
+        font-family: $font-family-cond;
+      }
 
       @include query(sm) {
         font-size: 2em;

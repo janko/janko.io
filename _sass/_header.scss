@@ -13,7 +13,10 @@
 
   &-logo {
     float: left;
-    font-family: $font-family-cond;
+
+    .wf-active & {
+      font-family: $font-family-cond;
+    }
 
     a {
       display: block;

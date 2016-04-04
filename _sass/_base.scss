@@ -3,11 +3,15 @@
 }
 
 html {
-  font-family: $font-family-base;
+  font-family: $helvetica;
   font-size: 15px;
   font-weight: 400;
   line-height: 1.7;
   color: #333;
+
+  &.wf-active {
+    font-family: $font-family-base;
+  }
 
   @include query(sm) {
     font-size: 17px;
@@ -26,9 +30,13 @@ blockquote, pre {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: $font-family-cond;
+  font-family: $helvetica;
   font-weight: 400;
   color: #000;
+
+  .wf-active & {
+    font-family: $font-family-cond;
+  }
 
   // our condensed font has no bold weight
   strong, b {
@@ -77,7 +85,11 @@ strong, b {
 }
 
 code, pre {
-  font-family: $font-family-mono;
+  font-family: $monaco;
+
+  .wf-active & {
+    font-family: $font-family-mono;
+  }
 }
 
 blockquote {
