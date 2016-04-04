@@ -1,16 +1,38 @@
 .highlight {
+  @include bleed;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
   border: 1px solid rgba(#000, 0.1);
+  border-left-style: none;
+  border-right-style: none;
   background-color: #f8f8f8;
   font-size: 15px;
   color: #333;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @include query(800px) {
+    margin-left: 0;
+    margin-right: 0;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-radius: .25rem;
+  }
+
+  code {
+    border-style: none;
+    border-radius: 0;
+    background-color: transparent;
+  }
 }
 
 code {
-  display: inline-block;
   padding: 0 .25em;
   border: 1px solid rgba(#000, 0.1);
   border-radius: 0.25rem;
   background-color: #f8f8f8;
+  word-wrap: break-word;
   color: #333;
   text-transform: none; // resetting in case the parent is uppercase
 }
@@ -26,29 +48,5 @@ a {
     code {
       color: $color-primary-dark;
     }
-  }
-}
-
-.highlight {
-  @include bleed;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-left-style: none;
-  border-right-style: none;
-  overflow-x: auto;
-
-  @include query(800px) {
-    margin-left: 0;
-    margin-right: 0;
-    border-left-style: solid;
-    border-right-style: solid;
-    border-radius: .25rem;
-  }
-
-  code {
-    border-style: none;
-    border-radius: 0;
-    background-color: transparent;
   }
 }
