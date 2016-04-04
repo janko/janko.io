@@ -144,7 +144,7 @@ although multiple file uploads are a bit tricky.
 Asynchronous processing/storing is given by [carrierwave_backgrounder], which
 has some upsides:
 
-* background library support is wider than delayed\_paperclip's
+* background library support is wider than delayed_paperclip's
 * the file can be both processed and stored in the background
 * the cached original can be displayed to the user while background job is working
 
@@ -168,12 +168,12 @@ synchronously deletes associated files.
 It requires an additional column for storing the cached file, and another
 column can be added for information whether the background job is working.
 However, the latter column doesn't handle parallel jobs well, same as
-delayed\_paperclip.
+delayed_paperclip.
 
-Debugging job failures is the same as delayed\_paperclip's, it can only be done
+Debugging job failures is the same as delayed_paperclip's, it can only be done
 if the attachment hasn't changed, or some special handling is implemented.
 
-Setup of carrierwave\_backgrounder is complex; `ActiveRecord::Base` and the
+Setup of carrierwave_backgrounder is complex; `ActiveRecord::Base` and the
 uploader classes need to be extended with modules, two columns need to be
 added, and a class method called. The implementation of the library is complex
 as well, a lot of metaprogramming. This complexity caused bugs like [breaking

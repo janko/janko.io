@@ -78,8 +78,8 @@ Sean Griffin about 1 year to fully implement it.
 
 It's difficult to point out at a specific equivalent in Sequel since the area
 of ActiveRecord's attributes API is so broad. In my opinion you can roughly
-achieve the same features with [serialization], [serialization\_modification\_detection],
-[composition], [typecast\_on\_load], and [defaults\_setter] plugins.
+achieve the same features with [serialization], [serialization_modification_detection],
+[composition], [typecast_on_load], and [defaults_setter] plugins.
 
 ### Views
 
@@ -159,10 +159,10 @@ faster than ActiveRecord, even after the Adequate Record merge.
 ActiveRecord 4 added support for Postgres JSON, array and hstore columns, along
 with automatic typecasting. From looking at the commits we can say that
 ActiveRecord received these features roughly at the same time as Sequel
-([pg\_json], [pg\_array], [pg\_hstore]), which is around the time these
+([pg_json], [pg_array], [pg_hstore]), which is around the time these
 features got added to Postgres. Note that Sequel on top of this also has an API
-for *querying* these types of columns ([pg\_json\_ops], [pg\_array\_ops],
-[pg\_hstore\_ops]), which greatly improves readability.
+for *querying* these types of columns ([pg_json_ops], [pg_array_ops],
+[pg_hstore_ops]), which greatly improves readability.
 
 ### Mutation detection
 
@@ -211,7 +211,7 @@ class Conversation < ActiveRecord::Base
 end
 ```
 
-While Sequel doesn't have this database-agnostic feature, it has the [pg\_enum]
+While Sequel doesn't have this database-agnostic feature, it has the [pg_enum]
 plugin for Postgres' enum type, although it was added only 1 year after
 ActiveRecord's enum.
 
@@ -250,7 +250,7 @@ they are currently about the same as ActiveRecord's before this change.
 ActiveRecord 4.0 added a handy `ActiveRecord::Relation#none` which represents
 an empty relation, effectively implementing a null object pattern for relations.
 
-Sequel [added a null\_dataset
+Sequel [added a null_dataset
 plugin](https://github.com/jeremyevans/sequel/commit/e1e3207583c39ec69ea030e29b331868308c672c)
 as an inspiration to ActiveRecord's feature.
 
@@ -357,18 +357,18 @@ tool.
 [Adequate Record]: https://tenderlovemaking.com/2014/02/19/adequaterecord-pro-like-activerecord.html
 [ORM benchmark]: https://github.com/jeremyevans/simple_orm_benchmark
 [serialization]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/Serialization.html
-[serialization\_modification\_detection]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/SerializationModificationDetection.html
+[serialization_modification_detection]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/SerializationModificationDetection.html
 [composition]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/Composition.html
-[typecast\_on\_load]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/TypecastOnLoad.html
-[defaults\_setter]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/DefaultsSetter.html
-[pg\_json]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_json_rb.html
-[pg\_array]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_array_rb.html
-[pg\_hstore]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_hstore_rb.html
-[pg\_enum]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_enum_rb.html
-[pg\_json\_ops]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_json_ops_rb.html
-[pg\_array\_ops]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_array_ops_rb.html
-[pg\_hstore\_ops]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_hstore_ops_rb.html
-[tactical\_eager\_loading]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/TacticalEagerLoading.html
+[typecast_on_load]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/TypecastOnLoad.html
+[defaults_setter]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/DefaultsSetter.html
+[pg_json]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_json_rb.html
+[pg_array]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_array_rb.html
+[pg_hstore]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_hstore_rb.html
+[pg_enum]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_enum_rb.html
+[pg_json_ops]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_json_ops_rb.html
+[pg_array_ops]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_array_ops_rb.html
+[pg_hstore_ops]: http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_hstore_ops_rb.html
+[tactical_eager_loading]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/TacticalEagerLoading.html
 [instance-level validations]: http://sequel.jeremyevans.net/rdoc/files/doc/validations_rdoc.html#label-validation_helpers
 [Arel]: https://github.com/rails/arel
 [Squeel]: https://github.com/activerecord-hackery/squeel

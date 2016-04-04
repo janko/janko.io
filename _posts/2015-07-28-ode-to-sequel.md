@@ -264,11 +264,11 @@ Movie.paged_each { |row| ... }
 
 ### sequel_pg
 
-[sequel\_pg] is a gem that provides a C extension which optimizes the fetching
+[sequel_pg] is a gem that provides a C extension which optimizes the fetching
 of rows, generally resulting in a [2-6x speedup][sequel_pg performance]. So, you just add the gem to
 your Gemfile and get free performance.
 
-In addition to optimization, sequel\_pg also adds [streaming support] if used on
+In addition to optimization, sequel_pg also adds [streaming support] if used on
 PostgreSQL 9.2. Steaming support is similar to using a cursor, but it is faster
 and more transparent. `#paged_each` will automatically use streaming to
 implement paging if enabled.
@@ -279,7 +279,7 @@ implement paging if enabled.
   this feature):
 * `DB.loose_count(:users)` for fast approximate counts using Postgres' system
   tables (COUNT queries can be slow on larger tables)
-* "[pg\_array\_associations]" plugin which enables you to avoid an additional
+* "[pg_array_associations]" plugin which enables you to avoid an additional
   join table in "has and belongs to many" associations by keeping foreign keys
   in a Postgres array column instead
 * and many more...
@@ -331,10 +331,10 @@ try!
 [materialized post]: http://webcache.googleusercontent.com/search?q=cache:8OnCH9RMeocJ:www.matchingnotes.com/caching-with-postgres-materialized-views.html+&cd=1&hl=en&ct=clnk&gl=us
 [find_each]: http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-find_each
 [postgres cursors]: http://www.postgresql.org/docs/9.4/static/plpgsql-cursors.html
-[sequel\_pg]: https://github.com/jeremyevans/sequel_pg
+[sequel_pg]: https://github.com/jeremyevans/sequel_pg
 [queue_classic]: https://github.com/QueueClassic/queue_classic
 [streaming support]: https://github.com/jeremyevans/sequel_pg#streaming
-[pg\_array\_associations]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/PgArrayAssociations.html
+[pg_array_associations]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/PgArrayAssociations.html
 [plugin system]: http://sequel.jeremyevans.net/plugins.html
 [sequel_pg performance]: https://github.com/jeremyevans/sequel_pg#real-world-difference
 [squeel1]: https://github.com/activerecord-hackery/squeel/issues/196

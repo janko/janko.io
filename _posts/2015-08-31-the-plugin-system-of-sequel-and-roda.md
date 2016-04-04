@@ -319,7 +319,7 @@ want. If you start working on your next big gem, consider using this pattern.
 
 ## Related reading
 
-* [http://sequel.jeremyevans.net/rdoc/files/doc/model\_plugins\_rdoc.html](http://sequel.jeremyevans.net/rdoc/files/doc/model_plugins_rdoc.html)
+* [http://sequel.jeremyevans.net/rdoc/files/doc/model_plugins_rdoc.html](http://sequel.jeremyevans.net/rdoc/files/doc/model_plugins_rdoc.html)
 * [http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Plugins](http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Plugins)
 * [http://twin.github.io/ode-to-sequel/](http://twin.github.io/ode-to-sequel/)
 * [http://twin.github.io/introduction-to-roda/](http://twin.github.io/introduction-to-roda/)
