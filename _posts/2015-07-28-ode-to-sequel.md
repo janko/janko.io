@@ -44,7 +44,7 @@ behaviour, and you can then choose to add additional functionality via
 **plugins**. Each plugin corresponds to a single file included in the gem, but
 which is required only when the plugin is loaded.
 
-<img class="pull-right" src="/images/sequel-plugin_system.png" alt="Sequel's plugin system" height=250 />
+![Sequel's plugin system]({{ site.baseurl }}/images/sequel-plugin_system.png){:.pull-right height="250"}
 
 ```rb
 require "sequel" # loads the core
