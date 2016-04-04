@@ -2,36 +2,42 @@
 layout: default
 ---
 
-<article class="post">
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}{% if page.subtitle %}: {{ page.subtitle }}{% endif %}</h1>
+<div class="container">
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">{{ page.title }}{% if page.subtitle %}: {{ page.subtitle }}{% endif %}</h1>
 
-    <div class="post-meta">
-      <p class="post-byline">
-        By <a href="{{ site.baseurl }}/{{ page.author }}">{{ site.data.authors[page.author].name }}</a> on
-        <time class="post-date" datetime="{{ page.date }}">
-          {{ page.date | date_to_string }}
-        </time>
-        {% if page.updated %}
-          <span class="post-updated">
-            <a href="{{ site.github.url }}/commits/master/{{ page.path }}">
-              Last edit on {{ page.updated | date_to_string }}
-            </a>
-            <i class="icon icon-github"></i>
-          </span>
-        {% endif %}
-      </p>
+      <div class="post-meta">
+        <p class="post-byline">
+          By <a href="{{ site.baseurl }}/{{ page.author }}">{{ site.data.authors[page.author].name }}</a> on
+          <time class="post-date" datetime="{{ page.date }}">
+            {{ page.date | date_to_string }}
+          </time>
+          {% if page.updated %}
+            <span class="post-updated">
+              <a href="{{ site.github.url }}/commits/master/{{ page.path }}">
+                Last edit on {{ page.updated | date_to_string }}
+              </a>
+              <i class="icon icon-github"></i>
+            </span>
+          {% endif %}
+        </p>
+      </div>
+    </header>
+
+    <div class="post-body">
+      {{ content }}
     </div>
-  </header>
+  </article>
 
-  <div class="post-body">
-    {{ content }}
+  <div class="share">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-text='"{{ page.title | escape }}" by @{{ page.author.social.Twitter.username }}' data-size="large" data-count="none" data-dnt="true">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   </div>
-</article>
-
-<div class="share">
-  <a href="https://twitter.com/share" class="twitter-share-button" data-text='"{{ page.title | escape }}" by @{{ page.author.social.Twitter.username }}' data-size="large" data-count="none" data-dnt="true">Tweet</a>
-  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 </div>
 
-{% include comments.html %}
+{% include bio.html author=page.author %}
+
+<div class="container">
+  {% include comments.html %}
+</div>

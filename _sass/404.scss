@@ -1,0 +1,45 @@
+.not-found {
+  padding-bottom: 2em;
+  text-align: center;
+
+  h1 {
+    font-size: 3em;
+
+    @include query(sm) {
+      font-size: 4em;
+    }
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    margin-bottom: 2px;
+  }
+
+  &-step {
+    padding: 0 1rem;
+    background: rgba(#000, 0.1);
+    text-align: center;
+
+    .inner {
+      @include center(800px);
+      position: relative;
+    }
+
+    p {
+      position: absolute;
+      top: 60%;
+      left: 0;
+      right: 0;
+      padding: 0.5em;
+      background: rgba(#000, 0.5);
+      font-family: $font-family-cond;
+      font-size: 1.25em;
+      color: #fff;
+
+      @include query(sm) {
+        font-size: 2em;
+      }
+    }
+  }
+}

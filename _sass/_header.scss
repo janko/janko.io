@@ -1,28 +1,61 @@
 .header {
-  @include font-smoothing;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  background-color: $color-primary-light;
+  margin-bottom: 1em;
   text-align: center;
-  color: #fff;
 
-  &-compact {
-    padding-top: .5em;
-    padding-bottom: .5em;
+  .container {
+    text-align: center;
+  }
+}
+
+.brand {
+  display: inline-block;
+  color: rgba(#000, 0.35);
+
+  &-logo {
+    float: left;
+    font-family: $font-family-cond;
+
+    a {
+      display: block;
+      margin-right: 0.35em;
+      padding: 0 0.35em;
+      border-right: 2px solid rgba(#000, 0.1);
+      font-size: 1.5em;
+      color: inherit;
+      text-decoration: none;
+
+      &:hover,
+      &:focus {
+        color: $color-primary-light;
+        border-color: rgba($color-primary-light, 0.5);
+      }
+
+      @media (min-width: 480px) {
+        margin-right: 0.5em;
+        font-size: 2em;
+
+        a {
+          padding: 0 0.5em;
+        }
+      }
+    }
   }
 
-  p {
-    font-size: 1.2em;
-  }
+  &-tagline {
+    overflow: hidden;
+    max-width: 16em;
+    margin: 0;
+    padding: 0.25em 0;
+    text-align: left;
+    font-size: 0.85em;
+    line-height: 1.3;
 
-  a {
-    font-size: 2em;
-    font-weight: 700;
-    color: inherit;
-    text-decoration: none;
-  }
+    .icon {
+      font-size: 0.8em;
+    }
 
-  .icon {
-    font-size: .8em;
+    @media (min-width: 480px) {
+      font-size: 1em;
+    }
   }
 }

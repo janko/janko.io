@@ -19,34 +19,10 @@
       </div>
     </header>
 
-    <nav class="navigation" role="navigation">
-      <div class="container">
-        <ol>
-          {% for i in (0..3) %}
-            {% for link in site.pages %}
-              {% if link.nav.order == i %}
-                {% if link.url == page.url %}
-                <li class="active">
-                {% else %}
-                <li>
-                {% endif %}
-                  <a href="{{ link.url | remove: 'index.html' }}">
-                    {{ link.nav.name }}
-                  </a>
-                </li>
-              {% endif %}
-            {% endfor %}
-          {% endfor %}
-        <ol>
-      </div>
-    </nav>
-
     <main class="main" role="main">
-      <div class="container">
 
-        {{ content }}
+      {{ content }}
 
-      </div>
     </main>
 
     {% include analytics.html %}

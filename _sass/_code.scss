@@ -1,6 +1,5 @@
 .highlight {
   border: 1px solid rgba(#000, 0.1);
-  border-radius: .5rem;
   background-color: #f8f8f8;
   font-size: 15px;
   color: #333;
@@ -10,7 +9,7 @@ code {
   display: inline-block;
   padding: 0 .25em;
   border: 1px solid rgba(#000, 0.1);
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   background-color: #f8f8f8;
   color: #333;
   text-transform: none; // resetting in case the parent is uppercase
@@ -19,6 +18,7 @@ code {
 a {
   code {
     color: $color-primary-light;
+    text-decoration: inherit;
   }
 
   &:hover,
@@ -36,7 +36,6 @@ a {
   padding: 1rem;
   border-left-style: none;
   border-right-style: none;
-  border-radius: 0;
   overflow-x: auto;
 
   @include query(800px) {
@@ -44,7 +43,7 @@ a {
     margin-right: 0;
     border-left-style: solid;
     border-right-style: solid;
-    border-radius: .5rem;
+    border-radius: .25rem;
   }
 
   code {
