@@ -3,14 +3,14 @@
 }
 
 html {
-  font-family: $helvetica;
+  font-family: $sans-fallback;
   font-size: 15px;
   font-weight: 400;
   line-height: 1.7;
   color: #333;
 
   &.wf-active {
-    font-family: $font-family-base;
+    font-family: $sans;
   }
 
   @include query(sm) {
@@ -30,12 +30,12 @@ blockquote, pre {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: $helvetica;
+  font-family: $condensed-fallback;
   font-weight: 400;
   color: #000;
 
   .wf-active & {
-    font-family: $font-family-cond;
+    font-family: $condensed;
   }
 
   // our condensed font has no bold weight
@@ -85,10 +85,10 @@ strong, b {
 }
 
 code, pre {
-  font-family: $monaco;
+  font-family: $monospace-fallback;
 
   .wf-active & {
-    font-family: $font-family-mono;
+    font-family: $monospace;
   }
 }
 

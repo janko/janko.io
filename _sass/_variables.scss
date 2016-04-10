@@ -1,8 +1,9 @@
-$helvetica:           "helvetica neue", "helvetica", "arial", sans-serif;
-$monaco:              "monaco", "consolas", "lucida console", monospace;
-$font-family-base:    "roboto", $helvetica;
-$font-family-cond:    "roboto condensed", $helvetica;
-$font-family-mono:    "source code pro", $monaco;
+$sans-fallback:       'helvetica neue', helvetica, arial, sans-serif;
+$sans:                roboto, $sans-fallback;
+$condensed-fallback:  'HelveticaNeue-CondensedBold', $sans-fallback;
+$condensed:           'roboto condensed', $condensed-fallback;
+$monospace-fallback:  monaco, consolas, 'lucida console', monospace;
+$monospace:           "source code pro", $monospace-fallback;
 
 $color-primary-light: #c36278;
 $color-primary-dark:  #92495a;

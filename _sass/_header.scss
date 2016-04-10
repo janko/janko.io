@@ -13,9 +13,10 @@
 
   &-logo {
     float: left;
+    font-family: $condensed-fallback;
 
     .wf-active & {
-      font-family: $font-family-cond;
+      font-family: $condensed;
     }
 
     a {
