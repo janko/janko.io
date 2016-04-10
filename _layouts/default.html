@@ -13,7 +13,12 @@
     <header class="header" role="banner">
       <div class="container">
         <div class="brand">
-          <div class="brand-logo"><a href="{{ site.baseurl }}/">{{ site.title }}</a></div>
+          <div class="brand-logo">
+            <a href="{{ site.baseurl }}/">
+              <img src="{{ site.baseurl }}/images/logo.png" width="40" />
+              <span>{{ site.title }}</span>
+            </a>
+          </div>
           <p class="brand-tagline">{{ site.description | replace: '&', '<i class="icon icon-ampersand"></i>' }}</p>
         </div>
       </div>
