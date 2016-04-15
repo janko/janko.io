@@ -10,7 +10,6 @@ gems:
 
 baseurl: ""
 url: http://twin.github.io
-permalink: /:title/
 github:
   url: https://github.com/twin/twin.github.io
 
@@ -25,6 +24,7 @@ defaults:
       type: posts
     values:
       layout: post
+      permalink: /:title/
   - scope:
       path: ""
       type: drafts
