@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "File Uploads: Asynchronous World"
+title: Asynchronous File Uploads
 author: janko
 tags: ruby web file upload backgrounding
 ---
