@@ -36,7 +36,15 @@ face detection and other.
 The simplest way to set upload options is directly on the storage:
 
 ```rb
-Shrine::Storage::Cloudinary.new(upload_options: {...}, **options)
+Shrine::Storage::Cloudinary.new(
+  upload_options: {
+    responsive_breakpoints: {
+      min_width: 200,
+      max_width: 1000,
+    }
+  },
+  **options
+)
 ```
 
 Shrine also ships with [upload_options] plugin which allows you to set upload
@@ -124,6 +132,8 @@ can use in callbacks:
 
 ```rb
 class Document < Sequel::Model
+  include FileUploader[:file]
+
   def before_save
     super
     if column_changed?(:file_data)
