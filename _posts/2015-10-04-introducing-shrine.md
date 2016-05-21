@@ -141,7 +141,7 @@ write your own job classes, but as you can see, Shrine makes the implementation
 very simple. In this example I used Sidekiq, but obviously you can just as well
 use any other backgrounding library.
 
-The end user exprience was the main guidance in Shrine's design. Before the
+The end user experience was the main guidance in Shrine's design. Before the
 file is moved to store, the record is first saved with the cached version of
 the file. This means that, while the file is being processed and stored in the
 background, the end user will immediately see the image they uploaded, because
