@@ -217,7 +217,8 @@ The amount of stars a library has on GitHub is usually a good measure for its
 popularity. However, I've often found that popularity isn't a good indication
 of library's quality. I think this is because popularity is an exponential
 function; people will often automatically choose a library based on its
-popularity, thus increasing its popularity.
+popularity, thus increasing its popularity. If a new library arises which
+solves the problem in a better way, it is difficult to gain popularity.
 
 ### Number of maintainers
 
