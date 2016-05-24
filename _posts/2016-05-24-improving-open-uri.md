@@ -46,7 +46,7 @@ journey, fixing one issue at a time.
 
 ## Improvements
 
-### Kernel#open
+<h3 style="text-transform: none;">Kernel#open</h3>
 
 Ruby has a `Kernel#open` method, which given a file path acts as `File.open`.
 but given a string that starts with "|", it interprets it as a shell command
@@ -69,7 +69,7 @@ uri = URI.parse("http://example.com/image.jpg") #=> #<URI::HTTP>
 uri.open #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz>
 ```
 
-### StringIO
+<h3 style="text-transform: none;">StringIO</h3>
 
 Stangely, if the remote file has less than 10KB, open-uri will actually return
 a StringIO instead of a Tempfile.
@@ -95,7 +95,7 @@ end
 downloaded # now always a Tempfile
 ```
 
-### File extension
+<h3 style="text-transform: none;">File extension</h3>
 
 Surprisingly, open-uri always creates a Tempfile without a file extension,
 even if the url has one. In Shrine I wanted that downloaded files (which will
@@ -118,7 +118,7 @@ end
 File.extname(downloaded.path) #=> ".jpg"
 ```
 
-### Redirects
+<h3 style="text-transform: none;">Redirects</h3>
 
 What's good is that open-uri can automatically follow redirects. What's bad is
 that we cannot limit the maximum number of redirects. This allows the attacker
@@ -141,7 +141,7 @@ rescue OpenURI::HTTPRedirect => redirect
 end
 ```
 
-### Maximum filesize
+<h3 style="text-transform: none;">Maximum filesize</h3>
 
 Since the URL can sometimes come from the user input, I wanted to give Shrine
 users the ability to limit maximum filesize of the remote file. Specifically, I
@@ -168,7 +168,7 @@ uri.open(
 )
 ```
 
-### User agent
+<h3 style="text-transform: none;">User agent</h3>
 
 It turns out that when we're making requests to an application, but we don't
 include a "User-Agent" header, most applications will start rejecting our
