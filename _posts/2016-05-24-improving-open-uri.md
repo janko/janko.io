@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Fixing open-uri
+title: Improving open-uri
 author: janko
 tags: ruby download
 ---
