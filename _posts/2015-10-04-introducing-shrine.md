@@ -117,7 +117,7 @@ deleting into a background job:
 ```rb
 Shrine.plugin :backgrounding
 Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
-Shrine::Attacher.delete { |data| Delete.perform_async(data) }
+Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
 ```
 ```rb
 class UploadJob
