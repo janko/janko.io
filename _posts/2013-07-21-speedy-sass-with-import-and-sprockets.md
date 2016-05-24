@@ -146,11 +146,11 @@ This solution may feel somewhat hacky at the beginning, but it's really worth it
 
 I haven't seen anyone using something like this or even talking about it. Are you using a similar approach? Is there a better way to do this? Let me know in the comments! :)
 
-[sprockets]:            //github.com/sstephenson/sprockets
+[sprockets]:            https://github.com/sstephenson/sprockets
 [live-reload]:          http://livereload.com
-[guard]:                //github.com/guard/guard
-[guard-sprockets]:      //github.com/pferdefleisch/guard-sprockets
-[bootstrap]:            //twitter.github.io/bootstrap/
-[bootstrap-sass]:       //github.com/twbs/bootstrap-sass
+[guard]:                https://github.com/guard/guard
+[guard-sprockets]:      https://github.com/pferdefleisch/guard-sprockets
+[bootstrap]:            http://getbootstrap.com/
+[bootstrap-sass]:       https://github.com/twbs/bootstrap-sass
 [bourbon]:              http://bourbon.io/
 [smacss]:               http://smacss.com/

@@ -153,7 +153,7 @@ Also, this technique obviously doesn't work for binary assets, so you will have 
 [bowerjson]: http://bower.io/docs/creating-packages/#bowerjson
 [wiredep]: https://github.com/taptapship/wiredep
 [integration]: https://github.com/taptapship/wiredep#build-chain-integration
-[hooks]: https://github.com/bower/bower/blob/master/HOOKS.md
+[hooks]: http://bower.io/docs/config/#hooks
 [postuninstall]: https://github.com/bower/bower/issues/1451
 [override]: https://github.com/taptapship/wiredep#bower-overrides
 [main-bower-files]: https://github.com/ck86/main-bower-files

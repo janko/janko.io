@@ -11,7 +11,7 @@ gems:
 baseurl: ""
 url: http://twin.github.io
 github:
-  url: https://github.com/twin/twin.github.io
+  url: http://twin.github.io
 
 defaults:
   - scope:
