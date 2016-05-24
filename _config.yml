@@ -39,3 +39,4 @@ exclude:
   - Gemfile.lock
   - .gitignore
   - .sass-cache
+  - vendor
