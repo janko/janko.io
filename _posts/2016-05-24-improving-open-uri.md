@@ -159,7 +159,7 @@ However, an attacker could theoretically create an app which returns large
 files, but where the "Content-Length" response header is ommited on purpose.
 Luckily, open-uri has got our back on this one too with `:progress_proc`, which
 calls the given proc whenever a chunk is downloaded, with the current size.
-Let's modify our code:
+That means we can add it as a fallback in case "Content-Length" is missing:
 
 ```rb
 uri.open(
