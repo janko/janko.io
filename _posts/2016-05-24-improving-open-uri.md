@@ -35,10 +35,10 @@ open-uri turned out to have many limiations and quirks:
 * You cannot limit maximum number of redirects
 * You cannot limit maximum filesize
 
-I've thought about alternatives like [rest-client], or shelling out to `curl`
-or `wget`, but I didn't want to impose extra dependencies (or in rest-client's
-case **7 extra dependencies**), and also they didn't have all the features that
-I needed.
+I've thought about alternatives: [rest-client], `curl` or `wget`. However,
+rest-client was a too heavy dependency just for downloading, and I didn't want
+to depend on external CLI tools. Also, none of them were able to properly limit
+the maximum filesize, which I found important in context of Shrine.
 
 So, realizing that I still wanted to use open-uri, I decided to make a wrapper
 around it that addresses these limitations. I want to guide you through my
@@ -203,9 +203,10 @@ Down.download "http://example.com/image.jpg",
 
 ## Conclusion
 
-I like that I was able to create a lightweight wrapper around open-uri, rather
-than adding 3rd-party dependencies. If you want to use open-uri, but without
-any of these quirks, consider using [Down].
+I like that I was able to make a lightweight wrapper around open-uri, which
+already had most of the features that I wanted, but allowed me to complete the
+ones that I was missing. If you want to use open-uri, but without any of the
+mentioned quirks, consider using [Down].
 
 [Shrine]: https://github.com/janko-m/shrine
 [open-uri]: http://ruby-doc.org/stdlib-2.2.0/libdoc/open-uri/rdoc/OpenURI.html
