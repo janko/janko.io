@@ -3,5 +3,6 @@ cache: bundler
 rvm:
 - 2.2
 notifications:
+  email: false
   slack:
     secure: YVKlEGPq2aTaIWaCCSrKHaOCCMVba1Bw83kK8zAhXVT4DpoluwVuJvqPwTUTA5t3pB8xvLae+Cq5DUWtzVG6ajfKrJ5SLU23lOQ+m6IHIC3uVDWx+/1NJ44bFydq3GfeX/mkUtsBAHdI/AyzGq/9DMcjIptSZ2spIJmwwowiJy0=
