@@ -201,9 +201,6 @@ Down.download "http://example.com/image.jpg",
   proxy: "http://proxy.com" # delegates to open-uri
 ```
 
-Open-uri is very lightweight, and benchmarks show that Down loads 40x times
-faster than rest-client.
-
 ## Conclusion
 
 I like that I was able to make a lightweight wrapper around open-uri, which
