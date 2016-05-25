@@ -5,4 +5,4 @@ rvm:
 notifications:
   email: false
   slack:
-    secure: YVKlEGPq2aTaIWaCCSrKHaOCCMVba1Bw83kK8zAhXVT4DpoluwVuJvqPwTUTA5t3pB8xvLae+Cq5DUWtzVG6ajfKrJ5SLU23lOQ+m6IHIC3uVDWx+/1NJ44bFydq3GfeX/mkUtsBAHdI/AyzGq/9DMcjIptSZ2spIJmwwowiJy0=
+    secure: Ziy5siLNdOHp88VX/bJTliCWCOpwDAf1DDkETGvVqCHY7Vrh/Y0ppt/YlAnuJe47bP7FaZ6BycgF+vU4hz6kqXXm2Gzwv9e7Hi5lK9Jq7sSoj8te5w5HAbm62QKRQz/bFgoS+WAtyvOmL/n9VTef4dKaQ3ndnmVgO7omIGGq6Nw=
