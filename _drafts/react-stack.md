@@ -25,7 +25,7 @@ Since v6, Babel doesn't really do anything tangible out of the box. All of the p
   - [preset-react]
 
 ```
-npm install --save-dev babel-core babel-preset-es2015 babel-preset-stage-2 babel-preset-react
+$ npm install --save-dev babel-core babel-preset-es2015 babel-preset-stage-2 babel-preset-react
 ```
 
 Then specify those in your `.babelrc`:
@@ -77,25 +77,74 @@ Maybe you're in a large team and ESLint and its plugins simply don't have a rule
 [3]: http://eslint.org/docs/developer-guide/working-with-rules
 [astexplorer]: http://astexplorer.net
 
+## Actually Developing
+
+### Routing
+
+There are currently two good routing libraries, [React Router] and [Cerebral]. I haven't tried the latter, but it's gaining momentum and it's universal, there are bindings for other frameworks as well, like Angular.
+
+[React Router]: https://github.com/reactjs/react-router
+[Cerebral]: http://www.cerebraljs.com/install/react
+
+### State
+
+React's state and context can only get you so far. When building anything substantial, you'll get tangled up, so you need some kind of a library. I haven't really tried anything other than [Redux], but since it's so popular (I don't remember when I have seen so many stars on GitHub :star:), it's a good choice.
+
+[Redux]: https://github.com/reactjs/redux
+
+### Side-Effects
+
+You thought Redux will be enough? This is frontend, nothing is enough. Side-effects are reactions to dispatched actions. Common examples are API calls, redirects, or even dispatching another action. I have struggled with this and found a solution which I'm pretty happy with at the moment---[redux-saga]. The learning curve here could be [generators], which take some getting used to, but this is a really smart usage of them. Sagas are nice to manage because they are completely separate from actions and they are easy to test.
+
+[redux-saga]: http://yelouafi.github.io/redux-saga/
+[generators]: https://davidwalsh.name/es6-generators
+
 ## Refactoring
 
 If you're going to be maintaining a React app, you'll often refactor your app to implement new libraries and best practices that you learned about. Refactoring by hand is boring and error-prone, and simple search & replace only gets you so far. [JSCodeShift] is a tool you should learn how to use, it will save you time and bring you happiness. You shouldn't have to deal with crappy code just because you don't have time to refactor it.
 
 [JSCodeShift]: https://github.com/facebook/jscodeshift
 
-## Data Flow
-
-### Side-Effects
-
-It's really important to have a good, testable system for adding side-effects to Redux actions. A side-effect can be anything, an API call, a redirect, or even dispatching another action.
-
 ## Testing
 
-To me testing React code is pretty interesting. You can cover a lot with just Node unit testing, which is really fast.
+To me testing React code is pretty interesting. You can cover a lot with just Node unit testing, which is really fast. I was looking for some libraries, as a testing framework I started with [Mocha] and as an assertion and spying library I used [expect].
+
+This was ok for a while, but then I found [AVA], which just knocked my socks off. The readme was just hypnotizing, I couldn't stop reading. AVA partially replaced what I was using expect for, so I switched to [Sinon] for spies because it worked nicer with AVA.
+
+Now, what about React? There are handy [Test Utilities] for that, but I find them painfully low-level. I strongly recommend using [Enzyme] by Airbnb (as mentioned in Test Utilities documentation), it has a much nicer API and you can get things done much more easily.
+
+Most of the times you should use [shallow rendering], which makes tests faster and more isolated.
+
+[expect]: https://github.com/mjackson/expect
+[Mocha]: http://mochajs.org/
+[AVA]: https://github.com/avajs/ava
+[Sinon]: http://sinonjs.org/
+[Test Utilities]: http://facebook.github.io/react/docs/test-utils.html
+[Enzyme]: http://airbnb.io/enzyme/
+[shallow rendering]: http://facebook.github.io/react/docs/test-utils.html#shallow-rendering
 
 ## Optimizing
 
-You think you're going to get away with your 2M `bundle.js`?
+You think you're going to get away with your 2M `bundle.js`? There are many ways to optimize your code.
+
+### CSS
+
+In development it's completely fine to render CSS via JS, but in production you could extract that CSS into a separate file. If you're using webpack, you could use [extract-text-webpack-plugin], unless you're one of those [CSS in JS] weirdos.
+
+### Images
+
+webpack has a tendency to inline your images if you're not careful. So make sure that you set a limit in your [url-loader]. Also you can losslessly compress them using [image-webpack-loader] (especially if you're using SVG).
+
+### JavaScript
+
+SPAs are JavaScript-heavy and having to download everything at once on page load is an unnecessary performance hit. You could use webpack's [code splitting] in smart places. Maybe there's a simple front-facing version of your app, and when you log in there's much more functionality included. This is a good place to split your code. If you're using React Router, you could study the API and see how you can split your code using [`getComponent` and `getComponents`][0].
+
+[extract-text-webpack-plugin]: https://github.com/webpack/extract-text-webpack-plugin
+[CSS in JS]: https://speakerdeck.com/vjeux/react-css-in-js
+[url-loader]: https://github.com/webpack/url-loader
+[image-webpack-loader]: https://github.com/tcoopman/image-webpack-loader
+[code splitting]: http://webpack.github.io/docs/code-splitting.html
+[0]: https://github.com/reactjs/react-router/blob/master/docs/API.md#getcomponentnextstate-callback
 
 ## Deploying
 
