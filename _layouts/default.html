@@ -7,7 +7,10 @@
     {% include fonts.html %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    {% if page.author == 'matija' %}
     <script src="{{ site.baseurl }}/scripts/vendor/prism.js" defer></script>
+    <link rel="stylesheet" href="{{ site.baseurl }}/styles/vendor/prism.css">
+    {% endif %}
     <link rel="stylesheet" href="{{ site.baseurl }}/styles/application.css">
   </head>
 
@@ -25,13 +28,11 @@
         </div>
       </div>
     </header>
-
     <main class="main" role="main">
 
       {{ content }}
 
     </main>
-
     {% include analytics.html %}
   </body>
 </html>

@@ -24,22 +24,22 @@ uploaded, whether there is processing or not, what storage is used etc.
 Instead of having an opinion on how you want to do your upload, Shrine allows
 you to build an uploading flow that suits your needs.
 
-```ruby
+{% highlight ruby %}
 class ImageUploader < Shrine
   plugin :sequel
   plugin :pretty_location
   plugin :logging, format: :json
 end
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 class User < Sequel::Model
   include ImageUploader[:avatar] # creates and includes an attachment module
 end
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 user = User.create(avatar: File.open("path/to/avatar.jpg"))
 user.avatar.id # "user/532/avatar/f753g598sm3l2.jpg"
-```
+{% endhighlight %}
 
 ## Simplicity
 
@@ -47,7 +47,7 @@ Where CarrierWave and other file upload libraries favor complex class-level
 DSLs, Shrine favours simple instance-level interface. Here's an example on how
 file processing is done in Shrine:
 
-```ruby
+{% highlight ruby %}
 require "image_processing/mini_magick" # part of the "image_processing" gem
 
 class ImageUploader < Shrine
@@ -65,7 +65,7 @@ class ImageUploader < Shrine
     end
   end
 end
-```
+{% endhighlight %}
 
 This method gets called whenever a file is uploaded, so you can just use regular
 Ruby to specify exactly how and when processing is done. You can also choose
@@ -73,7 +73,7 @@ to do some processing on caching as well.
 
 Validations are done in a similar fashion:
 
-```ruby
+{% highlight ruby %}
 class ImageUploader < Shrine
   plugin :validation_helpers
 
@@ -85,7 +85,7 @@ class ImageUploader < Shrine
     end
   end
 end
-```
+{% endhighlight %}
 
 Another difference from other gems is number of obligatory dependencies.  While
 CarrierWave, Refile and Paperlip have 9-12 depedencies in total, Shrine by
@@ -114,27 +114,27 @@ designed from the very beginning with this in mind. It comes with a
 `backgrounding` plugin, which allows you to put processing, storing and
 deleting into a background job:
 
-```ruby
+{% highlight ruby %}
 Shrine.plugin :backgrounding
 Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 class UploadJob
   include Sidekiq::Worker
   def perform(data)
     Shrine::Attacher.promote(data)
   end
 end
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 class DeleteJob
   include Sidekiq::Worker
   def perform(data)
     Shrine::Attacher.delete(data)
   end
 end
-```
+{% endhighlight %}
 
 Notice that, unlike gems like carrierwave_backgrounder, you are required to
 write your own job classes, but as you can see, Shrine makes the implementation
@@ -148,11 +148,11 @@ background, the end user will immediately see the image they uploaded, because
 the URL will point to the cached version. So from the user's perspective, at
 this moment the file upload is finished!
 
-```ruby
+{% highlight ruby %}
 user.avatar.url #=> "/uploads/dso3432kdw032.jpg"
 # ... Background job is done storing ...
 user.avatar.url #=> "https://s3-sa-east-1.amazonaws.com/my-bucket/0943sf8gfk13.jpg"
-```
+{% endhighlight %}
 
 When the background job finishes, the record will be updated with the stored
 version, but the user won't notice that the URL has changed, because they
@@ -167,17 +167,17 @@ user experience, because the UI isn't blocked, and the user knows how much
 they have to wait (assuming you give them a progress bar). The endpoint for
 direct uploads is provided by the `direct_upload` plugin.
 
-```ruby
+{% highlight ruby %}
 class ImageUploader < Shrine
   plugin :direct_upload
 end
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 Rails.application.routes.draw do
   # adds `POST /attachments/images/:storage/:name`
   mount ImageUploader.direct_endpoint => "/attachments/images"
 end
-```
+{% endhighlight %}
 
 Unlike Refile, Shrine doesn't ship with complete JavaScript which makes this
 just work, instead it expects you to use an existing JavaScript library for

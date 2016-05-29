@@ -1,0 +1,14 @@
+.media {
+  margin: 1em 0;
+
+  pre {
+    margin: 0 !important;
+  }
+
+  &-object {
+  }
+
+  &-body {
+    overflow: hidden;
+  }
+}

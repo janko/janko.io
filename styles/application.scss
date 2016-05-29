@@ -8,7 +8,7 @@
 @import "normalize";
 @import "base";
 
-@import "vendor/prism";
+@import 'vendor/themes/default';
 
 @import "404.scss";
 @import "alerts";
@@ -17,9 +17,9 @@
 @import "float";
 @import "header";
 @import "icons";
+@import "media";
 @import "navigation";
 @import "pills";
 @import "post";
 @import "share";
 @import "social";
-@import "syntax";

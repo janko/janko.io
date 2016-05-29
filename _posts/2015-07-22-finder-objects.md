@@ -10,12 +10,12 @@ scopes.
 
 So, instead of this:
 
-```ruby
+{% highlight ruby %}
 # app/models/quiz.rb
 class Quiz < ActiveRecord::Base
 end
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 # app/controllers/quizzes_controller.rb
 class QuizzesController < ApplicationController
   # BAD
@@ -28,11 +28,11 @@ class QuizzesController < ApplicationController
     render json: quizzes
   end
 end
-```
+{% endhighlight %}
 
 It's better to do this:
 
-```ruby
+{% highlight ruby %}
 # app/models/quiz.rb
 class Quiz < ActiveRecord::Base
   scope :search, -> (params) do
@@ -43,8 +43,8 @@ class Quiz < ActiveRecord::Base
     quizzes
   end
 end
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 # app/controllers/quizzes_controller.rb
 class QuizzesController < ApplicationController
   # Good
@@ -52,7 +52,7 @@ class QuizzesController < ApplicationController
     render json: Quiz.search(params)
   end
 end
-```
+{% endhighlight %}
 
 This makes your controllers oblivious to the querying logic, as they should be.
 ActiveRecord scopes have always been convenient for encapsulating your query
@@ -104,7 +104,7 @@ the main features finder objects should have.
 
 Let's write the simplest finder object:
 
-```ruby
+{% highlight ruby %}
 # app/finders/quiz_finder.rb
 class QuizFinder
   def self.search(q: nil, category: nil, page: nil)
@@ -119,15 +119,15 @@ class QuizFinder
     Quiz.where(published: true)
   end
 end
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 QuizFinder.search(q: "game of thrones", category: "movies")
-```
+{% endhighlight %}
 
 This is of course very raw, but it's a good start. We quickly realize we don't
 want to repeat the `Quiz` constant for each query method, so we DRY it up:
 
-```ruby
+{% highlight ruby %}
 # app/finders/quiz_finder.rb
 class QuizFinder
   def self.search(q: nil, category: nil, page: nil)
@@ -146,7 +146,7 @@ class QuizFinder
     Quiz.all
   end
 end
-```
+{% endhighlight %}
 
 Better. This will be useful later. Ok, now we notice that we cannot reuse query
 methods (we cannot use `.published` inside of `.search`), because they both have to
@@ -156,7 +156,7 @@ Quickly we come to the idea to have `QuizFinder` be instantiated with a scope,
 and turn our query methods into instance methods, so we change our
 implementation:
 
-```ruby
+{% highlight ruby %}
 # app/finders/quiz_finder.rb
 class QuizFinder
   def self.method_missing(name, *args, &block)
@@ -183,7 +183,7 @@ class QuizFinder
 
   attr_reader :scope
 end
-```
+{% endhighlight %}
 
 Notice that we could now reuse `#published` inside of `#search`. We added the
 class-level `.method_missing` so that we can still call methods on the
@@ -193,7 +193,7 @@ Let's now refactor `#search` to prove that our finder object implementation
 works when we increase complexity (we also add `#new` to make the code
 more concise).
 
-```ruby
+{% highlight ruby %}
 # app/finders/quiz_finder.rb
 class QuizFinder
   def self.method_missing(name, *args, &block)
@@ -236,12 +236,12 @@ class QuizFinder
     self.class.new(*args)
   end
 end
-```
+{% endhighlight %}
 
 It looks like our implementation scales. The final step is to extract this
 functionality out so that we can add other finder objects:
 
-```ruby
+{% highlight ruby %}
 # app/finders/base_finder.rb
 class BaseFinder
   def self.method_missing(name, *args, &block)
@@ -272,8 +272,8 @@ class BaseFinder
     self.class.new(*args)
   end
 end
-```
-```ruby
+{% endhighlight %}
+{% highlight ruby %}
 # app/finders/quiz_finder.rb
 class QuizFinder < BaseFinder
   model Quiz
@@ -298,7 +298,7 @@ class QuizFinder < BaseFinder
     scope.where(category: category)
   end
 end
-```
+{% endhighlight %}
 
 ## Advantages
 
