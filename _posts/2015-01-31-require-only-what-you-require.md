@@ -10,7 +10,7 @@ Writing code which reveals intention is one of the most important things to me. 
 
 To illustrate, we'll take a look at a library we're all using – Rake.
 
-```rb
+```ruby
 # lib/rake.rb
 
 require 'rbconfig'
@@ -64,7 +64,7 @@ If each file requires only what it needs, then we have a nice overview of each f
 
 When we look at this file, it is difficult to tell which are the main components Rake is made of. I don't think that "linked_list", "cpu_error" or "rule_recursion_overflow_error" is something I should immediately know about when reading Rake.
 
-```rb
+```ruby
 require 'rake/linked_list'  # <-------------------
 require 'rake/cpu_counter'  # <-------------------
 require 'rake/scope'
@@ -99,7 +99,7 @@ If files don't require their own dependencies, it's more difficult to get a desi
 
 Furthermore, if each class has its dependencies listed on the top of the file, it's easier to understand its code. For example, in the implementation of that class I see a call to `#shellescape`, without context I wouldn't know which library it could belong to. However, if I see `require "shellwords"` at the top of the file, I would most likely try looking in there, where I would find the wanted method.
 
-```rb
+```ruby
 require "shellwords"
 
 # ...
@@ -118,7 +118,7 @@ There are some cases where something is being used in almost every file, and rem
 
 What if instead lib/rake.rb looked like this?
 
-```rb
+```ruby
 # lib/rake.rb (improved)
 
 require "rake/application"

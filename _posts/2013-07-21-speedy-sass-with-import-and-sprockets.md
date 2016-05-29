@@ -16,7 +16,7 @@ AFAIK, this tutorial is for Rails only. Maybe there are Rack applications that I
 
 To spice things up, we're going to use [Twitter Bootstrap][bootstrap] and [Bourbon][bourbon] in this example. Simply add them to your Gemfile:
 
-```rb
+```ruby
 gem "bootstrap-sass"
 gem "bourbon"
 ```

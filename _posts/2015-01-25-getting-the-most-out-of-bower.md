@@ -11,7 +11,7 @@ redirect_from: /2015/01/getting-the-most-out-of-bower/
 
 For example, in order to install Bootstrap, you would first run:
 
-```sh
+```bash
 $ bower install --save bootstrap
 ```
 
@@ -44,7 +44,7 @@ Most Bower components have, or should have, a proper [`bower.json`][bowerjson] f
 
 There are a couple of ways to use wiredep, as listed in the [docs][integration]. We could use [gulp], [grunt] or something else, but I'll keep it simple by using wiredep's own CLI, so you can just install it globally:
 
-```sh
+```bash
 $ npm install --global wiredep
 ```
 
@@ -88,7 +88,7 @@ And all `.scss` dependencies would be `@import`ed here.
 
 Now install a dependency, e.g. `bower install --save bootstrap`, and run:
 
-```sh
+```bash
 $ wiredep --src index.html
 ```
 

@@ -24,19 +24,19 @@ uploaded, whether there is processing or not, what storage is used etc.
 Instead of having an opinion on how you want to do your upload, Shrine allows
 you to build an uploading flow that suits your needs.
 
-```rb
+```ruby
 class ImageUploader < Shrine
   plugin :sequel
   plugin :pretty_location
   plugin :logging, format: :json
 end
 ```
-```rb
+```ruby
 class User < Sequel::Model
   include ImageUploader[:avatar] # creates and includes an attachment module
 end
 ```
-```rb
+```ruby
 user = User.create(avatar: File.open("path/to/avatar.jpg"))
 user.avatar.id # "user/532/avatar/f753g598sm3l2.jpg"
 ```
@@ -47,7 +47,7 @@ Where CarrierWave and other file upload libraries favor complex class-level
 DSLs, Shrine favours simple instance-level interface. Here's an example on how
 file processing is done in Shrine:
 
-```rb
+```ruby
 require "image_processing/mini_magick" # part of the "image_processing" gem
 
 class ImageUploader < Shrine
@@ -73,7 +73,7 @@ to do some processing on caching as well.
 
 Validations are done in a similar fashion:
 
-```rb
+```ruby
 class ImageUploader < Shrine
   plugin :validation_helpers
 
@@ -114,12 +114,12 @@ designed from the very beginning with this in mind. It comes with a
 `backgrounding` plugin, which allows you to put processing, storing and
 deleting into a background job:
 
-```rb
+```ruby
 Shrine.plugin :backgrounding
 Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
 ```
-```rb
+```ruby
 class UploadJob
   include Sidekiq::Worker
   def perform(data)
@@ -127,7 +127,7 @@ class UploadJob
   end
 end
 ```
-```rb
+```ruby
 class DeleteJob
   include Sidekiq::Worker
   def perform(data)
@@ -148,7 +148,7 @@ background, the end user will immediately see the image they uploaded, because
 the URL will point to the cached version. So from the user's perspective, at
 this moment the file upload is finished!
 
-```rb
+```ruby
 user.avatar.url #=> "/uploads/dso3432kdw032.jpg"
 # ... Background job is done storing ...
 user.avatar.url #=> "https://s3-sa-east-1.amazonaws.com/my-bucket/0943sf8gfk13.jpg"
@@ -167,12 +167,12 @@ user experience, because the UI isn't blocked, and the user knows how much
 they have to wait (assuming you give them a progress bar). The endpoint for
 direct uploads is provided by the `direct_upload` plugin.
 
-```rb
+```ruby
 class ImageUploader < Shrine
   plugin :direct_upload
 end
 ```
-```rb
+```ruby
 Rails.application.routes.draw do
   # adds `POST /attachments/images/:storage/:name`
   mount ImageUploader.direct_endpoint => "/attachments/images"

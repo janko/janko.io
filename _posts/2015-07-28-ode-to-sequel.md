@@ -46,7 +46,7 @@ which is required only when the plugin is loaded.
 
 ![Sequel's plugin system]({{ site.baseurl }}/images/sequel-plugin_system.png){:.pull-right height="250"}
 
-```rb
+```ruby
 require "sequel" # loads the core
 
 DB = Sequel.connect("postgres:///my_database")
@@ -71,7 +71,7 @@ Did you know that PostgresSQL and MySQL have support for POSIX regular
 expressions? Neither did I. If you're using one of these two databases, Sequel
 will transform Ruby regular expressions to SQL:
 
-```rb
+```ruby
 Movie.where(name: /future/)
 # SELECT * FROM movies WHERE (name ~ 'future')
 Movie.where(name: /future/i) # Case insensitive match
@@ -89,7 +89,7 @@ queries are still nicer to write in Sequel (see below).
 Most of Sequel's query methods, in addition to arguments, also support blocks
 (so-called "virtual row blocks") which gives you a DSL for more advanced queries.
 
-```rb
+```ruby
 Movie.where{year >= 2010}                        # inequality operators
 # WHERE (year >= 2010)
 Movie.where{(title =~ "Batman") | (year < 2010)} # OR query
@@ -130,7 +130,7 @@ On the other hand, Sequel allows you to write low-level queries using the
 models, You can go through the `Sequel::Database` object directly, and the
 records will be returned as simple Ruby hashes.
 
-```rb
+```ruby
 DB = Sequel.connect("postgres:///my_database") #=> #<Sequel::Database>
 
 Movie.where(title: "Matrix").first       #=> #<Movie title="Matrix" year=1999 ...>
@@ -149,7 +149,7 @@ Where ActiveRecord uses class-level DSL, Sequel instead prefers simple OO
 design. For example, the idiomatic way to write validations in Sequel is by
 overriding the instance method `#validate`:
 
-```rb
+```ruby
 class Movie < Sequel::Model
   plugin :validation_helpers
 
@@ -177,7 +177,7 @@ an INNER JOIN by default, and while you can use it to write a custom JOIN
 statement, it's really verbose as you have to write the full SQL string with
 all the column-joining logic.
 
-```rb
+```ruby
 # LEFT JOINs in ActiveRecord
 Movie.joins("LEFT JOIN on directors ON directors.movie_id = movies.id")
 ```
@@ -189,7 +189,7 @@ unfortunate if you don't need that.
 Sequel, on the other hand, has support for *ALL* types of JOINs. You can do
 joins through associations, or write them manually:
 
-```rb
+```ruby
 Movie.association_left_join(:directors)     # association_(left|right|inner|cross|...)_join
 Movie.left_join(:directors, movie_id: :id)  # (left|right|inner|cross|...)_join
 ```
@@ -209,7 +209,7 @@ first place. The problem is that Postgres' [JSON operators] can be quite
 cryptic, which hurts your codebase. Luckily, Sequel provides a nice, readable
 API to help you with that:
 
-```rb
+```ruby
 Sequel.extension :pg_json_ops # we load the plugin ("ops" stands for "operations")
 
 # Let's say that the `movies` table has an "info" JSON column.
@@ -225,7 +225,7 @@ Movie.order(info.get_text(['directors', 1, 'name'])) # ORDER BY (info #>> ARRAY[
 Sequel makes it very simple and intuitive to write database views -- just use
 the query interface!
 
-```rb
+```ruby
 DB.create_view :recent_ruby_items, DB[:items].where(category: "ruby").limit(5)
 # CREATE VIEW recent_ruby_items AS
 # SELECT * from items WHERE category = 'ruby' LIMIT 5
@@ -250,7 +250,7 @@ Sequel, if it detects you're using Postgres, will instead change `#paged_each`
 to use [Postgres cursors] under the hood, which are faster than additional
 queries and work with unordered datasets.
 
-```rb
+```ruby
 Movie.paged_each { |row| ... }
 # BEGIN;
 # DECLARE sequel_cursor NO SCROLL CURSOR WITHOUT HOLD FOR SELECT * FROM "table";

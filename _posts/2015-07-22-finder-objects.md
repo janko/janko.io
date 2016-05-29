@@ -10,12 +10,12 @@ scopes.
 
 So, instead of this:
 
-```rb
+```ruby
 # app/models/quiz.rb
 class Quiz < ActiveRecord::Base
 end
 ```
-```rb
+```ruby
 # app/controllers/quizzes_controller.rb
 class QuizzesController < ApplicationController
   # BAD
@@ -32,7 +32,7 @@ end
 
 It's better to do this:
 
-```rb
+```ruby
 # app/models/quiz.rb
 class Quiz < ActiveRecord::Base
   scope :search, -> (params) do
@@ -44,7 +44,7 @@ class Quiz < ActiveRecord::Base
   end
 end
 ```
-```rb
+```ruby
 # app/controllers/quizzes_controller.rb
 class QuizzesController < ApplicationController
   # Good
@@ -104,7 +104,7 @@ the main features finder objects should have.
 
 Let's write the simplest finder object:
 
-```rb
+```ruby
 # app/finders/quiz_finder.rb
 class QuizFinder
   def self.search(q: nil, category: nil, page: nil)
@@ -120,14 +120,14 @@ class QuizFinder
   end
 end
 ```
-```rb
+```ruby
 QuizFinder.search(q: "game of thrones", category: "movies")
 ```
 
 This is of course very raw, but it's a good start. We quickly realize we don't
 want to repeat the `Quiz` constant for each query method, so we DRY it up:
 
-```rb
+```ruby
 # app/finders/quiz_finder.rb
 class QuizFinder
   def self.search(q: nil, category: nil, page: nil)
@@ -156,7 +156,7 @@ Quickly we come to the idea to have `QuizFinder` be instantiated with a scope,
 and turn our query methods into instance methods, so we change our
 implementation:
 
-```rb
+```ruby
 # app/finders/quiz_finder.rb
 class QuizFinder
   def self.method_missing(name, *args, &block)
@@ -193,7 +193,7 @@ Let's now refactor `#search` to prove that our finder object implementation
 works when we increase complexity (we also add `#new` to make the code
 more concise).
 
-```rb
+```ruby
 # app/finders/quiz_finder.rb
 class QuizFinder
   def self.method_missing(name, *args, &block)
@@ -241,7 +241,7 @@ end
 It looks like our implementation scales. The final step is to extract this
 functionality out so that we can add other finder objects:
 
-```rb
+```ruby
 # app/finders/base_finder.rb
 class BaseFinder
   def self.method_missing(name, *args, &block)
@@ -273,7 +273,7 @@ class BaseFinder
   end
 end
 ```
-```rb
+```ruby
 # app/finders/quiz_finder.rb
 class QuizFinder < BaseFinder
   model Quiz

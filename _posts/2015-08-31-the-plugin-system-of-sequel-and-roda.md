@@ -64,7 +64,7 @@ Since Sequel and Roda have a very similar plugin system, it's enough to
 demonstrate one of them, so we'll choose Roda. Roda is a web framework that
 consists of 3 core classes:
 
-```rb
+```ruby
 class Roda                                    # 1: Roda
   class RodaRequest < Rack::Request; end      # 2: Roda::RodaRequest
   class RodaResponse < Rack::Response; end    # 3: Roda::RodaResponse
@@ -93,7 +93,7 @@ it's a Ruby module. ◆
 With ♣︎ and ◆ in mind, let's define a `Roda.plugin` method that applies a
 given plugin:
 
-```rb
+```ruby
 class Roda
   def self.plugin(plugin)
     include plugin::InstanceMethods if defined?(plugin::InstanceMethods)
@@ -107,7 +107,7 @@ class Roda
   end
 end
 ```
-```rb
+```ruby
 Roda.plugin MyPlugin
 ```
 
@@ -136,7 +136,7 @@ Roda's core behaviour, the one Roda has without loading any plugins.
 The problem is that, if this core behaviour is defined directly on core
 classes, it is not possible for a plugin to override it:
 
-```rb
+```ruby
 class Roda
   # This method cannot be overriden with `Roda.extend MyPlugin::ClassMethods`
   def self.route(&block)
@@ -160,7 +160,7 @@ already override each other. What if we then make the core functionality
 *itself* a plugin (a "base" plugin), which automatically gets applied when Roda
 is required?
 
-```rb
+```ruby
 class Roda
   module RodaPlugins
     module Base
@@ -191,7 +191,7 @@ them. Let's extend `Roda.plugin` with the ability to load plugins by symbols,
 which first requires the plugin by requiring `"roda/plugins/#{name}"` (and then
 applies it):
 
-```rb
+```ruby
 class Roda
   def self.plugin(plugin)
     plugin = RodaPlugins.load_plugin(plugin) if plugin.is_a?(Symbol)
@@ -216,7 +216,7 @@ class Roda
   end
 end
 ```
-```rb
+```ruby
 Roda.plugin :render
 Roda.plugin :caching
 ```
@@ -238,7 +238,7 @@ shipped as gems in the same way it loads its own core plugins.
 Finally, it would be nice if the plugins were configurable, and able to load
 any other plugins they might potentially depend on:
 
-```rb
+```ruby
 class Roda
   def self.plugin(plugin, *args, &block)
     plugin = RodaPlugins.load_plugin(plugin) if plugin.is_a?(Symbol)
@@ -276,7 +276,7 @@ which maximizes the range of plugins we can write. Since Roda's behaviour is
 split into plugins and applied by module inclusion, all methods are nicely
 introspectable:
 
-```rb
+```ruby
 require "roda"
 Roda.plugin :render
 Roda.instance_method(:render).owner           # Roda::RodaPlugins::Render::InstanceMethods

@@ -42,7 +42,7 @@ on both ORMs. I will list the features roughly in reverse chronological order
 The `ActiveRecord::Relation#or` query method allows use of the OR operator
 (previously you'd have to write SQL strings):
 
-```rb
+```ruby
 Post.where(id: 1).or(Post.where(id: 2))
 # => SELECT * FROM posts WHERE (id = 1) OR (id = 2)
 ```
@@ -59,7 +59,7 @@ only **8 years** behind Sequel ([code](https://github.com/jeremyevans/sequel/blo
 The `ActiveRecord::Relation#left_joins` query method generates a LEFT OUTER
 JOIN (previously kind of possible via `#eager_load`):
 
-```rb
+```ruby
 User.left_joins(:posts)
 # => SELECT "users".* FROM "users" LEFT OUTER JOIN "posts" ON "posts"."user_id" = "users"."id"
 ```
@@ -86,7 +86,7 @@ achieve the same features with [serialization], [serialization_modification_dete
 The `ActiveRecord::ConnectionAdapters::AbstractAdapter#views` method defined on
 connection adapters returns an array of database view names:
 
-```rb
+```ruby
 ActiveRecord::Base.connection.views #=> ["recent_posts", "popular_posts", ...]
 ```
 
@@ -110,7 +110,7 @@ Sequel supported both adding and dropping indices concurrently since **2012**
 `ActiveRecord::Relation#in_batches` yields batches of relations, suitable for
 batched updates or deletes:
 
-```rb
+```ruby
 Person.in_batches { |people| people.update_all(awesome: true) }
 ```
 
@@ -118,7 +118,7 @@ Sequel doesn't have an equivalent, because there is no one right way to do
 batched updates, it depends on the situation. For example, the following Sequel
 implementation in my benchmarks showed to be 2x faster than ActiveRecord's:
 
-```rb
+```ruby
 (Person.max(:id) / 1000).times do |i|
   Person.where(id: (i*1000 + 1)..((i+1) * 1000)).update(awesome: true)
 end
@@ -131,7 +131,7 @@ halting of callback chain. The new version
 [removes](https://github.com/rails/rails/pull/17227) this behaviour and
 requires you to be explicit about it:
 
-```rb
+```ruby
 class Person < ActiveRecord::Base
   before_save do
     throw(:abort) if some_condition
@@ -177,7 +177,7 @@ users can decide whether they want the performance hit.
 The `where.not` query construct allows negating a `where` clause, eliminating
 the need to write SQL strings:
 
-```rb
+```ruby
 Person.where.not(name: "John")
 ```
 
@@ -191,7 +191,7 @@ In 2013 `ActiveRecord::Relation#rewhere` was
 [added](https://github.com/rails/rails/commit/f950b2699f97749ef706c6939a84dfc85f0b05f2)
 allowing you to overwrite all existing WHERE conditions with new ones:
 
-```rb
+```ruby
 Person.where(name: "Mr. Anderson").rewhere(name: "Neo")
 ```
 
@@ -205,7 +205,7 @@ since 2008, **5 years** before this ActiveRecord update
 ([commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5)),
 giving the ability to map names to integer columns:
 
-```rb
+```ruby
 class Conversation < ActiveRecord::Base
   enum status: [:active, :archived]
 end

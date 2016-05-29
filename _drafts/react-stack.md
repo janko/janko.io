@@ -24,7 +24,7 @@ Since v6, Babel doesn't really do anything tangible out of the box. All of the p
   - [preset-stage-2]
   - [preset-react]
 
-```
+```bash
 $ npm install --save-dev babel-core babel-preset-es2015 babel-preset-stage-2 babel-preset-react
 ```
 

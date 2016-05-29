@@ -91,7 +91,7 @@ upsides:
 * you can process some styles in the foreground and some in the background
 * jobs properly abort when record is missing
 
-```rb
+```ruby
 class Photo < ActiveRecord::Base
   has_attached_file :image, styles: {thumb: "300x300>"}
   process_in_background :image
@@ -148,12 +148,12 @@ has some upsides:
 * the file can be both processed and stored in the background
 * the cached original can be displayed to the user while background job is working
 
-```rb
+```ruby
 class MyUploader < CarrierWave::Uploader::Base
   include CarrierWave::Backgrounder::Delay
 end
 ```
-```rb
+```ruby
 class Photo < ActiveRecord::Base
   mount_uploader :image, MyUploader
   store_in_background :image
@@ -204,7 +204,7 @@ have to do a lot of manual work to implement it right, because you need to
 take care about a lot of things (generalizing jobs for all attachments,
 graceful degradation, thread-safety, introspection etc).
 
-```rb
+```ruby
 file = params.delete("image")
 
 photo = Photo.create(params)
@@ -248,12 +248,12 @@ background job. It supports any backgrounding library, because instead of
 shipping with integrations for each and every backgrounding library, it simply
 lets you call the background job yourself.
 
-```rb
+```ruby
 Shrine.plugin :backgrounding
 Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
 ```
-```rb
+```ruby
 class UploadJob
   include Sidekiq::Worker
   def perform(data)
@@ -261,7 +261,7 @@ class UploadJob
   end
 end
 ```
-```rb
+```ruby
 class DeleteJob
   include Sidekiq::Worker
   def perform(data)

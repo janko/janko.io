@@ -69,7 +69,7 @@ Our `layout.html` will basically look like this:
 Notice the `<%= contents %>`, this is where our pages will be inserted. Let's
 create a Gulp task for layouting (is "layouting" a real word?):
 
-```sh
+```bash
 $ npm install --save-dev gulp-wrap
 ```
 
@@ -101,7 +101,7 @@ destination to:
 In this example I will serve the files with [connect][connect],
 [serve-static][serve-static] and [serve-index][serve-index]:
 
-```sh
+```bash
 $ npm install --save-dev connect serve-static serve-index
 ```
 
@@ -159,7 +159,7 @@ is easy to grasp simple to use.
 Your `layout` task should instead use
 [gulp-nunjucks-render][gulp-nunjucks-render]:
 
-```sh
+```bash
 $ npm install --save-dev gulp-nunjucks-render
 ```
 

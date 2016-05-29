@@ -43,7 +43,7 @@ return plain Ruby hashes/arrays instead of model instances, and there was one
 case where I was implementing an iterative algorithm, and just switching from
 model instances to plain hashes/arrays made my algorithm 3x faster.
 
-```rb
+```ruby
 Movie.where{rating > 4}.to_a       #=> [#<Movie>, #<Movie>, ...]
 DB[:movies].where{rating > 4}.to_a #=> [{...}, {...}, ...]
 ```
@@ -56,7 +56,7 @@ to handle incoming requests while routing them, I have the ultimate flexibility
 which opens so many doors. For example, if I want to add authorization for a
 mounted Rack endpoint, this is how I would do it in Roda:
 
-```rb
+```ruby
 class App < Roda
   plugin :halt
   plugin :render
@@ -78,7 +78,7 @@ I have no idea how I would do that in Rails. We cannot be inside any
 controller, because the endpoint is what handles the request, so we have
 to do it in "nowhere land" that are Rails routes:
 
-```rb
+```ruby
 Rails.application.routes.draw do
   upload_authorization = ->(request) do
     if (id = request.session[:user_id]) && (current_user = User.find(id))
@@ -91,7 +91,7 @@ Rails.application.routes.draw do
   end
 end
 ```
-```rb
+```ruby
 class HaltRequests
   def initialize(app)
     @app = app
@@ -129,7 +129,7 @@ achieves this by giving you a DSL to generate a Rack app that encapsulates
 all authentication logic, which you can then use as a middleware in your
 application:
 
-```rb
+```ruby
 class Authentication < Roda
   plugin :rodauth do
     enable :login, :logout, :create_account, :verify_account, :close_account
@@ -145,7 +145,7 @@ class Authentication < Roda
   end
 end
 ```
-```rb
+```ruby
 Rails.application.config.middleware.use Authentication
 ```
 

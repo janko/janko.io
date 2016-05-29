@@ -15,7 +15,7 @@ started as a fork of [Cuba] and was inspired by [Sinatra]. The following is the
 simplest app you can make in Roda, which returns "Hello world!" for every
 request:
 
-```rb
+```ruby
 # config.ru
 require "roda"
 Roda.route { "Hello world!" }
@@ -32,7 +32,7 @@ Roda (and Cuba) have a very unique approach to routing compared to Rails,
 Sinatra and other Ruby web frameworks. In Roda you route incoming requests
 dynamically as they come.
 
-```rb
+```ruby
 class App < Roda
   route do |r| # the request object
     r.on "albums" do
@@ -69,7 +69,7 @@ difference is that the `route` block is called each time a request is made, so
 this routing is actually happening in real-time. This means that **you can
 handle the request while you're routing it**. And this is where it gets cool.
 
-```rb
+```ruby
 class App < Roda
   plugin :all_verbs
 
@@ -109,7 +109,7 @@ This is a new concept, and it opens a whole new world of routing possibilities.
 From other web frameworks we are used to routing only by the request path and
 method. But why not also route by request *headers* or *parameters*?
 
-```rb
+```ruby
 class App < Roda
   plugin :header_matchers
   plugin :symbol_matchers
@@ -166,7 +166,7 @@ The "render" plugin adds support for template rendering using [Tilt], and
 the "assets" plugin adds asset (pre)compilation and management (also using
 Tilt).
 
-```rb
+```ruby
 plugin :render, engine: "haml"
 plugin :assets, css: "app.css", js: "app.js"
 
@@ -189,7 +189,7 @@ Like Sinatra, Roda uses the return value of the block as the response body. But
 unlike Sinatra, Roda knows what's been returned in the block, and with the
 "json" plugin you can add automatic JSON serialization for those values.
 
-```rb
+```ruby
 plugin :json, classes: [Array, Hash, ActiveRecord::Base, ActiveRecord::Relation],
   serializer: proc { |object|
     case object
@@ -215,7 +215,7 @@ end
 
 Roda has Websocket support using [faye-websocket].
 
-```rb
+```ruby
 plugin :websockets
 
 route do |r|
@@ -238,7 +238,7 @@ end
 
 The "caching" plugin adds helper methods for setting HTTP caching headers.
 
-```rb
+```ruby
 plugin :caching
 
 route do |r|
@@ -264,7 +264,7 @@ end
 
 The "path" plugin adds support for named paths (similar to Rails).
 
-```rb
+```ruby
 plugin :path
 
 # static
@@ -297,14 +297,14 @@ end
 This plugin ports most of the helper methods defined in Sinatra::Helpers to
 Roda, which is awesome if you're transitioning from Sinatra.
 
-```rb
+```ruby
 plugin :sinatra_helpers
 ```
 
 This will fill your app's instance methods, which you can then use in the
 `route` block.
 
-```rb
+```ruby
 # Request methods
 redirect back
 error 500, "Invalid parameters"
@@ -335,7 +335,7 @@ tree is that, if you handled the request, you should always explicitly return a
 string that will be written as the response body. For example, a `POST
 /contact` request to the following app would return a 404:
 
-```rb
+```ruby
 require "mail"
 
 class App < Roda

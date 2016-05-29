@@ -35,7 +35,7 @@ face detection and other.
 
 The simplest way to set upload options is directly on the storage:
 
-```rb
+```ruby
 Shrine::Storage::Cloudinary.new(
   upload_options: {
     responsive_breakpoints: {
@@ -50,7 +50,7 @@ Shrine::Storage::Cloudinary.new(
 Shrine also ships with [upload_options] plugin which allows you to set upload
 options dynamically:
 
-```rb
+```ruby
 plugin :upload_options, store: ->(io, context) do
   if context[:version] == :original
     {acl: "private"} # the original file is private
@@ -70,7 +70,7 @@ Shrine also has [determine_mime_type] plugin for determining MIME type from file
 contents, and [store_dimensions] plugin for extracting image dimensions. From
 Shrine 2.0 you are now able to combine built-in analyzers:
 
-```rb
+```ruby
 plugin :determine_mime_type, analyzer: ->(io, analyzers) do
   analyzers[:mimemagic].call(io) || analyzers[:file].call(io)
 end
@@ -94,12 +94,12 @@ plugin provides a Rack endpoint which you can mount inside your application,
 which streams uploaded files. It's even smart enough to set the
 "Content-Length" response header, so that browsers can show an ETA.
 
-```rb
+```ruby
 class VideoUploader < Shrine
   plugin :download_endpoint, storages: [:store], prefix: "videos"
 end
 ```
-```rb
+```ruby
 Rails.application.routes.draw do
   mount VideoUploader::DownloadEndpoint, to: "/videos"
 end
@@ -118,7 +118,7 @@ services have this feature built-in, but some don't. For that reason Shrine
 provides a generic [backup] plugin which automatically backs up files uploaded
 to the main storage, to any other Shrine storage.
 
-```rb
+```ruby
 storages[:s3_backup] = Shrine::Storage::S3.new(bucket: "myapp-backup", **options)
 plugin :backup, storage: :s3_backup
 ```
@@ -130,7 +130,7 @@ Sometimes you may want to do additional actions when attachment is cached
 Shrine now provides `Attacher#cached?` and `Attacher#stored?` methods which you
 can use in callbacks:
 
-```rb
+```ruby
 class Document < Sequel::Model
   include FileUploader[:file]
 

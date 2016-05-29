@@ -9,7 +9,7 @@ When working on the [Shrine] library for handling file uploads, in multiple
 places I needed to be able to download a file from URL. If you know the Ruby
 standard library well, the solution might be obvious to you: [open-uri].
 
-```rb
+```ruby
 require "open-uri"
 result = open("http://example.com/image.jpg")
 result #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz>
@@ -52,7 +52,7 @@ Ruby has a `Kernel#open` method, which given a file path acts as `File.open`.
 but given a string that starts with "|", it interprets it as a shell command
 and returns an IO connected to the spawned subprocess:
 
-```rb
+```ruby
 open("| ls") # returns an IO connected to the `ls` shell command
 ```
 
@@ -64,7 +64,7 @@ think that `| rm -rf ~` is a nice looking URL.
 A little known fact is that `Kernel#open` just delegates to
 `URI::(HTTP|HTTPS|FTP)#open`, and we can simply use that instead:
 
-```rb
+```ruby
 uri = URI.parse("http://example.com/image.jpg") #=> #<URI::HTTP>
 uri.open #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz>
 ```
@@ -74,7 +74,7 @@ uri.open #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/2016052
 Stangely, if the remote file has less than 10KB, open-uri will actually return
 a StringIO instead of a Tempfile.
 
-```rb
+```ruby
 uri.open #=> #<StringIO>
 ```
 
@@ -82,7 +82,7 @@ In context of [Shrine] I wanted the returned IO to *always* be a file, for
 consistency and because it could later be given for processing. We can easily
 fix that:
 
-```rb
+```ruby
 io = uri.open
 
 if io.is_a?(StringIO)
@@ -105,7 +105,7 @@ So let's copy the downloaded IO to a new Tempfile which has a file extension,
 but use `mv` if we can so that we don't pay any performance penalty (and that
 the old file also gets deleted):
 
-```rb
+```ruby
 io = uri.open
 downloaded = Tempfile.new([File.basename(uri.path), File.extname(uri.path)])
 
@@ -129,7 +129,7 @@ only if URLs repeat.
 So we disable open-uri's following of redirects, which now raises
 `OpenURI::HTTPRedirect` on redirects, allowing us to reimplement it:
 
-```rb
+```ruby
 tries = 3
 
 begin
@@ -149,7 +149,7 @@ wanted that download aborts as soon as the "Content-Length" header reveals that
 the file will be too large. Luckily, open-uri has the `:content_length_proc`
 option, which calls the given proc as soon as open-uri reads "Content-Length":
 
-```rb
+```ruby
 uri.open(
   content_length_proc: ->(size) { raise FileTooLarge if size > max_size },
 )
@@ -161,7 +161,7 @@ Luckily, open-uri has got our back on this one too with `:progress_proc`, which
 calls the given proc whenever a chunk is downloaded, with the current size.
 That means we can add it as a fallback in case "Content-Length" is missing:
 
-```rb
+```ruby
 uri.open(
   content_length_proc: ->(size) { raise FileTooLarge if size && size > max_size },
   progress_proc:       ->(size) { raise FileTooLarge if size > max_size },
@@ -177,7 +177,7 @@ requests after some time.
 Open-uri doesn't include a "User-Agent" by default, but allows us to easily add
 one, since open-uri treats any unknown option as a request header:
 
-```rb
+```ruby
 uri.open("User-Agent" => "MyApp/1.0")
 ```
 
@@ -186,7 +186,7 @@ uri.open("User-Agent" => "MyApp/1.0")
 The result of this investigation is the [Down] gem, which incorporates all of
 these improvements, and more. You can use it like this:
 
-```rb
+```ruby
 require "down"
 result = Down.download("http://example.com/image.jpg")
 result #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz.jpg>
@@ -194,7 +194,7 @@ result #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-
 
 More advanced downloading could look something like this:
 
-```rb
+```ruby
 Down.download "http://example.com/image.jpg",
   max_size: 20*1024*1024,   # 20 MB
   max_redirects: 5,         # default is 2
