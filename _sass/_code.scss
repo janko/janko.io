@@ -1,7 +1,5 @@
 pre[class*=language] {
-  @include bleed;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin: 1em -1em;
 
   @media (max-width: 800px) {
     border-radius: 0;
@@ -9,7 +7,7 @@ pre[class*=language] {
 }
 
 code[class*=language] {
-  .no-js & {
+  pre:not([class*=language]) & {
     color: inherit;
     text-shadow: none;
   }
