@@ -8,7 +8,14 @@ pre[class*=language] {
   }
 }
 
-code:not([class]) {
+code[class*=language] {
+  .no-js & {
+    color: inherit;
+    text-shadow: none;
+  }
+}
+
+code:not([class*=language]) {
   padding: 0 .25em;
   border: 1px solid rgba(#000, 0.1);
   border-radius: 0.25rem;
