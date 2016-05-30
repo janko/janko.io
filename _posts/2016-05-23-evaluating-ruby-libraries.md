@@ -235,9 +235,8 @@ at the Sequel Google group. The reason why there aren't more Sequel maintainers
 is because they simply wouldn't have anything to do :smiley:.
 
 Even though ActiveRecord has a larger number of contributors, features like
-`ActiveRecord::Relation#or` still take 2 years to get merged (while Sequel
-usually had them all along). So I will always rather choose Sequel, because
-it's simply better maintained.
+`ActiveRecord::Relation#or` still take 2 years to get merged. So I will always
+rather choose Sequel, because it's simply better maintained.
 
 ### Rails integration
 
