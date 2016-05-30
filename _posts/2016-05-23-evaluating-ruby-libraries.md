@@ -189,10 +189,10 @@ It's also important for me that new versions of libraries are regularly
 released. I really like Jeremy Evans' monthly release cycle, in which he tries
 to release a new version every month with whatever is currently on master.
 This is also for me another downside of ActiveRecord; patch releases are
-relatively frequent, but minor releases are approximately every half a year,
-which is a long time. And if you want to pull latest ActiveRecord from master,
-with it you also have to pull the *whole Rails* from master, which can be very
-inconvenient.
+relatively frequent, but minor releases are approximately every 5-6 months,
+which is a very long time. And if you want to pull latest ActiveRecord from
+master, with it you also have to pull the *whole Rails* from master, which can
+be very inconvenient.
 
 ## Less valuable criteria
 
@@ -205,11 +205,11 @@ that you ever tried, because it will always be more familiar than any new
 library.
 
 I think that *what the library can do* is much more important than how much
-you're familar with it. Familiarity can always be "fixed" by learning about
-the library, but if the library lacks features and good design, you cannot
-easily get around that. I'm not gonna lie, even though Sequel and ActiveRecord
-are very similar, deeply understanding Sequel still took a lot of time (like
-ActiveRecord did), but it was totally worth it.
+you're familar with it. Familiarity can always be "fixed" by reading
+documentation and source code, but if the library lacks features and good
+design, you cannot easily get around that. I'm not gonna lie, even though
+Sequel and ActiveRecord are very similar, deeply understanding Sequel still
+took a lot of time (like ActiveRecord did), but it was totally worth it.
 
 ### Stars
 
@@ -217,8 +217,8 @@ The amount of stars a library has on GitHub is usually a good measure for its
 popularity. However, I've often found that popularity isn't a good indication
 of library's quality. I think this is because popularity is an exponential
 function; people will often automatically choose a library based on its
-popularity, thus increasing its popularity. If a new library arises which
-solves the problem in a better way, it is difficult to gain popularity.
+popularity, thus increasing its popularity. Then when a new library arises
+which solves the problem in a better way, it is difficult to gain popularity.
 
 ### Number of maintainers
 
@@ -231,10 +231,13 @@ other people wouldn't be able to maintain it.
 
 For example, Sequel is maintained perfectly: most of the time there are 0 open
 issues because they are fixed quickly, and the author additionally helps anyone
-at the Sequel Google group.  The reason why there aren't more Sequel
-maintainers is because they simply wouldn't have anything to do :smiley:. Even
-though ActiveRecord has a larger number of contributors, I will always choose
-Sequel because it's simply better maintained.
+at the Sequel Google group. The reason why there aren't more Sequel maintainers
+is because they simply wouldn't have anything to do :smiley:.
+
+Even though ActiveRecord has a larger number of contributors, features like
+`ActiveRecord::Relation#or` still take 2 years to get merged (while Sequel
+usually had them all along). So I will always rather choose Sequel, because
+it's simply better maintained.
 
 ### Rails integration
 
