@@ -29,12 +29,12 @@ I will also mention concrete libraries that I prefer and why.
 
 ## More valuable criteria
 
-### Features
+### Features & Flexibility
 
 The most important criteria for me is how much the library can do;
 specifically, can the library satisfy my current requirements, and potential
-future requirements that come to mind. If library A can do more than library B,
-I will almost always pick library A.
+future requirements that come to mind. If library **A** allows me to do more
+than library **B**, I will almost always pick library **A**.
 
 When it comes to choosing an ORM, I will always choose [Sequel] over
 ActiveRecord, simply because [you can do more with it]. One example (out of
@@ -117,7 +117,7 @@ to implement that as well. No thanks, I'm sticking with Roda.
 If the problem the library is solving is generic, then the library should be
 usable in any web framework. I know, I'm biased being a Ruby-off-Rails
 developer, which means I literally cannot use any Rails-specific gems. And most
-of you how are reading this are Rails developers, so why should you care?
+of you who are reading this are Rails developers, so why should you care?
 Well, since it seems people are increasingly using other Ruby web frameworks,
 I think it's future-proof to center around libraries that *everyone* can use.
 
@@ -209,7 +209,7 @@ you're familar with it. Familiarity can always be "fixed" by learning about
 the library, but if the library lacks features and good design, you cannot
 easily get around that. I'm not gonna lie, even though Sequel and ActiveRecord
 are very similar, deeply understanding Sequel still took a lot of time (like
-ActiveRecord did), but it was very worth it.
+ActiveRecord did), but it was totally worth it.
 
 ### Stars
 
