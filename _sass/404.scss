@@ -33,7 +33,8 @@
       padding: 0.5em;
       background: rgba(#000, 0.5);
       font-family: $condensed-fallback;
-      font-size: 1.25em;
+      font-size: 0.8em;
+      font-size: 3.8vw;
       color: #fff;
 
       .wf-active & {
@@ -41,7 +42,7 @@
       }
 
       @include query(sm) {
-        font-size: 2em;
+        font-size: 1.75em;
       }
     }
   }
