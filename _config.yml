@@ -1,6 +1,9 @@
 title: Bipolar
 description: A frontend & backend blog written by a pair of twin developers.
 
+paginate: 5
+paginate_path: /page/:num/
+
 kramdown:
   syntax_highlighter_opts:
     disable: true
