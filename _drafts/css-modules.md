@@ -1,12 +1,10 @@
 ---
 title: Solved By CSS Modules
 author: matija
-tags: css modules js
+tags: css css-modules react webpack
 ---
 
-## CSS in JS
-
-I tried this crazy thing once, with Radium.
+I tried doing [CSS in JS] once, with Radium. It was quite a journey, let me tell you about it...
 
 What I liked:
 
@@ -20,7 +18,8 @@ What I didn't like was:
   - inability to lint
   - writing media queries, you made a typo when writing `@mdia`? tough shit, there's no syntax highlighting or linting to warn you
 
-## CSS Modules
+[extract-text-webpack-plugin]: https://github.com/webpack/extract-text-webpack-plugin
+[CSS in JS]: https://speakerdeck.com/vjeux/react-css-in-js
 
 CSS Modules saved the day for me, because the thing I hate most about CSS is thinking of class names and making sure that they don't clash. I also hate naming methodologies, I'd rather shoot myself than write a class name like `.Component--foo__bar`.
 
