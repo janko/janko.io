@@ -1,7 +1,5 @@
 ---
-layout: post
 title: Evaluating (Ruby) Libraries
-author: janko
 tags: ruby gem library
 ---
 
@@ -43,10 +41,10 @@ return plain Ruby hashes/arrays instead of model instances, and there was one
 case where I was implementing an iterative algorithm, and just switching from
 model instances to plain hashes/arrays made my algorithm 3x faster.
 
-{% highlight ruby %}
+```ruby
 Movie.where{rating > 4}.to_a       #=> [#<Movie>, #<Movie>, ...]
 DB[:movies].where{rating > 4}.to_a #=> [{...}, {...}, ...]
-{% endhighlight %}
+```
 
 When it comes to choosing a web framework, [Roda] is my first choice. The
 reason why I don't choose Rails is because, even though Rails is really big and
@@ -56,7 +54,7 @@ to handle incoming requests while routing them, I have the ultimate flexibility
 which opens so many doors. For example, if I want to add authorization for a
 mounted Rack endpoint, this is how I would do it in Roda:
 
-{% highlight ruby %}
+```ruby
 class App < Roda
   plugin :halt
   plugin :render
@@ -72,13 +70,13 @@ class App < Roda
     request.halt 403, render(:unauthorized) if authorized?(current_user, role)
   end
 end
-{% endhighlight %}
+```
 
 I have no idea how I would do that in Rails. We cannot be inside any
 controller, because the endpoint is what handles the request, so we have
 to do it in "nowhere land" that are Rails routes:
 
-{% highlight ruby %}
+```ruby
 Rails.application.routes.draw do
   upload_authorization = ->(request) do
     if (id = request.session[:user_id]) && (current_user = User.find(id))
@@ -90,8 +88,8 @@ Rails.application.routes.draw do
     mount VideoUploader::UploadEndpoint, to: "/videos"
   end
 end
-{% endhighlight %}
-{% highlight ruby %}
+```
+```ruby
 class HaltRequests
   def initialize(app)
     @app = app
@@ -105,7 +103,7 @@ class HaltRequests
 end
 
 Rails.application.config.middleware.use HaltRequests
-{% endhighlight %}
+```
 
 Gross. In the `constraints` block we're not inside of any controller, so we
 have to reimplement authentication and authorization logic. Moreover, unlike
@@ -129,7 +127,7 @@ achieves this by giving you a DSL to generate a Rack app that encapsulates
 all authentication logic, which you can then use as a middleware in your
 application:
 
-{% highlight ruby %}
+```ruby
 class Authentication < Roda
   plugin :rodauth do
     enable :login, :logout, :create_account, :verify_account, :close_account
@@ -144,10 +142,10 @@ class Authentication < Roda
     end
   end
 end
-{% endhighlight %}
-{% highlight ruby %}
+```
+```ruby
 Rails.application.config.middleware.use Authentication
-{% endhighlight %}
+```
 
 ### Design
 

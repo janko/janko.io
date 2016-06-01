@@ -2,20 +2,12 @@
 <html class="no-js wf-loading" lang="en">
   <head>
     <meta charset="utf-8">
-    {% if page.title %}
-    <title>{{ page.title }}{% if page.subtitle %}: {{ page.subtitle }}{% endif %} | {{ site.title }}</title>
-    {% else %}
-    <title>{{ site.title }}</title>
-    {% endif %}
+    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% seo title=false %}
     {% feed_meta %}
     {% include fonts.html %}
     <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
-    {% if page.author == 'matija' %}
-    <script src="{{ site.baseurl }}/scripts/vendor/prism.js" defer></script>
-    <link rel="stylesheet" href="{{ site.baseurl }}/styles/vendor/prism.css">
-    {% endif %}
     <link rel="stylesheet" href="{{ site.baseurl }}/styles/application.css">
   </head>
 
@@ -29,7 +21,7 @@
               <span>{{ site.title }}</span>
             </a>
           </div>
-          <p class="brand-tagline">{{ site.description | replace: '&', '<i class="icon icon-ampersand"></i>' }}</p>
+          <p class="brand-tagline">{{ site.description }}</p>
         </div>
       </div>
     </header>

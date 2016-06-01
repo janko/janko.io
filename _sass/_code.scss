@@ -1,51 +1,22 @@
 pre {
-  margin: 1em -1em !important;
+  margin: 1em -1em;
   padding: 1em;
   border-radius: 0.3em;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-
-  // monokai base
-  background: #272822;
-  color: #f8f8f2;
-
-  code {
-    font-size: 16px;
-    line-height: 1.5;
-  }
 
   @media (max-width: 800px) {
     border-radius: 0;
   }
 }
 
-.highlight {
-  code {
-    padding: 0;
-    border-style: none;
-    border-radius: 0;
-    background-color: transparent;
-  }
-}
-
-pre:not([class*=language]) code[class*=language] {
-  color: inherit;
-  text-shadow: none;
-}
-
-// inline code tags, because CSS can't do "if the parent is NOT pre..."
-h1, h2, h3, h4, h5, h6,
-p, ol, ul, dl, blockquote,
-table {
-  code {
-    padding: 0 .25em;
-    border: 1px solid rgba(#000, 0.1);
-    border-radius: 0.25rem;
-    background: #f8f8f8;
-    word-wrap: break-word;
-    color: #333;
-    text-transform: none; // resetting in case the parent is uppercase
-  }
+:not(pre) > code {
+  padding: 0 .25em;
+  border-radius: 0.25rem;
+  background: #f2f2f2;
+  word-wrap: break-word;
+  color: #333;
+  text-transform: none; // resetting in case the parent is uppercase
 }
 
 a {

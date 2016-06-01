@@ -1,6 +1,5 @@
 ---
 title: Ode to Sequel
-author: janko
 tags: ruby orm postgresql activerecord
 ---
 
@@ -47,7 +46,7 @@ which is required only when the plugin is loaded.
 <div class="media">
   <img class="media-object pull-right" src="{{ site.baseurl }}/images/sequel-plugin_system.png" height="250" alt="Sequel's plugin system">
   <div class="media-body">
-{% highlight ruby %}
+```ruby
 require "sequel" # loads the core
 
 DB = Sequel.connect("postgres:///my_database")
@@ -56,7 +55,7 @@ Sequel::Model.plugin :validation_helpers
 Sequel::Model.plugin :json_serializer
 Sequel::Model.plugin :nested_attributes
 Sequel::Model.plugin :single_table_inheritance
-{% endhighlight %}
+```
   </div>
 </div>
 
@@ -74,12 +73,12 @@ Did you know that PostgresSQL and MySQL have support for POSIX regular
 expressions? Neither did I. If you're using one of these two databases, Sequel
 will transform Ruby regular expressions to SQL:
 
-{% highlight ruby %}
+```ruby
 Movie.where(name: /future/)
 # SELECT * FROM movies WHERE (name ~ 'future')
 Movie.where(name: /future/i) # Case insensitive match
 # SELECT * FROM movies WHERE (name ~* 'future')
-{% endhighlight %}
+```
 
 This means that you can simply replace all your ugly LIKE queries with
 beautiful regular expressions! Just note that regex matches are usually slower
@@ -92,7 +91,7 @@ queries are still nicer to write in Sequel (see below).
 Most of Sequel's query methods, in addition to arguments, also support blocks
 (so-called "virtual row blocks") which gives you a DSL for more advanced queries.
 
-{% highlight ruby %}
+```ruby
 Movie.where{year >= 2010}                        # inequality operators
 # WHERE (year >= 2010)
 Movie.where{(title =~ "Batman") | (year < 2010)} # OR query
@@ -101,7 +100,7 @@ Movie.where{rating >= avg(rating)}               # functions get translated to S
 # WHERE (rating >= avg(rating)
 Movie.where{title.like("%Future%")}              # special methods
 # WHERE (title LIKE '%FUTURE%')
-{% endhighlight %}
+```
 
 You may be familiar with this syntax if you've ever used the [Squeel] gem. This
 is because Squeel originally borrowed this syntax from Sequel (hence the play of
@@ -133,14 +132,14 @@ On the other hand, Sequel allows you to write low-level queries using the
 models, You can go through the `Sequel::Database` object directly, and the
 records will be returned as simple Ruby hashes.
 
-{% highlight ruby %}
+```ruby
 DB = Sequel.connect("postgres:///my_database") #=> #<Sequel::Database>
 
 Movie.where(title: "Matrix").first       #=> #<Movie title="Matrix" year=1999 ...>
 DB[:movies].where(title: "Matrix").first #=> {title: "Matrix", year: 1999, ...}
 
 # DB[:movies].sql #=> "SELECT * FROM movies"
-{% endhighlight %}
+```
 
 This means that with Sequel you can write very readable migrations (because you
 don't have to [redefine your models inside migrations][redefining models]), and
@@ -152,7 +151,7 @@ Where ActiveRecord uses class-level DSL, Sequel instead prefers simple OO
 design. For example, the idiomatic way to write validations in Sequel is by
 overriding the instance method `#validate`:
 
-{% highlight ruby %}
+```ruby
 class Movie < Sequel::Model
   plugin :validation_helpers
 
@@ -164,7 +163,7 @@ class Movie < Sequel::Model
     end
   end
 end
-{% endhighlight %}
+```
 
 I personally find this way of writing validations much more natural than
 ActiveRecord's class-level DSL, since I'm not constrained to `:if` and
@@ -180,10 +179,10 @@ an INNER JOIN by default, and while you can use it to write a custom JOIN
 statement, it's really verbose as you have to write the full SQL string with
 all the column-joining logic.
 
-{% highlight ruby %}
+```ruby
 # LEFT JOINs in ActiveRecord
 Movie.joins("LEFT JOIN on directors ON directors.movie_id = movies.id")
-{% endhighlight %}
+```
 
 You could also use `includes(:directors).refrences(:directors)`, which does a
 LEFT JOIN, but this also eager loads your directors into memory, which is
@@ -192,10 +191,10 @@ unfortunate if you don't need that.
 Sequel, on the other hand, has support for *ALL* types of JOINs. You can do
 joins through associations, or write them manually:
 
-{% highlight ruby %}
+```ruby
 Movie.association_left_join(:directors)     # association_(left|right|inner|cross|...)_join
 Movie.left_join(:directors, movie_id: :id)  # (left|right|inner|cross|...)_join
-{% endhighlight %}
+```
 
 ## Postgres-specific support
 
@@ -212,7 +211,7 @@ first place. The problem is that Postgres' [JSON operators] can be quite
 cryptic, which hurts your codebase. Luckily, Sequel provides a nice, readable
 API to help you with that:
 
-{% highlight ruby %}
+```ruby
 Sequel.extension :pg_json_ops # we load the plugin ("ops" stands for "operations")
 
 # Let's say that the `movies` table has an "info" JSON column.
@@ -221,18 +220,18 @@ info = Sequel.pg_json_op(:info) # we create a "JSON operation" object
 Movie.where(info.has_key?('rated'))                  # WHERE (info ? 'rated')
 Movie.where(info.get_text('rated') => 'PG-13')       # WHERE ((info ->> 'rated') = 'PG-13')
 Movie.order(info.get_text(['directors', 1, 'name'])) # ORDER BY (info #>> ARRAY['directors', 1, 'name'])
-{% endhighlight %}
+```
 
 ### Views
 
 Sequel makes it very simple and intuitive to write database views -- just use
 the query interface!
 
-{% highlight ruby %}
+```ruby
 DB.create_view :recent_ruby_items, DB[:items].where(category: "ruby").limit(5)
 # CREATE VIEW recent_ruby_items AS
 # SELECT * from items WHERE category = 'ruby' LIMIT 5
-{% endhighlight %}
+```
 
 Database views are very helpful for DRYing up some common queries, as you can
 query them as tables (Thoughtbot used views to implement [multi-table full-text
@@ -253,7 +252,7 @@ Sequel, if it detects you're using Postgres, will instead change `#paged_each`
 to use [Postgres cursors] under the hood, which are faster than additional
 queries and work with unordered datasets.
 
-{% highlight ruby %}
+```ruby
 Movie.paged_each { |row| ... }
 # BEGIN;
 # DECLARE sequel_cursor NO SCROLL CURSOR WITHOUT HOLD FOR SELECT * FROM "table";
@@ -263,7 +262,7 @@ Movie.paged_each { |row| ... }
 # FETCH FORWARD 1000 FROM sequel_cursor
 # CLOSE sequel_cursor
 # COMMIT
-{% endhighlight %}
+```
 
 ### sequel_pg
 

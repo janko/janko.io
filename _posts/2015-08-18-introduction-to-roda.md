@@ -1,6 +1,5 @@
 ---
 title: Introduction to Roda
-author: janko
 tags: ruby framework rails roda web
 updated: 19.8.2015.
 ---
@@ -15,12 +14,12 @@ started as a fork of [Cuba] and was inspired by [Sinatra]. The following is the
 simplest app you can make in Roda, which returns "Hello world!" for every
 request:
 
-{% highlight ruby %}
+```ruby
 # config.ru
 require "roda"
 Roda.route { "Hello world!" }
 run Roda.app
-{% endhighlight %}
+```
 
 Let's explain what the official Roda description means:
 
@@ -32,7 +31,7 @@ Roda (and Cuba) have a very unique approach to routing compared to Rails,
 Sinatra and other Ruby web frameworks. In Roda you route incoming requests
 dynamically as they come.
 
-{% highlight ruby %}
+```ruby
 class App < Roda
   route do |r| # the request object
     r.on "albums" do
@@ -44,7 +43,7 @@ class App < Roda
     end
   end
 end
-{% endhighlight %}
+```
 
 Let's see what's going on here. First, we subclass `Roda` (the same way we
 subclass `Sinatra::Base` or `Rails::Application`). The `route` block is called
@@ -69,7 +68,7 @@ difference is that the `route` block is called each time a request is made, so
 this routing is actually happening in real-time. This means that **you can
 handle the request while you're routing it**. And this is where it gets cool.
 
-{% highlight ruby %}
+```ruby
 class App < Roda
   plugin :all_verbs
 
@@ -95,7 +94,7 @@ class App < Roda
     end
   end
 end
-{% endhighlight %}
+```
 
 Since all of these 3 "/albums/:id" routes have to first find the album, we can
 assign the album as soon as we know that the path is going to be "albums/:id",
@@ -109,7 +108,7 @@ This is a new concept, and it opens a whole new world of routing possibilities.
 From other web frameworks we are used to routing only by the request path and
 method. But why not also route by request *headers* or *parameters*?
 
-{% highlight ruby %}
+```ruby
 class App < Roda
   plugin :header_matchers
   plugin :symbol_matchers
@@ -136,7 +135,7 @@ class App < Roda
     end
   end
 end
-{% endhighlight %}
+```
 
 As you can see, Roda's routing tree is very powerful, because you have the
 complete control. But if you don't like it, you can just [use Roda like
@@ -166,7 +165,7 @@ The "render" plugin adds support for template rendering using [Tilt], and
 the "assets" plugin adds asset (pre)compilation and management (also using
 Tilt).
 
-{% highlight ruby %}
+```ruby
 plugin :render, engine: "haml"
 plugin :assets, css: "app.css", js: "app.js"
 
@@ -181,7 +180,7 @@ route do |r|
     view "bar" # renders views/bar.haml
   end
 end
-{% endhighlight %}
+```
 
 ### [Json]
 
@@ -189,7 +188,7 @@ Like Sinatra, Roda uses the return value of the block as the response body. But
 unlike Sinatra, Roda knows what's been returned in the block, and with the
 "json" plugin you can add automatic JSON serialization for those values.
 
-{% highlight ruby %}
+```ruby
 plugin :json, classes: [Array, Hash, ActiveRecord::Base, ActiveRecord::Relation],
   serializer: proc { |object|
     case object
@@ -209,13 +208,13 @@ route do |r|
     Album.find(id)
   end
 end
-{% endhighlight %}
+```
 
 ### [Websockets]
 
 Roda has Websocket support using [faye-websocket].
 
-{% highlight ruby %}
+```ruby
 plugin :websockets
 
 route do |r|
@@ -232,13 +231,13 @@ route do |r|
     view "room"
   end
 end
-{% endhighlight %}
+```
 
 ### [Caching]
 
 The "caching" plugin adds helper methods for setting HTTP caching headers.
 
-{% highlight ruby %}
+```ruby
 plugin :caching
 
 route do |r|
@@ -258,13 +257,13 @@ route do |r|
     response.expires 60                              # HTTP/1.0
   end
 end
-{% endhighlight %}
+```
 
 ### [Path]
 
 The "path" plugin adds support for named paths (similar to Rails).
 
-{% highlight ruby %}
+```ruby
 plugin :path
 
 # static
@@ -290,21 +289,21 @@ route do |r|
     r.redirect path(artist, "albums", "top") # /artists/1/albums/top
   end
 end
-{% endhighlight %}
+```
 
 ### [Sinatra helpers]
 
 This plugin ports most of the helper methods defined in Sinatra::Helpers to
 Roda, which is awesome if you're transitioning from Sinatra.
 
-{% highlight ruby %}
+```ruby
 plugin :sinatra_helpers
-{% endhighlight %}
+```
 
 This will fill your app's instance methods, which you can then use in the
 `route` block.
 
-{% highlight ruby %}
+```ruby
 # Request methods
 redirect back
 error 500, "Invalid parameters"
@@ -317,7 +316,7 @@ status 301
 mime_type :json
 
 # And more...
-{% endhighlight %}
+```
 
 ## Limitations & Caveats
 
@@ -335,7 +334,7 @@ tree is that, if you handled the request, you should always explicitly return a
 string that will be written as the response body. For example, a `POST
 /contact` request to the following app would return a 404:
 
-{% highlight ruby %}
+```ruby
 require "mail"
 
 class App < Roda
@@ -345,7 +344,7 @@ class App < Roda
     end
   end
 end
-{% endhighlight %}
+```
 
 This is because `Mail.deliver` returns an instance of `Mail::Message`, and since
 it isn't a String, Roda ignores that value and considers the branch unhandled.

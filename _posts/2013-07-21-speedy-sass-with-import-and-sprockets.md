@@ -1,9 +1,10 @@
 ---
 title: Speedy Sass with @import & Sprockets
-author: matija
+hide: true
 updated: 17.1.2014.
 tags: rails ruby css sass sprockets
 redirect_from: /2013/07/speedy-sass-with-import-and-sprockets/
+redirect_to: http://silvenon.com/speedy-sass-with-import-and-sprockets
 ---
 
 We learned that it's not possible to properly use [Sprockets][sprockets] with Sass because access to global variables, mixins and functions (let's call them **globals**) would be lost. Only `@import`ing them works. If you, like me, really love designing in the browser (maybe using [LiveReload][live-reload] or something similar), you are probably having a hard time dealing with the slow compilation time on larger projects, because it's killing your creativity. I would like to propose a way to bring Sprockets back to the game.

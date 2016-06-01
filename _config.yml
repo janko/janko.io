@@ -1,12 +1,19 @@
-title: Bipolar
-description: A frontend & backend blog written by a pair of twin developers.
+title: Janko's Blog
+description: Doing some Ruby on the side.
 
 paginate: 5
 paginate_path: /page/:num/
 
-kramdown:
-  syntax_highlighter_opts:
-    disable: true
+author:
+  first_name: Janko
+  last_name: Marohnić
+  name: Janko Marohnić
+  bio: A passionate Ruby backend developer who fell in love with Roda & Sequel, and told Rails "it's not me, it's you". He enjoys working with JSON APIs and SQL databases, while prioritizing testing, and always tries to find the best library for the job. Creator of [Shrine](https://github.com/janko-m/shrine) and [test.vim](https://github.com/janko-m/vim-test).
+  image: /images/me.jpg
+  github: janko-m
+  twitter: jankomarohnic
+  email: janko.marohnic@gmail.com
+  facebook: janko.marohnic
 
 gems:
   - jemoji
@@ -16,9 +23,8 @@ gems:
   - jekyll-sitemap
 
 baseurl: ""
-url: http://twin.github.io
-github:
-  url: http://twin.github.io
+url: http://janko-m.github.io
+repository: janko-m/janko-m.github.io
 
 defaults:
   - scope:
@@ -37,7 +43,6 @@ defaults:
       type: drafts
     values:
       layout: post
-
 
 logo: /images/logo.png
 

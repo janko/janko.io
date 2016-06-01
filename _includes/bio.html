@@ -1,37 +1,33 @@
-{% if include.author %}
-
-{% assign author = site.data.authors[include.author] %}
-
 <div class="bio">
   <div class="container">
     <div class="inner">
       <img
         class="bio-image"
-        src="{{ site.baseurl }}{{ author.image }}"
+        src="{{ site.baseurl }}{{ site.author.image }}"
         width="320" height="180"
-        alt="{{ author.name }}"
+        alt="{{ site.author.name }}"
       />
       <div class="bio-text">
-        <h3 class="bio-title">{{ author.name }}</h3>
-        {{ author.bio | markdownify }}
+        <h3 class="bio-title">{{ site.author.name }}</h3>
+        {{ site.author.bio | markdownify }}
         <ul class="bio-social">
           <li class="github">
-            <a href="https://github.com/{{ author.github }}" title="GitHub">
+            <a href="https://github.com/{{ site.author.github }}" title="GitHub">
               <i class="icon icon-github"></i>
             </a>
           </li>
           <li class="twitter">
-            <a href="https://twitter.com/{{ author.twitter }}" title="Twitter">
+            <a href="https://twitter.com/{{ site.author.twitter }}" title="Twitter">
               <i class="icon icon-twitter"></i>
             </a>
           </li>
           <li class="email">
-            <a href="mailto:{{ author.email }}" title="Email">
+            <a href="mailto:{{ site.author.email }}" title="Email">
               <i class="icon icon-email"></i>
             </a>
           </li>
           <li class="facebook">
-            <a href="https://facebook.com/{{ author.facebook }}" title="Facebook">
+            <a href="https://facebook.com/{{ site.author.facebook }}" title="Facebook">
               <i class="icon icon-facebook"></i>
             </a>
           </li>
@@ -40,5 +36,3 @@
     </div>
   </div>
 </div>
-
-{% endif %}

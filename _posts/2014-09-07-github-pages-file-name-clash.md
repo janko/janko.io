@@ -3,6 +3,7 @@ title: GitHub Pages file name clash
 author: matija
 tags: short github github-pages gh-pages
 redirect_from: /2014/09/github-pages-file-name-clash/
+redirect_to: http://silvenon.com/github-pages-file-name-clash
 ---
 
 Let's say your user or organization name on GitHub is "easy-peasy". You want to

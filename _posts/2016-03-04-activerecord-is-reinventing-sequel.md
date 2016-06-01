@@ -1,7 +1,5 @@
 ---
-layout: post
 title: ActiveRecord is reinventing Sequel
-author: janko
 tags: ruby web rails framework orm activerecord sequel
 ---
 
@@ -42,10 +40,10 @@ on both ORMs. I will list the features roughly in reverse chronological order
 The `ActiveRecord::Relation#or` query method allows use of the OR operator
 (previously you'd have to write SQL strings):
 
-{% highlight ruby %}
+```ruby
 Post.where(id: 1).or(Post.where(id: 2))
 # => SELECT * FROM posts WHERE (id = 1) OR (id = 2)
-{% endhighlight %}
+```
 
 Implementing this feature required a
 [lot](https://github.com/rails/rails/pull/9052)
@@ -59,10 +57,10 @@ only **8 years** behind Sequel ([code](https://github.com/jeremyevans/sequel/blo
 The `ActiveRecord::Relation#left_joins` query method generates a LEFT OUTER
 JOIN (previously kind of possible via `#eager_load`):
 
-{% highlight ruby %}
+```ruby
 User.left_joins(:posts)
 # => SELECT "users".* FROM "users" LEFT OUTER JOIN "posts" ON "posts"."user_id" = "users"."id"
-{% endhighlight %}
+```
 
 The feature landed in ActiveRecord in 2015
 ([PR](https://github.com/rails/rails/pull/12071)). On the other hand, Sequel
@@ -86,9 +84,9 @@ achieve the same features with [serialization], [serialization_modification_dete
 The `ActiveRecord::ConnectionAdapters::AbstractAdapter#views` method defined on
 connection adapters returns an array of database view names:
 
-{% highlight ruby %}
+```ruby
 ActiveRecord::Base.connection.views #=> ["recent_posts", "popular_posts", ...]
-{% endhighlight %}
+```
 
 Sequel implemented `#views` in 2011
 ([commit](https://github.com/jeremyevans/sequel/commit/ed27c3856fde5a5e03c4940db50fa93f4d9fd99a)),
@@ -110,19 +108,19 @@ Sequel supported both adding and dropping indices concurrently since **2012**
 `ActiveRecord::Relation#in_batches` yields batches of relations, suitable for
 batched updates or deletes:
 
-{% highlight ruby %}
+```ruby
 Person.in_batches { |people| people.update_all(awesome: true) }
-{% endhighlight %}
+```
 
 Sequel doesn't have an equivalent, because there is no one right way to do
 batched updates, it depends on the situation. For example, the following Sequel
 implementation in my benchmarks showed to be 2x faster than ActiveRecord's:
 
-{% highlight ruby %}
+```ruby
 (Person.max(:id) / 1000).times do |i|
   Person.where(id: (i*1000 + 1)..((i+1) * 1000)).update(awesome: true)
 end
-{% endhighlight %}
+```
 
 ### Aborting hooks
 
@@ -131,13 +129,13 @@ halting of callback chain. The new version
 [removes](https://github.com/rails/rails/pull/17227) this behaviour and
 requires you to be explicit about it:
 
-{% highlight ruby %}
+```ruby
 class Person < ActiveRecord::Base
   before_save do
     throw(:abort) if some_condition
   end
 end
-{% endhighlight %}
+```
 
 This is actually one of the rare cases where Sequel [added the equivalent
 `cancel_action` method](https://github.com/jeremyevans/sequel/commit/2475df6223b92923dffe0bc4de4eb6bf21eda640)
@@ -177,9 +175,9 @@ users can decide whether they want the performance hit.
 The `where.not` query construct allows negating a `where` clause, eliminating
 the need to write SQL strings:
 
-{% highlight ruby %}
+```ruby
 Person.where.not(name: "John")
-{% endhighlight %}
+```
 
 It was added in 2012 ([commit](https://github.com/rails/rails/commit/de75af7acc5c05c708443de40e78965925165217)),
 in which time Sequel's equivalent `exclude` was existing already for **5 years**
@@ -191,9 +189,9 @@ In 2013 `ActiveRecord::Relation#rewhere` was
 [added](https://github.com/rails/rails/commit/f950b2699f97749ef706c6939a84dfc85f0b05f2)
 allowing you to overwrite all existing WHERE conditions with new ones:
 
-{% highlight ruby %}
+```ruby
 Person.where(name: "Mr. Anderson").rewhere(name: "Neo")
-{% endhighlight %}
+```
 
 Sequel has had `unfiltered`, which removes existing WHERE and HAVING conditions,
 since 2008, **5 years** before this ActiveRecord update
@@ -205,11 +203,11 @@ since 2008, **5 years** before this ActiveRecord update
 ([commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5)),
 giving the ability to map names to integer columns:
 
-{% highlight ruby %}
+```ruby
 class Conversation < ActiveRecord::Base
   enum status: [:active, :archived]
 end
-{% endhighlight %}
+```
 
 While Sequel doesn't have this database-agnostic feature, it has the [pg_enum]
 plugin for Postgres' enum type, although it was added only 1 year after

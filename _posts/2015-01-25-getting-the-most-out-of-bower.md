@@ -1,8 +1,8 @@
 ---
 title: Getting the most out of Bower
-author: matija
 tags: bower wiredep gulp grunt
 redirect_from: /2015/01/getting-the-most-out-of-bower/
+redirect_to: http://silvenon.com/getting-the-most-out-of-bower
 ---
 
 [Bower] is great. I needed a package manager like that. But by itself it's not extremely useful because after installing a component you still have to manually link it. This is tedious, especially when there are a lot of assets per component. Wouldn't it be nice if you could just run `bower install --save <component>` and have everything else just happen?

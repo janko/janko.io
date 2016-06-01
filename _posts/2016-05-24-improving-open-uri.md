@@ -1,7 +1,5 @@
 ---
-layout: post
 title: Improving open-uri
-author: janko
 tags: ruby download
 ---
 
@@ -9,11 +7,11 @@ When working on the [Shrine] library for handling file uploads, in multiple
 places I needed to be able to download a file from URL. If you know the Ruby
 standard library well, the solution might be obvious to you: [open-uri].
 
-{% highlight ruby %}
+```ruby
 require "open-uri"
 result = open("http://example.com/image.jpg")
 result #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz>
-{% endhighlight %}
+```
 
 Open-uri is something that I indeed very much wanted to use for my use case. It
 ships with Ruby, so there are no external dependencies (just [Net::HTTP]), and
@@ -52,9 +50,9 @@ Ruby has a `Kernel#open` method, which given a file path acts as `File.open`.
 but given a string that starts with "|", it interprets it as a shell command
 and returns an IO connected to the spawned subprocess:
 
-{% highlight ruby %}
+```ruby
 open("| ls") # returns an IO connected to the `ls` shell command
-{% endhighlight %}
+```
 
 Open-uri extends `Kernel#open` with the ability to accept URLs. However, if the
 URL is coming from user input, we should never pass it to `Kernel#open`,
@@ -64,25 +62,25 @@ think that `| rm -rf ~` is a nice looking URL.
 A little known fact is that `Kernel#open` just delegates to
 `URI::(HTTP|HTTPS|FTP)#open`, and we can simply use that instead:
 
-{% highlight ruby %}
+```ruby
 uri = URI.parse("http://example.com/image.jpg") #=> #<URI::HTTP>
 uri.open #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz>
-{% endhighlight %}
+```
 
 <h3 style="text-transform: none;">StringIO</h3>
 
 Stangely, if the remote file has less than 10KB, open-uri will actually return
 a StringIO instead of a Tempfile.
 
-{% highlight ruby %}
+```ruby
 uri.open #=> #<StringIO>
-{% endhighlight %}
+```
 
 In context of [Shrine] I wanted the returned IO to *always* be a file, for
 consistency and because it could later be given for processing. We can easily
 fix that:
 
-{% highlight ruby %}
+```ruby
 io = uri.open
 
 if io.is_a?(StringIO)
@@ -93,7 +91,7 @@ else
 end
 
 downloaded # now always a Tempfile
-{% endhighlight %}
+```
 
 <h3 style="text-transform: none;">File extension</h3>
 
@@ -105,7 +103,7 @@ So let's copy the downloaded IO to a new Tempfile which has a file extension,
 but use `mv` if we can so that we don't pay any performance penalty (and that
 the old file also gets deleted):
 
-{% highlight ruby %}
+```ruby
 io = uri.open
 downloaded = Tempfile.new([File.basename(uri.path), File.extname(uri.path)])
 
@@ -116,7 +114,7 @@ else # StringIO
 end
 
 File.extname(downloaded.path) #=> ".jpg"
-{% endhighlight %}
+```
 
 <h3 style="text-transform: none;">Redirects</h3>
 
@@ -129,7 +127,7 @@ only if URLs repeat.
 So we disable open-uri's following of redirects, which now raises
 `OpenURI::HTTPRedirect` on redirects, allowing us to reimplement it:
 
-{% highlight ruby %}
+```ruby
 tries = 3
 
 begin
@@ -139,7 +137,7 @@ rescue OpenURI::HTTPRedirect => redirect
   retry if (tries -= 1) > 0
   raise
 end
-{% endhighlight %}
+```
 
 <h3 style="text-transform: none;">Maximum filesize</h3>
 
@@ -149,11 +147,11 @@ wanted that download aborts as soon as the "Content-Length" header reveals that
 the file will be too large. Luckily, open-uri has the `:content_length_proc`
 option, which calls the given proc as soon as open-uri reads "Content-Length":
 
-{% highlight ruby %}
+```ruby
 uri.open(
   content_length_proc: ->(size) { raise FileTooLarge if size > max_size },
 )
-{% endhighlight %}
+```
 
 However, an attacker could theoretically create an app which returns large
 files, but where the "Content-Length" response header is ommited on purpose.
@@ -161,12 +159,12 @@ Luckily, open-uri has got our back on this one too with `:progress_proc`, which
 calls the given proc whenever a chunk is downloaded, with the current size.
 That means we can add it as a fallback in case "Content-Length" is missing:
 
-{% highlight ruby %}
+```ruby
 uri.open(
   content_length_proc: ->(size) { raise FileTooLarge if size && size > max_size },
   progress_proc:       ->(size) { raise FileTooLarge if size > max_size },
 )
-{% endhighlight %}
+```
 
 <h3 style="text-transform: none;">User agent</h3>
 
@@ -177,29 +175,29 @@ requests after some time.
 Open-uri doesn't include a "User-Agent" by default, but allows us to easily add
 one, since open-uri treats any unknown option as a request header:
 
-{% highlight ruby %}
+```ruby
 uri.open("User-Agent" => "MyApp/1.0")
-{% endhighlight %}
+```
 
 ## Result
 
 The result of this investigation is the [Down] gem, which incorporates all of
 these improvements, and more. You can use it like this:
 
-{% highlight ruby %}
+```ruby
 require "down"
 result = Down.download("http://example.com/image.jpg")
 result #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz.jpg>
-{% endhighlight %}
+```
 
 More advanced downloading could look something like this:
 
-{% highlight ruby %}
+```ruby
 Down.download "http://example.com/image.jpg",
   max_size: 20*1024*1024,   # 20 MB
   max_redirects: 5,         # default is 2
   proxy: "http://proxy.com" # delegates to open-uri
-{% endhighlight %}
+```
 
 ## Conclusion
 
