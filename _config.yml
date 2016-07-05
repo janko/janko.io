@@ -1,5 +1,5 @@
 title: Janko's Blog
-description: Doing some Ruby on the side.
+description: Sharing the wonders of Ruby
 
 paginate: 5
 paginate_path: /page/:num/
