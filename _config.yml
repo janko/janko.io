@@ -23,8 +23,8 @@ gems:
   - jekyll-sitemap
 
 baseurl: ""
-url: http://janko-m.github.io
-repository: janko-m/janko-m.github.io
+url: http://twin.github.io
+repository: twin/twin.github.io
 
 defaults:
   - scope:
