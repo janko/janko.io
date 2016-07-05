@@ -1,6 +1,6 @@
 ---
 title: GitHub Pages file name clash
-author: matija
+hidden: true
 tags: short github github-pages gh-pages
 redirect_from: /2014/09/github-pages-file-name-clash/
 redirect_to: http://silvenon.com/github-pages-file-name-clash

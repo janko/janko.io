@@ -1,5 +1,6 @@
 ---
 title: Selenium testing workflow with WebdriverIO
+hidden: true
 tags: node test gulp webdriver selenium mocha
 updated: 23.7.2015.
 redirect_from: /node-selenium-testing-with-webdriverio/

@@ -1,5 +1,6 @@
 ---
 title: Simple layouting with Gulp
+hidden: true
 updated: 11.10.2014.
 tags: short gulp node layout template
 redirect_from: /2014/09/simple-layouting-with-gulp/

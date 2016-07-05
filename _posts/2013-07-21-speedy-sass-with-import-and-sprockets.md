@@ -1,6 +1,6 @@
 ---
 title: Speedy Sass with @import & Sprockets
-hide: true
+hidden: true
 updated: 17.1.2014.
 tags: rails ruby css sass sprockets
 redirect_from: /2013/07/speedy-sass-with-import-and-sprockets/

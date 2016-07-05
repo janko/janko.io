@@ -1,5 +1,6 @@
 ---
 title: Getting the most out of Bower
+hidden: true
 tags: bower wiredep gulp grunt
 redirect_from: /2015/01/getting-the-most-out-of-bower/
 redirect_to: http://silvenon.com/getting-the-most-out-of-bower
