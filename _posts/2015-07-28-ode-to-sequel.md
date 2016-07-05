@@ -46,7 +46,7 @@ which is required only when the plugin is loaded.
 <div class="media">
   <img class="media-object pull-right" src="{{ site.baseurl }}/images/sequel-plugin_system.png" height="250" alt="Sequel's plugin system">
   <div class="media-body">
-```ruby
+{% highlight ruby %}
 require "sequel" # loads the core
 
 DB = Sequel.connect("postgres:///my_database")
@@ -55,7 +55,7 @@ Sequel::Model.plugin :validation_helpers
 Sequel::Model.plugin :json_serializer
 Sequel::Model.plugin :nested_attributes
 Sequel::Model.plugin :single_table_inheritance
-```
+{% endhighlight %}
   </div>
 </div>
 

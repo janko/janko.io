@@ -2,21 +2,12 @@
 ---
 
 @import 'variables';
-@import 'functions';
-@import 'mixins';
-
-@import 'normalize';
-@import 'base';
 
 @import 'vendor/themes/default';
+@import '../assets/styles/main';
+
+@import 'base';
+@import 'code';
+@import 'header';
 
 @import '404';
-@import 'bio';
-@import 'code';
-@import 'float';
-@import 'header';
-@import 'media';
-@import 'navigation';
-@import 'pagination';
-@import 'post';
-@import 'share';
