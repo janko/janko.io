@@ -12,7 +12,7 @@ redirect_from: /janko/
       </div>
 
       <h1 class="post-short-title">
-        <a href="{{ post.url }}">{{ post.title }}{% if post.subtitle %}: {{ post.subtitle }}{% endif %}</a>
+        <a href="{{ post.url }}">{{ post.title | xml_escape }}{% if post.subtitle %}: {{ post.subtitle }}{% endif %}</a>
       </h1>
 
       <div class="post-short-body">
