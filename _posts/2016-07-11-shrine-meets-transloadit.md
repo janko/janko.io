@@ -42,8 +42,8 @@ to your primary storage, not a replacement. It also means that our file
 attachments library needs to be flexible enough to support implementing this
 kind of flow.
 
-Luckily, Shrine's [plugin system] enables us to easily extend any part of
-Shrine, allowing us to add Transloadit-specific methods and intercept default
+Luckily, Shrine's [plugin system] allows us to easily extend any part of
+Shrine, enabling us to add Transloadit-specific methods and intercept default
 actions. Using this and Transloadit's [Ruby SDK], I created
 **[shrine-transloadit]**.
 
@@ -125,7 +125,7 @@ but shrine-transloadit automatically generates them for you based on your
 storage configuration. For best user experience you can even put the requests
 to Transloadit into a [background job].
 
-If you want to see how it all fits together, I created a [demo app] showcasing
+If you want to see how it all fits together, I created a [demo app] using
 shrine-transloadit, which is a good starting point for anyone wanting to add
 Transloadit to their Ruby applications. For any additional information head out
 to the **[shrine-transloadit]** GitHub respository.
