@@ -122,8 +122,8 @@ attachments and update the corresponding database record.
 
 Normally you would also have to create import/export steps for processed files,
 but shrine-transloadit automatically generates them for you based on your
-storage configuration. For best user experience you can even put the requests
-to Transloadit into a [background job].
+storage configuration. For best user experience you can even put the Transloadit
+processing request into a [background job].
 
 If you want to see how it all fits together, I created a [demo app] using
 shrine-transloadit, which is a good starting point for anyone wanting to add
