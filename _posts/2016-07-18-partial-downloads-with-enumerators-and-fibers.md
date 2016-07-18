@@ -262,8 +262,14 @@ over downloading and uploading sequentially. But it was worth a try :smiley:
 
 ## Final notes
 
-If you want to use this behaviour, it is integrated into the [down] gem. I'm
-really happy that I could implement this behaviour using Shrine's "IO"
+If you want to use this behaviour, it is integrated into the [down] gem.
+
+```rb
+require "down"
+Down.open("http://example.com/image.jpg") #=> #<Down::ChunkedIO>
+```
+
+I'm really happy that I could implement this behaviour using Shrine's "IO"
 abstraction, since it allowed me to switch from fully downloaded file to
 partial download without having to change any of Shrine's existing code.
 
