@@ -228,6 +228,38 @@ the sufficient number of bytes. I tested this with a 75MB video on S3: it took
 90 seconds to download the whole video, but only 3.5 seconds to download the
 first 256KB.
 
+## Appendix (uploading while downloading)
+
+When using Shrine, in some situations you need to upload a remote file to a
+storage service. If the storage service doesn't support giving remote URLs,
+this means that you have to first download the file, and then upload it to the
+service.
+
+However, `net/http` supports assigning an IO object as the request body, which
+it then reads in chunks and writes to the socket. This gave me an idea: if I
+assign the *remote file IO* as the request body, would that mean that I could
+download and upload the same file *in parallel*?
+
+So I decided to test this with a script like this:
+
+```rb
+require "down"
+
+remote_file = Down.open("http://example.com/image.jpg")
+
+uri = URI("http://example.com")
+
+Net::HTTP.start(uri.host, uri.port) do |http|
+  req = Net::HTTP::Post.new("/")
+  req.body_stream = remote_file
+  req.content_length = remote_file.size
+  http.request(req)
+end
+```
+
+Unfortunately, in my benchmarks this didn't yield any performance improvements
+over downloading and uploading sequentially. But it was worth a try :smiley:
+
 ## Final notes
 
 If you want to use this behaviour, it is integrated into the [down] gem. I'm
