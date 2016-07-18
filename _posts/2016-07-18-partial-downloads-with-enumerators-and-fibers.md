@@ -228,7 +228,7 @@ the sufficient number of bytes. I tested this with a 75MB video on S3: it took
 90 seconds to download the whole video, but only 3.5 seconds to download the
 first 256KB.
 
-## Appendix (uploading while downloading)
+## Appendix: Uploading while Downloading
 
 When using Shrine, in some situations you need to upload a remote file to a
 storage service. If the storage service doesn't support giving remote URLs,
