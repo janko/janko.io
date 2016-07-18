@@ -45,8 +45,8 @@ Fastimage.type("http://example.com/image.jpg") #=> :jpeg
 ```
 
 However, as its name suggests, one limitation of Fastimage is that it works
-only for (main types of) images. And in Shrine I want generic solutions, ones
-which will work for all types of files. Also, images aren't the only ones
+only for images (and only main types). And in Shrine I want generic solutions,
+ones which will work for all types of files. Also, images aren't the only ones
 enjoying exploits, [videos have them too].
 
 Let's remind ourselves that we already *have* robust tools for determining the
