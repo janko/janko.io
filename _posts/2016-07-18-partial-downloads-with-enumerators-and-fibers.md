@@ -224,9 +224,9 @@ mime_type #=> "image/jpeg"
 ```
 
 Since `Down::ChunkedIO` downloads lazily, it will stop as soon as it downloads
-the sufficient number of bytes. I tested this locally with a 75MB video: it
-took 90 seconds to download the whole video, but only 3.5 seconds to download
-the first 256KB.
+the sufficient number of bytes. I tested this with a 75MB video on S3: it took
+90 seconds to download the whole video, but only 3.5 seconds to download the
+first 256KB.
 
 ## Final notes
 
