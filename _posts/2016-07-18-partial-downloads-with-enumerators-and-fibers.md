@@ -148,7 +148,7 @@ http.finish
 
 So, what we need to do is get the `response` object, and then somehow stop
 further execution. After a lot of thinking, it finally hit me -- [Fibers].
-Fibers allow you pause the execution using `Fiber.yield`, and then
+Fibers allow you to pause the execution using `Fiber.yield`, and then later
 `Fiber#resume` at any point. Let's use Fibers to get our `response` and pause
 terminating the connection.
 
