@@ -258,7 +258,8 @@ end
 ```
 
 Unfortunately, in my benchmarks this didn't yield any performance improvements
-over downloading and uploading sequentially. But it was worth a try :smiley:
+over downloading and uploading sequentially, and I'm not sure why. But it was
+worth a try!
 
 ## Final notes
 
