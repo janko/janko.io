@@ -1,6 +1,7 @@
 ---
 title: Partial Downloads with Enumerators and Fibers
 tags: ruby download streaming partial
+updated: 23.7.2016.
 ---
 
 Before talking about the implementation, I first want to explain where and why
@@ -209,7 +210,7 @@ response = request.resume
 # An IO object representing the file at "http://example.com/image.jpg"
 remote_file = Down::ChunkedIO.new(
   chunks:   response.enum_for(:read_body),
-  size:     (response["Content-Length"].to_i if response["Content-Length"]),
+  size:     response["Content-Length"] && response["Content-Length"].to_i,
   on_close: -> { request.resume },
 )
 
@@ -261,6 +262,33 @@ Unfortunately, in my benchmarks this didn't yield any performance improvements
 over downloading and uploading sequentially, and I'm not sure why. But it was
 worth a try!
 
+## Appendix: HTTP.rb
+
+I used `net/http` mostly because it's very lightweight, and also because of
+historical reasons. However, as Avdi Grimm says, `net/http` leaves a lot to be
+desired.
+
+[HTTP.rb] is one great alternative HTTP library, it's very mature and has a
+much better designed streaming API. This is how we would transform a remote
+file into an IO using HTTP.rb:
+
+```rb
+require "http"
+require "down"
+
+response = HTTP.get("https://upload.wikimedia.org/wikipedia/commons/3/36/Hopetoun_falls.jpg")
+
+remote_file = Down::ChunkedIO.new(
+ chunks:   response.body.enum_for(:each),
+ size:     response["Content-Length"] && response["Content-Length"].to_i,
+ on_close: -> { response.body.instance_variable_get("@client").close },
+)
+```
+
+Because HTTP.rb has a chainable API, you can have full control in how you make
+the request (e.g. follow redirects, basic authentication etc.), and just give
+Down the response object. I plan to add support for HTTP.rb in the near future.
+
 ## Final notes
 
 If you want to use this behaviour, it is integrated into the [down] gem.
@@ -291,3 +319,4 @@ brings me joy how powerful Ruby can be, once you have good knowledge of it.
 [Enumerator]: http://ruby-doc.org/core-2.3.0/Enumerator.html
 [Down::ChunkedIO]: https://github.com/janko-m/down/blob/792413889a57defb72ec9166a553c3ebd0441f88/lib/down.rb#L136
 [down]: https://github.com/janko-m/shrine
+[HTTP.rb]: https://github.com/httprb/http
