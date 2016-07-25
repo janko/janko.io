@@ -237,8 +237,8 @@ this means that you have to first download the file, and then upload it to the
 service.
 
 However, `net/http` supports assigning an IO object as the request body, which
-it then reads in chunks and writes to the socket. This gave me an idea: if I
-assign the *remote file IO* as the request body, would that mean that I could
+it then reads in chunks and writes to the socket. This gave me an idea: if we
+assign the *remote file IO* as the request body, would that mean that we could
 download and upload the same file *in parallel*?
 
 So I decided to test this with a script like this:
