@@ -318,5 +318,5 @@ brings me joy how powerful Ruby can be, once you have good knowledge of it.
 [Fibers]: http://ruby-doc.org/core-2.3.0/Fiber.html
 [Enumerator]: http://ruby-doc.org/core-2.3.0/Enumerator.html
 [Down::ChunkedIO]: https://github.com/janko-m/down/blob/792413889a57defb72ec9166a553c3ebd0441f88/lib/down.rb#L136
-[down]: https://github.com/janko-m/shrine
+[down]: https://github.com/janko-m/down
 [HTTP.rb]: https://github.com/httprb/http
