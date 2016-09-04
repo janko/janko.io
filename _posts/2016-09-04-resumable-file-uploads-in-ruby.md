@@ -15,9 +15,9 @@ out the [demo].
 
 "Resumable upload" doesn't mean giving your user a button to resume the upload
 whenever there is a network hiccup. It means having the client automatically
-reinitiate interrupted uploads under-the-hood. Tus enables resuming the upload
-even after you close the browser or shut down the device, as long as you select
-the same file.
+reinitiate interrupted uploads without the user knowing about it. Tus enables
+resuming the upload even after the user closes the browser or shuts down the
+device, as long as the user selects the same file.
 
 Tus was created by [Transloadit], and has received feedback from well-known
 companies like Vimeo, Google and GitHub.
@@ -303,7 +303,7 @@ protocol, we now have an open stable resumable upload protocol which we can all
 agree on, and build generic client and server libraries which everyone can use.
 
 With [tus-ruby-server] and [Shrine] on the server, and
-[tus-js-client]/[TUSKit]/[tus-android-client] on the client, anyone can now add
+[tus-js-client] / [TUSKit] / [tus-android-client] on the client, anyone can now add
 resumable file uploads to their Ruby applications.
 
 [tus]: http://tus.io/
