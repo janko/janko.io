@@ -1,6 +1,9 @@
 ---
 title: "Better File Uploads with Shrine: Motivation"
 tags: ruby file attachment upload shrine library gem
+excerpt: "This is the 1st part of a series of blog posts about Shrine. In this
+  part I talk about the motivation behind creating Shrine, by going over the
+  limitations of existing file attachment libraries."
 ---
 
 *This is 1st part of a series of blog posts about [Shrine]. The aim of this
