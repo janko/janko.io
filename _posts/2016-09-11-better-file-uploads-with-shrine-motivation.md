@@ -382,7 +382,7 @@ the cool things that you can do with Shrine, so stay tuned!
 
 [Shrine]: https://github.com/janko-m/shrine
 [Sequel]: https://github.com/jeremyevans/sequel
-[Roda]: https://github.com/jeremeyevans/roda
+[Roda]: https://github.com/jeremyevans/roda
 [evaluating libraries]: https://twin.github.io/evaluating-ruby-libraries/
 [don't allow saving to disk]: https://devcenter.heroku.com/articles/dynos#ephemeral-filesystem
 [30-second request timeout]: https://devcenter.heroku.com/articles/request-timeout
