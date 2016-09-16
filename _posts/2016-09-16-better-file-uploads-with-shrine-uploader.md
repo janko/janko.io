@@ -189,8 +189,8 @@ Shrine ships with over 35 plugins, and it's easy to [write your own][writing
 plugins]. Shrine's plugin system is an adaptation of [Roda]'s, which I [wrote
 about][plugin system] in the past.
 
-Also, [unlike CarrierWave][carrierwave inheritance], Shrine uploaders respect
-inheritance.
+Also, Shrine uploaders respect inheritance ([unlike CarrierWave][carrierwave
+inheritance]).
 
 ```rb
 Shrine.plugin :logging # enables logging for all uploaders
