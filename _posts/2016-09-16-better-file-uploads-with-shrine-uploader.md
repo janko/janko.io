@@ -65,6 +65,10 @@ Paperclip's interpolations][paperclip interpolations]. Shrine always generates
 the location beforehand, and the storage just receives the direct path to where
 it should upload the given file.
 
+Currently there is [FileSystem], [S3], [Fog], [Flickr], [Cloudinary],
+[Transloadit], [Uploadcare], [Imgix], [GridFS] and [SQL] storage for Shrine, so
+take your pick :wink:
+
 ## Uploader
 
 Uploaders are subclasses of `Shrine`, and they encapsulate uploading logic for
@@ -265,3 +269,13 @@ and again compare it to existing file upload libraries, so stay tuned!
 [down open-uri]: https://twin.github.io/improving-open-uri/
 [down streaming]: https://twin.github.io/partial-downloads-with-enumerators-and-fibers/
 [shrine-carrierwave load time]: https://gist.github.com/janko-m/0d4269b9c7195b5e65cc947acf1cc028
+[FileSystem]: https://github.com/janko-m/shrine/blob/master/lib/shrine/storage/file_system.rb
+[S3]: https://github.com/janko-m/shrine/blob/master/lib/shrine/storage/s3.rb
+[Fog]: https://github.com/janko-m/shrine-fog
+[Flickr]: https://github.com/janko-m/shrine-flickr
+[Cloudinary]: https://github.com/janko-m/shrine-cloudinary
+[Transloadit]: https://github.com/janko-m/shrine-transloadit
+[Uploadcare]: https://github.com/janko-m/shrine-uploadcare
+[Imgix]: https://github.com/janko-m/shrine-imgix
+[GridFS]: https://github.com/janko-m/shrine-gridfs
+[SQL]: https://github.com/janko-m/shrine-sql
