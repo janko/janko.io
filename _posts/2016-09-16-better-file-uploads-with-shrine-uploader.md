@@ -5,7 +5,7 @@ excerpt: "This is the 2nd part of a series of blog posts about Shrine. In this
   part I talk about the foundation that Shrine is built upon – uploaders."
 ---
 
-*This is 2st part of a series of blog posts about [Shrine]. The aim of this
+*This is 2nd part of a series of blog posts about [Shrine]. The aim of this
 series is to show the advantages of using Shrine over other file attachment
 libraries.*
 
