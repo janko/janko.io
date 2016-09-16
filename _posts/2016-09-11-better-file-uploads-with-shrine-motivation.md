@@ -7,7 +7,7 @@ excerpt: "This is the 1st part of a series of blog posts about Shrine. In this
 ---
 
 *This is 1st part of a series of blog posts about [Shrine]. The aim of this
-series is to show the advantages that Shrine has over other file attachment
+series is to show the advantages of using Shrine over other file attachment
 libraries.*
 
 ----
