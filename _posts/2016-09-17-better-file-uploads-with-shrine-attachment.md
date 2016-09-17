@@ -241,14 +241,15 @@ end
 ## Conclusion
 
 We learned about two new Shrine core classes. One is `Shrine::Attachment`, a
-subclass of `Module`, which can generate attachment modules for a given
-attribute. The other one is `Shrine::Attacher`, which is in charge of the file
-attachment logic, which `Shrine::Attachment` methods delegate to but can also
-be used standalone.
+subclass of `Module`, which can generate attachment modules for adding file
+attachment attributes to your models. The other one is `Shrine::Attacher`,
+which is in charge of the actual file attachment logic, and can be used
+directly.
 
 Combined with `Shrine` and `Shrine::UploadedFile`, these are the 4 core classes
-of Shrine. In the next post I will talk about file processing with Shrine, so
-stay tuned!
+of Shrine. In future posts I will talk about all the advanced features that are
+possible with these core classes. The next post will be about file processing
+with Shrine, so stay tuned!
 
 [Shrine]: https://github.com/janko-m/shrine
 [previous post]: https://twin.github.io/better-file-uploads-with-shrine-uploader/
