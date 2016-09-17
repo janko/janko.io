@@ -187,10 +187,9 @@ attachment library to support Reform!
 
 ## Attacher
 
-Model methods provided by the `Shrine::Attachment` module only delegate to an
-internal `Shrine::Attacher` object (inspired by Refile). That means that if you
-don't want to add any additional methods to your model and prefer to be
-explicit, you can simply use `Shrine::Attacher` directly.
+The model interface provided by the `Shrine::Attachment` module is just a thin
+wrapper around a `Shrine::Attacher` object (inspired by Refile), which you can
+also use directly:
 
 ```rb
 attacher = ImageUploader::Attacher.new(photo, :image)
@@ -200,7 +199,10 @@ attacher.get          # equivalent to `photo.image`
 attacher.url          # equivalent to `photo.image_url`
 ```
 
-See the [Using Attacher] guide for more examples.
+So if you prefer not to add any additional methods to your model, and prefer
+explicitness over callbacks, you can simply use `Shrine::Attacher` directly
+without including the attachment module to your model. See the [Using Attacher]
+guide for more examples.
 
 ## Validations
 
