@@ -13,59 +13,47 @@ libraries.*
 
 In the [previous post] I talked about motivation behind creating Shrine. In
 this post I want to show you the foundation that Shrine is built upon –
-uploaders. I will explain the reason for some design decisions, and how they
-result in better flexibility.
+storage, uploader and uploaded file.
 
 ## Storage
 
-In Shrine "storages" are plain Ruby classes which encapsulate managing files on
-a particular storage service (filesystem, S3 etc). They are instantiated and
-configured directly (inspired by Refile):
+A Shrine "storage" is a plain Ruby object which encapsulates managing files on a
+particular storage service (filesystem, S3 etc). The storage needs to respond
+to the following 5 methods:
+
+```rb
+class MyStorage
+  def upload(io, id, **options)
+    # uploads the `io` to the given location `id`
+  end
+
+  def url(id)
+    # returns the URL to the file on location `id`
+  end
+
+  def open(id)
+    # returns the file on location `id` as an IO-like object
+  end
+
+  def exists?(id)
+    # returns whether storage has a file on location `id`
+  end
+
+  def delete(id)
+    # deletes the file on location `id` from the storage
+  end
+end
+```
+
+Shrine storages are configured directly by passing options to `new` (inspired by
+Refile):
 
 ```rb
 # Uploads to "public/uploads/cache", where "uploads/cache" is included in the URL
 Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache")
 ```
 
-In contrast, CarrierWave requires configuring the storage through the uploader,
-thus mixing storage options with general configuration, which introduces
-coupling between the storage and the uploader.
-
-```rb
-CarrierWave.configure do |config|
-  # General configuration
-  config.storage :fog
-  config.cache_dir = "..."
-
-  # Fog-specific configuration
-  config.fog_provider    = "fog/aws"
-  config.fog_credentials = {...}
-  config.fog_directory   = "my-bucket"
-  config.fog_public      = true
-end
-```
-
-Paperclip also mixes storage options which general options:
-
-```rb
-Paperclip.default_options.merge!(
-  # General options
-  styles: {...},
-  storage: :s3,
-
-  # S3-specific configuration
-  s3_credentials: {...},
-  s3_region: "..."
-  bucket: "my-bucket",
-)
-```
-
-Paperclip introduces further coupling by requiring the storage to [know about
-Paperclip's interpolations][paperclip interpolations]. Shrine always generates
-the location beforehand, and the storage just receives the direct path to where
-it should upload the given file.
-
-Currently there is [FileSystem], [S3], [Fog], [Flickr], [Cloudinary],
+Currently there are [FileSystem], [S3], [Fog], [Flickr], [Cloudinary],
 [Transloadit], [Uploadcare], [Imgix], [GridFS] and [SQL] storage for Shrine, so
 take your pick :wink:
 
