@@ -46,11 +46,15 @@ end
 ```
 
 Shrine storages are configured directly by passing options to `new` (inspired by
-Refile):
+Refile), and should be registered in `Shrine.storages`:
 
 ```rb
-# Uploads to "public/uploads/cache", where "uploads/cache" is included in the URL
-Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache")
+Shrine.storages[:s3] = Shrine::Storage::S3.new(
+  access_key_id: "abc",
+  secret_access_key: "xyz",
+  region: "eu-west-1",
+  bucket: "my-bucket",
+)
 ```
 
 Currently there are [FileSystem], [S3], [Fog], [Flickr], [Cloudinary],
@@ -69,16 +73,19 @@ end
 ```
 
 Uploader objects act as wrappers around a storage, performing all functionality
-that is generic to any storage (processing, generating location, extracting
-metadata, logging, closing the uploaded file etc), before giving the file to
-the storage.
+around uploading that is generic to any storage:
+
+* processing
+* extracting metadata
+* generating location
+* uploading (this is where the storage is called)
+* closing uploaded file
+
+Uploaders are instantiated with the registered storage name:
 
 ```rb
-# We first register the storage globally
 Shrine.storages[:disk] = Shrine::Storage::FileSystem.new(...)
-```
-```rb
-# Then we can reference this storage by the registered name
+
 uploader = ImageUploader.new(:disk)
 uploader.upload(image) #=> #<Shrine::UploadedFile>
 ```
@@ -87,10 +94,6 @@ Uploaders don't know about models; they only take a file to be uploaded on the
 input, and return representation of the uploaded file on the output. As this
 suggests, uploaders are stateless, which makes their behaviour really easy to
 reason about.
-
-Contrary to that, `CarrierWave::Uploader::Base` and `Paperclip::Attachment` are
-very complex god objects, and the complexity comes from always having to update
-a lot of state, and not having clear reponsibility.
 
 ## Uploaded file
 
@@ -159,11 +162,6 @@ cached_file = cache.upload(image)
 store = ImageUploader.new(:s3_permanent)
 store.upload(cached_file) #=> performs an S3 COPY request
 ```
-
-In contrast, Paperclip has a [very wide range of IO adapters][paperclip IO
-adapters] which all first copy/download the file to disk, eliminating the
-possibility for the above performance optimizations, and
-[increasing][paperclip#1326] [copying][paperclip#1642].
 
 ## Plugin system
 
