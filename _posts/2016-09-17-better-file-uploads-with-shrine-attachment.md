@@ -29,43 +29,43 @@ class Photo
 end
 ```
 
-However, [CarrierWave::Mount] and `mount_uploader` add in total of **5 class
-methods** and **23 instance methods** to your model, which is a *lot* of
-pollution. Other file attachment libraries are better in this regard, though.
+However, CarrierWave here adds a total of **5 class methods** and **24 instance
+methods** to your model, which to me is a lot of pollution. Other file
+attachment libraries are better in this regard, though.
 
 Shrine takes a cleaner approach here. With Shrine you use *your uploader* to
-generate an attachment module for a certain attribute, which you then `include`
+generate an attachment module for a certain attribute, and then you `include` it
 directly to your model.
 
 ```rb
 class Photo
-  include ImageUploader[:image]
+  include ImageUploader[:image] # creates an instance of Shrine::Attachment
 end
 ```
 
-This way Shrine adds only **4 instance methods** to your model by default (and
-0 class methods). It also supports [single table inheritance][STI] through the
-usage of `@@class_variables` (CarrierWave and Paperclip don't support STI). The
-included attachment module will be nicely displayed when listing model
-ancestors, because it overrides `#inspect` and `#to_s`.
+This way for a single attachment Shrine adds only **4 instance methods** to
+your model by default (and 0 class methods). That attachment module also
+supports [single table inheritance][STI] through the usage of
+`@@class_variables` (CarrierWave and Paperclip don't support STI). The included
+`Shrine::Attachment` module will be nicely displayed when listing model
+ancestors, because it's not an anonymous module, and it also overrides
+`#inspect` and `#to_s`.
 
 ```rb
-Photo.ancestors #=>
-# [
-#   Photo,
-#   #<ImageUploader::Attachment(image)>,   (instead of #<Module:0x007ff773129608>)
-#   Object,
-#   BasicObject,
-# ]
+Photo.ancestors #=> [Photo, #<ImageUploader::Attachment(image)>, Object, BasicObject]
 ```
 
 ## Attaching
 
 ### Single column
 
-Shrine's attacher uses only a single column for storing information about the
-uploaded file. As I mentioned in the previous post, the `Shrine::UploadedFile`
-which is the result of uploading can be serialized into JSON format.
+As we talked about in the previous post, when a Shrine uploader uploads a given
+file, it returns a `Shrine::UploadedFile` object. This object contains
+the storage name it was uploaded to, the location, and the metadata extracted
+before upload.
+
+Shrine's attacher persists this information into a single database column, by
+converting the `Shrine::UploadedFile` object into its JSON represntation.
 
 ```rb
 add_column :photos, :image_data # only a single column is used for the attachment
@@ -80,9 +80,9 @@ the metadata methods.
 
 ### Temporary & permanent storage
 
-For attaching Shrine uses a temporary and permanent storage. Assigning the file
-uploads it to temporary storage, and then after validations pass and record is
-saved, the cached file is promoted to permanent storage.
+Shrine uses a temporary and permanent storage when attaching. When a file is
+assigned, it is uploaded to temporary storage, and then after validations pass
+and record is saved, the cached file is reuploaded to permanent storage.
 
 ```rb
 Shrine.storages = {
@@ -99,7 +99,7 @@ photo.image_data #=> '{"storage":"cache","id":"ds9ga94.jpg","metadata":{...}}'
 photo.save  # Promotes the file from temporary to permanent storage
 photo.image_data #=> '{"storage":"store","id":"l0fgla8.jpg","metadata":{...}}'
 
-photo.image #=> <Shrine::UploadedFile>
+photo.image #=> #<Shrine::UploadedFile>
 ```
 
 This separation of temporary and permanent storage enables features like
@@ -111,7 +111,7 @@ storage.
 
 While CarrierWave and Paperclip provide `#present?` and `#blank?` methods to
 check whether a file is attached, Shrine will simply return `nil` if there is
-no file attached, which is semantically the correct behaviour.
+no file attached.
 
 ```rb
 photo.image # returns either `Shrine::UploadedFile` or `nil`
@@ -123,12 +123,12 @@ When attaching an uploaded file, CarrierWave and Paperclip store only the
 filename to the database column, and the full location to the file is generated
 dynamically from your configured directory.
 
-This was a bad design decision, because it makes it very difficult to migrate
-files to a new directory. If you try to first change the directory option to a
-new directory, all URLs for the existing files will now point at the wrong
-location, because those files are still in the old location. If you however try
-to first move files themselves, the URLs would again start pointing to the
-wrong location, because files are now located at the new location.
+This is not a good design decision, because it makes it very difficult to
+migrate files to a new directory. If you try to first change the directory
+option to a new directory, all URLs for the existing files will now point at
+the wrong location, because those files are still in the old location. If you
+however try to first move files themselves, the URLs would again start pointing
+to the wrong location, because files are now located at the new location.
 
 ```rb
 class ImageUploader < CarrierWave::Uploader::Base
@@ -145,8 +145,8 @@ photo.attributes[:image] #=> "nature.jpg"
 Shrine learns from this mistake, and instead saves the whole generated path to
 the attachment column. And if you *change* how the location is generated, all
 existing files will still remain fully accessible, because their location is
-still read directly from the column. Then you can [move them manually][shrine
-moving files].
+still read directly from the column. Then later you can [move them
+manually][shrine moving files] if you want.
 
 ```rb
 class ImageUploader < Shrine
@@ -193,6 +193,9 @@ also use directly:
 
 ```rb
 attacher = ImageUploader::Attacher.new(photo, :image)
+
+attacher.cache #=> #<ImageUploader @storage_key=:cache>
+attacher.store #=> #<ImageUploader @storage_key=:store>
 
 attacher.assign(file) # equivalent to `photo.image = file`
 attacher.get          # equivalent to `photo.image`
