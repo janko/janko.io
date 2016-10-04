@@ -61,6 +61,10 @@ Currently there are [FileSystem], [S3], [Fog], [Flickr], [Cloudinary],
 [Transloadit], [Uploadcare], [Imgix], [GridFS] and [SQL] storage for Shrine, so
 take your pick :wink:
 
+You can also easily write your own storage, there is a [guide][creating
+storage] for it, and a [linter] which will automatically test if your storage
+is working corrrectly.
+
 ## Uploader
 
 Uploaders are subclasses of `Shrine`, and they encapsulate uploading logic for
@@ -265,3 +269,5 @@ and again compare it to existing file upload libraries, so stay tuned!
 [Imgix]: https://github.com/janko-m/shrine-imgix
 [GridFS]: https://github.com/janko-m/shrine-gridfs
 [SQL]: https://github.com/janko-m/shrine-sql
+[creating storage]: http://shrinerb.com/rdoc/files/doc/creating_storages_md.html
+[linter]: https://github.com/janko-m/shrine/blob/master/lib/shrine/storage/linter.rb
