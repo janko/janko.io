@@ -138,7 +138,9 @@ CarrierWave does have a [Sequel integration][carrierwave-sequel], which was a
 big improvement for me. Unfortunately, [carrierwave_backgrounder] and
 [carrierwave_direct], the CarrierWave extensions that I wanted to use, both
 didn't manage to rely only on CarrierWave's ORM integration, and needed a lot
-of additional ActiveRecord-specific code to achieve their functionality.
+of additional ActiveRecord-specific code to achieve their functionality. I know
+ActiveRecord is the most popular ORM, but people do use other ORMs for various
+reasons, and this pretty-much paints them into a corner.
 
 ### Direct uploads
 
