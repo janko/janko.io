@@ -269,9 +269,9 @@ For comparison, see how much code it takes to set up [CarrierWave & Zencoder].
 ## On-the-fly processing
 
 If you're handling image uploads, generating all possible thumbnails on upload
-might not give the best option. The complexity of responsive design has
-increased over time, making it difficult to predict all of the thumbnail sizes
-the client might need.
+might not be the best option. The complexity of responsive design has increased
+over time, making it difficult to predict all of the thumbnail sizes the client
+might need.
 
 Because of that it's often much simpler to generate thumbnails on-the-fly, only
 when the image URL is requested. This means that if you need to change how a
