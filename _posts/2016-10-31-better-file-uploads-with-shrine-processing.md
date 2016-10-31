@@ -26,7 +26,7 @@ processing can be very suitable for images, it might not be the best fit for
 large files like videos. So a file attachment library should ideally allow you
 to process files in whichever way is suitable for your requirements.
 
-In this post I want to show all the options that Shrine gives you for file
+In this post I want to show all the options that [Shrine] gives you for file
 processing, separated into three sections:
 
 1. **manual processing**
