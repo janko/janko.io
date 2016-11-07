@@ -233,7 +233,7 @@ For example, when you're uploading images to Cloudinary, shrine-cloudinary will
 [automatically update][cloudinary metadata] "size", "mime_type", "width" and
 "height" metadata values. This is especially useful if you're processing the
 image on upload with Cloudinary, because then the metadata that Shrine
-extracted won't match the uploaded file, since those were extracted *before*
+extracted won't match the uploaded file, since those were extracted before
 the upload.
 
 ```rb
