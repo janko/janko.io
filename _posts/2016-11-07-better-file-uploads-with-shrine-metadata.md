@@ -295,8 +295,7 @@ by loading a corresponding plugin. Finally, it also gives you a simple
 interface for extracting custom metadata, and allows storages to update
 metadata as well.
 
-In the next post I will talk about how direct uploads with Shrine, so stay
-tuned!
+In the next post I will talk about direct uploads with Shrine, so stay tuned!
 
 [Shrine]: https://github.com/janko-m/shrine
 [versions]: https://github.com/janko-m/shrine#versions
