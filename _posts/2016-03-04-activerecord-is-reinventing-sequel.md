@@ -71,8 +71,7 @@ joins" in **2014** ([commit](https://github.com/jeremyevans/sequel/commit/8dbec2
 
 The [attributes API](http://edgeapi.rubyonrails.org/classes/ActiveRecord/Attributes/ClassMethods.html#method-i-attribute)
 allows specifying/overriding types of columns/accessors in your models, as well
-as querying with instances of those types, and bunch of other things. It took
-Sean Griffin about 1 year to fully implement it.
+as querying with instances of those types, and bunch of other things.
 
 It's difficult to point out at a specific equivalent in Sequel since the area
 of ActiveRecord's attributes API is so broad. In my opinion you can roughly
@@ -147,7 +146,7 @@ being inspired by ActiveRecord's change :smiley:.
 
 [Adequate Record] is a set of performance improvements in ActiveRecord that
 makes common `find` and `find_by` calls and some association queries up to 2x
-faster. Aaron Patterson worked on Adequate Record for about 3 years.
+faster.
 
 However, running the [ORM benchmark] shows that Sequel is still much, much
 faster than ActiveRecord, even after the Adequate Record merge.
