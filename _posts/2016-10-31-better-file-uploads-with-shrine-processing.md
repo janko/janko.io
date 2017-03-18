@@ -320,7 +320,8 @@ use Dragonfly::Middleware
 photo = Photo.create(image: file)
 photo.image #=> #<Shrine::UploadedFile>
 
-Dragonfly.app.fetch(photo.image.id).thumb("500x400").url
+uid = [*photo.image.storage.prefix, photo.image.id].join("/")
+Dragonfly.app.fetch(uid).thumb("500x400").url
 #=> "/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn..."
 ```
 
