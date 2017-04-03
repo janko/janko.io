@@ -31,7 +31,7 @@ end
 ```
 ```ruby
 class User < Sequel::Model
-  include ImageUploader[:avatar] # creates and includes an attachment module
+  include ImageUploader::Attachment.new(:avatar)
 end
 ```
 ```ruby

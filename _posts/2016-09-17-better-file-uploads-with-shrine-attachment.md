@@ -39,7 +39,7 @@ directly to your model.
 
 ```rb
 class Photo
-  include ImageUploader[:image] # creates an instance of Shrine::Attachment
+  include ImageUploader::Attachment.new(:image)
 end
 ```
 

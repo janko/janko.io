@@ -130,7 +130,7 @@ can use in callbacks:
 
 ```ruby
 class Document < Sequel::Model
-  include FileUploader[:file]
+  include FileUploader::Attachment.new(:file)
 
   def before_save
     super

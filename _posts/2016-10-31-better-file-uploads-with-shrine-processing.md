@@ -166,7 +166,7 @@ then reads this data, returns it as a hash of `Shrine::UploadedFile` objects.
 
 ```rb
 class Photo < Sequel::Model
-  include ImageUploader[:image] # uses `image_data` column
+  include ImageUploader::Attachment.new(:image) # uses `image_data` column
 end
 ```
 ```rb
