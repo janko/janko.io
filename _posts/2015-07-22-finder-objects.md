@@ -95,7 +95,7 @@ extract the querying part.
 
 ## Implementation
 
-Suprisingly, I didn't find any examples on the implemenation of finder objects.
+Suprisingly, I didn't find any examples on the implementation of finder objects.
 I first found out about them in [this presentation][presentation]
 held by Simone Carletti from DNSimple. The presentation doesn't contain the
 actual implemenation, but it contains enough examples of usage to understand
