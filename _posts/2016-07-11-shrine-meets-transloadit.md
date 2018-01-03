@@ -56,7 +56,7 @@ Transloadit credentials:
 
 ```rb
 gem "shrine"
-gem "aws-sdk" # for Amazon S3
+gem "aws-sdk-s3", "~> 1.2" # for Amazon S3
 gem "shrine-transloadit" # <====
 ```
 
