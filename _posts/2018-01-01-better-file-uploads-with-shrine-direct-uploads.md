@@ -336,8 +336,9 @@ protocol] and behave during file upload so that the upload can be automatically
 resumed in case the request failed. Try their [demo][tus demo] to see this in
 action.
 
-There are many server implementations of the tus protocol out there for various
-languages, in our case we're interested in **[tus-ruby-server]**.
+There are many server [implementations][tus implementations] of the tus
+protocol out there for various languages; in our case we're interested in
+**[tus-ruby-server]**.
 
 ### tus-ruby-server + goliath-rack_proxy + shrine-tus
 
@@ -502,3 +503,4 @@ tuned!
 [roda demo]: https://github.com/janko-m/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [resumable demo]: https://github.com/janko-m/shrine-tus-demo
+[tus implementations]: https://tus.io/implementations.html
