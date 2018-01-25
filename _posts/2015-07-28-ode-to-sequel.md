@@ -312,7 +312,7 @@ features. ActiveRecord was long my ORM of choice only because it's part of
 Rails, not because it was the best. After using Sequel for a period of time, I
 have found it to be much more stable (0 issues maintained), better designed,
 more performant ([benchmark]), and more advanced than ActiveRecord. It
-enocurages you to make the most out of your database. I urge you to give it a
+encourages you to make the most out of your database. I urge you to give it a
 try!
 
 [sinar1]: https://github.com/janko-m/sinatra-activerecord/blob/e7cf306a03c80e12a0632f3d156b911c6ec9d12f/lib/sinatra/activerecord/rake/activerecord_4.rb
