@@ -84,6 +84,13 @@ var uppy = Uppy.Core({ /* ... */ })
 // ...
 ```
 
+I find using a generic JavaScript library much more future-proof than relying
+on homegrown solutions like what [Refile][refile javascript] or
+[ActiveStorage][activestorage javascript] offer. That's why Shrine doesn't come
+with its own JavaScript; it can be convenient when you want to get up and
+running quickly, but it could never match the features and stability of a
+library that's maintained by the whole JavaScript community.
+
 ## Theory
 
 The idea is to have a generic endpoint which accepts file uploads and saves the
@@ -498,9 +505,10 @@ tuned!
 [shrine backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [shrine-tus copy]: https://github.com/janko-m/shrine-tus#approach-c-tus-storage-equals-shrine-storage
 [tus protocol]: https://tus.io/protocols/resumable-upload.html
-[activestorage javascript]: https://github.com/rails/rails/tree/39f6c6c641f0c92c532e0c3747d1536af657920f/activestorage/app/javascript/activestorage
 [goliath PR]: https://github.com/postrank-labs/goliath/pull/343
 [roda demo]: https://github.com/janko-m/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [resumable demo]: https://github.com/janko-m/shrine-tus-demo
 [tus implementations]: https://tus.io/implementations.html
+[refile javascript]: https://github.com/refile/refile/blob/master/app/assets/javascripts/refile.js
+[activestorage javascript]: https://github.com/rails/rails/tree/master/activestorage/app/javascript/activestorage
