@@ -67,7 +67,7 @@ class App < Roda
   end
 
   def authorize!(role)
-    request.halt 403, render(:unauthorized) if authorized?(current_user, role)
+    request.halt 403, render(:unauthorized) unless authorized?(current_user, role)
   end
 end
 ```
