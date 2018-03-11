@@ -297,14 +297,14 @@ metadata as well.
 
 In the next post I will talk about direct uploads with Shrine, so stay tuned!
 
-[Shrine]: https://github.com/janko-m/shrine
-[versions]: https://github.com/janko-m/shrine#versions
+[Shrine]: https://github.com/shrinerb/shrine
+[versions]: https://github.com/shrinerb/shrine#versions
 [Fastimage]: https://github.com/sdsykes/fastimage
 [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
 [paperclip spoof]: https://github.com/thoughtbot/paperclip/issues?utf8=%E2%9C%93&q=label%3A%22Spoof%20related%20or%20Mime%20types%22%20
 [responsive breakpoints]: http://cloudinary.com/blog/introducing_intelligent_responsive_image_breakpoints_solutions
-[cloudinary metadata]: https://github.com/janko-m/shrine-cloudinary/blob/c899875b935a45bc322a5e18be9c2132ebeecb4d/lib/shrine/storage/cloudinary.rb#L152-L157
-[shrine-transloadit]: https://github.com/janko-m/shrine-transloadit/blob/cd3b57aeeae3587852e2bab5f311b8f713f72fe5/lib/shrine/plugins/transloadit.rb#L150-L157
-[shrine-flickr]: https://github.com/janko-m/shrine-flickr/blob/e0226bc4d2a316924d4690e5f0c1c21f613e44c1/lib/shrine/storage/flickr.rb#L114
-[shrine-uploadcare]: https://github.com/janko-m/shrine-uploadcare/blob/c167516ba3002f7c880bfdea2e349731e7a7dddd/lib/shrine/storage/uploadcare.rb#L156-L165
-[validation]: https://github.com/janko-m/shrine#validation
+[cloudinary metadata]: https://github.com/shrinerb/shrine-cloudinary/blob/c899875b935a45bc322a5e18be9c2132ebeecb4d/lib/shrine/storage/cloudinary.rb#L152-L157
+[shrine-transloadit]: https://github.com/shrinerb/shrine-transloadit/blob/cd3b57aeeae3587852e2bab5f311b8f713f72fe5/lib/shrine/plugins/transloadit.rb#L150-L157
+[shrine-flickr]: https://github.com/shrinerb/shrine-flickr/blob/e0226bc4d2a316924d4690e5f0c1c21f613e44c1/lib/shrine/storage/flickr.rb#L114
+[shrine-uploadcare]: https://github.com/shrinerb/shrine-uploadcare/blob/c167516ba3002f7c880bfdea2e349731e7a7dddd/lib/shrine/storage/uploadcare.rb#L156-L165
+[validation]: https://github.com/shrinerb/shrine#validation

@@ -235,9 +235,9 @@ interface.
 In the next post I will talk about Shrine's high-level attachment interface,
 and again compare it to existing file upload libraries, so stay tuned!
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [previous post]: https://twin.github.io/better-file-uploads-with-shrine-motivation/
-[core]: https://github.com/janko-m/shrine/blob/master/lib/shrine.rb
+[core]: https://github.com/shrinerb/shrine/blob/master/lib/shrine.rb
 [plugins]: http://shrinerb.com/#plugins
 [writing plugins]: http://shrinerb.com/#plugins
 [carrierwave inheritance]: https://jbhannah.net/articles/carrierwave-concerns/
@@ -251,7 +251,7 @@ and again compare it to existing file upload libraries, so stay tuned!
 [S3 copy]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
 [paperclip#1326]: https://github.com/thoughtbot/paperclip/issues/1326
 [paperclip#1642]: https://github.com/thoughtbot/paperclip/issues/1642
-[validation_helpers]: https://github.com/janko-m/shrine/blob/master/lib/shrine/plugins/validation_helpers.rb
+[validation_helpers]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/validation_helpers.rb
 [Open3]: http://ruby-doc.org/stdlib-2.3.0/libdoc/open3/rdoc/Open3.html
 [paperclip mime]: https://github.com/thoughtbot/paperclip/issues?utf8=%E2%9C%93&q=label%3A%22Spoof%20related%20or%20Mime%20types%22%20
 [file]: http://linux.die.net/man/1/file
@@ -259,15 +259,15 @@ and again compare it to existing file upload libraries, so stay tuned!
 [down open-uri]: https://twin.github.io/improving-open-uri/
 [down streaming]: https://twin.github.io/partial-downloads-with-enumerators-and-fibers/
 [shrine-carrierwave load time]: https://gist.github.com/janko-m/0d4269b9c7195b5e65cc947acf1cc028
-[FileSystem]: https://github.com/janko-m/shrine/blob/master/lib/shrine/storage/file_system.rb
-[S3]: https://github.com/janko-m/shrine/blob/master/lib/shrine/storage/s3.rb
-[Fog]: https://github.com/janko-m/shrine-fog
-[Flickr]: https://github.com/janko-m/shrine-flickr
-[Cloudinary]: https://github.com/janko-m/shrine-cloudinary
-[Transloadit]: https://github.com/janko-m/shrine-transloadit
-[Uploadcare]: https://github.com/janko-m/shrine-uploadcare
-[Imgix]: https://github.com/janko-m/shrine-imgix
-[GridFS]: https://github.com/janko-m/shrine-gridfs
-[SQL]: https://github.com/janko-m/shrine-sql
+[FileSystem]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/storage/file_system.rb
+[S3]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/storage/s3.rb
+[Fog]: https://github.com/shrinerb/shrine-fog
+[Flickr]: https://github.com/shrinerb/shrine-flickr
+[Cloudinary]: https://github.com/shrinerb/shrine-cloudinary
+[Transloadit]: https://github.com/shrinerb/shrine-transloadit
+[Uploadcare]: https://github.com/shrinerb/shrine-uploadcare
+[Imgix]: https://github.com/shrinerb/shrine-imgix
+[GridFS]: https://github.com/shrinerb/shrine-gridfs
+[SQL]: https://github.com/shrinerb/shrine-sql
 [creating storage]: http://shrinerb.com/rdoc/files/doc/creating_storages_md.html
-[linter]: https://github.com/janko-m/shrine/blob/master/lib/shrine/storage/linter.rb
+[linter]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/storage/linter.rb

@@ -305,7 +305,7 @@ implementation is robust and transparent.
 [carrierwave_backgrounder]: https://github.com/lardawge/carrierwave_backgrounder
 [carrierwave_direct]: https://github.com/dwilkie/carrierwave_direct
 [paperdragon]: https://github.com/apotonick/paperdragon
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [Refile]: https://github.com/refile/refile
 [4 attachment columns]: https://github.com/thoughtbot/paperclip/blob/bd016009dbf74fc8f999e78a68c9e5869eb0dd6a/README.md#usage
 [breaking CarrierWave's ability to remove attachments]: https://github.com/lardawge/carrierwave_backgrounder/pull/169

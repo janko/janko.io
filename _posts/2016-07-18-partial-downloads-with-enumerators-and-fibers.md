@@ -306,7 +306,7 @@ The reason I wanted to share this with you is because for me it was an
 interesting and advanced problem, which had a real-world use case. It really
 brings me joy how powerful Ruby can be, once you have good knowledge of it.
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [bad things can happen]: https://imagetragick.com/
 [uploaded directly]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html
 [MimeMagic]: https://github.com/minad/mimemagic

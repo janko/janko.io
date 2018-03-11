@@ -214,7 +214,7 @@ but I encourage you to check them out. I spent a lot of time studying other
 solutions and their open issues, and hopefully I succeeded in making Shrine the
 next level of file uploads.
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [Roda]: https://github.com/jeremyevans/roda
 [Sequel]: https://github.com/jeremyevans/sequel
@@ -222,7 +222,7 @@ next level of file uploads.
 [a lot of other plugins]: http://shrinerb.com#plugins
 [carrierwave_backgrounder]: https://github.com/lardawge/carrierwave_backgrounder
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
-[example app]: https://github.com/janko-m/shrine-example
+[example app]: https://github.com/shrinerb/shrine-example
 [fastimage]: https://github.com/sdsykes/fastimage
 [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
 [#1320]: https://github.com/carrierwaveuploader/carrierwave/issues/1320

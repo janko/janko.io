@@ -254,7 +254,7 @@ of Shrine. In future posts I will talk about all the advanced features that are
 possible with these core classes. The next post will be about file processing
 with Shrine, so stay tuned!
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [previous post]: https://twin.github.io/better-file-uploads-with-shrine-uploader/
 [CarrierWave::Mount]: https://github.com/carrierwaveuploader/carrierwave/blob/1dbc8be0bb8cf3b48600c5451084ee13445747b0/lib/carrierwave/mount.rb
 [paperclip columns]: https://github.com/thoughtbot/paperclip/blob/7edb35a2a9a80c9598dfde235c7e593c023fc914/lib/paperclip/schema.rb#L6-L9
@@ -262,16 +262,16 @@ with Shrine, so stay tuned!
 [carrierwave-meta]: https://github.com/gzigzigzeo/carrierwave-meta/
 [backgrounding plugin]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [Sequel]: https://github.com/jeremyevans/sequel
-[shrine-mongoid]: https://github.com/janko-m/shrine-mongoid
+[shrine-mongoid]: https://github.com/shrinerb/shrine-mongoid
 [hanami-shrine]: https://github.com/katafrakt/hanami-shrine
-[shrine-rom]: https://github.com/janko-m/shrine-rom-example/blob/30ff892216d18ee2b64a1b784a06e489bb3be75d/config/shrine-rom.rb
-[shrine-reform]: https://github.com/janko-m/shrine-reform
-[shrine activerecord]: https://github.com/janko-m/shrine/blob/master/lib/shrine/plugins/activerecord.rb
+[shrine-rom]: https://github.com/shrinerb/shrine-rom-example/blob/30ff892216d18ee2b64a1b784a06e489bb3be75d/config/shrine-rom.rb
+[shrine-reform]: https://github.com/shrinerb/shrine-reform
+[shrine activerecord]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/activerecord.rb
 [carrierwave activerecord]: https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/orm/activerecord.rb
 [<attribute>_will_change! hacks]: https://github.com/carrierwaveuploader/carrierwave/blob/1dbc8be0bb8cf3b48600c5451084ee13445747b0/lib/carrierwave/orm/activerecord.rb#L67
 [shrine moving files]: http://shrinerb.com/rdoc/files/doc/changing_location_md.html
 [STI]: http://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html
-[Using Attacher]: https://github.com/janko-m/shrine/blob/master/doc/attacher.md#readme
+[Using Attacher]: https://github.com/shrinerb/shrine/blob/master/doc/attacher.md#readme
 [Sequel validations]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/ValidationHelpers.html
 [direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html

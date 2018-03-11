@@ -475,7 +475,7 @@ tuned!
 * Demo with direct upload to app and S3 -- [Roda][roda demo] & [Rails][rails demo]
 * Demo with resumable upload -- [Roda][resumable demo]
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [jQuery-File-Upload]: https://blueimp.github.io/jQuery-File-Upload/
 [Dropzone.js]: http://www.dropzonejs.com
 [FineUploader]:https://fineuploader.com
@@ -486,8 +486,8 @@ tuned!
 [presign_endpoint]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
 [AwsS3]: https://uppy.io/docs/aws-s3/
 [shrine-google_cloud_storage]: https://github.com/renchap/shrine-google_cloud_storage
-[shrine-cloudinary]: https://github.com/janko-m/shrine-cloudinary#direct-uploads
-[shrine-transloadit]: https://github.com/janko-m/shrine-transloadit#direct-uploads
+[shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary#direct-uploads
+[shrine-transloadit]: https://github.com/shrinerb/shrine-transloadit#direct-uploads
 [carrierwave direct]: https://github.com/dwilkie/carrierwave_direct
 [paperclip direct]: https://devcenter.heroku.com/articles/direct-to-s3-image-uploads-in-rails
 [tus demo]: https://tus.io/demo.html
@@ -497,18 +497,18 @@ tuned!
 [EventMachine]: https://github.com/eventmachine/eventmachine
 [goliath-rack_proxy]: https://github.com/janko-m/goliath-rack_proxy
 [Tus]: https://uppy.io/docs/tus/
-[shrine-tus]: https://github.com/janko-m/shrine-tus
+[shrine-tus]: https://github.com/shrinerb/shrine-tus
 [tus-js-client]: https://github.com/tus/tus-js-client
 [tus filesystem]: https://github.com/janko-m/tus-ruby-server#filesystem
 [tus s3]: https://github.com/janko-m/tus-ruby-server#amazon-s3
 [tus expiration]: https://github.com/janko-m/tus-ruby-server#expiration
 [shrine backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
-[shrine-tus copy]: https://github.com/janko-m/shrine-tus#approach-c-tus-storage-equals-shrine-storage
+[shrine-tus copy]: https://github.com/shrinerb/shrine-tus#approach-c-tus-storage-equals-shrine-storage
 [tus protocol]: https://tus.io/protocols/resumable-upload.html
 [goliath PR]: https://github.com/postrank-labs/goliath/pull/343
-[roda demo]: https://github.com/janko-m/shrine/tree/master/demo
+[roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
-[resumable demo]: https://github.com/janko-m/shrine-tus-demo
+[resumable demo]: https://github.com/shrinerb/shrine-tus-demo
 [tus implementations]: https://tus.io/implementations.html
 [refile javascript]: https://github.com/refile/refile/blob/master/app/assets/javascripts/refile.js
 [activestorage javascript]: https://github.com/rails/rails/tree/master/activestorage/app/javascript/activestorage

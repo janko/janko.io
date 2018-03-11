@@ -400,7 +400,7 @@ This makes Shrine a versatile tool for handling any type of file uploads.
 In the next post I will talk about how Shrine handles file metadata, so stay
 tuned!
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [Refile::MiniMagick]: https://github.com/refile/refile-mini_magick
 [ImageProcessing]: https://github.com/janko-m/image_processing
 [VIPS]: http://www.vips.ecs.soton.ac.uk/index.php?title=VIPS
@@ -408,18 +408,18 @@ tuned!
 [ImageFlow]: https://www.imageflow.io/
 [backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [ImageOptim]: https://github.com/toy/image_optim
-[validation]: https://github.com/janko-m/shrine#validation
+[validation]: https://github.com/shrinerb/shrine#validation
 [MiniMagick]: https://github.com/minimagick/minimagick
 [Paperdragon]: https://github.com/apotonick/paperdragon
-[video processing]: https://github.com/janko-m/shrine#custom-processing
+[video processing]: https://github.com/shrinerb/shrine#custom-processing
 [Transloadit]: https://transloadit.com/
-[shrine-transloadit]: https://github.com/janko-m/shrine-transloadit
+[shrine-transloadit]: https://github.com/shrinerb/shrine-transloadit
 [direct S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [Attache]: https://github.com/choonkeat/attache
 [Dragonfly]: http://markevans.github.io/dragonfly/
-[Cloudinary]: https://github.com/janko-m/shrine-cloudinary
-[Imgix]: https://github.com/janko-m/shrine-imgix
-[Uploadcare]: https://github.com/janko-m/shrine-uploadcare
+[Cloudinary]: https://github.com/shrinerb/shrine-cloudinary
+[Imgix]: https://github.com/shrinerb/shrine-imgix
+[Uploadcare]: https://github.com/shrinerb/shrine-uploadcare
 [CarrierWave & Zencoder]: https://gist.github.com/shamil614/4002368
-[direct Cloudinary]: https://github.com/janko-m/shrine-cloudinary#direct-uploads
+[direct Cloudinary]: https://github.com/shrinerb/shrine-cloudinary#direct-uploads
 [responsive breakpoints]: http://cloudinary.com/blog/introducing_intelligent_responsive_image_breakpoints_solutions

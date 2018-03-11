@@ -376,7 +376,7 @@ of what you can do** are greater than in any other file attachment Ruby
 library. For the rest of this blog post series I will guide you through all of
 the cool things that you can do with Shrine, so stay tuned!
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [Sequel]: https://github.com/jeremyevans/sequel
 [Roda]: https://github.com/jeremyevans/roda
 [evaluating libraries]: https://twin.github.io/evaluating-ruby-libraries/

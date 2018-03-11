@@ -325,9 +325,9 @@ resumable file uploads to their Ruby applications.
 [Goliath]: https://github.com/postrank-labs/goliath
 [EventMachine]: https://github.com/eventmachine/eventmachine
 [Roda]: https://github.com/jeremyevans/roda
-[Shrine]: https://github.com/janko-m/shrine
-[shrine-url]: https://github.com/janko-m/shrine-url
-[shrine-tus-demo]: https://github.com/janko-m/shrine-tus-demo
+[Shrine]: https://github.com/shrinerb/shrine
+[shrine-url]: https://github.com/shrinerb/shrine-url
+[shrine-tus-demo]: https://github.com/shrinerb/shrine-tus-demo
 [FineUploader]: http://fineuploader.com/
 [bytes can get lost]: https://github.com/tus/tus-resumable-upload-protocol/issues/7#issuecomment-16568773
 [GridFS]: https://docs.mongodb.org/v3.0/core/gridfs/

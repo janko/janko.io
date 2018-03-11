@@ -187,22 +187,22 @@ I'mv very happy with the way Shrine is going, I think it's successfully
 addressing the limitations of existing file upload libraries, and provides some
 nice unique features.
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [good design]: http://shrinerb.com/rdoc/files/doc/design_md.html
 [FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
 [S3]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
-[Cloudinary]: https://github.com/janko-m/shrine-cloudinary
-[Flickr]: https://github.com/janko-m/shrine-flickr
-[Fog]: https://github.com/janko-m/shrine-fog
-[GridFS]: https://github.com/janko-m/shrine-fog
-[Imgix]: https://github.com/janko-m/shrine-imgix
-[Memory]: https://github.com/janko-m/shrine-memory
-[SQL]: https://github.com/janko-m/shrine-sql
+[Cloudinary]: https://github.com/shrinerb/shrine-cloudinary
+[Flickr]: https://github.com/shrinerb/shrine-flickr
+[Fog]: https://github.com/shrinerb/shrine-fog
+[GridFS]: https://github.com/shrinerb/shrine-fog
+[Imgix]: https://github.com/shrinerb/shrine-imgix
+[Memory]: https://github.com/shrinerb/shrine-memory
+[SQL]: https://github.com/shrinerb/shrine-sql
 [ActiveRecord]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Activerecord.html
 [Sequel]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Sequel.html
-[Mongoid]: https://github.com/janko-m/shrine-mongoid
+[Mongoid]: https://github.com/shrinerb/shrine-mongoid
 [Hanami]: https://github.com/katafrakt/hanami-shrine
-[Reform]: https://github.com/janko-m/shrine-reform
+[Reform]: https://github.com/shrinerb/shrine-reform
 [upload_options]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadOptions.html
 [determine_mime_type]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/DetermineMimeType.html
 [store_dimensions]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/StoreDimensions.html

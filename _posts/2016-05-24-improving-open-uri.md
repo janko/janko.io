@@ -206,7 +206,7 @@ already had most of the features that I wanted, but allowed me to complete the
 ones that I was missing. If you want to use open-uri, but without any of the
 mentioned quirks, consider using [Down].
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [open-uri]: http://ruby-doc.org/stdlib-2.2.0/libdoc/open-uri/rdoc/OpenURI.html
 [Net::HTTP]: http://ruby-doc.org/stdlib-2.3.1/libdoc/net/http/rdoc/Net/HTTP.html
 [makes you vulnerable to remote code execution]: http://sakurity.com/blog/2015/02/28/openuri.html

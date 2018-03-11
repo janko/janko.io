@@ -140,11 +140,11 @@ want to do our processing, but without the hassle of having to scale it.
 
 [Transloadit]: https://transloadit.com/
 [Ruby SDK]: https://github.com/transloadit/ruby-sdk
-[Shrine]: https://github.com/janko-m/shrine
-[shrine-transloadit]: https://github.com/janko-m/shrine-transloadit
+[Shrine]: https://github.com/shrinerb/shrine
+[shrine-transloadit]: https://github.com/shrinerb/shrine-transloadit
 [TUS]: http://tus.io/
 [fully asynchronous user experience]: https://twin.github.io/file-uploads-asynchronous-world/
 [plugin system]: http://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
 [robots]: https://transloadit.com/docs/conversion-robots/
-[demo app]: https://github.com/janko-m/shrine-transloadit/tree/master/demo
-[background jobs]: https://github.com/janko-m/shrine-transloadit#backgrounding
+[demo app]: https://github.com/shrinerb/shrine-transloadit/tree/master/demo
+[background jobs]: https://github.com/shrinerb/shrine-transloadit#backgrounding
