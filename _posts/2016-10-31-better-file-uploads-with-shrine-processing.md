@@ -51,9 +51,8 @@ generic library which we could use with *any* file attachment library?
 
 This is exactly what I did when I created Shrine. I extracted image processing
 logic from [Refile::MiniMagick], and released a generic [ImageProcessing]
-library. It currently provides processing helper methods only for ImageMagick
-(using [MiniMagick]), but I intend to also add [VIPS] support in the near future
-(using [carrierwave-vips] as the source of knowledge). And once [ImageFlow]
+library. It provides processing helper methods for [ImageMagick]
+(using [MiniMagick]) *and* [libvips] \(using [ruby-vips]). And once [ImageFlow]
 gets released, it will definitely get into ImageProcessing as well.
 
 Other types of files (video, audio, document etc) can also be processed using
@@ -92,18 +91,25 @@ ImageProcessing library to limit maximum dimensions to `800x800`:
 
 ```rb
 # Gemfile
-gem "image_processing"
-gem "mini_magick"
+gem "image_processing", "~> 1.0"
+gem "mini_magick", "~> 4.0"
 ```
 ```rb
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  include ImageProcessing::MiniMagick
   plugin :processing
 
   process(:store) do |io|
-    resize_to_limit!(io.download, 800, 800) # download the original and resize it
+    original = io.download
+
+    resized = ImageProcessing::MiniMagick
+      .source(original)
+      .resize_to_limit!(800, 800)
+
+    original.close!
+
+    resized
   end
 end
 ```
@@ -119,8 +125,9 @@ end
 ```
 ```rb
 class Processors::ImageNormalizer # plain class
-  include ImageProcessing::MiniMagick
-  # ...
+  def call(io)
+    # ...
+  end
 end
 ```
 
@@ -138,18 +145,20 @@ then in processing block we can return a Hash of files.
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  include ImageProcessing::MiniMagick
   plugin :processing
   plugin :versions # enable Shrine to handle a hash of files
 
   process(:store) do |io|
     original = io.download
+    processor = ImageProcessing::MiniMagick
 
-    size_800 = resize_to_limit!(original, 800, 800)
-    size_500 = resize_to_limit(size_800,  500, 500)
-    size_300 = resize_to_limit(size_500,  300, 300)
+    size_800 = processor.source(original).resize_to_limit!(800, 800)
+    size_500 = processor.source(size_800).resize_to_limit!(500, 500)
+    size_300 = processor.source(size_500).resize_to_limit!(300, 300)
 
-    {large: size_800, medium: size_500, small: size_300}
+    original.close!
+
+    { original: io, large: size_800, medium: size_500, small: size_300 }
   end
 end
 ```
@@ -403,12 +412,14 @@ tuned!
 [Shrine]: https://github.com/shrinerb/shrine
 [Refile::MiniMagick]: https://github.com/refile/refile-mini_magick
 [ImageProcessing]: https://github.com/janko-m/image_processing
-[VIPS]: http://www.vips.ecs.soton.ac.uk/index.php?title=VIPS
+[libvips]: http://jcupitt.github.io/libvips/
+[ruby-vips]: https://github.com/jcupitt/ruby-vips
 [carrierwave-vips]: https://github.com/eltiare/carrierwave-vips
 [ImageFlow]: https://www.imageflow.io/
 [backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [ImageOptim]: https://github.com/toy/image_optim
 [validation]: https://github.com/shrinerb/shrine#validation
+[ImageMagick]: https://www.imagemagick.org
 [MiniMagick]: https://github.com/minimagick/minimagick
 [Paperdragon]: https://github.com/apotonick/paperdragon
 [video processing]: https://github.com/shrinerb/shrine#custom-processing
