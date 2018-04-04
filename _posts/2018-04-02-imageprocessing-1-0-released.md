@@ -228,11 +228,6 @@ ImageProcess::MiniMagick.resize_to_fit(800, 800).call(image)
 Let's see how long typical thumbnail generation might take with MiniMagick:
 
 ```rb
-# Gemfile
-gem "image_processing", "~> 1.0"
-gem "mini_magick", "~> 4.0"
-```
-```rb
 require "image_processing/mini_magick"
 
 pipeline = ImageProcessing::MiniMagick.source("image.jpg")
@@ -257,11 +252,6 @@ However, let's try executing the same script again, but this time we'll swap
 out the MiniMagick module for an alternative one (the resizing code remains
 unchanged):
 
-```rb
-# Gemfile
-gem "image_processing", "~> 1.0"
-gem "ruby-vips", "~> 2.0"
-```
 ```rb
 require "image_processing/vips"
 
