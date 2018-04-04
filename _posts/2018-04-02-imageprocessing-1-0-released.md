@@ -202,9 +202,6 @@ ImageProcess::MiniMagick.call(image)
   <img alt="image auto orientation example" src="{{ site.baseurl }}/images/orientation.png" />
 </div>
 
-Libvips also supports auto rotation, but only for [orientation values](http://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/) of 1, 3, 6, and 8.
-This should work well for most images, but use ImageMagick if you need to rotate images with values of 2, 5, and 7.
-
 ## Sharpening thumbnails
 
 When an image is resized, the thumbnail will end up slightly blurry compared to
@@ -282,6 +279,16 @@ libvips quick]). Among other things, libvips automatically caches previous
 operations, which gives a huge speedup when generating multiple thumbnails from
 the same source image (see [How libvips works] for more details on caching).
 
+So far we did uncover some minor limitations in libvips:
+
+* While libvips is able to load GIF files, it's currently not able to save
+  files in the GIF format. If you're accepting GIFs, you'll need to either
+  convert them to another format or use ImageMagick.
+
+* The "autorotate" feature of libvips works only for [orientation values] of
+  1, 3, 6, and 8. This is the case for most images, but if you need to support
+  other orientations you should probably use ImageMagick.
+
 The `ImageProcessing::MiniMagick` and `ImageProcessing::Vips` modules both
 share the same chainable API, and they aim to maintain the same API and
 behaviour as much as possible, so switching from one to the other should be
@@ -327,6 +334,7 @@ I want to thank:
 [benchmarks]: https://github.com/jcupitt/libvips/wiki/Speed-and-memory-use
 [How libvips works]: http://jcupitt.github.io/libvips/API/current/How-it-works.md.html
 [Why is libvips quick]: https://github.com/jcupitt/libvips/wiki/Why-is-libvips-quick
+[orientation values]: http://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
 [ImageMagick]: https://www.imagemagick.org/script/index.php
 [sharp]: https://github.com/lovell/sharp
 [@jnicklas]: https://github.com/jnicklas
