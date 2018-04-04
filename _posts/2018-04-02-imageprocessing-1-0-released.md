@@ -111,11 +111,12 @@ Today the `ImageProcessing::MiniMagick` API looks like this:
 
 ```rb
 result = ImageProcessing::MiniMagick
-  .source(file)
+  .source(file)              # source image
+  .loader(page: 0)           # load options
+  .saver(quality: 100)       # save options
   .resize_to_limit(400, 400) # macro
-  .quality(100)              # option
   .strip                     # option
-  .call
+  .call                      # execute processing with above parameters
 
 result #=> #<Tempfile:/var/folders/k7/.../image_processing20180402-5116-1g0sibv.jpg>
 ```
