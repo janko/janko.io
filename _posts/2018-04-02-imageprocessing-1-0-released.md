@@ -175,23 +175,23 @@ In addition to the API, some very useful features got added to the gem as well.
 
 ## Autorotation
 
-When viewing a photo taken from a camera in a photo app, the app will normally
-rotate the photo, as needed, so that it displays correctly, regardless of 
-whether it was taken in the "landscape" or "portrait" mode on the camera.
+When viewing a photo taken from a camera, most photo apps will normally rotate
+the photo as needed, so that it displays correctly regardless of whether it was
+taken in the "landscape" or "portrait" angle of the camera.
 
-In reality, photos taken by the camera in "portrait" angle are often saved sideways, 
-along with an `Orientation` [EXIF tag] indicating the angle of the camera, 
-and most photo apps will see that EXIF data and automatically display the photo
-in the correct orientation.
+In reality, photos taken by the camera in "portrait" angle are often saved
+sideways, along with an `Orientation` [EXIF tag] indicating the angle of the
+camera, and most photo apps will see that EXIF data and automatically display
+the photo in the correct orientation.
 
-Unfortunately, this isn't the case for some browsers. When you load a photo that's
-not correctly oriented by using a normal `<img>` tag, the browser might ignore the 
-orientation and display the photo as-is, without rotating it.
+Unfortunately, this isn't the case for some browsers. When you load a photo
+that's not correctly oriented into an `<img>` tag, the browser might ignore the
+EXIF data and display the photo as-is, without rotating it.
 
-That's why it's best to rotate the photo when it is first uploaded to your web app
-and then use the rotated photo when displaying the photo or when generating thumbnails.
-ImageMagick supports this with the [`-auto-orient`] option. In ImageProcessing,
-this option is added by default:
+That's why it's best to rotate the photo correctly when it is first uploaded to
+your web app and then use the rotated photo when displaying it or when
+generating thumbnails. ImageMagick supports this with the [`-auto-orient`]
+option. In ImageProcessing, this option is added by default:
 
 ```rb
 ImageProcess::MiniMagick.call(image)
