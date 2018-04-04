@@ -277,8 +277,8 @@ So far we did uncover some minor limitations in libvips:
   convert them to another format or use ImageMagick.
 
 * The "autorotate" feature of libvips works only for [orientation values] of
-  1, 3, 6, and 8. This is the case for most images, but if you need to support
-  other orientations you should probably use ImageMagick.
+  1, 3, 6, and 8. This covers most images, but if you need to support other
+  orientations you should probably use ImageMagick.
 
 The `ImageProcessing::MiniMagick` and `ImageProcessing::Vips` modules both
 share the same chainable API, and they aim to maintain the same API and
