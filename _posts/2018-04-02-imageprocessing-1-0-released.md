@@ -291,8 +291,8 @@ So far we did uncover some minor limitations in libvips:
 
 The `ImageProcessing::MiniMagick` and `ImageProcessing::Vips` modules both
 share the same chainable API, and they aim to maintain the same API and
-behaviour as much as possible, so switching from one to the other should be
-relatively easy.
+behaviour as much as possible (including autorotation and sharpening), so
+switching from one to the other should be relatively easy.
 
 ## Conclusion
 
