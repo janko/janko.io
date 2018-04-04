@@ -10,14 +10,14 @@ functionality needed when accepting image uploads from users (most notably
 generating thumbnails).
 
 It was originally written to be used with [Shrine], since Paperclip,
-CarrierWave, Dragonfly, Refile all came with their own image processing
+CarrierWave, Dragonfly, and Refile all came with their own image processing
 implementations which couldn't be reused for Shrine. The goal was to extract
 knowledge from existing implementations into a gem that's generic and reusable.
 The initial implementation was extracted from [refile-mini_magick].
 
 ## Original API
 
-Until recently the `ImageProcessing::MiniMagick` module was just a container
+Until recently, the `ImageProcessing::MiniMagick` module was just a container
 for common processing methods that use the [MiniMagick] gem, accepting file
 objects on the input and returning file objects on the output.
 
@@ -66,7 +66,7 @@ tempfile
 
 This API was very simple to understand, but it had several limitations:
 
-* With the block implementation **it's not possible to add custom ImageMagick
+* With the block implementation, **it's not possible to add custom ImageMagick
   options both before and after the resize operation**. This is important because
   sometimes the order of ImageMagick options matters. For example, [`-resample`]
   should probably be applied after [`-resize`], not before.
@@ -175,20 +175,23 @@ In addition to the API, some very useful features got added to the gem as well.
 
 ## Autorotation
 
-When viewing photos taken from a camera in a photo viewer, all photos will
-appear rotated upright, regardless of whether a photo was taken in "landscape"
-or "portrait" angle of the camera. In reality photos taken by the camera in
-"portrait" angle are saved sideways, along with the `Orientation` [EXIF tag]
-indicating the angle of the camera, and most photo viewers will see that EXIF
-data and automatically display the photo to look upright.
+When viewing a photo taken from a camera in a photo app, the app will normally
+rotate the photo, as needed, so that it displays correctly, regardless of 
+whether it was taken in the "landscape" or "portrait" mode on the camera.
 
-Unfortunately, this isn't the case for browsers. When you add a photo that's
-not correctly oriented to a vanilla `<img>` tag, the browser will display the
-photo as is, it won't look at its EXIF data.
+In reality, photos taken by the camera in "portrait" angle are often saved sideways, 
+along with an `Orientation` [EXIF tag] indicating the angle of the camera, 
+and most photo apps will see that EXIF data and automatically display the photo
+in the correct orientation.
 
-That's why it's best to rotate the photo on upload based on the EXIF data,
-which you can do with the [`-auto-orient`] ImageMagick option. In
-ImageProcessing this option is added by default:
+Unfortunately, this isn't the case for some browsers. When you load a photo that's
+not correctly oriented by using a normal `<img>` tag, the browser might ignore the 
+orientation and display the photo as-is, without rotating it.
+
+That's why it's best to rotate the photo when it is first uploaded to your web app
+and then use the rotated photo when displaying the photo or when generating thumbnails.
+ImageMagick supports this with the [`-auto-orient`] option. In ImageProcessing,
+this option is added by default:
 
 ```rb
 ImageProcess::MiniMagick.call(image)
@@ -198,6 +201,9 @@ ImageProcess::MiniMagick.call(image)
 <div>
   <img alt="image auto orientation example" src="{{ site.baseurl }}/images/orientation.png" />
 </div>
+
+Libvips also supports auto rotation, but only for [orientation values](http://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/) of 1, 3, 6, and 8.
+This should work well for most images, but use ImageMagick if you need to rotate images with values of 2, 5, and 7.
 
 ## Sharpening thumbnails
 
@@ -287,7 +293,7 @@ If you're processing images uploaded by users, ImageProcessing is a very useful
 gem to have in your toolkit. It abstracts common ways to generate thumbnails
 and includes some very useful defaults. It provides backends for both
 ImageMagick and libvips, making the API and behaviour as uniform as possible
-between the two implementations. Hopefully this will help make libvips more
+between the two implementations. Hopefully, this will help make libvips more
 mainstream in Ruby applications, like [sharp] has done for Node.js.
 
 I like that for Shrine I decided not to write yet another homegrown solution
