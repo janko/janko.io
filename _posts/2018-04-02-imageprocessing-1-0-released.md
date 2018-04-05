@@ -199,6 +199,10 @@ ImageProcess::MiniMagick.call(image)
 # convert input.jpg -auto-orient ... output.jpg
 ```
 
+<div>
+  <img alt="image auto orientation example" src="{{ site.baseurl }}/images/orientation.png" />
+</div>
+
 ## Sharpening thumbnails
 
 When an image is resized, the thumbnail will end up slightly blurry compared to
@@ -214,6 +218,10 @@ automatically applies in the `#resize_*` macros after resizing.
 ImageProcess::MiniMagick.resize_to_fit(800, 800).call(image)
 # convert input.jpg ... -resize 800x800 -sharpen 0x1 ... output.jpg
 ```
+
+<div>
+  <img alt="image sharpening example" src="{{ site.baseurl }}/images/sharpening.png" />
+</div>
 
 ## VIPS
 
