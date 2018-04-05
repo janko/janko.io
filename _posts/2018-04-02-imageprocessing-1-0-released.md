@@ -7,11 +7,11 @@ The [ImageProcessing] gem has just reached version 1.0, and I thought this
 would be a good opportunity to write an article about it. For those who don't
 know, ImageProcessing is a wrapper gem that provides common image processing
 functionality needed when accepting image uploads from users (most notably
-generating thumbnails).
+resizing images).
 
-It was originally written to be used with [Shrine], since Paperclip,
+It was originally written to be used with [Shrine], because Paperclip,
 CarrierWave, Dragonfly, and Refile all came with their own image processing
-implementations which couldn't be reused for Shrine. The goal was to extract
+implementations that couldn't be reused for Shrine. The goal was to extract
 knowledge from existing implementations into a gem that's generic and reusable.
 The initial implementation was extracted from [refile-mini_magick].
 
@@ -39,11 +39,11 @@ command:
 resize_to_fit(original, 800, 800) do |cmd|
   cmd.quality 100
 end
-# mogrify -quality 100 -resize 800x800 output.jpg
+# mogrify -quality 100 -resize 800x800 image.jpg
 ```
 
-You might be asking now: why wouldn't I just use MiniMagick directly? Let's see
-how much ImageProcessing does for you:
+You might be asking now: why wouldn't I just use MiniMagick directly? Well,
+let's see how much ImageProcessing does for you:
 
 ```rb
 resize_to_limit(original, 800, 800)
@@ -75,14 +75,14 @@ This API was very simple to understand, but it had several limitations:
   resize_to_fit(original, 800, 800) do |cmd|
     cmd.resample "72x72" # this is run before resizing, but you proably want after
   end
-  # convert input.jpg -resample 72x72 -resize 800x800 ouptut.jpg
+  # mogrify -resample 72x72 -resize 800x800 image.jpg
   ```
 
 * **Custom ImageMagick options were second-class citizens** compared to the
-  `#resize_to_fit` methods, instead of the latter being treated as macros. This
-  led to adding methods like `#crop`, `#auto_orient` and `#resample` just to
-  avoid writing more code. This created a slippery slope, as it invited for
-  adding more and more methods that just delegate directly to MiniMagick.
+  `#resize_to_fit` methods. This led to adding methods like `#crop`,
+  `#auto_orient` and `#resample` just to avoid writing more code. This created
+  a slippery slope, as it invited for adding more and more methods that just
+  delegate directly to MiniMagick.
 
   ```rb
   # too verbose
@@ -128,7 +128,7 @@ The processing parameters are specified via "builder methods" (`#source`,
 
 You can invoke macros that are defined on the processor (`#resize_to_limit`,
 `#resize_to_fit`, `#resize_to_fill` etc), while any undefined method will be
-interpreted as an ImageMagick option (`#quality`, `#strip` etc).
+interpreted as an ImageMagick option (`#strip`, `#resample`, `#crop` etc).
 
 The chainable API solves all the problems we've mentioned from the old API:
 
@@ -139,7 +139,7 @@ The chainable API solves all the problems we've mentioned from the old API:
     .auto_orient               # before
     .resize_to_limit(400, 400)
     .resample("72x72")         # after
-    # ...
+    .call(image)
   ```
 
 * Invoking direct ImageMagick options is now equally easy as invoking macros:
@@ -149,7 +149,7 @@ The chainable API solves all the problems we've mentioned from the old API:
     .resize_to_limit(400, 400) # macro
     .quality(100)              # option
     .strip                     # option
-    # ...
+    .call(image)
   ```
 
 * Adding default ImageMagick options is now trivial:
@@ -166,10 +166,10 @@ The chainable API solves all the problems we've mentioned from the old API:
   square = pipeline.resize_to_fill!(150, 150)
   ```
 
-What I like about this API is that it's not a DSL, it's just Ruby code that you
-have complete control over, so you can use regular Ruby conditionals, refactor
-complex processing into methods etc. It also doesn't pollute the class that
-performs the processing with additional methods, as there is no module
+What I like about this API is that **it's not a DSL**, it's just Ruby code that
+you have complete control over, so you can use regular Ruby conditionals,
+refactor complex processing into methods etc. It also doesn't pollute the class
+that performs the processing with additional methods, as there is no module
 inclusion anymore.
 
 In addition to the API, some very useful features got added to the gem as well.
@@ -192,7 +192,7 @@ EXIF data and display the photo as-is, without rotating it.
 That's why it's best to rotate the photo correctly when it is first uploaded to
 your web app and then use the rotated photo when displaying it or when
 generating thumbnails. ImageMagick supports this with the [`-auto-orient`]
-option. In ImageProcessing, this option is added by default:
+option, and ImageProcessing adds this option by default.
 
 ```rb
 ImageProcess::MiniMagick.call(image)
@@ -245,8 +245,8 @@ puts Benchmark.realtime {
 ```
 
 For [this test image][test image] generating the thumbnails above took **7.2
-seconds**. This is reasonable, considering the source image has dimensions
-3000x2000.
+seconds** on my machine. This is reasonable, considering the source image has
+dimensions 3000x2000.
 
 However, let's try executing the same script again, but this time we'll swap
 out the MiniMagick module for an alternative one (the resizing code remains
@@ -262,7 +262,7 @@ pipeline = ImageProcessing::Vips.source("image.jpg")
 
 When I execute this on my machine, it now takes **0.8 seconds** to generate the
 thumbnails. That's a **9x speedup** compared to the MiniMagick version, and all
-we did was change the constant name.
+we had to do was change the constant name.
 
 This is because the Vips module uses [libvips] to generate thumbnails, which
 [performs significantly better than ImageMagick][benchmarks] (see [Why is
@@ -297,7 +297,7 @@ mainstream in Ruby applications, like [sharp] has done for Node.js.
 I like that for Shrine I decided not to write yet another homegrown solution
 for processing uploaded images, but instead created a generic library that
 anyone can use. This allowed it to grow independently and develop a proper
-API that enables a wider array of use cases.
+API that can be used for a wider array of use cases.
 
 ## Credits
 
