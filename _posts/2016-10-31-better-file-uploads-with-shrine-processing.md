@@ -311,27 +311,32 @@ be difficult to write one.
 [Dragonfly] is a file attachment library which provides functionality for
 on-the-fly processing. At first glance it might appear that Dragonfly can only
 be an alternative to Shrine, but Dragonfly's app can actually be used
-standalone. We just need to configure Dragonfly with the same storage that
-we're using for Shrine, and add the Dragonfly middleware.
+standalone. We just need to configure the Dragonfly app and add its middleware,
+then we can generate Dragonfly URLs to files uploaded by Shrine (let's assume
+we're storing files on S3, in which case we need the S3 objects to have
+`public-read` permissions and use public URLs).
 
 ```rb
 Dragonfly.app.configure do
   url_format "/attachments/:job"
-  datastore :s3,
-    bucket_name: "my-bucket",
-    access_key_id: "abc",
-    secret_access_key: "xyz"
+  secret "my secure secret" # used to generate the protective SHA
 end
 
 use Dragonfly::Middleware
 ```
 ```rb
-photo = Photo.create(image: file)
-photo.image #=> #<Shrine::UploadedFile>
-
-uid = [*photo.image.storage.prefix, photo.image.id].join("/")
-Dragonfly.app.fetch(uid).thumb("500x400").url
-#=> "/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn..."
+Shrine::Storage::S3.new(upload_options: { acl: "public-read" }, **other_options)
+```
+```rb
+def thumbnail_url(uploaded_file, dimensions)
+  Dragonfly.app
+    .fetch(uploaded_file.url(public: true))
+    .thumb(dimensions)
+    .url
+end
+```
+```rb
+thumbnail_url(photo.image, "500x400") #=> "/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn..."
 ```
 
 ### Paid
