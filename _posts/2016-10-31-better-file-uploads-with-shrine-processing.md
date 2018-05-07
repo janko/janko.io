@@ -291,11 +291,11 @@ and regenerate the thumbnail for each image, you just need to change the URL.
 http://res.cloudinary.com/myapp/image/upload/w_150,h_150,c_fill/nature.jpg
 ```
 
-Unlike Dragonfly and Refile, Shrine doesn't ship with on-the-fly processing
-functionality. That might sound like a dealbreaker, but think about it: why
-should Shrine have its own implementation? Image server functionality isn't
-related to file attachments, it's only about how you serve the uploaded files
-once they have been attached.
+Unlike Dragonfly, Refile or Active Storage, Shrine doesn't ship with on-the-fly
+processing functionality. That might sound like a dealbreaker, but think about
+it: why should Shrine have its own implementation? Image server functionality
+isn't related to file attachments, it's only about how you serve the uploaded
+files once they have been attached.
 
 There are many solutions for on-the-fly processing, both open source and paid,
 that can be used with Shrine.
@@ -320,17 +320,20 @@ we're storing files on S3, in which case we need the S3 objects to have
 Dragonfly.app.configure do
   url_format "/attachments/:job"
   secret "my secure secret" # used to generate the protective SHA
+  plugin :imagemagick
 end
 
 use Dragonfly::Middleware
 ```
 ```rb
 Shrine::Storage::S3.new(upload_options: { acl: "public-read" }, **other_options)
+# ...
+Shrine.plugin :default_url_options, cache: { public: true }, store: { public: true }
 ```
 ```rb
 def thumbnail_url(uploaded_file, dimensions)
   Dragonfly.app
-    .fetch(uploaded_file.url(public: true))
+    .fetch(uploaded_file.url)
     .thumb(dimensions)
     .url
 end
