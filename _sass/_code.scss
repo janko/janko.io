@@ -2,3 +2,8 @@
   background: #f2f2f2;
   color: #333;
 }
+
+a > code {
+  color: inherit;
+  text-decoration: underline;
+}
