@@ -52,3 +52,6 @@ exclude:
   - .gitignore
   - .sass-cache
   - vendor
+
+emoji:
+  src: "/images"
