@@ -5,4 +5,6 @@
 
 a > code {
   color: inherit;
+
+  &:hover { text-decoration: underline; }
 }
