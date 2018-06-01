@@ -15,7 +15,7 @@ author:
   email: janko.marohnic@gmail.com
   facebook: janko.marohnic
 
-gems:
+plugins:
   - jemoji
   - jekyll-redirect-from
   - jekyll-feed
