@@ -195,7 +195,7 @@ uppy.use(Uppy.XHRUpload, {
 
 uppy.run()
 
-uppy.on('upload-success', function (fileId, data) {
+uppy.on('upload-success', function (file, data) {
   var uploadedFileData = JSON.stringify(data)
 
   var hiddenField = document.querySelector('.attachment-field[type=hidden]')
@@ -266,7 +266,9 @@ Content-Type: application/json
     "x-amz-algorithm": "AWS4-HMAC-SHA256",
     "x-amz-date": "20180103T164216Z",
     "x-amz-signature": "6003f73624724fd2e116620ddc77f1073b434c677ddf7070a67445016c62a263"
-  }
+  },
+  "headers": {},
+  "method": "post"
 }
 ```
 
@@ -282,16 +284,16 @@ to return data in the format that Uppy expects:
 
 uppy.use(Uppy.AwsS3, {
   getUploadParameters: function (file) {
-    return fetch('/presign?filename=' + file.name)
+    return fetch('/presign?filename=' + file.name, {
+        credentials: 'same-origin', // send cookies
+      })
       .then(function (response) { return response.json() })
   }
 })
 
 uppy.run()
 
-uppy.on('upload-success', function (fileId, data) {
-  var file = uppy.getFile(fileId)
-
+uppy.on('upload-success', function (file, data) {
   var uploadedFileData = JSON.stringify({
     id: file.meta['key'].match(/^cache\/(.+)/)[1], // remove the Shrine storage prefix
     storage: 'cache',
@@ -325,62 +327,56 @@ Storage][shrine-google_cloud_storage], [Cloudinary][shrine-cloudinary],
 
 For most use cases, direct upload to a custom endpoint or a cloud service
 should be everything you need. This is because the majority of applications are
-dealing only with images, documents and other small files. If your application
+dealing only with images, documents, or other small files. If your application
 happens to deal with large files such as videos, things get a bit more
 interesting.
 
 If you've ever used a service where you needed to upload 500MB, 1GB or 5GB
 files, you know how frustrating when your upload is 80% complete and then it
-fails, because you either happened to have lost internet connection for a brief
-moment, or you have to change locations, or your browser/OS crashed. With slow
+fails, all because you happened to have lost internet connection for a brief
+moment, or you had to change locations, or your browser/OS crashed. With slow
 and/or flaky internet connections it might not even be possible to upload
 larger files, because every time the upload fails it would have to be retried
 from the beginning.
 
 **[Tus.io][tus]** is the open protocol for resumable file uploads built on
-HTTP. It specifies how the client and the server should [communicate][tus
-protocol] and behave during file upload so that the upload can be automatically
-resumed in case the request failed. Try their [demo][tus demo] to see this in
+HTTP. It specifies the [behaviour and communication][tus protocol] required
+between client and the server during file upload so that the upload is
+resumable in case the request failed. Try their [demo][tus demo] to see this in
 action.
 
 There are many server [implementations][tus implementations] of the tus
 protocol out there for various languages; in our case we're interested in
 **[tus-ruby-server]**.
 
-### tus-ruby-server + goliath-rack_proxy + shrine-tus
+### tus-ruby-server + shrine-tus
 
-Tus-ruby-server is implemented using the Roda web framework, and can be run
-inside your application or standalone, though for best performance it should be
-run standalone on [Goliath], as Goliath is the only Ruby web server that
-supports streaming uploads and downloads without sacrificing throughput (thanks
-to [EventMachine]).
-
-Now, Goliath is intended as both a web server and a web framework, it doesn't
-know how to run Rack applications, but I've written [goliath-rack_proxy] which
-makes it possible to use Goliath only as a web server for Rack applications. At
-first I didn't know anything about Goliath nor EventMachine, so it took a few
-rewrites to get it right, and a [PR to Goliath to support streaming
-downloads][goliath PR], so you're welcome! :smiley:
-
-Ok, let's set up tus-ruby-server and run it on port 9000:
+Tus-ruby-server is implemented using the Roda web framework, and can be mounted
+inside any Rack-based web framework (including Rails) or you can run it
+standalone. For simplicity we'll just mount it inside our main app, but for best
+performance it's recommended to run it standalone on [Goliath]. We'll also use
+the [shrine-tus] gem to enable attaching files that were uploaded to
+tus-ruby-server.
 
 ```rb
 # Gemfile
 gem "tus-server", "~> 2.0"
-gem "goliath-rack_proxy", "~> 1.0"
+gem "shrine-tus", "~> 1.0"
 ```
 ```rb
-# tus.rb
-require "tus/server"
-require "goliath/rack_proxy"
+require "shrine/storage/tus"
+require "shrine/storage/s3"
 
-class GoliathTusServer < Goliath::RackProxy
-  rack_app Tus::Server
-  rewindable_input false
-end
+Shrine.storages = {
+  cache: Shrine::Storage::Tus.new,
+  store: Shrine::Storage::S3.new(...),
+}
 ```
-```sh
-$ ruby tus.rb --stdout --port 9000
+```rb
+# config/routes.rb
+Rails.application.routes.draw do
+  mount Tus::Server => "/files"
+end
 ```
 
 The idea is that on the client side we'll upload files directly to the
@@ -402,23 +398,6 @@ connections than users (and if that's not enough, shrine-tus can also do a
 able to periodically [clear expired or unfinished uploads][tus expiration],
 which wouldn't be possible if tus-ruby-server and Shrine used the same storage.
 
-To enable assigning tus URLs as Shrine attachments we'll add the handy
-[shrine-tus] gem:
-
-```rb
-# Gemfile
-gem "shrine-tus", "~> 1.1"
-```
-```rb
-require "shrine/storage/tus"
-require "shrine/storage/s3"
-
-Shrine.storages = {
-  cache: Shrine::Storage::Tus.new,
-  store: Shrine::Storage::S3.new(...),
-}
-```
-
 ### Client side
 
 On the client side Uppy has our backs again with the [Tus] plugin (instead of
@@ -435,9 +414,7 @@ uppy.use(Uppy.Tus, {
 
 uppy.run()
 
-uppy.on('upload-success', function (fileId, data) {
-  var file = uppy.getFile(fileId)
-
+uppy.on('upload-success', function (file, data) {
   var uploadedFileData = JSON.stringify({
     id: data.url, // Shrine will later use this tus URL to download the file
     storage: "cache",
@@ -494,8 +471,6 @@ tuned!
 [tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
 [tus-js-client]: https://github.com/tus/tus-js-client
 [Goliath]: https://github.com/postrank-labs/goliath
-[EventMachine]: https://github.com/eventmachine/eventmachine
-[goliath-rack_proxy]: https://github.com/janko-m/goliath-rack_proxy
 [Tus]: https://uppy.io/docs/tus/
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [tus-js-client]: https://github.com/tus/tus-js-client
@@ -505,7 +480,6 @@ tuned!
 [shrine backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [shrine-tus copy]: https://github.com/shrinerb/shrine-tus#approach-c-tus-storage-equals-shrine-storage
 [tus protocol]: https://tus.io/protocols/resumable-upload.html
-[goliath PR]: https://github.com/postrank-labs/goliath/pull/343
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [resumable demo]: https://github.com/shrinerb/shrine-tus-demo
