@@ -22,10 +22,10 @@ that make http.rb stand out for me.
 
 Before we start, I would like to say a few words about Net::HTTP. Net::HTTP is
 the HTTP client that comes with the Ruby standard library, and it's used in
-many places. People often reach for it directly when they want something
-simple, or they use it indirectly through gems like RestClient and HTTParty.
+many places. People often reach for it when they want something simple, or they
+use it indirectly through gems like RestClient and HTTParty.
 
-However, whenever I used Net::HTTP I always had a bad time. Some of the reasons
+However, whenever I used Net::HTTP, I always had a bad time. Some of the reasons
 were
 
 * inconsistent and overly verbose API that's tough to remember
@@ -65,15 +65,16 @@ end
 The wish to make performing tasks like these easier was probably what motivated
 people to build HTTP client gems on top of Net::HTTP (RestClient, HTTParty,
 Nestful etc). They wanted to improve the API, but didn't want to reimplement
-the HTTP protocol. However, I found the Net::HTTP codebase very convoluted and
-always felt frustrated whenever I needed to read it. So, I don't think that
-building on top of Net::HTTP is a good design decision, because Net::HTTP is
-not a clean implementation of the HTTP protocol.
+the HTTP protocol. However, I found the Net::HTTP codebase to be very
+convoluted, and always felt frustrated whenever I needed to read it. So, I
+don't think that building on top of Net::HTTP is a good design decision,
+because Net::HTTP is not a clean implementation of the HTTP protocol to begin
+with.
 
-In contrast, when creating http.rb, Tony Arcieri decided to rebuild the HTTP
-protocol natively in Ruby (and also created the [Socketry] gem to make working
-with TCP/UDP sockets easier). This allowed http.rb to have a fresh start,
-without the Net::HTTP baggage.
+When creating http.rb, Tony Arcieri decided to rebuild the HTTP protocol
+natively in Ruby (and also created the [Socketry] gem to make working with
+TCP/UDP sockets easier). This allowed http.rb to have a fresh start, without
+the Net::HTTP baggage.
 
 > http.rb was born out of rage from using Net::HTTP
 >
@@ -81,8 +82,9 @@ without the Net::HTTP baggage.
 
 ## Refreshing API
 
-One of the important goals of http.rb is to make the API easy to use. Let's
-rewrite the previous example of POSTing a JSON payload to an URL using http.rb.
+One of the important goals of http.rb was to make the API easy to use. Let's
+rewrite the previous Net::HTTP example of POSTing a JSON payload to an URL,
+this time using http.rb.
 
 ```rb
 def post_payload(callback_url, payload)
@@ -93,8 +95,17 @@ rescue HTTP::Error
 end
 ```
 
-*Much* easier! Here is a more comprehensive example of interaction with HTTP.rb
-objects:
+*Much* easier! Unlike Net::HTTP, http.rb wraps all low-level exceptions into a
+nice exception hierarchy that's easy to handle:
+
+* `HTTP::Error`
+  - `HTTP::ConnectionError`
+  - `HTTP::RequestError`
+  - `HTTP::ResponseError`
+  - `HTTP::TimeoutError`
+  - `HTTP::HeaderError`
+
+Here is a more comprehensive example of interaction with http.rb objects:
 
 ```rb
 response = HTTP.get("https://example.com")
@@ -112,9 +123,9 @@ response.body            # => #<HTTP::Response::Body>
 response.body.to_s       # => "<!doctype html>..."
 ```
 
-Where HTTP.rb really shines is its chainable API for building request options.
-You can use it to build an HTTP client with default request options, which you
-can then use for subsequent requests.
+Where http.rb really shines is its chainable API for building request options.
+You can use it to build an HTTP client with default request options, and then
+make subsequent requests with it.
 
 ```rb
 # Build an HTTP::Client with default request options
@@ -139,16 +150,16 @@ memory all at once (think uploading and downloading large files).
 
 ### Uploads
 
-There are two ways you can stream content into the request body. One is
-providing an [Enumerable] object, where you can have `#each` lazily generate
-chunks of content for the request body (the easiest way is to create an
-[Enumerator]).
+There are two ways you can stream content into the request body with http.rb.
+One is providing an [Enumerable] object, where you can have `#each` lazily
+generate chunks of content for the request body. The easiest way is to create
+an [Enumerator] object.
 
 Another way is providing an [IO]-like object that implements [`IO#read`]. In
 this case http.rb will read the IO content in small chunks and write them to
 the request body. Notice that the object doesn't have to be an actual `File`
-instance, which is very convenient in certain contexts such as [Shrine], where
-the "file" to be uploaded can be a `File`, `Tempfile`, `StringIO`,
+instance, which is very convenient in contexts such as [Shrine], where the
+"file" to be uploaded can be a `File`, `Tempfile`, `StringIO`,
 `ActionDispatch::Http::UploadedFile`, [`Shrine::UploadedFile`],
 [`Down::ChunkedIO`], or any other object that implements `IO#read`.
 
@@ -164,8 +175,8 @@ Http.rb will stream request bodies in [multipart form data] format as well:
 HTTP.post("http://example.com/upload", form: { file: HTTP::FormData::File.new(io) })
 ```
 
-It uses the [`http-form_data`] gem to create a `HTTP::FormData::Multipart`
-object, which implements `IO#read` that generates multipart form data body
+It uses the [http-form_data] gem to create a `HTTP::FormData::Multipart`
+object, which implements `IO#read` an generates multipart form data body
 on-the-fly, so streaming works on the same principle as above. The
 implementation of the streaming functionality in `http-form_data` was inspired
 by the [`multipart-post`] gem.
@@ -213,7 +224,7 @@ I had to [use Fibers] to work around this limitation.
 
 ## Persistent Connections
 
-HTTP.rb supports persistent (keep-alive) connections, which allows you to reuse
+Http.rb supports persistent (keep-alive) connections, which allows you to reuse
 the same TCP socket for multiple requests to the same domain. This way you
 don't have to pay the price of establishing a connection for each request, which
 can make a significant difference in performance.
@@ -240,14 +251,14 @@ http.close         # close
 ```
 
 On a Heroku dyno, the first example takes about **1.1s**, whereas the example
-that uses a persistent connection takes only **0.6s**. So, the performance
-difference can be significant.
+that uses a persistent connection takes only **0.6s**, which shows that the
+performance difference can be significant.
 
 Net::HTTP also supports persistent connections, but requests have to be
 performed inside the `Net::HTTP.start` block (alternatively you can use
 [net-http-persistent]). HTTP client libraries built on top of libcurl
-automatically use persistent connections (as that's built into libcurl), so
-with them you don't need to think about it.
+automatically use persistent connections (as that feature is built into
+libcurl), so with them you don't need to think about it.
 
 ## Timeouts
 
@@ -280,8 +291,8 @@ of any HTTP client library that supports write timeouts.
 Requests can be written and responses can be read in multiple write or read
 system calls. The default `:read` and `:write` timeout limits the time *for
 each operation*. This means that if you set `:connect`, `:read`, and `:write`
-timeouts to 1 second, the request could still potentially take longer than 3
-seconds if multiple write or read calls are executed.
+timeouts to 1 second each, the request could still potentially take longer than
+3 seconds if multiple write or read calls are executed.
 
 Http.rb has the ability to specify a **global timeout**, where you can limit
 the total amount of time the HTTP request can take. This is again most useful
@@ -303,7 +314,7 @@ natively is [a bit more involved][native connect timeout]).
 The HTTP 1.1 protocol supports compressing request and response bodies, which
 decreases network resource usage, with the cost of increased CPU usage needed
 for (de)compressing. This can improve speed when transferring large amounts of
-data, if the request/response bodies compress well.
+data, depending on how well the request/response bodies compress.
 
 Http.rb has support for automatically compressing ("deflating") request bodies:
 
@@ -334,28 +345,33 @@ HTTP.use(:auto_inflate)
 This works with streaming requests and responses. For regular requests the
 total size needs to be calculated first for setting the `Content-Length`
 request header, so in this case the compressed request body will be written
-to disk. But with [chunked requests] the request body will be compressed
-on-the-fly, as those don't require the `Content-Length` request header.
+to disk before it's sent. But with [chunked requests] the request body will be
+compressed on-the-fly, as those don't require the `Content-Length` request
+header.
 
 ## Memory Usage
 
-Ruby processes tend to consume a lot of memory. Rubyists deal with this in
-various ways: tweaking Ruby's GC settings, killing web workers once they reach
-certain memory threshold, running the Ruby processes on jemalloc etc.
+Ruby processes tend to consume a lot of memory. Ruby developers deal with this
+in various ways: tweaking Ruby's GC settings, killing web workers once they
+reach certain memory threshold, running the Ruby processes on jemalloc etc.
+However, I think there are still many opportunities for reducing the amount of
+objects we allocate in the first place, which is the approach that [Richard
+Schneeman] ([derailed_benchmarks] & countless PRs), [Sam Saffron]
+([rack-mini-profiler], [memory_profiler], [flamegraph], [RubyBench.org]), and
+Eric Wong (Ruby commits) actively promote.
 
-But the approach that I believe doesn't get talked about enough is reducing the
-amount of memory you allocate. Eric Wong (the author of [Unicorn]) talks about
+Eric Wong (Unicorn author and Ruby committer) recently talked about
 this in a ruby-talk thread titled "[String memory use reduction techniques]".
-There Eric states that what is often to blame for high memory usage in Ruby
+There, Eric states that what is often to blame for high memory usage in Ruby
 applications are **string objects**. He shows various techniques for limiting
 string allocations, as well as deallocating strings that are no longer needed.
 After all, the less "garbage" there is, the better the garbage collector will
 perform :wink:
 
 It so happens that HTTP intractions can allocate a lot of strings, especially
-for large request and response bodies. I've created a [benchmark][memory
-benchmark] that profiles memory usage of http.rb, Net::HTTP, RestClient, and
-HTTParty. Here are the results:
+for large request and response bodies. I [measured][memory benchmark] memory
+usage of http.rb, Net::HTTP, RestClient, and HTTParty when uploading and
+downloading 10 MB of data. Here are the results:
 
 | Library    | Uploading 10MB | Downloading 10MB |
 | :--------- | -------------: | ---------------: |
@@ -372,9 +388,30 @@ uploads over SSL the memory usage will be much higher for each library, because
 Ruby's `OpenSSL::SSL::SSLSocket` is currently very memory-inefficient (but
 there is a [patch][openssl patch] waiting to be merged).
 
-In the downloading benchmark, http.rb has very low memory usage that's the same
-regardless of the response body size, while the other libraries allocate
-approximately 1x the request body size.
+In the downloading benchmark, http.rb has very low memory usage which stays the
+same regardless of the response body size, while the other libraries allocate
+approximately 1x the response body size (due to Net::HTTP). Note that this
+will be fixed in Ruby 2.6.0 due to Eric Wong's recent [patch][Net::HTTP
+download patch], after which memory consumption drops to the same levels as
+http.rb.
+
+## Conclusion
+
+I found http.rb to be a very impressive HTTP client library. It has a very nice
+easy-to-use API, good exception hierarchy, full streaming support, persistent
+connections, advanced timeout options, HTTP compression support and more.
+
+I believe that one of the main things that helped it shape up is implementing
+the HTTP protocol natively instead of relying on Net::HTTP. This also spawned
+some reusable libraries – [Socketry], [http-form_data], and [content-type] –
+which is always sound sign of good design in my book.
+
+Since I maintain libraries for handling file uploads and downloads ([Shrine],
+[Down], [tus-ruby-server]), it's important to me to have an HTTP client library
+that I can recommend. The streaming upload/download support and very low memory
+usage makes http.rb a great choice, especially when dealing with large files.
+
+I encourage you to try http.rb on your next project!
 
 [libcurl]: https://curl.haxx.se/libcurl/
 [Typhoeus]: https://github.com/typhoeus/typhoeus
@@ -398,20 +435,30 @@ approximately 1x the request body size.
 [`Shrine::UploadedFile`]: https://github.com/shrinerb/shrine/tree/c02a005869c536eeb234353f5b1129b9e2559559#uploaded-file
 [`Down::ChunkedIO`]: https://github.com/janko-m/down/tree/55c9299c170b828d83487bae7df59cfe935a1e35#streaming
 [multipart form data]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST#Example
-[`http-form_data`]: https://github.com/httprb/form_data
+[http-form_data]: https://github.com/httprb/form_data
 [`multipart-post`]: https://github.com/nicksieger/multipart-post
 [Net::HTTP multipart form data]: https://github.com/ruby/ruby/blob/v2_5_1/lib/net/http/generic_request.rb#L210-L285
 [RestClient multipart]: https://github.com/rest-client/rest-client/blob/v2.0.2/lib/restclient/payload.rb#L116-L207
 [HTTParty multipart]: https://github.com/jnunemaker/httparty/blob/v0.16.2/lib/httparty/request/body.rb#L5
 [use Fibers]: https://twin.github.io/partial-downloads-with-enumerators-and-fibers/
-[on-demand downloads]: https://github.com/janko-m/down/tree/55c9299c170b828d83487bae7df59cfe935a1e35#streaming
+[on-demand downloads]: https://github.com/janko-m/down/tree/v4.5.0#streaming
 [net-http-persistent]: https://github.com/drbrain/net-http-persistent
 [Net::HTTP write timeout]: https://bugs.ruby-lang.org/issues/13396
 [`Timeout`]: https://ruby-doc.org/stdlib-2.5.1/libdoc/timeout/rdoc/Timeout.html
 [Timeout API is dangerous]: http://www.mikeperham.com/2015/05/08/timeout-rubys-most-dangerous-api/
 [native connect timeout]: https://github.com/socketry/socketry/blob/ddc852443c66fc757f20cf0c0aacbaace6873ac4/lib/socketry/tcp/socket.rb#L81-L105
 [chunked requests]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding
-[Unicorn]: https://github.com/defunkt/unicorn
 [String memory use reduction techniques]: https://rubytalk.org/t/psa-string-memory-use-reduction-techniques/74477
 [memory benchmark]: https://gist.github.com/janko-m/238bbcc78b369ce3438365e5507bc671
 [openssl patch]: https://bugs.ruby-lang.org/issues/14426
+[Richard Schneeman]: https://schneems.com
+[Sam Saffron]: https://samsaffron.com
+[derailed_benchmarks]: https://github.com/schneems/derailed_benchmarks
+[memory_profiler]: https://github.com/samsaffron/memory_profiler
+[RubyBench.org]: https://rubybench.org
+[flamegraph]: https://github.com/SamSaffron/flamegraph
+[rack-mini-profiler]: https://github.com/MiniProfiler/rack-mini-profiler
+[content-type]: https://github.com/httprb/content_type.rb
+[Down]: https://github.com/janko-m/down
+[tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
+[Net::HTTP download patch]: https://bugs.ruby-lang.org/issues/14326
