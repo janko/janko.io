@@ -271,6 +271,12 @@ http = HTTP.timeout(connect: 1, read: 1)
 http.get("http://example.com") # raises HTTP::TimeoutError
 ```
 
+Net::HTTP also has connect and read timeout, but it has a caveat for read
+timeout – idempotent requests will be automatically retried on timeout error.
+This means that, if you specify read timeout of 4 seconds, a request could
+raise a timeout error only after 8 seconds, because it was already retried
+once. See [this article][Net::HTTP timeout retry] for more details.
+
 ### Write timeout
 
 In addition to connect and read timeout, http.rb also comes with a **write
@@ -462,3 +468,4 @@ I encourage you to try http.rb on your next project!
 [Down]: https://github.com/janko-m/down
 [tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
 [Net::HTTP download patch]: https://bugs.ruby-lang.org/issues/14326
+[Net::HTTP timeout retry]: https://engineering.wework.com/ruby-users-be-wary-of-net-http-f284747288b2
