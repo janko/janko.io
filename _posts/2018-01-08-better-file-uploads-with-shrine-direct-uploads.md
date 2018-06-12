@@ -190,7 +190,6 @@ it to this endpoint.
 uppy.use(Uppy.XHRUpload, {
   endpoint: "/images/upload",
   fieldName: "file",
-  headers: { 'X-CSRF-Token': document.querySelector('meta[name=_csrf]').content }
 })
 
 uppy.run()
