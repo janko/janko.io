@@ -192,8 +192,6 @@ uppy.use(Uppy.XHRUpload, {
   fieldName: "file",
 })
 
-uppy.run()
-
 uppy.on('upload-success', function (file, data) {
   var uploadedFileData = JSON.stringify(data)
 
@@ -289,8 +287,6 @@ uppy.use(Uppy.AwsS3, {
       .then(function (response) { return response.json() })
   }
 })
-
-uppy.run()
 
 uppy.on('upload-success', function (file, data) {
   var uploadedFileData = JSON.stringify({
@@ -410,8 +406,6 @@ the uploaded file data as we did with direct uploads to S3.
 uppy.use(Uppy.Tus, {
   endpoint: 'http://localhost:9000/'
 })
-
-uppy.run()
 
 uppy.on('upload-success', function (file, data) {
   var uploadedFileData = JSON.stringify({
