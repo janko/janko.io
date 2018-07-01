@@ -195,7 +195,7 @@ generating thumbnails. ImageMagick supports this with the [`-auto-orient`]
 option, and ImageProcessing adds this option by default.
 
 ```rb
-ImageProcess::MiniMagick.call(image)
+ImageProcessing::MiniMagick.call(image)
 # convert input.jpg -auto-orient ... output.jpg
 ```
 
@@ -215,7 +215,7 @@ ImageMagick has a [`-sharpen`] option just for that, which ImageProcessing
 automatically applies in the `#resize_*` macros after resizing.
 
 ```rb
-ImageProcess::MiniMagick.resize_to_fit(800, 800).call(image)
+ImageProcessing::MiniMagick.resize_to_fit(800, 800).call(image)
 # convert input.jpg ... -resize 800x800 -sharpen 0x1 ... output.jpg
 ```
 
