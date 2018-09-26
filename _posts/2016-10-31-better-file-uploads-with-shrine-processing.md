@@ -420,8 +420,8 @@ tuned!
 [Shrine]: https://github.com/shrinerb/shrine
 [Refile::MiniMagick]: https://github.com/refile/refile-mini_magick
 [ImageProcessing]: https://github.com/janko-m/image_processing
-[libvips]: http://jcupitt.github.io/libvips/
-[ruby-vips]: https://github.com/jcupitt/ruby-vips
+[libvips]: http://libvips.github.io/libvips/
+[ruby-vips]: https://github.com/libvips/ruby-vips
 [carrierwave-vips]: https://github.com/eltiare/carrierwave-vips
 [ImageFlow]: https://www.imageflow.io/
 [backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html

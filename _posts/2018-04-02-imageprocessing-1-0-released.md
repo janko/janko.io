@@ -321,10 +321,10 @@ I want to thank:
 [`-auto-orient`]: https://www.imagemagick.org/script/command-line-options.php#auto-orient
 [`-sharpen`]: https://www.imagemagick.org/script/command-line-options.php#sharpen
 [test image]: https://upload.wikimedia.org/wikipedia/commons/3/36/Hopetoun_falls.jpg
-[libvips]: http://jcupitt.github.io/libvips/
-[benchmarks]: https://github.com/jcupitt/libvips/wiki/Speed-and-memory-use
-[How libvips works]: http://jcupitt.github.io/libvips/API/current/How-it-works.md.html
-[Why is libvips quick]: https://github.com/jcupitt/libvips/wiki/Why-is-libvips-quick
+[libvips]: http://libvips.github.io/libvips/
+[benchmarks]: https://github.com/libvips/libvips/wiki/Speed-and-memory-use
+[How libvips works]: http://libvips.github.io/libvips/API/current/How-it-works.md.html
+[Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
 [orientation values]: http://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
 [ImageMagick]: https://www.imagemagick.org/script/index.php
 [sharp]: https://github.com/lovell/sharp
