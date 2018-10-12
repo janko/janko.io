@@ -484,6 +484,20 @@ cors] to allow for client side uploads. Then we can configure Uppy's
 uppy.use(Uppy.AwsS3Multipart, {
   serverUrl: '' // uses relative URLs (pass 'https://your-app.com' for absolute URLs)
 })
+
+uppy.on('upload-success', function (file, data, uploadURL) {
+  var uploadedFileData = JSON.stringify({
+    id: uploadURL.match(/\/cache\/([^\?]+)/)[1], // extract key without prefix
+    storage: 'cache',
+    metadata: {
+      size:      file.size,
+      filename:  file.name,
+      mime_type: file.type,
+    }
+  })
+
+  // ...
+})
 ```
 
 Now you have direct uploads to S3 which are also resumable.
