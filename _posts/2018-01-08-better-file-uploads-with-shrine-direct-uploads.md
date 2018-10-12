@@ -226,7 +226,7 @@ require "shrine/storage/s3"
 
 Shrine.storages = {
   cache: Shrine::Storage::S3.new(prefix: "cache", **options),
-  store: Shrine::Storage::S3.new(prefix: "store", **options),
+  store: Shrine::Storage::S3.new(**options),
 }
 ```
 
@@ -236,7 +236,16 @@ Shrine has the [presign_endpoint] plugin which provides a Rack application that
 generates direct upload parameters, which we can mount in our application:
 
 ```rb
-Shrine.plugin :presign_endpoint
+Shrine.plugin :presign_endpoint, presign_options: {
+  filename = request.params["filename"]
+  type     = request.params["type"]
+
+  {
+    content_disposition:    "inline; filename=\"#{filename}\"", # set download filename
+    content_type:           type,                               # set content type (defaults to "application/octet-stream")
+    content_length_range:   0..(10*1024*1024),                  # limit upload size to 10 MB
+  }
+}
 ```
 ```rb
 Rails.application.routes.draw do
@@ -271,20 +280,22 @@ Content-Type: application/json
 
 ### Client side
 
-On the client side we have the [AwsS3] Uppy plugin (instead of XHRUpload). The
-AwsS3 plugin requires that we fetch the upload parameters ourselves; we can use
-`window.fetch` to make a request to our presign endpoint, which already happens
-to return data in the format that Uppy expects:
+On the client side we have the [AwsS3] Uppy plugin (instead of XHRUpload). Note
+that you'll need to update your S3 bucket's [CORS configuration][aws-s3 cors]
+to allow client side uploads.
+
+The AwsS3 plugin requires that we fetch the upload parameters ourselves; we can
+use `window.fetch` to make a request to our presign endpoint, which already
+happens to return data in the format that Uppy expects:
 
 ```js
 // ... other plugins ...
 
 uppy.use(Uppy.AwsS3, {
   getUploadParameters: function (file) {
-    return fetch('/presign?filename=' + file.name, {
-        credentials: 'same-origin', // send cookies
-      })
-      .then(function (response) { return response.json() })
+    return fetch('/presign?filename=' + encodeURIComponent(file.name) + '&type=' + file.type, {
+      credentials: 'same-origin', // send cookies
+    }).then(function (response) { return response.json() })
   }
 })
 
@@ -386,12 +397,13 @@ saves uploads to temporary storage, just like with regular direct uploads.
 
 At first it might sound that taking all that effort to upload the file to
 tus-ruby-server is a bit pointless if the app will just end up downloading and
-re-uploading it to another storage anyway. However, the latter will be orders
-of magnitude faster because servers have much faster and more stable internet
-connections than users (and if that's not enough, shrine-tus can also do a
-[smart copy directly from the tus storage][shrine-tus copy]). Also, you need be
-able to periodically [clear expired or unfinished uploads][tus expiration],
-which wouldn't be possible if tus-ruby-server and Shrine used the same storage.
+re-uploading it to another storage anyway. However, server side uploading will
+be orders of magnitude faster and more reliable, because servers have internet
+connections with much bigger bandwidth and more stability than your users will
+(and if that's not enough, shrine-tus can also do a [smart copy directly from
+the tus storage][shrine-tus copy]). Also, you need be able to periodically
+[clear expired or unfinished uploads][tus expiration], which wouldn't be
+possible if tus-ruby-server and Shrine used the same storage.
 
 ### Client side
 
@@ -424,6 +436,57 @@ uppy.on('upload-success', function (file, data) {
 
 That's it, now uploads will automagically be resumed in case of temporary
 failures, without the user even knowing something happened.
+
+### AWS S3 Multipart
+
+The tus approach has the advantages of abstracting away the underlying storage,
+and the fact that there are lots of client and server implementations in
+various languages to choose from. But one downside is that you're receiving
+these uploads, so it's your responsibility to scale when the traffic increases.
+
+If you would like your storage service to handle the uploads and don't mind
+extra coupling to AWS S3, you can do multipart uploads directly to S3 using
+Uppy's [AwsS3Multipart] plugin. That plugin requires certain endpoints that are
+implemented by the [Uppy Companion] app, but you can use the
+[uppy-s3_multipart] gem which implements these endpoints in Ruby, and allows
+you to mount them into any Rack app.
+
+First we'll add `uppy-s3_multipart` to the Gemfile, load the Shrine plugin and
+mount the Rack app:
+
+```rb
+# Gemfile
+gem "uppy-s3_multipart"
+```
+```rb
+require "shrine/storage/s3"
+
+Shrine.storages = {
+  cache: Shrine::Storage::S3.new(prefix: "cache", **options),
+  store: Shrine::Storage::S3.new(**options),
+}
+
+Shrine.plugin :uppy_s3_multipart
+```
+```rb
+Rails.application.routes.draw do
+  mount Shrine.uppy_s3_multipart(:cache) => "/s3"
+end
+```
+
+We'll also need to update our S3 bucket's [CORS configuration][aws-s3-multipart
+cors] to allow for client side uploads. Then we can configure Uppy's
+`AwsS3Multipart` plugin:
+
+```js
+// ... other plugins ...
+
+uppy.use(Uppy.AwsS3Multipart, {
+  serverUrl: '' // uses relative URLs (pass 'https://your-app.com' for absolute URLs)
+})
+```
+
+Now you have direct uploads to S3 which are also resumable.
 
 ## Conclusion
 
@@ -479,3 +542,8 @@ tuned!
 [tus implementations]: https://tus.io/implementations.html
 [refile javascript]: https://github.com/refile/refile/blob/master/app/assets/javascripts/refile.js
 [activestorage javascript]: https://github.com/rails/rails/tree/master/activestorage/app/javascript/activestorage
+[aws-s3 cors]: https://uppy.io/docs/aws-s3/#S3-Bucket-configuration
+[AwsS3Multipart]: https://uppy.io/docs/aws-s3-multipart/
+[Uppy Companion]: https://uppy.io/docs/companion/
+[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart
+[aws-s3-multipart cors]: https://uppy.io/docs/aws-s3-multipart/#S3-Bucket-Configuration
