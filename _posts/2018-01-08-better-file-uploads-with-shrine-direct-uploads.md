@@ -293,7 +293,10 @@ happens to return data in the format that Uppy expects:
 
 uppy.use(Uppy.AwsS3, {
   getUploadParameters: function (file) {
-    return fetch('/presign?filename=' + encodeURIComponent(file.name) + '&type=' + file.type, {
+    var filename = encodeURIComponent(file.name)
+    var type     = encodeURIComponent(file.type)
+
+    return fetch('/presign?filename=' + filename + '&type=' + type, {
       credentials: 'same-origin', // send cookies
     }).then(function (response) { return response.json() })
   }
