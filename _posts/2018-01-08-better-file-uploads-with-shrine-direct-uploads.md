@@ -485,7 +485,7 @@ cors] to allow for client side uploads. Then we can configure Uppy's
 // ... other plugins ...
 
 uppy.use(Uppy.AwsS3Multipart, {
-  serverUrl: window.location.origin, // current scheme + host + port
+  serverUrl: window.location.origin, // your application
 })
 
 uppy.on('upload-success', function (file, data, uploadURL) {
