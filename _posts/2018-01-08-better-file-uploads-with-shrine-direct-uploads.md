@@ -361,11 +361,13 @@ protocol out there for various languages; in our case we're interested in
 ### tus-ruby-server + shrine-tus
 
 Tus-ruby-server is implemented using the Roda web framework, and can be mounted
-inside any Rack-based web framework (including Rails) or you can run it
-standalone. For simplicity we'll just mount it inside our main app, but for best
-performance it's recommended to run it standalone on [Goliath]. We'll also use
-the [shrine-tus] gem to enable attaching files that were uploaded to
-tus-ruby-server.
+inside any Rack-based web framework (including Rails), but you can also run it
+standalone. While it can run on classic web servers like Unicorn, Puma or
+Passenger (with a few gotchas), for best performance it's recommended to use
+the [Falcon] web server.
+
+For attaching files that were uploaded to tus-ruby-server we'll use
+[shrine-tus].
 
 ```rb
 # Gemfile
@@ -419,7 +421,7 @@ the uploaded file data as we did with direct uploads to S3.
 // ... other plugins ...
 
 uppy.use(Uppy.Tus, {
-  endpoint: 'http://localhost:9000/'
+  endpoint: '/files/',
 })
 
 uppy.on('upload-success', function (file, data) {
