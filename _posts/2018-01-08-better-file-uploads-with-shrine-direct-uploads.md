@@ -545,7 +545,7 @@ tuned!
 [tus demo]: https://tus.io/demo.html
 [tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
 [tus-js-client]: https://github.com/tus/tus-js-client
-[Goliath]: https://github.com/postrank-labs/goliath
+[Falcon]: https://github.com/socketry/falcon
 [Tus]: https://uppy.io/docs/tus/
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [tus-js-client]: https://github.com/tus/tus-js-client
