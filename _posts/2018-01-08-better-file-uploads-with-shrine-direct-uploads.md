@@ -237,6 +237,7 @@ generates direct upload parameters, which we can mount in our application:
 
 ```rb
 Shrine.plugin :presign_endpoint, presign_options: {
+  # Uppy will send these two query parameters
   filename = request.params["filename"]
   type     = request.params["type"]
 
@@ -249,15 +250,15 @@ Shrine.plugin :presign_endpoint, presign_options: {
 ```
 ```rb
 Rails.application.routes.draw do
-  mount Shrine.presign_endpoint(:cache) => "/presign"
+  mount Shrine.presign_endpoint(:cache) => "/s3/params"
 end
 ```
 
-Our application has now gained the `GET /presign` endpoint which will return
+Our application has now gained the `GET /s3/params` endpoint which will return
 URL and parameters for direct upload:
 
 ```http
-GET /presign HTTP/1.1
+GET /s3/params HTTP/1.1
 ```
 ```http
 HTTP/1.1 200 OK
@@ -284,22 +285,16 @@ On the client side we have the [AwsS3] Uppy plugin (instead of XHRUpload). Note
 that you'll need to update your S3 bucket's [CORS configuration][aws-s3 cors]
 to allow client side uploads.
 
-The AwsS3 plugin requires that we fetch the upload parameters ourselves; we can
-use `window.fetch` to make a request to our presign endpoint, which already
-happens to return data in the format that Uppy expects:
+The AwsS3 plugin requires us point it to the [Uppy Companion] app, which
+implements `GET /s3/params`. However, since our configured `presign_endpoint`
+will have the same behaviour as Uppy Companion, we can point the AwsS3 plugin
+to our app, where we've already mounted the `presign_endpoint` to `/s3/params`.
 
 ```js
 // ... other plugins ...
 
 uppy.use(Uppy.AwsS3, {
-  getUploadParameters: function (file) {
-    var filename = encodeURIComponent(file.name)
-    var type     = encodeURIComponent(file.type)
-
-    return fetch('/presign?filename=' + filename + '&type=' + type, {
-      credentials: 'same-origin', // send cookies
-    }).then(function (response) { return response.json() })
-  }
+  serverUrl: '/', // will call `GET /s3/params` on our app
 })
 
 uppy.on('upload-success', function (file, data) {
@@ -487,7 +482,7 @@ cors] to allow for client side uploads. Then we can configure Uppy's
 // ... other plugins ...
 
 uppy.use(Uppy.AwsS3Multipart, {
-  serverUrl: window.location.origin, // your application
+  serverUrl: '/', // will call `/s3/multipart/*` endpoints on your app
 })
 
 uppy.on('upload-success', function (file, data, uploadURL) {
