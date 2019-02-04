@@ -538,15 +538,15 @@ tuned!
 [carrierwave direct]: https://github.com/dwilkie/carrierwave_direct
 [paperclip direct]: https://devcenter.heroku.com/articles/direct-to-s3-image-uploads-in-rails
 [tus demo]: https://tus.io/demo.html
-[tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
+[tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [tus-js-client]: https://github.com/tus/tus-js-client
 [Falcon]: https://github.com/socketry/falcon
 [Tus]: https://uppy.io/docs/tus/
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [tus-js-client]: https://github.com/tus/tus-js-client
-[tus filesystem]: https://github.com/janko-m/tus-ruby-server#filesystem
-[tus s3]: https://github.com/janko-m/tus-ruby-server#amazon-s3
-[tus expiration]: https://github.com/janko-m/tus-ruby-server#expiration
+[tus filesystem]: https://github.com/janko/tus-ruby-server#filesystem
+[tus s3]: https://github.com/janko/tus-ruby-server#amazon-s3
+[tus expiration]: https://github.com/janko/tus-ruby-server#expiration
 [shrine backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [shrine-tus copy]: https://github.com/shrinerb/shrine-tus#approach-c-tus-storage-equals-shrine-storage
 [tus protocol]: https://tus.io/protocols/resumable-upload.html
@@ -559,5 +559,5 @@ tuned!
 [aws-s3 cors]: https://uppy.io/docs/aws-s3/#S3-Bucket-configuration
 [AwsS3Multipart]: https://uppy.io/docs/aws-s3-multipart/
 [Uppy Companion]: https://uppy.io/docs/companion/
-[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart
+[uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [aws-s3-multipart cors]: https://uppy.io/docs/aws-s3-multipart/#S3-Bucket-Configuration

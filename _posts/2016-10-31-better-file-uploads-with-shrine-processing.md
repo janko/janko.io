@@ -419,7 +419,7 @@ tuned!
 
 [Shrine]: https://github.com/shrinerb/shrine
 [Refile::MiniMagick]: https://github.com/refile/refile-mini_magick
-[ImageProcessing]: https://github.com/janko-m/image_processing
+[ImageProcessing]: https://github.com/janko/image_processing
 [libvips]: http://libvips.github.io/libvips/
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [carrierwave-vips]: https://github.com/eltiare/carrierwave-vips

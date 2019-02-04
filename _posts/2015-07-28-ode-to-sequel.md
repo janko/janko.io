@@ -315,18 +315,18 @@ more performant ([benchmark]), and more advanced than ActiveRecord. It
 encourages you to make the most out of your database. I urge you to give it a
 try!
 
-[sinar1]: https://github.com/janko-m/sinatra-activerecord/blob/e7cf306a03c80e12a0632f3d156b911c6ec9d12f/lib/sinatra/activerecord/rake/activerecord_4.rb
-[sinar2]: https://github.com/janko-m/sinatra-activerecord/blob/e7cf306a03c80e12a0632f3d156b911c6ec9d12f/lib/sinatra/activerecord/tasks.rake
+[sinar1]: https://github.com/janko/sinatra-activerecord/blob/e7cf306a03c80e12a0632f3d156b911c6ec9d12f/lib/sinatra/activerecord/rake/activerecord_4.rb
+[sinar2]: https://github.com/janko/sinatra-activerecord/blob/e7cf306a03c80e12a0632f3d156b911c6ec9d12f/lib/sinatra/activerecord/tasks.rake
 [arel-helpers]: https://github.com/camertron/arel-helpers
 [activerecord pattern]: http://www.martinfowler.com/eaaCatalog/activeRecord.html
 [rom]: https://github.com/rom-rb/rom
 [sequel]: http://sequel.jeremyevans.net/
 [sequel logo]: /images/ruby-sequel.png
-[sequel-vs-activerecord]: https://gist.github.com/janko-m/58e28d42fb268b0ac3c1#file-03-require-speed-rb
+[sequel-vs-activerecord]: https://gist.github.com/janko/58e28d42fb268b0ac3c1#file-03-require-speed-rb
 [squeel]: https://github.com/activerecord-hackery/squeel
 [redefining models]: http://guides.rubyonrails.org/v3.2.8/migrations.html#using-models-in-your-migrations
 [arel]: https://github.com/rails/arel
-[arel code]: https://gist.github.com/janko-m/2b2cea3e8e21d9232fb9
+[arel code]: https://gist.github.com/janko/2b2cea3e8e21d9232fb9
 [json operators]: http://www.postgresql.org/docs/9.4/static/functions-json.html#FUNCTIONS-JSON-OP-TABLE
 [thoughtbot search]: https://robots.thoughtbot.com/implementing-multi-table-full-text-search-with-postgres
 [materialized views]: http://www.postgresql.org/docs/9.4/static/rules-materializedviews.html

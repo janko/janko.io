@@ -8,9 +8,9 @@ author:
   first_name: Janko
   last_name: Marohnić
   name: Janko Marohnić
-  bio: A passionate Ruby backend developer who fell in love with Roda & Sequel, and told Rails "it's not me, it's you". He enjoys working with JSON APIs and SQL databases, while prioritizing testing, and always tries to find the best library for the job. Creator of [Shrine](https://shrinerb.com) and [test.vim](https://github.com/janko-m/vim-test).
+  bio: A passionate Ruby backend developer who fell in love with Roda & Sequel, and told Rails "it's not me, it's you". He enjoys working with JSON APIs and SQL databases, while prioritizing testing, and always tries to find the best library for the job. Creator of [Shrine](https://shrinerb.com) and [test.vim](https://github.com/janko/vim-test).
   image: /images/me.jpg
-  github: janko-m
+  github: janko
   twitter: jankomarohnic
   email: janko.marohnic@gmail.com
   facebook: janko.marohnic

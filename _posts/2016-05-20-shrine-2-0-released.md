@@ -215,7 +215,7 @@ nice unique features.
 [CarrierWave]: http://shrinerb.com/rdoc/files/doc/carrierwave_md.html
 [Paperclip]: http://shrinerb.com/rdoc/files/doc/paperclip_md.html
 [Refile]: http://shrinerb.com/rdoc/files/doc/refile_md.html
-[image_processing]: https://github.com/janko-m/image_processing
+[image_processing]: https://github.com/janko/image_processing
 [MiniMagick]: https://github.com/minimagick/minimagick
 [VIPS]: http://www.vips.ecs.soton.ac.uk/
 [RMagick]: https://github.com/rmagick/rmagick

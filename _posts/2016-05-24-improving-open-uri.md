@@ -210,5 +210,5 @@ mentioned quirks, consider using [Down].
 [open-uri]: http://ruby-doc.org/stdlib-2.2.0/libdoc/open-uri/rdoc/OpenURI.html
 [Net::HTTP]: http://ruby-doc.org/stdlib-2.3.1/libdoc/net/http/rdoc/Net/HTTP.html
 [makes you vulnerable to remote code execution]: http://sakurity.com/blog/2015/02/28/openuri.html
-[Down]: https://github.com/janko-m/down
+[Down]: https://github.com/janko/down
 [rest-client]: https://github.com/rest-client/rest-client

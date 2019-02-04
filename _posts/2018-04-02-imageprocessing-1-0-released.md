@@ -310,7 +310,7 @@ I want to thank:
 * **[@jcupitt]** for maintaining the VIPS project for the last 13 years, and
   being exceptionally responsive to my libvips/ruby-vips inquiries
 
-[ImageProcessing]: https://github.com/janko-m/image_processing
+[ImageProcessing]: https://github.com/janko/image_processing
 [Shrine]: http://shrinerb.com
 [refile-mini_magick]: https://github.com/refile/refile-mini_magick
 [MiniMagick]: https://github.com/minimagick/minimagick

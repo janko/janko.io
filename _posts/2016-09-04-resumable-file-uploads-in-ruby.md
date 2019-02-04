@@ -309,7 +309,7 @@ resumable file uploads to their Ruby applications.
 [tus]: http://tus.io/
 [specification]: http://tus.io/protocols/resumable-upload.html
 [demo]: http://tus.io/demo.html
-[tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
+[tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [tus-js-client]: https://github.com/tus/tus-js-client
 [Transloadit]: https://transloadit.com/
 [JavaScript]: https://github.com/tus/tus-js-client
@@ -331,5 +331,5 @@ resumable file uploads to their Ruby applications.
 [FineUploader]: http://fineuploader.com/
 [bytes can get lost]: https://github.com/tus/tus-resumable-upload-protocol/issues/7#issuecomment-16568773
 [GridFS]: https://docs.mongodb.org/v3.0/core/gridfs/
-[`Tus::Storage::Filesystem`]: https://github.com/janko-m/tus-ruby-server/blob/master/lib/tus/storage/filesystem.rb
-[`Tus::Storage::GridFS`]: https://github.com/janko-m/tus-ruby-server/blob/master/lib/tus/storage/gridfs.rb
+[`Tus::Storage::Filesystem`]: https://github.com/janko/tus-ruby-server/blob/master/lib/tus/storage/filesystem.rb
+[`Tus::Storage::GridFS`]: https://github.com/janko/tus-ruby-server/blob/master/lib/tus/storage/gridfs.rb

@@ -333,5 +333,5 @@ want. If you start working on your next big gem, consider using this pattern.
 [rubygems]: http://guides.rubygems.org/plugins/
 [found huge amounts of missing requires in ActiveSupport]: https://github.com/rails/rails/commit/f28bd9557c669cd63c31704202a46dd83f0a4102
 [`Module#prepend`]: http://dev.af83.com/2012/10/19/ruby-2-0-module-prepend.html
-[200 LOC]: https://github.com/janko-m/as-duration
+[200 LOC]: https://github.com/janko/as-duration
 [correction]:  http://twin.github.io/the-plugin-system-of-sequel-and-roda/#comment-2227674746

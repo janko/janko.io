@@ -247,7 +247,7 @@ and again compare it to existing file upload libraries, so stay tuned!
 [paperclip interpolations]: https://github.com/thoughtbot/paperclip/blob/7edb35a2a9a80c9598dfde235c7e593c023fc914/lib/paperclip/storage/s3.rb#L169-L187
 [paperclip IO adapters]: https://github.com/thoughtbot/paperclip/tree/master/lib/paperclip/io_adapters
 [Rack files]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackFile.html
-[Down::ChunkedIO]: https://github.com/janko-m/down#streaming
+[Down::ChunkedIO]: https://github.com/janko/down#streaming
 [S3 copy]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
 [paperclip#1326]: https://github.com/thoughtbot/paperclip/issues/1326
 [paperclip#1642]: https://github.com/thoughtbot/paperclip/issues/1642
@@ -255,10 +255,10 @@ and again compare it to existing file upload libraries, so stay tuned!
 [Open3]: http://ruby-doc.org/stdlib-2.3.0/libdoc/open3/rdoc/Open3.html
 [paperclip mime]: https://github.com/thoughtbot/paperclip/issues?utf8=%E2%9C%93&q=label%3A%22Spoof%20related%20or%20Mime%20types%22%20
 [file]: http://linux.die.net/man/1/file
-[Down]: https://github.com/janko-m/down
+[Down]: https://github.com/janko/down
 [down open-uri]: https://twin.github.io/improving-open-uri/
 [down streaming]: https://twin.github.io/partial-downloads-with-enumerators-and-fibers/
-[shrine-carrierwave load time]: https://gist.github.com/janko-m/0d4269b9c7195b5e65cc947acf1cc028
+[shrine-carrierwave load time]: https://gist.github.com/janko/0d4269b9c7195b5e65cc947acf1cc028
 [FileSystem]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/storage/file_system.rb
 [S3]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/storage/s3.rb
 [Fog]: https://github.com/shrinerb/shrine-fog

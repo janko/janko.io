@@ -439,7 +439,7 @@ I encourage you to try http.rb on your next project!
 [`IO#read`]: http://ruby-doc.org/core-2.5.0/IO.html#method-i-read
 [Shrine]: https://github.com/shrinerb/shrine
 [`Shrine::UploadedFile`]: https://github.com/shrinerb/shrine/tree/c02a005869c536eeb234353f5b1129b9e2559559#uploaded-file
-[`Down::ChunkedIO`]: https://github.com/janko-m/down/tree/55c9299c170b828d83487bae7df59cfe935a1e35#streaming
+[`Down::ChunkedIO`]: https://github.com/janko/down/tree/55c9299c170b828d83487bae7df59cfe935a1e35#streaming
 [multipart form data]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST#Example
 [http-form_data]: https://github.com/httprb/form_data
 [`multipart-post`]: https://github.com/nicksieger/multipart-post
@@ -447,7 +447,7 @@ I encourage you to try http.rb on your next project!
 [RestClient multipart]: https://github.com/rest-client/rest-client/blob/v2.0.2/lib/restclient/payload.rb#L116-L207
 [HTTParty multipart]: https://github.com/jnunemaker/httparty/blob/v0.16.2/lib/httparty/request/body.rb#L5
 [use Fibers]: https://twin.github.io/partial-downloads-with-enumerators-and-fibers/
-[on-demand downloads]: https://github.com/janko-m/down/tree/v4.5.0#streaming
+[on-demand downloads]: https://github.com/janko/down/tree/v4.5.0#streaming
 [net-http-persistent]: https://github.com/drbrain/net-http-persistent
 [Net::HTTP write timeout]: https://bugs.ruby-lang.org/issues/13396
 [`Timeout`]: https://ruby-doc.org/stdlib-2.5.1/libdoc/timeout/rdoc/Timeout.html
@@ -455,7 +455,7 @@ I encourage you to try http.rb on your next project!
 [native connect timeout]: https://github.com/socketry/socketry/blob/ddc852443c66fc757f20cf0c0aacbaace6873ac4/lib/socketry/tcp/socket.rb#L81-L105
 [chunked requests]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Transfer-Encoding
 [String memory use reduction techniques]: https://rubytalk.org/t/psa-string-memory-use-reduction-techniques/74477
-[memory benchmark]: https://gist.github.com/janko-m/238bbcc78b369ce3438365e5507bc671
+[memory benchmark]: https://gist.github.com/janko/238bbcc78b369ce3438365e5507bc671
 [openssl patch]: https://bugs.ruby-lang.org/issues/14426
 [Richard Schneeman]: https://schneems.com
 [Sam Saffron]: https://samsaffron.com
@@ -465,7 +465,7 @@ I encourage you to try http.rb on your next project!
 [flamegraph]: https://github.com/SamSaffron/flamegraph
 [rack-mini-profiler]: https://github.com/MiniProfiler/rack-mini-profiler
 [content-type]: https://github.com/httprb/content_type.rb
-[Down]: https://github.com/janko-m/down
-[tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
+[Down]: https://github.com/janko/down
+[tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [Net::HTTP download patch]: https://bugs.ruby-lang.org/issues/14326
 [Net::HTTP timeout retry]: https://engineering.wework.com/ruby-users-be-wary-of-net-http-f284747288b2
