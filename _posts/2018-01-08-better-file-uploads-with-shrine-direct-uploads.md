@@ -192,8 +192,8 @@ uppy.use(Uppy.XHRUpload, {
   fieldName: "file",
 })
 
-uppy.on('upload-success', function (file, data) {
-  var uploadedFileData = JSON.stringify(data)
+uppy.on('upload-success', function (file, response) {
+  var uploadedFileData = JSON.stringify(response.body)
 
   var hiddenField = document.querySelector('.attachment-field[type=hidden]')
   hiddenField.value = uploadedFileData
@@ -294,10 +294,10 @@ to our app, where we've already mounted the `presign_endpoint` to `/s3/params`.
 // ... other plugins ...
 
 uppy.use(Uppy.AwsS3, {
-  serverUrl: '/', // will call `GET /s3/params` on our app
+  companionUrl: '/', // will call `GET /s3/params` on our app
 })
 
-uppy.on('upload-success', function (file, data) {
+uppy.on('upload-success', function (file, response) {
   var uploadedFileData = JSON.stringify({
     id: file.meta['key'].match(/^cache\/(.+)/)[1], // remove the Shrine storage prefix
     storage: 'cache',
@@ -419,9 +419,9 @@ uppy.use(Uppy.Tus, {
   endpoint: '/files/',
 })
 
-uppy.on('upload-success', function (file, data) {
+uppy.on('upload-success', function (file, response) {
   var uploadedFileData = JSON.stringify({
-    id: data.url, // Shrine will later use this tus URL to download the file
+    id: response.uploadURL, // Shrine will later use this tus URL to download the file
     storage: "cache",
     metadata: {
       filename:  file.name,
@@ -482,12 +482,12 @@ cors] to allow for client side uploads. Then we can configure Uppy's
 // ... other plugins ...
 
 uppy.use(Uppy.AwsS3Multipart, {
-  serverUrl: '/', // will call `/s3/multipart/*` endpoints on your app
+  companionUrl: '/', // will call `/s3/multipart/*` endpoints on your app
 })
 
-uppy.on('upload-success', function (file, data, uploadURL) {
+uppy.on('upload-success', function (file, response) {
   var uploadedFileData = JSON.stringify({
-    id: uploadURL.match(/\/cache\/([^\?]+)/)[1], // extract key without prefix
+    id: response.uploadURL.match(/\/cache\/([^\?]+)/)[1], // extract key without prefix
     storage: 'cache',
     metadata: {
       size:      file.size,
