@@ -21,7 +21,7 @@ by an `ImageUploader`:
 
 ```rb
 class Photo < Sequel::Model
-  include ImageUploader::Attachment.new(:image)
+  include ImageUploader::Attachment(:image)
 end
 ```
 ```rb
@@ -189,7 +189,6 @@ it to this endpoint.
 
 uppy.use(Uppy.XHRUpload, {
   endpoint: "/images/upload",
-  fieldName: "file",
 })
 
 uppy.on('upload-success', function (file, response) {
