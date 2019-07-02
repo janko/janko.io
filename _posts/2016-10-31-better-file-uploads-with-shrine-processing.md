@@ -91,8 +91,7 @@ ImageProcessing library to limit maximum dimensions to `800x800`:
 
 ```rb
 # Gemfile
-gem "image_processing", "~> 1.0"
-gem "mini_magick", "~> 4.0"
+gem "image_processing", "~> 1.2"
 ```
 ```rb
 require "image_processing/mini_magick"
@@ -101,15 +100,11 @@ class ImageUploader < Shrine
   plugin :processing
 
   process(:store) do |io|
-    original = io.download
-
-    resized = ImageProcessing::MiniMagick
-      .source(original)
-      .resize_to_limit!(800, 800)
-
-    original.close!
-
-    resized
+    io.download do |original|
+      ImageProcessing::MiniMagick
+        .source(original)
+        .resize_to_limit!(800, 800)
+    end
   end
 end
 ```
@@ -149,16 +144,17 @@ class ImageUploader < Shrine
   plugin :versions # enable Shrine to handle a hash of files
 
   process(:store) do |io|
-    original = io.download
-    processor = ImageProcessing::MiniMagick
+    versions = { original: io }
 
-    size_800 = processor.source(original).resize_to_limit!(800, 800)
-    size_500 = processor.source(size_800).resize_to_limit!(500, 500)
-    size_300 = processor.source(size_500).resize_to_limit!(300, 300)
+    io.download do |original|
+      processor = ImageProcessing::MiniMagick.source(original)
 
-    original.close!
+      versions[:large]  = processor.resize_to_limit!(800, 800)
+      versions[:medium] = processor.resize_to_limit!(500, 500)
+      versions[:small]  = processor.resize_to_limit!(300, 300)
+    end
 
-    { original: io, large: size_800, medium: size_500, small: size_300 }
+    versions
   end
 end
 ```
@@ -175,7 +171,7 @@ then reads this data, returns it as a hash of `Shrine::UploadedFile` objects.
 
 ```rb
 class Photo < Sequel::Model
-  include ImageUploader::Attachment.new(:image) # uses `image_data` column
+  include ImageUploader::Attachment(:image) # uses `image_data` column
 end
 ```
 ```rb

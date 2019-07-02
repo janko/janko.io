@@ -241,9 +241,9 @@ Shrine.plugin :presign_endpoint, presign_options: {
   type     = request.params["type"]
 
   {
-    content_disposition:    "inline; filename=\"#{filename}\"", # set download filename
-    content_type:           type,                               # set content type (defaults to "application/octet-stream")
-    content_length_range:   0..(10*1024*1024),                  # limit upload size to 10 MB
+    content_disposition:    ContentDisposition.inline(filename), # set download filename
+    content_type:           type,                                # set content type (defaults to "application/octet-stream")
+    content_length_range:   0..(10*1024*1024),                   # limit upload size to 10 MB
   }
 }
 ```
@@ -469,7 +469,7 @@ Shrine.plugin :uppy_s3_multipart
 ```
 ```rb
 Rails.application.routes.draw do
-  mount Shrine.uppy_s3_multipart(:cache) => "/s3"
+  mount Shrine.uppy_s3_multipart(:cache) => "/s3/multipart"
 end
 ```
 

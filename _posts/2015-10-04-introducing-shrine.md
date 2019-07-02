@@ -23,15 +23,18 @@ Instead of having an opinion on how you want to do your upload, Shrine allows
 you to build an uploading flow that suits your needs.
 
 ```ruby
+Shrine.plugin :sequel
+Shrine.plugin :pretty_location
+Shrine.plugin :logging, format: :json
+```
+```ruby
 class ImageUploader < Shrine
-  plugin :sequel
-  plugin :pretty_location
-  plugin :logging, format: :json
+  # ...
 end
 ```
 ```ruby
 class User < Sequel::Model
-  include ImageUploader::Attachment.new(:avatar)
+  include ImageUploader::Attachment(:avatar)
 end
 ```
 ```ruby
@@ -46,21 +49,30 @@ DSLs, Shrine favours simple instance-level interface. Here's an example on how
 file processing is done in Shrine:
 
 ```ruby
-require "image_processing/mini_magick" # part of the "image_processing" gem
+# Gemfile
+gem "image_processing", "~> 1.2"
+```
+```ruby
+require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  include ImageProcessing::MiniMagick
-  plugin :versions, names: [:small, :medium, :large]
+  plugin :processing
+  plugin :versions
 
-  def process(io, context)
-    return if context[:record].guest? # we have access to the record
-    if context[:phase] == :store
-      size_800 = io.download                         #
-      size_500 = resize_to_limit(size_800, 500, 500) # instances of Tempfile
-      size_300 = resize_to_limit(size_500, 300, 300) #
+  process(:store) do |io, context|
+    next if context[:record].guest? # we have access to the record
 
-      {large: size_800, medium: size_500, small: size_300}
+    versions = { original: io }
+
+    io.download do |original|
+      processor = ImageProcessing::MiniMagick.source(original)
+
+      versions[:large]  = processor.resize_to_limit!(800, 800)
+      versions[:medium] = processor.resize_to_limit!(500, 500)
+      versions[:small]  = processor.resize_to_limit!(300, 300)
     end
+
+    versions
   end
 end
 ```
@@ -87,7 +99,8 @@ end
 
 Another difference from other gems is number of obligatory dependencies.  While
 CarrierWave, Refile and Paperlip have 9-12 depedencies in total, Shrine by
-default has only 1 small dependency for downloading files.
+default has only 2 – one for downloading files, one for generating a value for
+the `Content-Disposition` header.
 
 ## Performance
 
