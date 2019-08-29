@@ -19,7 +19,7 @@ Before we start, here is a little refresher on Shrine's core classes:
 | Class                  | Description                          |
 | :--                    | :--                                  |
 | `Shrine`               | performs uploads                     |
-| `Shrine::UploadedFile` | represents uploaded file             |
+| `Shrine::UploadedFile` | represents uploaded files            |
 | `Shrine::Attacher`     | handles attaching                    |
 | `Shrine::Attachment`   | model wrapper for `Shrine::Attacher` |
 
