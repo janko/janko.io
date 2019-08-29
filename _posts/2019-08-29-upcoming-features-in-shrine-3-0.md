@@ -12,7 +12,7 @@ the new features and improvements that will be coming to 3.0. :tada:
 For those who don't know, [Shrine] is a versatile file attachment library for
 Ruby applications. It was born out of frustration for not being able to achieve
 the desired user experience with existing solutions. Tomorrow it will be
-turning 4 years old.
+turning 4 years old. :smiley:
 
 Before we start, here is a little refresher on Shrine's core classes:
 
