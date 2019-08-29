@@ -7,7 +7,7 @@ The last couple of months I've been working hard to prepare for [Shrine 3.0],
 which I expect will be released by the end of October. A lot of work has gone
 into it, including some big but much needed rewrites. I feel the API has
 stabilized now, so I thought it would be a good time to share with your some of
-the new features and improvements that will be coming to 3.0.
+the new features and improvements that will be coming to 3.0. :tada:
 
 For those who don't know, [Shrine] is a versatile file attachment library for
 Ruby applications. It was born out of frustration for not being able to achieve
