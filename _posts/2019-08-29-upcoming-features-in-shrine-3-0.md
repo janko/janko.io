@@ -365,7 +365,7 @@ You can now see what's going on:
   - if attachment has changed during upload, `Shrine::AttachmentChanged` is raised
   * if record has been deleted, `ActiveRecord::RecordNotFound` is raised
 
-It's now easy for example to adding processing [derivatives](#derivatives) into
+It's now easy for example to add processing [derivatives](#derivatives) into
 the mix:
 
 ```rb
