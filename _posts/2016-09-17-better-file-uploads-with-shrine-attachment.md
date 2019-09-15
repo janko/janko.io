@@ -4,11 +4,15 @@ tags: ruby file attachment upload shrine library gem
 excerpt: "This is the 3rd part of a series of blog posts about Shrine. In this
   part I talk about Shrine's high-level interface for attaching uploaded files
   to model instances."
+updated: 15.9.2019.
 ---
 
 *This is 3rd part of a series of blog posts about [Shrine]. The aim of this
 series is to show the advantages of using Shrine over other file attachment
 libraries.*
+
+* *Previous article: [Uploader](https://twin.github.io/better-file-uploads-with-shrine-uploader)*
+* *Next article: [Processing](https://twin.github.io/better-file-uploads-with-shrine-processing)*
 
 ----
 
@@ -35,24 +39,28 @@ attachment libraries are better in this regard, though.
 
 Shrine takes a cleaner approach here. With Shrine you use *your uploader* to
 generate an attachment module for a certain attribute, and then you `include` it
-directly to your model.
+directly to your model. This is called the [module builder pattern].
 
 ```rb
 class Photo
-  include ImageUploader::Attachment.new(:image)
+  include ImageUploader::Attachment(:image)
 end
 ```
 
-This way for a single attachment Shrine adds only **4 instance methods** to
-your model by default (and 0 class methods). That attachment module also
-supports [single table inheritance][STI] through the usage of
-`@@class_variables` (CarrierWave and Paperclip don't support STI). The included
-`Shrine::Attachment` module will be nicely displayed when listing model
-ancestors, because it's not an anonymous module, and it also overrides
-`#inspect` and `#to_s`.
+This way for a single attachment Shrine adds only **4 instance methods** and
+**1 class method** to your model by default. [Singe table inheritance][STI]
+inheritance is supported as well (Paperclip and CarrierWave don't support STI).
+The included `Shrine::Attachment` module will be nicely displayed when listing
+model ancestors, because it's not an anonymous module:
 
 ```rb
-Photo.ancestors #=> [Photo, #<ImageUploader::Attachment(image)>, Object, BasicObject]
+Photo.ancestors #=>
+# [
+#   Photo,
+#   #<ImageUploader::Attachment(image)>,
+#   Object,
+#   BasicObject,
+# ]
 ```
 
 ## Attaching
@@ -181,10 +189,6 @@ external plugins for [Mongoid][shrine-mongoid] and
 [Hanami::Model][hanami-shrine]. A [ROM][shrine-rom] plugin is also in the
 making.
 
-There is even a Shrine plugin for [Reform][shrine-reform]. That one was
-difficult to get right, but I'm very happy that Shrine is the first file
-attachment library to support Reform!
-
 ## Attacher
 
 The model interface provided by the `Shrine::Attachment` module is just a thin
@@ -192,10 +196,7 @@ wrapper around a `Shrine::Attacher` object (inspired by Refile), which you can
 also use directly:
 
 ```rb
-attacher = ImageUploader::Attacher.new(photo, :image)
-
-attacher.cache #=> #<ImageUploader @storage_key=:cache>
-attacher.store #=> #<ImageUploader @storage_key=:store>
+attacher = ImageUploader::Attacher.from_model(photo, :image)
 
 attacher.assign(file) # equivalent to `photo.image = file`
 attacher.get          # equivalent to `photo.image`
@@ -217,13 +218,12 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
-    validate_extension_inclusion %w[jpg jpeg png gif]
+    validate_mime_type %w[image/jpeg image/png image/webp]
+    validate_extension %w[jpg jpeg png webp]
 
-    validate_max_size  10*1024*1024 # 10MB
+    validate_max_size 10*1024*1024 # 10 MB
 
-    validate_max_width  1000
-    validate_max_height 1000
+    validate_max_dimensions [5000, 5000]
   end
 end
 ```
@@ -236,7 +236,9 @@ you could validate maximum duration of a video:
 ```rb
 class VideoUploader < Shrine
   Attacher.validate do
-    errors << "is longer than 5 minutes" if get.duration > 300
+    if file.duration > 5*60*60
+      errors << "must not be longer than 5 hours"
+    end
   end
 end
 ```
@@ -260,18 +262,17 @@ with Shrine, so stay tuned!
 [paperclip columns]: https://github.com/thoughtbot/paperclip/blob/7edb35a2a9a80c9598dfde235c7e593c023fc914/lib/paperclip/schema.rb#L6-L9
 [magic attributes]: http://markevans.github.io/dragonfly/models#magic-attributes
 [carrierwave-meta]: https://github.com/gzigzigzeo/carrierwave-meta/
-[backgrounding plugin]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [Sequel]: https://github.com/jeremyevans/sequel
 [shrine-mongoid]: https://github.com/shrinerb/shrine-mongoid
 [hanami-shrine]: https://github.com/katafrakt/hanami-shrine
 [shrine-rom]: https://github.com/shrinerb/shrine-rom-example/blob/30ff892216d18ee2b64a1b784a06e489bb3be75d/config/shrine-rom.rb
-[shrine-reform]: https://github.com/shrinerb/shrine-reform
 [shrine activerecord]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/activerecord.rb
 [carrierwave activerecord]: https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/orm/activerecord.rb
 [<attribute>_will_change! hacks]: https://github.com/carrierwaveuploader/carrierwave/blob/1dbc8be0bb8cf3b48600c5451084ee13445747b0/lib/carrierwave/orm/activerecord.rb#L67
-[shrine moving files]: http://shrinerb.com/rdoc/files/doc/changing_location_md.html
+[shrine moving files]: https://shrinerb.com/docs/changing-location
 [STI]: http://api.rubyonrails.org/classes/ActiveRecord/Inheritance.html
-[Using Attacher]: https://github.com/shrinerb/shrine/blob/master/doc/attacher.md#readme
+[Using Attacher]: https://shrinerb.com/docs/attacher
 [Sequel validations]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/ValidationHelpers.html
-[direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
-[backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
+[direct uploads]: https://shrinerb.com/docs/getting-started#direct-uploads
+[backgrounding]: https://shrinerb.com/docs/getting-started#backgrounding
+[module builder pattern]: https://dejimata.com/2017/5/20/the-ruby-module-builder-pattern

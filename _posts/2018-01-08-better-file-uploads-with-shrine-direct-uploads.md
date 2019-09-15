@@ -4,11 +4,14 @@ tags: ruby file attachment upload shrine library gem
 excerpt: "This is the 6th part of a series of blog posts about Shrine. In this
   part we'll show how to do direct uploads to S3 or your app on the client side,
   as well as how to handle large uploads."
+updated: 15.9.2019.
 ---
 
 *This is 6th part of a series of blog posts about [Shrine]. The aim of this
 series is to show the advantages of using Shrine over other file attachment
 libraries.*
+
+* *Previous article: [Metadata](https://twin.github.io/better-file-uploads-with-shrine-metadata)*
 
 ----
 
@@ -85,11 +88,11 @@ var uppy = Uppy.Core({ /* ... */ })
 ```
 
 I find using a generic JavaScript library much more future-proof than relying
-on homegrown solutions like what [Refile][refile javascript] or
+on homegrown solutions such as the ones that [Refile][refile javascript] and
 [ActiveStorage][activestorage javascript] offer. That's why Shrine doesn't come
 with its own JavaScript; it can be convenient when you want to get up and
-running quickly, but it could never match the features and stability of a
-library that's maintained by the whole JavaScript community.
+running quickly, but it could never match the power and stability of a library
+that's maintained by the whole JavaScript community.
 
 ## Theory
 
@@ -342,7 +345,7 @@ and/or flaky internet connections it might not even be possible to upload
 larger files, because every time the upload fails it would have to be retried
 from the beginning.
 
-**[Tus.io][tus]** is the open protocol for resumable file uploads built on
+**[Tus.io][tus]** is an open protocol for resumable file uploads built on
 HTTP. It specifies the [behaviour and communication][tus protocol] required
 between client and the server during file upload so that the upload is
 resumable in case the request failed. Try their [demo][tus demo] to see this in
@@ -385,28 +388,20 @@ end
 ```
 
 The idea is that on the client side we'll upload files directly to the
-tus-ruby-server instance, which uses its own storage ([filesystem][tus
-filesystem] by default, but can also be configured to use [S3][tus s3]). Once
-the file has been successfully uploaded to tus-ruby-server, we would submit its
-tus URL as the attachment, which Shrine would then use to download the file
-from the tus server, perform any user-defined processing, and upload the file
-to permanent Shrine storage (preferrably in a [background job][shrine
-backgrounding]). In other words, tus-ruby-server would be an endpoint that
-saves uploads to temporary storage, just like with regular direct uploads.
+tus-ruby-server instance, and afterward submit the resulting tus URL as the
+attachment. Shrine would then take this file and promote to permanent storage.
+So, tus-ruby-server would essentially act as a temporary storage.
 
-At first it might sound that taking all that effort to upload the file to
-tus-ruby-server is a bit pointless if the app will just end up downloading and
-re-uploading it to another storage anyway. However, server side uploading will
-be orders of magnitude faster and more reliable, because servers have internet
-connections with much bigger bandwidth and more stability than your users will
-(and if that's not enough, shrine-tus can also do a [smart copy directly from
-the tus storage][shrine-tus copy]). Also, you need be able to periodically
-[clear expired or unfinished uploads][tus expiration], which wouldn't be
-possible if tus-ruby-server and Shrine used the same storage.
+At first, it might sound pointless to do all that effort of uploading the file
+to tus-ruby-server only to later move it somewhere else. However, server side
+uploading will be orders of magnitude faster and more reliable, because servers
+will have *much* better internet connection compared to average users. And if
+that's not enough, shrine-tus can also do a [smart copy directly from the tus
+storage][shrine-tus copy].
 
 ### Client side
 
-On the client side Uppy has our backs again with the [Tus] plugin (instead of
+On the client side, Uppy has our backs again with the [Tus] plugin (instead of
 XHRUpload or AwsS3), which internally uses [tus-js-client]. We need to give the
 Tus plugin the URL to our tus server, and after the upload we need to construct
 the uploaded file data as we did with direct uploads to S3.
@@ -433,25 +428,21 @@ uppy.on('upload-success', function (file, response) {
 })
 ```
 
-That's it, now uploads will automagically be resumed in case of temporary
+That's it, now uploads will be automagically resumed in case of temporary
 failures, without the user even knowing something happened.
 
 ### AWS S3 Multipart
 
 The tus approach has the advantages of abstracting away the underlying storage,
 and the fact that there are lots of client and server implementations in
-various languages to choose from. But one downside is that you're receiving
-these uploads, so it's your responsibility to scale when the traffic increases.
+various languages to choose from. But one downside is that you're receiving the
+uploads, so you need to ensure any necessary scaling.
 
-If you would like your storage service to handle the uploads and don't mind
-extra coupling to AWS S3, you can do multipart uploads directly to S3 using
-Uppy's [AwsS3Multipart] plugin. That plugin requires certain endpoints that are
-implemented by the [Uppy Companion] app, but you can use the
-[uppy-s3_multipart] gem which implements these endpoints in Ruby, and allows
-you to mount them into any Rack app.
-
-First we'll add `uppy-s3_multipart` to the Gemfile, load the Shrine plugin and
-mount the Rack app:
+If you're using AWS S3 and would like it to handle the uploads, you can do
+direct multipart uploads using Uppy's [AwsS3Multipart] plugin. It requires
+certain endpoints to be implemented, which are provided by the [Uppy Companion]
+app. However, you can use the [uppy-s3_multipart] gem which implements these
+endpoints in Ruby, and allows you to mount them into any Rack app:
 
 ```rb
 # Gemfile
@@ -510,11 +501,8 @@ server side need to do their part.
 
 Regardless of whether you're just uploading to a simple endpoint in your app,
 directly to cloud, or doing something as advanced as resumable uploads, with
-Shrine & Uppy the setup is streamlined and is basically just a matter of
+Shrine & Uppy the setup is streamlined and is essentially just a matter of
 swapping plugins.
-
-In the next post I will talk about using background jobs with Shrine, so stay
-tuned!
 
 ## Links
 

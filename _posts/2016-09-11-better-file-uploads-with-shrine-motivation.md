@@ -4,11 +4,14 @@ tags: ruby file attachment upload shrine library gem
 excerpt: "This is the 1st part of a series of blog posts about Shrine. In this
   part I talk about the motivation behind creating Shrine, by going over the
   limitations of existing file attachment libraries."
+updated: 15.9.2019.
 ---
 
 *This is 1st part of a series of blog posts about [Shrine]. The aim of this
 series is to show the advantages of using Shrine over other file attachment
 libraries.*
+
+* *Next article: [Uploader](https://twin.github.io/better-file-uploads-with-shrine-uploader)*
 
 ----
 

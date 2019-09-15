@@ -3,15 +3,19 @@ title: "Better File Uploads with Shrine: Metadata"
 tags: ruby file attachment upload shrine library gem
 excerpt: "This is the 5th part of a series of blog posts about Shrine. In this
   part I talk about how Shrine extracts and stores file metadata."
+updated: 15.9.2019.
 ---
 
 *This is 5th part of a series of blog posts about [Shrine]. The aim of this
 series is to show the advantages of using Shrine over other file attachment
 libraries.*
 
+* *Previous article: [Processing](https://twin.github.io/better-file-uploads-with-shrine-processing)*
+* *Next article: [Direct Uploads](https://twin.github.io/better-file-uploads-with-shrine-direct-uploads)*
+
 ----
 
-[Shrine] has very flexible and customizable support for saving file metadata.
+Shrine has very flexible and customizable support for saving file metadata.
 Whenever Shrine is about to upload a file, it extracts available metadata from
 the file, and adds it to the returned `Shrine::UploadedFile` object.
 
@@ -54,51 +58,79 @@ get saved to the same column.
 ```rb
 photo = Photo.create(image: file)
 photo.image_data #=>
-# '{
-#   "id": "kdg893ir0sdg.jpg",
+# {
+#   "id": "ee08af.jpg",
 #   "storage": "store",
 #   "metadata": {
 #     "filename" => "nature.jpg",
 #     "mime_type" => "image/jpeg",
 #     "size" => 2859343
 #   }
-# }'
+# }
 ```
 
-Furthermore, when you're [processing versions][versions], Shrine automatically
-extracts and saves metadata of *each version*.
+Furthermore, when you're storing processed files alongside the main file,
+Shrine automatically extracts and saves metadata of each file:
 
 ```rb
-photo.image_data #=>
-# '{
-#   "original": {"id":"kdg893ir0sdg.jpg", "storage":"store", "metadata":{...}},
-#   "thumbnail": {"id":"j994jer89dgk.jpg", "storage":"store", "metadata": {...}}
-# }'
+class ImageUploader < Shrine
+  plugin :derivatives
 
-photo.image[:original].size  #=> 868329
-photo.image[:thumbnail].size #=> 21496
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    {
+      small:  magick.resize_to_limit!(300, 300),
+      medium: magick.resize_to_limit!(500, 500),
+      large:  magick.resize_to_limit!(800, 800),
+    }
+  end
+end
+```
+```rb
+photo.image_derivatives!
+photo.image_data
+# {
+#   "id": "ee08af.jpg",
+#   "storage": "store",
+#   "metadata": { ... },
+#   "derivatives": {
+#     "small": { "id": "f9f67a.jpg", "storage": "store", "metadata": { ... } },
+#     "medium": { "id": "5e27cf.jpg", "storage": "store", "metadata": { ... } },
+#     "large": { "id": "ff1da8.jpg", "storage": "store", "metadata": { ... } },
+#   }
+# }
+
+photo.image(:small).size  #=> 21496
+photo.image(:medium).size #=> 98237
+photo.image(:large).size  #=> 150383
 ```
 
 ## MIME type
 
 Shrine doesn't have any mandatory dependency for extracting MIME type, so by
-default it is inherited from `#content_type` of the input file (if available).
+default it is inherited from `#content_type` of the input file if available.
 However, this attribute on uploaded files is set by Rack from the
 `Content-Type` request header, which was set by the browser solely based on the
 file extension.
 
-This means that by default Shrine's "mime_type" metadata is not guaranteed to
-hold the actual MIME type of the file (since the user can just upload a PHP
-file with a .jpg extension). This might sound like Shrine is not secure by
-deafult, but you do get a warning in the console when `#content_type` is used.
-And in some scenarios this might be exactly what you want.
+This means that by default Shrine's `mime_type` metadata is not guaranteed to
+hold the actual MIME type of the file (e.g. the user can upload a PHP file with
+a .jpg extension). This might sound like Shrine is not secure by deafult, but
+you do get a warning in the console when `#content_type` is used. And in some
+scenarios this might be exactly what you want.
 
 Shrine comes with a `determine_mime_type` plugin, which determines MIME type
-from file *content*, using tools that reading the "magic headers", and saves
-that into "mime_type" (which can then be [validated][validation]).
+from file *content*. It uses tools that know how to read "magic headers" of
+files, and saves the result into `mime_type` (which can then be
+[validated][validation]).
 
 ```rb
-Shrine.plugin :determine_mime_type
+# Gemfile
+gem "marcel"
+```
+```rb
+Shrine.plugin :determine_mime_type, analyzer: :marcel
 ```
 ```rb
 File.write("image.png", "<?php ... ?>") # PHP file with a .png extension
@@ -106,39 +138,23 @@ uploaded_file = uploader.upload(File.open("image.png"))
 uploaded_file.mime_type #=> "text/x-php"
 ```
 
-By default it uses the UNIX `file` utility, which is installed by default on
-many common operating systems. However, you can also choose between many
-different analyzers:
+If the `:marcel` analyzer doesn't suit you, you can choose a different
+analyzer, or even combine them:
 
 ```rb
-Shrine.plugin :determine_mime_type, analyzer: :mimemagic # uses the MimeMagic gem
-```
-
-Or even mix and match:
-
-```rb
-Shrine.plugin :determine_mime_type, analyzer: ->(io, analyzers) do
+Shrine.plugin :determine_mime_type, analyzer: -> (io, analyzers) do
   analyzers[:mimemagic].call(io) || analyzers[:file].call(io)
 end
 ```
 
-It's important to have this flexibility, because different tools are better at
-recognizing different types of files, so it's useful to be able to build an
-analyzer which is suitable for the type of files you're expecting.
-
-Paperclip "solves" this by extracting MIME type from file contents, comparing
-it to the value that `mime-types` gem determined from file extension, and then
-raises a "spoofing attempt" error if these two values don't match. However,
-this has proven to be a [very unreliable solution][paperclip spoof], leading to
-a lot of false alarms, especially for files which don't have any magic headers
-(e.g. CSV). It's much simpler and better to just determine the MIME type and
-match it against a whitelist.
-
 ## Image Dimensions
 
-Extracting dimensions for images is also simple with Shrine, you just load the
-`store_dimensions` plugin.
+Image dimensions can be extracted by loading the `store_dimensions` plugin:
 
+```rb
+# Gemfile
+gem "fastimage" # default analyzer
+```
 ```rb
 class ImageUploader < Shrine
   plugin :store_dimensions
@@ -160,9 +176,6 @@ image.height #=> 400
 
 image.dimensions #=> [500, 400]
 ```
-
-The `store_dimensions` plugin uses the [Fastimage] gem, which has built-in
-protection against [image bombs].
 
 ## Custom metadata
 
@@ -229,12 +242,12 @@ storage itself the ability to update the metadata after uploading. Some
 storages like filesystem and Amazon S3 won't use this, but many other storage
 services extract file metadata during uploading.
 
-For example, when you're uploading images to Cloudinary, shrine-cloudinary will
-[automatically update][cloudinary metadata] "size", "mime_type", "width" and
-"height" metadata values. This is especially useful if you're processing the
-image on upload with Cloudinary, because then the metadata that Shrine
-extracted won't match the uploaded file, since those were extracted before
-the upload.
+For example, when you're uploading images to Cloudinary, [shrine-cloudinary]
+will [automatically update][cloudinary metadata] `size`, `mime_type`, `width`
+and `height` metadata values. This is especially useful if you're processing
+the image on upload with Cloudinary, because then the metadata that Shrine
+extracted won't match the uploaded file, since those were extracted before the
+upload.
 
 ```rb
 uploaded_file = cloudinary_uploader.upload(image, upload_options: {
@@ -289,20 +302,17 @@ Some other storages that use the ability to update metadata include
 ## Summary
 
 We've seen how Shrine automatically extracts metadata before upload, which is
-then stored into the same database column. It allows you to determine MIME type
-from file content using a variety of tools, as well as image dimensions, just
-by loading a corresponding plugin. Finally, it also gives you a simple
-interface for extracting custom metadata, and allows storages to update
-metadata as well.
-
-In the next post I will talk about direct uploads with Shrine, so stay tuned!
+then stored into the same database column. You can determine MIME type and
+extract image dimensions from file content using a variety of tools, just by
+loading a corresponding plugin. You can also extract any custom metadata, and
+storage services can add their own metadata as well.
 
 [Shrine]: https://github.com/shrinerb/shrine
 [versions]: https://github.com/shrinerb/shrine#versions
 [Fastimage]: https://github.com/sdsykes/fastimage
 [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
-[paperclip spoof]: https://github.com/thoughtbot/paperclip/issues?utf8=%E2%9C%93&q=label%3A%22Spoof%20related%20or%20Mime%20types%22%20
 [responsive breakpoints]: http://cloudinary.com/blog/introducing_intelligent_responsive_image_breakpoints_solutions
+[shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
 [cloudinary metadata]: https://github.com/shrinerb/shrine-cloudinary/blob/c899875b935a45bc322a5e18be9c2132ebeecb4d/lib/shrine/storage/cloudinary.rb#L152-L157
 [shrine-transloadit]: https://github.com/shrinerb/shrine-transloadit/blob/cd3b57aeeae3587852e2bab5f311b8f713f72fe5/lib/shrine/plugins/transloadit.rb#L150-L157
 [shrine-flickr]: https://github.com/shrinerb/shrine-flickr/blob/e0226bc4d2a316924d4690e5f0c1c21f613e44c1/lib/shrine/storage/flickr.rb#L114

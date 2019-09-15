@@ -1,6 +1,7 @@
 ---
 title: Shrine meets Transloadit
 tags: ruby shrine file upload processing
+updated: 15.9.2019.
 ---
 
 When I'm building web applications, a requirement that almost always comes up
@@ -32,8 +33,8 @@ file processing that really impressed me is **Transloadit**.
 including images, videos, audio, and documents, along with importing from and
 exporting to various storage services. It is extremely versatile, and by doing
 processing asynchronously it's suitable for both quick processing and long
-running jobs. Transloadit is also the company behind [TUS], the first open
-protocol for resumable file uploads.
+running jobs. Transloadit is also the company behind [tus], an open protocol
+for resumable file uploads.
 
 Unlike most other file processing services, Transloadit is only in charge of
 processing, and allows you to export the processed files to dedicated storage
@@ -50,14 +51,16 @@ actions. Using this and Transloadit's [Ruby SDK], I created
 ## Integration
 
 Let's assume that we have an application which already accepts photo uploads to
-Amazon S3 using Shrine, and we want to add processing with Transloadit. First
-we need to add shrine-transloadit to the Gemfile, and load the plugin with our
-Transloadit credentials:
+Amazon S3 using Shrine, and we want to add processing with Transloadit. First,
+we need to create our S3 credentails in Transloadit, let's say we named them
+`s3_store`.
+
+Now we can configure Shrine and shrine-transloadit with our credentials:
 
 ```rb
-gem "shrine"
-gem "aws-sdk-s3", "~> 1.2" # for Amazon S3
-gem "shrine-transloadit" # <====
+gem "shrine", "~> 3.0"
+gem "aws-sdk-s3", "~> 1.14" # for Amazon S3
+gem "shrine-transloadit", "~> 1.0"
 ```
 
 ```rb
@@ -65,65 +68,93 @@ require "shrine"
 require "shrine/storage/s3"
 
 s3_options = {
-  bucket: "my-bucket",
-  region: "my-region",
-  access_key_id: "abc",
-  secret_access_key: "xyz",
+  access_key_id:     "<YOUR_ACCESS_KEY_ID>",
+  secret_access_key: "<YOUR_SECRET_ACCESS_KEY>",
+  region:            "<YOUR_REGION>",
+  bucket:            "<YOUR_BUCKET>",
 }
 
 Shrine.storages = {
   cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),
-  store: Shrine::Storage::S3.new(prefix: "store", **s3_options),
+  store: Shrine::Storage::S3.new(**s3_options),
 }
 
 Shrine.plugin :transloadit,
-  auth_key: "your transloadit key",
-  auth_secret: "your transloadit secret"
+  auth: {
+    key:    "<YOUR_TRANSLOADIT_KEY>",
+    secret: "<YOUR_TRANSLOADIT_SECRET>",
+  },
+  credentials: {
+    cache: :s3_store, # use "s3_store" for :cache storage credentials
+    store: :s3_store, # use "s3_store" for :store storage credentials
+  }
+
+Shrine.plugin :derivatives # for storing processed results
 ```
 
-Now we can define our processing steps in `#transloadit_process` inside our
-uploader class. Let's create two versions of the original image: one will be
-just resized to sufficient dimensions, and another one will be a small
-thumbnail.
-
-Transloadit performs processing asynchronously, and we can provide a URL which
-we want it to POST the results of processing to once it's finished.
+Next, we can define a "processor" that will create a Transloadit assembly, and
+a "saver" that will save the processed results:
 
 ```rb
-class MyUploader < Shrine
-  plugin :versions
+class ImageUploader < Shrine
+  Attacher.transloadit_processor do
+    import   = file.transloadit_import_step
+    optimize = transloadit_step "optimize", "/image/optimize", use: import
+    resize   = transloadit_step "resize",   "/image/resize",   use: import, width: 300
+    export   = store.transloadit_export_step use: [import, optimize, resize]
 
-  def transloadit_process(io, context)
-    original = transloadit_file(io)
-      .add_step("normalize", "/image/resize", width: 800, zoom: false)
-      .add_step("optimize", "/image/optimize")
+    assembly = transloadit.assembly(steps: [import, optimize, resize, export])
+    assembly.create!
+  end
 
-    thumbnail = original
-      .add_step("resize_small", "/image/resize", width: 300)
+  Attacher.transloadit_processor do |results|
+    optimized = store.transloadit_file(results["optimize"])
+    thumbnail = store.transloadit_file(results["resize"])
 
-    files = {original: original, thumbnail: thumbnail}
-
-    transloadit_assembly(files, notify_url: "http://my-app/webhooks/transloadit")
+    merge_derivatives(optimized: optimized, thumbnail: thumbnail)
   end
 end
 ```
 
+Now we're ready to perform the processing with Transloadit:
+
 ```rb
-post "/webhooks/transloadit" do
-  Shrine::Attacher.transloadit_save(params)
+class PhotosController < ApplicationController
+  def create
+    photo = Photo.create(photo_params)
+
+    ProcessImageJob.perform_later(photo, :image)
+
+    # ...
+  end
+end
+```
+```rb
+class ProcessImageJob < ActiveJob::Base
+  def perform(record, name)
+    attacher = record.send(:"#{name}_attacher")
+
+    response = attacher.transloadit_process # calls processor
+    response.reload_until_finished!
+
+    attacher.transloadit_save(response["results"]) # calls saver
+    attacher.persist
+  end
 end
 ```
 
 And that's it! Now when we upload an image to S3 and save the database record,
-Transloadit will take this image and perform processing, and once it's finished
-it will save the results back to S3 and trigger the webhook. The webhook will
-then take the information about processed files, convert them into Shrine's
-attachments and update the corresponding database record.
+a background job will be spawned which will trigger Transloadit processing.
+When Transloadit is finished, the processing results will be saved into the
+database record.
 
-Normally you would also have to create import/export steps for processed files,
-but shrine-transloadit automatically generates them for you based on your
-storage configuration. For best user experience you can even put Transloadit
-processing requests into [background jobs].
+```rb
+photo.image_derivatives #=>
+# {
+#   optimized: #<Shrine::UploadedFile ...>,
+#   thumbnail: #<Shrine::UploadedFile ...>,
+# }
+```
 
 If you want to see how it all fits together, I created a [demo app] using
 shrine-transloadit, which is a good starting point for anyone wanting to add
@@ -132,19 +163,18 @@ to the **[shrine-transloadit]** GitHub respository.
 
 ## Conclusion
 
-Thanks to shrine-transloadit, with just a few lines of code we were able to
-delegate processing to an external service, and have our database records
-automatically updated with the processed files. Transloadit has a rich arsenal
-of processors ("[robots]"), so we still have incredible flexibility in how we
-want to do our processing, but without the hassle of having to scale it.
+Thanks to shrine-transloadit, we were able to easily delegate processing to an
+external service, and have the processed results saved to the database record.
+Transloadit has a rich arsenal of "[robots]", so we still have incredible
+flexibility in how we want to do our processing, but without the hassle of
+having to scale it.
 
 [Transloadit]: https://transloadit.com/
 [Ruby SDK]: https://github.com/transloadit/ruby-sdk
-[Shrine]: https://github.com/shrinerb/shrine
+[Shrine]: https://shrinerb.com
 [shrine-transloadit]: https://github.com/shrinerb/shrine-transloadit
-[TUS]: http://tus.io/
+[tus]: http://tus.io/
 [fully asynchronous user experience]: https://twin.github.io/file-uploads-asynchronous-world/
-[plugin system]: http://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
+[plugin system]: https://shrinerb.com/docs/creating-storages
 [robots]: https://transloadit.com/docs/conversion-robots/
 [demo app]: https://github.com/shrinerb/shrine-transloadit/tree/master/demo
-[background jobs]: https://github.com/shrinerb/shrine-transloadit#backgrounding

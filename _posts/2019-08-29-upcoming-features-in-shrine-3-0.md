@@ -269,7 +269,7 @@ want, and processed files are retrieved separately from the original file:
 class ImageUploader < Shrine
   plugin :derivatives
 
-  Attacher.derivatives_processor :thumbnails do |original|
+  Attacher.derivatives_processor do |original|
     processor = ImageProcessing::MiniMagick.source(original)
 
     {
@@ -282,9 +282,11 @@ end
 ```
 ```rb
 photo.image = file
-photo.image_derivatives #=> {}
+photo.image_derivatives! # triggers processing and uploads results
+photo.save
 
-photo.image_derivatives!(:thumbnails) # triggers processing and uploads results
+# ...
+
 photo.image_derivatives #=>
 # {
 #   large:  #<Shrine::UploadedFile @id="large.jpg" @storage_key=:store>,
@@ -331,7 +333,9 @@ Shrine.plugin :backgrounding
 Shrine::Attacher.promote_block { |data| PromoteJob.perform_async(data) } # magic hash
 ```
 ```rb
-class PromoteJob < ActiveJob::Base
+class PromoteJob
+  include Sidekiq::Worker
+
   def perform(data)
     Shrine::Attacher.promote(data) # use the magic hash to do magic things
   end
@@ -343,14 +347,22 @@ more explicit and flexible:
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_async(record, name, file_data) }
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+end
 ```
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(record, name, file_data)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id)
+
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.atomic_promote
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    # attachment has changed or the record has been deleted, nothing to do
   end
 end
 ```
@@ -358,7 +370,7 @@ end
 You can now see what's going on:
 
 1. record, attachment name, and current attached file are passed to the background job
-2. background job fetches the database record (ActiveJob does this automatically)
+2. background job fetches the database record
 3. you retrieve the attacher as it was before the background job was spawned
   - if attachment has changed, `Shrine::AttachmentChanged` is raised
 4. you upload the cached attached file to permanent storage
@@ -369,11 +381,12 @@ It's now easy for example to add processing [derivatives](#derivatives) into
 the mix:
 
 ```rb
-def perform(record, name, file_data)
-  attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
-  attacher.create_derivatives(:thumbnails) # process derivatives and store results
+def perform(attacher_class, record_class, record_id, name, file_data)
+  # ...
+  attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
+  attacher.create_derivatives # process derivatives and store results
   attacher.atomic_promote
-rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+  # ...
 end
 ```
 
@@ -388,10 +401,12 @@ class PhotosController < ApplicationController
     photo.image_attacher.promote_block do |attacher|
       # explicit style without instance eval
       PromoteJob.perform_async(
-        attacher.record,
+        attacher.class,
+        attacher.record.class.name,
+        attacher.record.id,
         attacher.name,
         attacher.file_data,
-        current_user, # pass current user
+        current_user.id, # pass data from the controller
       )
     end
 
@@ -442,6 +457,7 @@ faster JSON parser if you want to.
 
 ```rb
 require "oj" # https://github.com/ohler55/oj
+
 Shrine.plugin :column, serializer: Oj
 ```
 ```rb
@@ -495,21 +511,21 @@ upgrading guide and full release notes, as well as finish updating the
 documentation and other `shrine-*` gems. Once that's done, Shrine 3.0 should be
 out the doors. :sparkles:
 
-[Shrine 3.0]: https://github.com/shrinerb/shrine/blob/d7ab678dacb3418ee67f6495f8f934107c130dd1/CHANGELOG.md#readme
+[Shrine 3.0]: https://shrinerb.com/docs/release_notes/3.0.0
 [Shrine]: https://shrinerb.com/
-[direct uploads]: https://github.com/shrinerb/shrine#direct-uploads
+[direct uploads]: https://shrinerb.com/docs/getting-started#direct-uploads
 [Active Record pattern]: https://www.martinfowler.com/eaaCatalog/activeRecord.html
-[activerecord]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/activerecord.md
-[sequel]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/sequel.md
+[activerecord]: https://shrinerb.com/docs/plugins/activerecord
+[sequel]: https://shrinerb.com/docs/plugins/sequel
 [ROM]: https://rom-rb.org/
 [Hanami::Model]: https://github.com/hanami/model
 [Repository pattern]: https://martinfowler.com/eaaCatalog/repository.html
 [hanami-shrine]: https://github.com/katafrakt/hanami-shrine
 [hanami-shrine hack]: https://github.com/katafrakt/hanami-shrine/blob/de69815c6a609e87bb524c0a865cd46585bc30cb/lib/shrine/plugins/hanami.rb#L12-L40
-[versions]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/versions.md#readme
-[derivatives]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/derivatives.md#readme
+[versions]: https://shrinerb.com/docs/plugins/versions
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [derivatives 1]: https://github.com/shrinerb/shrine/pull/295
 [derivatives 2]: https://github.com/shrinerb/shrine/pull/299
-[backgrounding]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/backgrounding.md#readme
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
 [backgrounding 1]: https://github.com/shrinerb/shrine/issues/236
 [backgrounding 2]: https://github.com/shrinerb/shrine/issues/333

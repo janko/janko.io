@@ -3,11 +3,15 @@ title: "Better File Uploads with Shrine: Uploader"
 tags: ruby file attachment upload shrine library gem
 excerpt: "This is the 2nd part of a series of blog posts about Shrine. In this
   part I talk about the foundation that Shrine is built upon – uploaders."
+updated: 15.9.2019.
 ---
 
 *This is 2nd part of a series of blog posts about [Shrine]. The aim of this
 series is to show the advantages of using Shrine over other file attachment
 libraries.*
+
+* *Previous article: [Motivation](https://twin.github.io/better-file-uploads-with-shrine-motivation)*
+* *Next article: [Attachment](https://twin.github.io/better-file-uploads-with-shrine-attachment)*
 
 ----
 
@@ -27,11 +31,11 @@ class MyStorage
     # uploads the `io` to the given location `id`
   end
 
-  def url(id)
+  def url(id, **options)
     # returns the URL to the file on location `id`
   end
 
-  def open(id)
+  def open(id, **options)
     # returns the file on location `id` as an IO-like object
   end
 
@@ -46,19 +50,19 @@ end
 ```
 
 Shrine storages are configured directly by passing options to `new` (inspired by
-Refile), and should be registered in `Shrine.storages`:
+Refile), and registered in `Shrine.storages`:
 
 ```rb
 Shrine.storages[:s3] = Shrine::Storage::S3.new(
-  access_key_id: "abc",
-  secret_access_key: "xyz",
-  region: "eu-west-1",
-  bucket: "my-bucket",
+  access_key_id:     "<YOUR_ACCESS_KEY_ID>",
+  secret_access_key: "<YOUR_SECRET_ACCESS_KEY>",
+  region:            "<YOUR_REGION>",
+  bucket:            "<YOUR_BUCKET>",
 )
 ```
 
 Currently there are [FileSystem], [S3], [Fog], [Flickr], [Cloudinary],
-[Transloadit], [Uploadcare], [Imgix], [GridFS] and [SQL] storage for Shrine, so
+[Transloadit], [Uploadcare], [GridFS] and [SQL] storage for Shrine, so
 take your pick :wink:
 
 You can also easily write your own storage, there is a [guide][creating
@@ -79,7 +83,6 @@ end
 Uploader objects act as wrappers around a storage, performing all functionality
 around uploading that is generic to any storage:
 
-* processing
 * extracting metadata
 * generating location
 * uploading (this is where the storage is called)
@@ -89,7 +92,8 @@ Uploaders are instantiated with the registered storage name:
 
 ```rb
 Shrine.storages[:disk] = Shrine::Storage::FileSystem.new(...)
-
+```
+```rb
 uploader = ImageUploader.new(:disk)
 uploader.upload(image) #=> #<Shrine::UploadedFile>
 ```
@@ -169,17 +173,17 @@ store.upload(cached_file) #=> performs an S3 COPY request
 
 ## Plugin system
 
-Shrine comes with a small [core] (< 500 LOC) which provides the essential
+Shrine comes with a small core (< 500 LOC) which provides the essential
 functionality. Any additional features can be loaded via [plugins]. This gives
 you the flexibility to choose exactly what and how much Shrine does for you,
 and load the code only for features that you use.
 
 ```rb
-# Loads the processing feature from "shrine/plugins/logging.rb"
-Shrine.plugin :logging, logger: Rails.logger
+# Loads the instrumentation feature from "shrine/plugins/instrumentation.rb"
+Shrine.plugin :instrumentation
 ```
 
-Shrine ships with over 35 plugins, and it's easy to [write your own][writing
+Shrine ships with over 40 plugins, and it's easy to [write your own][writing
 plugins]. Shrine's plugin system is an adaptation of [Roda]'s, which I [wrote
 about][plugin system] in the past.
 
@@ -187,10 +191,10 @@ Also, Shrine uploaders respect inheritance ([unlike CarrierWave][carrierwave
 inheritance]).
 
 ```rb
-Shrine.plugin :logging # enables logging for all uploaders
+Shrine.plugin :determine_mime_type # determine MIME type for all uploaders
 
 class ImageUploader < Shrine
-  plugin :backup # stores backups only for this uploader (and its descendants)
+  plugin :store_dimensions # extract dimensions only for images
 end
 ```
 
@@ -213,16 +217,14 @@ Most file attachment libraries have pretty heavy dependencies.
   - Sinatra – That's fine, although [Roda] is a much lighter dependency
   - MIME::Types – It's better to determine MIME type from file content
 
-Shrine, on the other hand, has only one mandatory lightweight dependency –
-[Down]. Down is a net/http wrapper for downloading files, which [improves upon
-open-uri][down open-uri] and has support for [streaming downloads][down
-streaming], and is used by almost every Shrine storage.
+Shrine, on the other hand, has two lightweight dependencies – [Down] and
+[content_disposition] gems – which are only loaded as needed.
 
-Furthermore, Shrine in general loads really fast, because you're loading code
-only for features that you use. Other file attachment libraries require you to
-load code for many features that you might not need. To illustrate, Shrine
-loads **35x** faster than CarrierWave without any plugins loaded, and **7x**
-faster with *all* plugins loaded ([source][shrine-carrierwave load time]).
+The lightweight dependencies and plugin system makes Shine load very fast,
+because you're loading code only for features that you use. For comparison,
+Shrine loads **35x** faster than CarrierWave without any plugins loaded, and
+**7x** faster with *all* plugins loaded ([source][shrine-carrierwave load
+time]).
 
 ## Conclusion
 
@@ -237,27 +239,21 @@ and again compare it to existing file upload libraries, so stay tuned!
 
 [Shrine]: https://github.com/shrinerb/shrine
 [previous post]: https://twin.github.io/better-file-uploads-with-shrine-motivation/
-[core]: https://github.com/shrinerb/shrine/blob/master/lib/shrine.rb
 [plugins]: http://shrinerb.com/#plugins
-[writing plugins]: http://shrinerb.com/#plugins
+[writing plugins]: https://shrinerb.com/docs/creating-plugins
 [carrierwave inheritance]: https://jbhannah.net/articles/carrierwave-concerns/
 [Roda]: https://github.com/jeremyevans/roda
 [plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
-[direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
-[paperclip interpolations]: https://github.com/thoughtbot/paperclip/blob/7edb35a2a9a80c9598dfde235c7e593c023fc914/lib/paperclip/storage/s3.rb#L169-L187
-[paperclip IO adapters]: https://github.com/thoughtbot/paperclip/tree/master/lib/paperclip/io_adapters
-[Rack files]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackFile.html
+[direct uploads]: https://github.com/shrinerb/shrine#direct-uploads
+[Rack files]: https://shrinerb.com/docs/plugins/rack_file
 [Down::ChunkedIO]: https://github.com/janko/down#streaming
 [S3 copy]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
-[paperclip#1326]: https://github.com/thoughtbot/paperclip/issues/1326
-[paperclip#1642]: https://github.com/thoughtbot/paperclip/issues/1642
 [validation_helpers]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/validation_helpers.rb
 [Open3]: http://ruby-doc.org/stdlib-2.3.0/libdoc/open3/rdoc/Open3.html
 [paperclip mime]: https://github.com/thoughtbot/paperclip/issues?utf8=%E2%9C%93&q=label%3A%22Spoof%20related%20or%20Mime%20types%22%20
 [file]: http://linux.die.net/man/1/file
 [Down]: https://github.com/janko/down
-[down open-uri]: https://twin.github.io/improving-open-uri/
-[down streaming]: https://twin.github.io/partial-downloads-with-enumerators-and-fibers/
+[content_disposition]: https://github.com/shrinerb/content_disposition
 [shrine-carrierwave load time]: https://gist.github.com/janko/0d4269b9c7195b5e65cc947acf1cc028
 [FileSystem]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/storage/file_system.rb
 [S3]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/storage/s3.rb
@@ -269,5 +265,5 @@ and again compare it to existing file upload libraries, so stay tuned!
 [Imgix]: https://github.com/shrinerb/shrine-imgix
 [GridFS]: https://github.com/shrinerb/shrine-gridfs
 [SQL]: https://github.com/shrinerb/shrine-sql
-[creating storage]: http://shrinerb.com/rdoc/files/doc/creating_storages_md.html
+[creating storage]: https://shrinerb.com/docs/creating-storages
 [linter]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/storage/linter.rb
