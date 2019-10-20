@@ -28,8 +28,10 @@ different libraries.
   <img src="/images/shrine-website-switcher-c.png" alt="Shrine website snippet switcher C" width="600" />
 </div>
 
-Once our request for [Algolia DocSearch] gets approved, we'll have searchable
-documentation as well. :mag:
+Last but not least, we now have a documentation search bar powered by [Algolia
+DocSearch].
+
+![Shrine website search](/images/shrine-website-search.png)
 
 ## Major features
 
