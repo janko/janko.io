@@ -72,7 +72,7 @@ Shrine.plugin :derivatives
 ```
 ```rb
 class ImageUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     {
@@ -146,7 +146,7 @@ end
 class PromoteJob < ActiveJob::Base
   def perform(record, name, file_data)
     attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
-    attacher.create_derivatives(:thumbnails) # call the processor
+    attacher.create_derivatives # call the processor and upload results
     attacher.atomic_promote
   end
 end
@@ -164,9 +164,9 @@ gem "streamio-ffmpeg"
 require "streamio-ffmpeg"
 
 class VideoUploader < Shrine
-  Attacher.derivatives_processor do |original|
-    transcoded = Tempfile.new(["transcoded", ".mp4"], binmode: true)
-    screenshot = Tempfile.new(["screenshot", ".jpg"], binmode: true)
+  Attacher.derivatives do |original|
+    transcoded = Tempfile.new ["transcoded", ".mp4"]
+    screenshot = Tempfile.new ["screenshot", ".jpg"]
 
     movie = FFMPEG::Movie.new(original.path)
     movie.transcode(transcoded.path)
@@ -260,9 +260,9 @@ application to remain agnostic as to how the files were processed.
 ```rb
 video.file_derivatives #=> 
 # {
-#   #<Shrine::UploadedFile @id="c8ed02.mp4" @storage_key=:store ...>,
-#   #<Shrine::UploadedFile @id="f426d8.webm" @storage_key=:store ...>,
-#   #<Shrine::UploadedFile @id="7a79d6.ogv" @storage_key=:store ...>,
+#   mp4:  #<Shrine::UploadedFile id="c8ed02.mp4" storage=:store ...>,
+#   webm: #<Shrine::UploadedFile id="f426d8.webm" storage=:store ...>,
+#   ogv:  #<Shrine::UploadedFile id="7a79d6.ogv" storage=:store ...>,
 # }
 ```
 

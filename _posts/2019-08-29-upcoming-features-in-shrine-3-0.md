@@ -79,7 +79,7 @@ own state:
 ```rb
 attacher = Shrine::Attacher.new
 attacher.assign(file) # uploads file
-attacher.file #=> #<Shrine::UploadedFile @id="abc123.jpg" @storage_key=:store ...>
+attacher.file #=> #<Shrine::UploadedFile id="abc123.jpg" storage=:store ...>
 ```
 
 It provides the `#data` method which returns attached file data as a
@@ -120,7 +120,7 @@ data = attacher.column_data # dump JSON string
 ```
 ```rb
 attacher = Shrine::Attacher.from_column(data) # load JSON string
-attacher.file #=> #<Shrine::UploadedFile @id="abc123.jpg" @storage_key=:store ...>
+attacher.file #=> #<Shrine::UploadedFile id="abc123.jpg" storage=:store ...>
 ```
 
 ### Entity
@@ -152,7 +152,7 @@ end
 ```
 ```rb
 photo = Photo.new(image_data: '{"id":"abc123.jpg","storage":"store","metadata":{...}}')
-photo.image #=> #<Shrine::UploadedFile @id="abc123.jpg" @storage_key=:store ...>
+photo.image #=> #<Shrine::UploadedFile id="abc123.jpg" storage=:store ...>
 photo.image_attacher # shorthand for `Shrine::Attacher.from_entity(photo, :image)`
 ```
 
@@ -188,7 +188,7 @@ end
 ```rb
 photo = Photo.new
 photo.image = file
-photo.image #=> #<Shrine::UploadedFile @id="abc123.jpg" @storage_key=:cache ...>
+photo.image #=> #<Shrine::UploadedFile id="abc123.jpg" storage=:cache ...>
 photo.image_data #=> #=> '{"id":"abc123.jpg", "storage":"cache", "metadata":{...}}'
 ```
 
@@ -289,9 +289,9 @@ photo.save
 
 photo.image_derivatives #=>
 # {
-#   large:  #<Shrine::UploadedFile @id="large.jpg" @storage_key=:store>,
-#   medium: #<Shrine::UploadedFile @id="medium.jpg" @storage_key=:store>,
-#   small:  #<Shrine::UploadedFile @id="small.jpg" @storage_key=:store>,
+#   large:  #<Shrine::UploadedFile id="large.jpg" storage=:store>,
+#   medium: #<Shrine::UploadedFile id="medium.jpg" storage=:store>,
+#   small:  #<Shrine::UploadedFile id="small.jpg" storage=:store>,
 # }
 
 # original file is still accessed in the same way
