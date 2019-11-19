@@ -10,8 +10,12 @@ updated: 15.9.2019.
 series is to show the advantages of using Shrine over other file attachment
 libraries.*
 
-* *Previous article: [Processing](https://twin.github.io/better-file-uploads-with-shrine-processing)*
-* *Next article: [Direct Uploads](https://twin.github.io/better-file-uploads-with-shrine-direct-uploads)*
+* *[Motivation](/better-file-uploads-with-shrine-motivation)*
+* *[Uploader](/better-file-uploads-with-shrine-uploader)*
+* *[Attachment](/better-file-uploads-with-shrine-attachment)*
+* *[Processing](/better-file-uploads-with-shrine-processing)*
+* *Metadata*
+* *[Direct Uploads](/better-file-uploads-with-shrine-direct-uploads)*
 
 ----
 
