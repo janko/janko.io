@@ -153,15 +153,15 @@ Shrine.plugin :upload_endpoint
 ```
 ```rb
 Rails.application.routes.draw do
-  mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
+  mount Shrine.upload_endpoint(:cache) => "/upload"
 end
 ```
 
-The above gives our application a `POST /images/upload` endpoint which accepts
-the `file` multipart parameter and returns uploaded file data:
+The above gives our application a `POST /upload` endpoint which accepts the
+`file` multipart parameter and returns uploaded file data:
 
 ```http
-POST /images/upload HTTP/1.1
+POST /upload HTTP/1.1
 Content-Type: multipart/form-data
 
 [... file content ...]
@@ -196,7 +196,7 @@ it to this endpoint.
 // ... other plugins ...
 
 uppy.use(Uppy.XHRUpload, {
-  endpoint: "/images/upload",
+  endpoint: '/upload',
 })
 
 uppy.on('upload-success', function (file, response) {
