@@ -7,18 +7,7 @@ excerpt: "This is the 6th part of a series of blog posts about Shrine. In this
 updated: 15.9.2019.
 ---
 
-*This is 6th part of a series of blog posts about [Shrine]. The aim of this
-series is to show the advantages of using Shrine over other file attachment
-libraries.*
-
-* *[Motivation](/better-file-uploads-with-shrine-motivation)*
-* *[Uploader](/better-file-uploads-with-shrine-uploader)*
-* *[Attachment](/better-file-uploads-with-shrine-attachment)*
-* *[Processing](/better-file-uploads-with-shrine-processing)*
-* *[Metadata](/better-file-uploads-with-shrine-metadata)*
-* *Direct Uploads*
-
-----
+*This article is part of the "Better File Uploads with Shrine" series.*
 
 So far we were talking about the server side of handling file uploads. However,
 there is a lot that we can also do on the client side to improve user

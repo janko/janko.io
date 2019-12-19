@@ -6,18 +6,7 @@ excerpt: "This is the 2nd part of a series of blog posts about Shrine. In this
 updated: 15.9.2019.
 ---
 
-*This is 2nd part of a series of blog posts about [Shrine]. The aim of this
-series is to show the advantages of using Shrine over other file attachment
-libraries.*
-
-* *[Motivation](/better-file-uploads-with-shrine-motivation)*
-* *Uploader*
-* *[Attachment](/better-file-uploads-with-shrine-attachment)*
-* *[Processing](/better-file-uploads-with-shrine-processing)*
-* *[Metadata](/better-file-uploads-with-shrine-metadata)*
-* *[Direct Uploads](/better-file-uploads-with-shrine-direct-uploads)*
-
-----
+*This article is part of the "Better File Uploads with Shrine" series.*
 
 In the [previous post] I talked about motivation behind creating Shrine. In
 this post I want to show you the foundation that Shrine is built upon –
