@@ -267,7 +267,7 @@ music_sheet.file_derivatives[:pages] #=>
 # ]
 ```
 
-This is not really possible with Paperclip or CarrierWave, as neither of them
+With Paperclip or CarrierWave this is not really possible, as neither of them
 supports nested versions/styles (and CarrierWave requires declaring version
 names up front). In constrast, Shrine allows us to return [any combination of
 hashes and arrays][shrine nesting].
