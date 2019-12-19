@@ -267,10 +267,10 @@ music_sheet.file_derivatives[:pages] #=>
 # ]
 ```
 
-Since this type of processing produces a variable number of files depending on
-the original file, CarrierWave and Paperclip won't support this use case, as
-they require declaring version names up front. In constrast, Shrine allows us
-to return [any combination of hashes and arrays][shrine nesting].
+This is not really possible with Paperclip or CarrierWave, as neither of them
+supports nested versions/styles (and CarrierWave requires declaring version
+names up front). In constrast, Shrine allows us to return [any combination of
+hashes and arrays][shrine nesting].
 
 ### C. Processing with libvips
 
