@@ -29,14 +29,13 @@ to the files before storing them to permanent storage. We might want to
 * extract video screenshots
 * ...
 
-One approach is to process files on-the-fly, which can be suitable for image
-transformations that are usually fast. However, if we want to do processing
-which will take a while, it's generally better to perform as part of
-attachment.
+One approach is to process files on-the-fly, which is suitable for fast
+processing such as image resizing. However, longer running processing it's
+generally better perform eagerly in a background job.
 
-Since each approach is suitable for certain requirements, a file attachment
-library should ideally allow you to use both approaches. In this article we
-will talk about the latter – processing on attachment.
+Each approach is suitable for certain requirements, and Shrine is the only
+file attachment library that supports both strategies. In this article we'll
+talk about the latter – eager processing.
 
 ## Image processing
 
@@ -65,11 +64,11 @@ thumbnail = ImageProcessing::MiniMagick
 thumbnail #=> #<Tempfile>
 ```
 
-## Processing on attachment
+## Eager processing
 
-Processing on attachment is provided by the [derivatives] Shrine plugin. You
-use it be declaring a processor, and then calling it where needed. The most
-common place to call it is after file validation:
+Generating and saving a set of processed files is provided by the
+**[derivatives]** Shrine plugin. We use it by defining a processor that returns
+processed files, and then trigger the creation at the desired time:
 
 ```rb
 Shrine.plugin :derivatives
@@ -90,10 +89,11 @@ end
 ```rb
 class PhotosController < ApplicationController
   def create
-    photo = Photo.create(photo_params)
+    photo = Photo.new(photo_params)
 
     if photo.valid?
       photo.image_derivatives! # calls the processor
+      photo.save
       # ...
     else
       # ...
@@ -126,9 +126,9 @@ photo.image_data #=>
 
 photo.image_derivatives #=>
 # {
-#   small: #<Shrine::UploadedFile @id="586ef3.jpg" ...>,
-#   medium: #<Shrine::UploadedFile @id="0461d3.jpg" ...>,
-#   large: #<Shrine::UploadedFile @id="4f180c.jpg" ...>,
+#   small: #<Shrine::UploadedFile id="586ef3.jpg" storage=:store ...>,
+#   medium: #<Shrine::UploadedFile id="0461d3.jpg" storage=:store ...>,
+#   large: #<Shrine::UploadedFile id="4f180c.jpg" storage=:store ...>,
 # }
 ```
 
@@ -156,7 +156,7 @@ class PromoteJob < ActiveJob::Base
 end
 ```
 
-Just to show that processing in Shrine isn't in any way tied images or the
+Just to show that processing in Shrine isn't in any way tied to images or the
 ImageProcessing gem, here is an example of processing videos using
 [streamio-ffmpeg]:
 
@@ -203,7 +203,7 @@ Shrine.plugin :transloadit,
 ```
 ```rb
 class VideoUploader < TransloaditUploader
-  Attacher.transloadit_processor :transcode do
+  Attacher.transloadit_processor do
     import = file.transloadit_import_step
     mp4    = transloadit_step "mp4",  "/video/encode", preset: "mp4",  use: import
     webm   = transloadit_step "webm", "/video/encode", preset: "webm", use: import
@@ -214,7 +214,7 @@ class VideoUploader < TransloaditUploader
     assembly.create!
   end
 
-  Attacher.transloadit_saver :transcode do |results|
+  Attacher.transloadit_saver do |results|
     mp4  = store.transloadit_file(results["mp4"])
     webm = store.transloadit_file(results["webm"])
     ogv  = store.transloadit_file(results["ogv"])
@@ -239,10 +239,10 @@ class TranscodeJob < ActiveJob::Base
   def perform(video, name, file_data)
     attacher = Shrine::Attacher.retrieve(model: video, name: name, file: file_data)
 
-    response = attacher.transloadit_process(:transcode) # calls processor
+    response = attacher.transloadit_process # calls processor
     response.reload_until_finished!
 
-    attacher.transloadit_save(:transcode, response["results"]) # calls saver
+    attacher.transloadit_save(response["results"]) # calls saver
     attacher.atomic_persist
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
     attacher.destroy # destroy orphaned files
