@@ -79,7 +79,6 @@ overrides a some default settings:
 class RodauthApp < Roda
   # allow this Roda app to be used as Rack middleware
   plugin :middleware
-
   # define your Rodauth configuration
   plugin :rodauth do
     # load authentication features you need
@@ -92,7 +91,6 @@ class RodauthApp < Roda
     logout_redirect "/"
     # ...
   end
-
   # called for each request before it reaches your main app
   route do |r|
     # handle Rodauth paths (/login, /create-account, /reset-password, ...)
@@ -117,18 +115,8 @@ available in our controllers and views as well, so we can do things like
 require authentication at the controller level:
 
 ```rb
-class ApplicationController < ActionController::Base
-  # ...
-  private
-
-  def authenticate
-    rodauth.require_authentication
-  end
-end
-```
-```rb
 class PostsController < ApplicationController
-  before_action :authenticate
+  before_action -> { rodauth.require_authentication }
   # ...
 end
 ```
@@ -162,57 +150,52 @@ rodauth.logout                            # logs the session out
 Rodauth has all of the essential features you already know from other
 authentication frameworks:
 
-* [login] & [logout] (including [HTTP Basic authentication][http basic auth])
+* [login]/[logout] and [remember] (including [HTTP Basic authentication][http basic auth])
 * [create account] with [email verification][verify account] (and a [grace period][verify account grace period])
 * [reset password] and [change password]
 * [change email][change login] with [email verification][verify login change]
-* [remember]
-* [lockout]
-* [close account]
+* [lockout] and [close account]
 
 You'll also find most industrial standard security features the
 [devise-security] extension provides:
 
-* [account expiration]
 * [password expiration] and [disallowing password reuse][disallow password reuse]
 * [password complexity checks][password complexity] and [disallowing common passwords][disallow common passwords]
-* [single session]
+* [account expiration] and [single session]
 
 as well as many other useful features:
 
 * [email authentication] (aka "passwordless")
 * [password confirmation dialog][confirm password] (with a [grace period][password grace period])
-* [tracking active sessions][active sessions]
 * [audit logging] (for every action)
+* ...
 
 ### Multifactor authentication
 
 In addition to the features above, Rodauth also provides **multifactor
-authentication** functionality out-of-the-box, supporting multiple MFA methods:
-
-* [TOTP] (time-based one-time passwords)
-* [SMS codes]
-* [recovery codes]
-* [WebAuthn]
+authentication** functionality out-of-the-box, supporting multiple MFA methods
+([TOTP], [SMS codes], [recovery codes], and [WebAuthn]).
 
 Here is an example setup that allows a user to enable TOTP authentication for
-their account, along with a backup SMS number and recovery codes:
+their account, along with a backup SMS number and recovery codes (provided we
+created the necessary database tables):
 
 ```rb
 class RodauthApp < Roda
-  # ...
   plugin :rodauth do
     enable :login, :create_account, :otp, :sms_codes, :recovery_codes
-
     # use Twilio to send SMS messages
     sms_send do |phone, message|
       twilio = Twilio::Rest::Client.new("<ACCOUNT_SID>", "<AUTH_TOKEN>")
       twilio.messages.create(body: message, to: phone, from: "<APP_PHONE_NUMBER>")
     end
   end
-  # ...
 end
 ```
+
+We can now generate links to Rodauth's built-in MFA manage page, which will
+guide the user to set up MFA for their account.
+
 ```erb
 <!-- somewhere under account settings: -->
 <% if rodauth.uses_two_factor_authentication? %>
@@ -223,11 +206,6 @@ end
 <% end %>
 ```
 
-Rodauth ships with default templates for each action (styled for [Bootstrap]),
-which are great for getting started. This is the default TOTP setup page:
-
-![Rodauth OTP setup page](/images/rodauth-otp-setup.png)
-
 The advantage of having multifactor authentication built in (as opposed to
 having an [external gem][devise-two-factor]) is that Rodauth's design is now
 adjusted to accommodate this functionality. It also means this feature will
@@ -237,61 +215,43 @@ continue being compatible with new Rodauth releases.
 
 Another cool feature of Rodauth is its built-in support for [JWT] ([JSON Web
 Tokens]), which provides token-based JSON API access for each authentication
-feature. This also includes support for [JWT refresh tokens] and [CORS].
-
-Rodauth's JWT support is loaded by passing the `:json` plugin option, enabling
-the `jwt` feature and setting the JWT secret. If you want the Rodauth endpoints
-to still accept HTML requests alongside JSON, you can set `json: true`,
-otherwise set `json: :only` to have Rodauth accept only JSON requests.
+feature. Here is how we can configure the JWT feature:
 
 ```rb
 class RodauthApp < Roda
- # enable Roda's JSON support and only allow JSON access
-  plugin :rodauth, json: :only do
-    # load JWT feature in addition to other authentication features
-    enable :login, :create_account, :change_password, :close_account, :jwt
-    # set the secret for the JWT feature
-    jwt_secret "abc123"
+  plugin :rodauth, json: :only do # 1. enable Roda's JSON support and only allow JSON access
+    enable :login, :create_account, :change_password, :close_account, :jwt # 2. load JWT feature
+    jwt_secret "abc123" # 3. set secret for the JWT feature
     require_login_confirmation? false
     require_password_confirmation? false
-    delete_account_on_close? true
-    # ...
   end
-  # ...
 end
 ```
 
-We can now trigger Rodauth actions via a JSON requests, using the
+Now we can trigger Rodauth actions via a JSON requests, using the
 `Authorization` header for authentication. Here is an example flow using
 [http.rb]:
 
 ```rb
-require "http"
-
 http = HTTP.accept(:json)
-
-# create an account
+# 1) create an account
 response = http.post("https://myapp.com/create-account", json: { login: "foo@example.com", password: "secret" })
-token    = response.headers["Authorization"]
-
-# change the password
+token = response.headers["Authorization"]
+# 2) change the password
 response = http.auth(token).post("https://myapp.com/change-password", json: { password: "secret", "new-password": "new secret" })
-
-# login with the new password
+# 3) login with the new password
 response = http.post("https://myapp.com/login", json: { login: "foo@example.com", password: "new secret" })
-token    = response.headers["Authorization"]
-
-# close the account
+token = response.headers["Authorization"]
+# 4) close the account
 http.auth(token).post("https://myapp.com/close-account", json: { password: "new secret" })
-
-# try to login again
+# 5) try to login again
 response = http.post("https://myapp.com/login", json: { login: "foo@example.com", password: "new secret" })
 response.status.to_s # => "401 Unauthorized"
 ```
 
 JSON API support in other authenication frameworks has always been everything
-*but* standardized; for Devise there is [devise_token_auth], [devise-jwt], and
-[simple_token_authentication], while Sorcery currently has [multiple open pull
+*but* standardized; for Devise there is [Devise Token Auth], [Devise::JWT], and
+[Simple Token Authentication], while Sorcery currently has [multiple open pull
 requests][sorcery pulls] adding JWT support.
 
 ## Uniform configuration DSL
@@ -305,42 +265,71 @@ before/after hooks are trigged on the model level, other require overriding
 controller actions. This is not very consistent :stuck_out_tongue:
 
 Rodauth is the opposite. It provides a uniform configuration DSL that allows
-overriding virtually any default setting or behaviour in the same way: either
+overriding virtually any default value or behaviour in the same way: either
 by providing a static value or a dynamic block. The given block is always
 evaluated in the context of the `Rodauth::Auth` instance (where all Rodauth
 methods are defined), and you can call `super` to get the default behaviour.
 
 ```rb
 class RodauthApp < Roda
-  # ...
   plugin :rodauth do
     # each feature adds its own set of configuration methods
     enable :login, :logout, :remember,
       :create_account, :verify_account, :verify_account_grace_period,
       :reset_password, :change_password, :change_login, :verify_login_change
 
+    password_confirm_param "confirm_password"
+    create_account_route "register"
+    accounts_table :user_accounts
+
+    login_valid_email? { |login| TrueMail.valid?(login) }
+    no_matching_login_message "account with this email doesn't exist"
+    password_minimum_length { AppConfig.get(:min_password_length) }
+
+    login_return_to_requested_location? true
+    reset_password_autologin? true
+    verify_account_grace_period 3.days
+
+    login_notice_flash "You have been successfully signed in"
+    reset_password_error_flash "Something went wrong resetting your password"
     login_redirect "/dashboard"
     verify_account_redirect { login_redirect }
   end
-  # ...
 end
 ```
 
 ### Hooks
 
-### Redirects
+Rodauth consistently provides hooks around virtually any action, which we can
+override in our configuration block. We can do something before/after specific
+operations:
+
+```rb
+after_login           { remember_login }
+before_create_account { throw_error("company", "must be present") if param("company").empty? }
+after_login_failure   { LoginAttempts.increment(account[:email]) }
+```
+
+before specific routes:
+
+```rb
+before_change_login_route   { require_password_authentication }
+before_create_account_route { redirect "/register" if param("type").empty? }
+```
+
+or before each Rodauth route:
+
+```rb
+before_rodauth { AuthLogger.call(request) }
+```
 
 ## Enhanced security
 
-### Password hash access
-
 ### Tokens
 
-### HMAC
+### Password hash access
 
-## Refreshing take on the design
-
-### Decoupled from the web framework
+## Design highlights
 
 ### Layered authentication features
 
@@ -390,7 +379,6 @@ end
 [email authentication]: http://rodauth.jeremyevans.net/rdoc/files/doc/email_auth_rdoc.html
 [confirm password]: http://rodauth.jeremyevans.net/rdoc/files/doc/confirm_password_rdoc.html
 [password grace period]: http://rodauth.jeremyevans.net/rdoc/files/doc/password_grace_period_rdoc.html
-[active sessions]: http://rodauth.jeremyevans.net/rdoc/files/doc/active_sessions_rdoc.html
 [audit logging]: http://rodauth.jeremyevans.net/rdoc/files/doc/audit_logging_rdoc.html
 [TOTP]: http://rodauth.jeremyevans.net/rdoc/files/doc/otp_rdoc.html
 [SMS codes]: http://rodauth.jeremyevans.net/rdoc/files/doc/sms_codes_rdoc.html
@@ -402,8 +390,9 @@ end
 [JSON Web Tokens]: https://jwt.io/
 [JWT refresh tokens]: http://rodauth.jeremyevans.net/rdoc/files/doc/jwt_refresh_rdoc.html
 [CORS]: http://rodauth.jeremyevans.net/rdoc/files/doc/jwt_cors_rdoc.html
-[devise_token_auth]: https://github.com/lynndylanhurley/devise_token_auth
-[devise-jwt]: https://github.com/waiting-for-dev/devise-jwt
-[simple_token_authentication]: https://github.com/gonzalo-bulnes/simple_token_authentication
+[Devise Token Auth]: https://github.com/lynndylanhurley/devise_token_auth
+[Devise::JWT]: https://github.com/waiting-for-dev/devise-jwt
+[Simple Token Authentication]: https://github.com/gonzalo-bulnes/simple_token_authentication
 [sorcery pulls]: https://github.com/sorcery/sorcery/pulls?q=jwt+is%3Apr+in%3Atitle+
 [http.rb]: https://github.com/httprb/http/
+[database tables]: http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Creating+tables
