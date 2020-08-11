@@ -5,97 +5,100 @@ tags: ruby rails orm postgresql database activerecord authentication
 
 If you're working with Rails, chances are your authentication layer is
 implemented using one of the popular authentication frameworks – [Devise],
-[Sorcery], [Clearance], or [Authlogic] – just to name a few. These libraries
-helped significantly with making Rails an even more productive web framework to
-work in.
+[Sorcery], [Clearance], or [Authlogic]. These libraries provide complete
+authentication and account management functionality for Rails, allowing you to
+spend more time on the actual business logic of your product.
 
-One shared characteristic of these authentication frameworks is that they're
-all built on top of Rails. This means that they integrate into the existing
-Rails components (models, controllers, routes), and that they generally try to
-follow The Rails Way of doing things.
+One characteristic the above authentication frameworks have in common is that
+they're all built on top of Rails. This means that they plug into the existing
+Rails components (models, controllers, routes), and generally try to follow
+"The Rails Way" of doing things.
 
-However, having had a fair share of experience with the Ruby ecosystem outside
-of Rails' [default menu][omakase], I've come to learn that taking the effort to
-make your library's implementation **decoupled from Rails** can provide
-significant advantages:
+However, when building on top of Rails, it can also be easy for your library to
+inherit some of Rails' *anti-patterns*, such as overburdening models and
+controllers with [additional responsibilities][srp] and overusing Active Record
+callbacks. Having had my fair share of experience with the Ruby ecosystem
+outside of Rails' [default menu][omakase], I've come to learn that taking the
+effort to make your library's implementation **decoupled from Rails** can
+provide significant advantages:
 
-* breaking away from Rails gives you space to come up with better design
-* your library can now be used with other Ruby web frameworks too
+* breaking away from Rails gives you mental space to design your library better
+* your library can now be used with other Ruby web frameworks too :innocent:
 * supporting new Rails versions becomes easier
 
-For a long time, if you wanted to implement authentication outside of Rails,
-the go-to choice has been [Warden]. Warden is a Rack-based library that
-provides a mechanism for authentication that supports having multiple
+If one wanted to implement authentication in another Ruby web framework, the
+frequently recommended solution seemed to be [Warden]. Warden is a Rack-based
+library that provides a mechanism for authentication, with support for multiple
 strategies. However, the problem is that Warden doesn't actually *do* anything
 by itself. You still need to implement login, remembering, registration,
 account verification, password reset and other functionality yourself (which is
-what Devise does), and I'd argue *this* is actually the hard part :pensive:
+what Devise does), and I'd argue *this* is actually the hard part :sweat:
 
-## Introducing Rodauth
+## Enter Rodauth
 
-However, for some time now we've had a better solution. Jeremy Evans,
-the author of numerous Ruby libraries, most popular of which are [Roda] and
-[Sequel], has been developing a new full-featured authentication framework for
-the past 5 years, called **[Rodauth]**. Recently I've finally had the
-opportunity to integrate Rodauth into a Rails app at work, and I can safely say
-that its tagline – "Ruby's most advanced authentication framework" – is in no
-way exaggerated :ok_hand:
+We've actually had a better solution for some time now, but it just hasn't
+received enough attention. Jeremy Evans – a [Ruby Hero][rubyheroes2015], a Ruby
+committer, and an author of numerous Ruby libraries (most popular of which is
+[Sequel] and [Roda]) – has been developing a new full-featured authentication
+framework for the past several years, called **[Rodauth]**. Recently I've
+finally had the opportunity to integrate Rodauth into a Rails app at work, and
+I can safely say that its tagline – *"Ruby's <ins>most advanced</ins>
+authentication framework"* – is in no way exaggerated :ok_hand:
 
-When I was evaluating it for the first time, what stood out for me is that, in
-contrast to other Rails-based authentication frameworks, Rodauth is implemented
-on top of Roda and Sequel. This can throw some people off at first; I too
-thought it meant it cannot be used with Rails. But this [turns out not to be
-the case][middleware].
+One of the first things you'll notice is that, in constrast to other
+authentication frameworks which are built on top of Rails and Active Record,
+Rodauth is implemented using Roda and Sequel. As a big fan of both libraries,
+for me personally this was exciting, but at the same time I was worried this
+meant Rodauth cannot be used with Rails. However, it turns out Rodauth can in
+fact be used with any Rack-based web framework, including Rails.
 
-The integration did still require a non-trivial amount of Rails glue, which
-I've extracted into the **[rodauth-rails]** gem. This includes generators,
-controller & view integration, mailer support, CSRF & flash integration, HMAC
-security and more. I've also extracted the [sequel-activerecord_connection]
-gem, which makes Sequel reuse Active Record's database connection (and which
-rodauth-rails automatically configures). All this should make Rodauth easy
-enough to get started with in Rails :muscle:
+Integrating Rodauth properly into Rails definitely wasn't trivial, but once all
+the kinks had been worked out, I extracted the glue code into
+**[rodauth-rails]**. It comes with generators, controller & view integration,
+mailer support, CSRF & flash integration, HMAC security and more. Additionally,
+to make Sequel coexist better with Active Record, I've created the
+[sequel-activerecord_connection] gem, which enables Sequel to reuse Active
+Record's database connection. All this should make Rodauth as easy to get
+started with as its Rails-based counterparts :muscle:
 
-## Encapsulating your authentication logic
+With its recent [2.0 release], it's time to finally take a proper look into
+Rodauth and see what makes it so special :sparkles:
 
-Most Rails-based authentication frameworks mix the authentication behaviour
-directly into the MVC layer. While this approach keeps things close to Rails,
-it also has several downsides:
+## Encapsulated authentication logic
 
-* authentication logic is spread out across multiple application layers
-* models and controllers gain a lot of additional responsibility
-* risk of naming clashes limits refactoring freedom
+As we've touched on before, what characterizes most Rails-based authentication
+frameworks is that they implement their authentication behaviour directly on
+the MVC layer. While this approach keeps things close to Rails, it also shoves
+additional responsibilities into already-heavy Rails components, and generally
+causes authentication logic to be spread out across multiple application
+layers.
 
 With Rodauth, all authentication behaviour is encapsulated in a special
 `Rodauth::Auth` object, which is created inside a Roda middleware and has
-access to the request context. We use it to route requests to Rodauth endpoints,
-and also to perform any additional authentication actions before the request is
-handed over to the main app. This approach allows us to keep the majority (or
-even all) of our authentication logic contained in the same file.
-
-Here is an example Rodauth definition that enables several features and
-overrides a some default settings:
+access to the request context. It handles everything from routing requests to
+Rodauth endpoints to performing authentication-related commands and queries.
+It's also configured as a Roda plugin and can be used in Roda's routing
+block to perform any actions before the request reaches the main app. This
+design enables us to keep our authentication logic contained in a single file.
 
 ```rb
-class RodauthApp < Roda
-  # allow this Roda app to be used as Rack middleware
-  plugin :middleware
+class RodauthMiddleware < Roda
   # define your Rodauth configuration
   plugin :rodauth do
     # load authentication features you need
     enable :login, :logout, :create_account, :verify_account, :reset_password
     # change default settings
     password_minimum_lenth 8
-    account_password_hash_column :password_hash
     login_return_to_requested_location? true
     reset_password_autologin? true
     logout_redirect "/"
     # ...
   end
-  # called for each request before it reaches your main app
+  # handles requests before they reach the main app
   route do |r|
     # handle Rodauth paths (/login, /create-account, /reset-password, ...)
     r.rodauth
-    # require authentication for /dashboard* routes
+    # require authentication for certain routes
     if r.path.start_with?("/dashboard")
       rodauth.require_authentication
     end
@@ -106,13 +109,13 @@ end
 When we add the above Roda app to our middleware stack, the `route` block will
 be called for each request before it reaches our main app, yielding the request
 object. The `r.rodauth` call will handle any Rodauth routes, while
-`rodauth.require_authentication` will redirect to login page if the session is
-not authenticated. When the end of the routing block is reached, the request
+`rodauth.require_authentication` will redirect to the login page if the session
+is not authenticated. When the end of the routing block is reached, the request
 proceeds onto our main app.
 
-If we're using Rails with rodauth-rails, the Rodauth instance will remain
-available in our controllers and views as well, so we can do things like
-require authentication at the controller level:
+If you're using Rails with rodauth-rails, the Rodauth instance will remain
+available in your controllers and views as well, so you can do things like
+require authentication at the controller level if you prefer to:
 
 ```rb
 class PostsController < ApplicationController
@@ -137,10 +140,10 @@ instance that give us additional flexibility and introspection:
 
 ```rb
 rodauth.auhenticated_by                   # e.g. ["password", "otp"]
-rodauth.session_value                     # returns the account id from the session
-rodauth.account_from_login("foo@bar.com") # retrieves account from given email address
-rodauth.password_match?("secret")         # whether given password matches password of current account
-rodauth.login_session("password")         # logs the retrieved account in
+rodauth.session_value                     # returns account id from the session
+rodauth.account_from_login("foo@bar.com") # retrieves account with given email address
+rodauth.password_match?("secret")         # returns whether given password matches current account's password
+rodauth.login("password")                 # logs the account in and redirects with a notice flash
 rodauth.logout                            # logs the session out
 # ...
 ```
@@ -150,21 +153,22 @@ rodauth.logout                            # logs the session out
 Rodauth has all of the essential features you already know from other
 authentication frameworks:
 
-* [login]/[logout] and [remember] (including [HTTP Basic authentication][http basic auth])
+* [login]/[logout] and [remember]
 * [create account] with [email verification][verify account] (and a [grace period][verify account grace period])
 * [reset password] and [change password]
 * [change email][change login] with [email verification][verify login change]
 * [lockout] and [close account]
 
-You'll also find most industrial standard security features the
-[devise-security] extension provides:
+You'll also find most industry-standard security features the [devise-security]
+extension provides:
 
 * [password expiration] and [disallowing password reuse][disallow password reuse]
 * [password complexity checks][password complexity] and [disallowing common passwords][disallow common passwords]
 * [account expiration] and [single session]
 
-as well as many other useful features:
+There are many other useful features as well:
 
+* [HTTP Basic authentication][http basic auth]
 * [email authentication] (aka "passwordless")
 * [password confirmation dialog][confirm password] (with a [grace period][password grace period])
 * [audit logging] (for every action)
@@ -176,14 +180,13 @@ In addition to the features above, Rodauth also provides **multifactor
 authentication** functionality out-of-the-box, supporting multiple MFA methods
 ([TOTP], [SMS codes], [recovery codes], and [WebAuthn]).
 
-Here is an example setup that allows a user to enable TOTP authentication for
-their account, along with a backup SMS number and recovery codes (provided we
-created the necessary database tables):
+Here is an example setup that allows a user to enable TOTP verification for
+their account, along with a backup SMS number and recovery codes.
 
 ```rb
 class RodauthApp < Roda
   plugin :rodauth do
-    enable :login, :create_account, :otp, :sms_codes, :recovery_codes
+    enable :otp, :sms_codes, :recovery_codes, ...
     # use Twilio to send SMS messages
     sms_send do |phone, message|
       twilio = Twilio::Rest::Client.new("<ACCOUNT_SID>", "<AUTH_TOKEN>")
@@ -193,8 +196,9 @@ class RodauthApp < Roda
 end
 ```
 
-We can now generate links to Rodauth's built-in MFA manage page, which will
-guide the user to set up MFA for their account.
+Given we've created the necessary [database tables], we can now generate links
+to Rodauth's MFA pages, which provide a basic interface for users to manage MFA
+for their account.
 
 ```erb
 <!-- somewhere under account settings: -->
@@ -207,102 +211,100 @@ guide the user to set up MFA for their account.
 ```
 
 The advantage of having multifactor authentication built in (as opposed to
-having an [external gem][devise-two-factor]) is that Rodauth's design is now
-adjusted to accommodate this functionality. It also means this feature will
-continue being compatible with new Rodauth releases.
+having an [external gem][devise-two-factor]) is that fact that Rodauth's design
+has been adjusted to accommodate this functionality. It also means this feature
+will remain compatible with new Rodauth releases.
 
-### JWT
+### JSON API
 
-Another cool feature of Rodauth is its built-in support for [JWT] ([JSON Web
-Tokens]), which provides token-based JSON API access for each authentication
-feature. Here is how we can configure the JWT feature:
+Another cool feature of Rodauth is its built-in support for [JWT] (short for
+[JSON Web Tokens]), which provides token-based JSON API access for each
+authentication feature. Here is how we can configure the JWT feature:
 
 ```rb
 class RodauthApp < Roda
-  plugin :rodauth, json: :only do # 1. enable Roda's JSON support and only allow JSON access
-    enable :login, :create_account, :change_password, :close_account, :jwt # 2. load JWT feature
-    jwt_secret "abc123" # 3. set secret for the JWT feature
+  plugin :rodauth, json: :only do # 1) enable Roda's JSON support and only allow JSON access
+    enable :login, :create_account, :change_password, :close_account, :jwt # 2) load JWT feature
+    jwt_secret "abc123" # 3) set secret for the JWT feature
     require_login_confirmation? false
     require_password_confirmation? false
   end
 end
 ```
 
-Now we can trigger Rodauth actions via a JSON requests, using the
+With this we can now trigger Rodauth actions via a JSON requests, using the
 `Authorization` header for authentication. Here is an example flow using
 [http.rb]:
 
 ```rb
-http = HTTP.accept(:json)
 # 1) create an account
-response = http.post("https://myapp.com/create-account", json: { login: "foo@example.com", password: "secret" })
+response = HTTP.post("https://myapp.com/create-account", json: { login: "foo@example.com", password: "secret" })
 token = response.headers["Authorization"]
 # 2) change the password
-response = http.auth(token).post("https://myapp.com/change-password", json: { password: "secret", "new-password": "new secret" })
+response = HTTP.auth(token).post("https://myapp.com/change-password", json: { password: "secret", "new-password": "new secret" })
 # 3) login with the new password
-response = http.post("https://myapp.com/login", json: { login: "foo@example.com", password: "new secret" })
+response = HTTP.post("https://myapp.com/login", json: { login: "foo@example.com", password: "new secret" })
 token = response.headers["Authorization"]
 # 4) close the account
 http.auth(token).post("https://myapp.com/close-account", json: { password: "new secret" })
 # 5) try to login again
-response = http.post("https://myapp.com/login", json: { login: "foo@example.com", password: "new secret" })
+response = HTTP.post("https://myapp.com/login", json: { login: "foo@example.com", password: "new secret" })
 response.status.to_s # => "401 Unauthorized"
 ```
 
-JSON API support in other authenication frameworks has always been everything
-*but* standardized; for Devise there is [Devise Token Auth], [Devise::JWT], and
-[Simple Token Authentication], while Sorcery currently has [multiple open pull
-requests][sorcery pulls] adding JWT support.
+Other authentication frameworks haven't yet standardized JSON API support:
+
+* Devise has multiple solutions ([DeviseTokenAuth], [Devise::JWT],
+  [SimpleTokenAuthentication])
+* Sorcery currently has a few unmerged pull requests ([#239][sorcery #239],
+  [#167][sorcery #167], [#70][sorcery #70])
+* Clearance doesn't currently support JSON ([comment][clearance json])
 
 ## Uniform configuration DSL
 
-If we look at how Devise is customized, we'll notice that there are several
-different layers on which we can tweak authentication behaviour: global
+If we look at how Devise is customized, we'll notice there are several
+different layers on which we can configure authentication behaviour: global
 settings, model settings, controller settings, and routing settings. Some
-settings can be configured dynamically (based on either model or controller
-instance state), while other can only be configured statically. Some
-before/after hooks are trigged on the model level, other require overriding
-controller actions. This is not very consistent :stuck_out_tongue:
+of these settings can be configured dynamically (based on either model or
+controller state), while other can only be configured statically. And some
+before/after hooks are triggered on the model level, while for others you need
+to override controller actions. This is pretty inconsistent :stuck_out_tongue:
 
-Rodauth is the opposite. It provides a uniform configuration DSL that allows
-overriding virtually any default value or behaviour in the same way: either
-by providing a static value or a dynamic block. The given block is always
-evaluated in the context of the `Rodauth::Auth` instance (where all Rodauth
-methods are defined), and you can call `super` to get the default behaviour.
+In contrast, Rodauth provides a uniform configuration DSL that allows changing
+virtually any authentication behaviour, which is all defined on the
+`Rodauth::Auth` class. You can override a configuration method either by
+providing a static value, or by passing a dynamic block that gets evaluated in
+context of a `Rodauth::Auth` instance (and you can call `super` to get original
+behaviour).
 
 ```rb
 class RodauthApp < Roda
   plugin :rodauth do
     # each feature adds its own set of configuration methods
-    enable :login, :logout, :remember,
-      :create_account, :verify_account, :verify_account_grace_period,
-      :reset_password, :change_password, :change_login, :verify_login_change
+    enable :login, :create_account, :verify_account_grace_period, :reset_password
 
-    password_confirm_param "confirm_password"
-    create_account_route "register"
-    accounts_table :user_accounts
+    # examples of static values:
+    login_redirect "/dashboard"        # redirect to /dashboard after logging in
+    verify_account_grace_period 3.days # allow unverified access for 3 days after registration
+    reset_password_autologin? true     # automatically log the user in after password reset
 
-    login_valid_email? { |login| TrueMail.valid?(login) }
-    no_matching_login_message "account with this email doesn't exist"
-    password_minimum_length { AppConfig.get(:min_password_length) }
-
-    login_return_to_requested_location? true
-    reset_password_autologin? true
-    verify_account_grace_period 3.days
-
-    login_notice_flash "You have been successfully signed in"
-    reset_password_error_flash "Something went wrong resetting your password"
-    login_redirect "/dashboard"
-    verify_account_redirect { login_redirect }
+    # examples of dynamic blocks:
+    password_minimum_length { MyConfig.get(:min_password_length) } # change minimum allowed password length
+    login_valid_email? { |login| TrueMail.valid?(login) }          # override email validation logic
+    verify_account_redirect { login_redirect }                     # after account verification redirect to wherever login redirects to
   end
 end
 ```
 
+Internaly, Rodauth also provides a [DSL for writing new features][rodauth
+feature dsl], which streamlines adding new configuration methods and encourages
+making the feature behaviour as flexible as possible.
+
 ### Hooks
 
-Rodauth consistently provides hooks around virtually any action, which we can
-override in our configuration block. We can do something before/after specific
-operations:
+Rodauth consistently provides hooks for virtually any action, which we can
+override inside our configuration block. We can do something before/after
+specific operations:
 
 ```rb
 after_login           { remember_login }
@@ -325,23 +327,78 @@ before_rodauth { AuthLogger.call(request) }
 
 ## Enhanced security
 
+When I would talk to people about Rodauth, one common concern would be whether
+it's secure enough, given that alternatives such as Devise are more
+widely-used. While I'm not qualified enough to provide a direct answer, there
+are multiple indications that Jeremy takes Rodauth's security very seriously:
+
+* Rodauth incorporates some [additional security measures][rodauth security]
+  not found in other authentication frameworks (we'll talk about these below)
+* Jeremy [proactively patches][rodauth clearance tokens] Rodauth when new
+  security issues are found in other authentication frameworks
+* Jeremy's [talks][jeremy rubyhack2018] showcase some very advanced knowledge
+  on web application security
+
 ### Tokens
 
-### Password hash access
+Many authentication features (remembering logins, password reset, account
+verification, email change verification etc.) generate random unique tokens as
+part of their functionality. Since these tokens often give permissions for
+performing sensitive actions, we don't want others having access to them.
 
-## Design highlights
+When `hmac_secret` is set (rodauth-rails sets it automatically), Rodauth will
+sign the tokens sent via email using HMAC, while the raw tokens will be stored
+in the database. This will make it so if the tokens in the database are leaked
+(e.g. via an SQL injection vulnerability), they will not be usable without also
+having access to the HMAC secret.
 
-### Layered authentication features
+```rb
+hmac_secret "abc123"
+```
+
+For better bruteforce protection, Rodauth tokens also include the account id.
+This way an attacker can only attempt to bruteforce the token for a single
+account at a time, instead of being able to bruteforce tokens for all accounts
+at once.
+
+```
+<account_id>_<random_token>
+```
+
+### Protecting password hashes
+
+When the user creates an account, rather than storing their password as plain
+text, we normally hash the password using a hashing function such as [bcrypt]
+and store that instead. This helps protect against rainbow table attacks and
+brute-force search attacks in case the database is breached.
+
+However, even with bcrypt, if an attacker was able to obtain the password
+hashes from the database (e.g. via an SQL injection), they can crack passwords
+vastly faster than via an online attack. For one, an online attack is easy to
+detect, nd the [lockout] feature
+
+If a database breach *does* happen, however, the obtained password hashes can
+still help the attacker crack accounts that use the weakest passwords.
+
+As an additional layer of security
+
+## Other design highlights
+
+### Decoupled authentication features
 
 ### Database table per feature
 
+### Linear code over callbacks
+
 ## Closing words
+
+* I don't get the need for "Active Authentication"
 
 ## Further reading
 
-* Rodauth feature documentation
-* Rodauth guides (short documents covering common scenarios)
-* Rodauth internals
+* [Rodauth documentation]
+* [rodauth-rails]
+* [Rodauth internals]
 
 [Devise]: https://github.com/heartcombo/devise
 [Sorcery]: https://github.com/Sorcery/sorcery
@@ -390,9 +447,22 @@ before_rodauth { AuthLogger.call(request) }
 [JSON Web Tokens]: https://jwt.io/
 [JWT refresh tokens]: http://rodauth.jeremyevans.net/rdoc/files/doc/jwt_refresh_rdoc.html
 [CORS]: http://rodauth.jeremyevans.net/rdoc/files/doc/jwt_cors_rdoc.html
-[Devise Token Auth]: https://github.com/lynndylanhurley/devise_token_auth
+[DeviseTokenAuth]: https://github.com/lynndylanhurley/devise_token_auth
 [Devise::JWT]: https://github.com/waiting-for-dev/devise-jwt
-[Simple Token Authentication]: https://github.com/gonzalo-bulnes/simple_token_authentication
-[sorcery pulls]: https://github.com/sorcery/sorcery/pulls?q=jwt+is%3Apr+in%3Atitle+
+[SimpleTokenAuthentication]: https://github.com/gonzalo-bulnes/simple_token_authentication
+[sorcery #239]: https://github.com/Sorcery/sorcery/pull/239
+[sorcery #167]: https://github.com/Sorcery/sorcery/pull/167
+[sorcery #70]: https://github.com/Sorcery/sorcery/pull/70
+[clearance json]: https://github.com/thoughtbot/clearance/issues/896#issuecomment-667257763
 [http.rb]: https://github.com/httprb/http/
 [database tables]: http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Creating+tables
+[jeremy rubyhack2018]: http://confreaks.tv/videos/rubyhack2018-ruby-web-application-security-defense-in-depth
+[rodauth clearance tokens]: https://github.com/jeremyevans/rodauth/commit/18f26487c798cc5055cd5caf8bcafee1af719e3a
+[rodauth security]: https://github.com/jeremyevans/rodauth/#label-Security
+[srp]: https://en.wikipedia.org/wiki/Single-responsibility_principle
+[bcrypt]: https://en.wikipedia.org/wiki/Bcrypt
+[rubyheroes2015]: https://rubyheroes.com/heroes/2015
+[2.0 release]: http://rodauth.jeremyevans.net/rdoc/files/doc/release_notes/2_0_0_txt.html
+[Rodauth documentation]: http://rodauth.jeremyevans.net/documentation.html
+[Rodauth internals]: http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html
+[rodauth feature dsl]: http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html#label-Feature+Creation+Example
