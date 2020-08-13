@@ -7,14 +7,14 @@ If you're working with Rails, chances are your authentication layer is
 implemented using one of the popular authentication frameworks – [Devise],
 [Sorcery], [Clearance], or [Authlogic]. These libraries provide complete
 authentication and account management functionality for Rails, allowing you to
-spend more time on the actual business logic of your product.
+focus more on the actual business logic of your product.
 
-One characteristic the above authentication frameworks have in common is that
+One characteristic these authentication frameworks have in common is that
 they're all built on top of Rails. This means that they plug into the existing
 Rails components (models, controllers, routes), and generally try to follow
 "The Rails Way" of doing things.
 
-However, when building on top of Rails, it can also be easy for your library to
+However, when building on top of Rails, it can be easy for your library to also
 inherit some of Rails' *anti-patterns*, such as overburdening models and
 controllers with [additional responsibilities][srp] and overusing Active Record
 callbacks. Having had my fair share of experience with the Ruby ecosystem
@@ -24,26 +24,27 @@ provide significant advantages:
 
 * breaking away from Rails gives you mental space to design your library better
 * your library can now be used with other Ruby web frameworks too :innocent:
-* supporting new Rails versions becomes easier
+* supporting new Rails versions becomes easier too
 
 If one wanted to implement authentication in another Ruby web framework, the
-frequently recommended solution seemed to be [Warden]. Warden is a Rack-based
-library that provides a mechanism for authentication, with support for multiple
-strategies. However, the problem is that Warden doesn't actually *do* anything
-by itself. You still need to implement login, remembering, registration,
-account verification, password reset and other functionality yourself (which is
-what Devise does), and I'd argue *this* is actually the hard part :sweat:
+most frequently recommended solution seems to be [Warden]. Warden is a
+Rack-based library that provides a mechanism for authentication, with support
+for multiple strategies. However, the problem is that Warden doesn't actually
+*do* anything by itself. You still need to implement login, remembering,
+registration, account verification, password reset and other functionality
+yourself (which is what Devise does), and I'd argue *this* is actually the hard
+part :sweat:
 
 ## Enter Rodauth
 
-We've actually had a better solution for some time now, but it just hasn't
-received enough attention. Jeremy Evans – a [Ruby Hero][rubyheroes2015], a Ruby
+We've actually had a better solution for some time now, it just hasn't received
+enough attention. Jeremy Evans – a [Ruby Hero][rubyheroes2015], a Ruby
 committer, and an author of numerous Ruby libraries (most popular of which is
 [Sequel] and [Roda]) – has been developing a new full-featured authentication
 framework for the past several years, called **[Rodauth]**. Recently I've
 finally had the opportunity to integrate Rodauth into a Rails app at work, and
-I can safely say that its tagline – *"Ruby's <ins>most advanced</ins>
-authentication framework"* – is in no way exaggerated :ok_hand:
+I can safely say that its tagline – *"Ruby's most advanced authentication
+framework"* – is in no way exaggerated :ok_hand:
 
 One of the first things you'll notice is that, in constrast to other
 authentication frameworks which are built on top of Rails and Active Record,
@@ -52,16 +53,16 @@ for me personally this was exciting, but at the same time I was worried this
 meant Rodauth cannot be used with Rails. However, it turns out Rodauth can in
 fact be used with any Rack-based web framework, including Rails.
 
-Integrating Rodauth properly into Rails definitely wasn't trivial, but once all
-the kinks had been worked out, I extracted the glue code into
-**[rodauth-rails]**. It comes with generators, controller & view integration,
-mailer support, CSRF & flash integration, HMAC security and more. Additionally,
-to make Sequel coexist better with Active Record, I've created the
-[sequel-activerecord_connection] gem, which enables Sequel to reuse Active
+Integrating Rodauth into Rails for the first time definitely wasn't trivial;
+but once all the kinks had been worked out, I extracted the necessary glue code
+into **[rodauth-rails]**. It comes with generators, controller & view
+integration, mailer support, CSRF & flash integration, HMAC security and more.
+Additionally, to make Sequel coexist better with Active Record, I've created
+the [sequel-activerecord_connection] gem, which enables Sequel to reuse Active
 Record's database connection. All this should make Rodauth as easy to get
 started with as its Rails-based counterparts :muscle:
 
-With its recent [2.0 release], it's time to finally take a proper look into
+And with its recent [2.0 release], it's time to finally take a proper look into
 Rodauth and see what makes it so special :sparkles:
 
 ## Encapsulated authentication logic
@@ -70,16 +71,16 @@ As we've touched on before, what characterizes most Rails-based authentication
 frameworks is that they implement their authentication behaviour directly on
 the MVC layer. While this approach keeps things close to Rails, it also shoves
 additional responsibilities into already-heavy Rails components, and generally
-causes authentication logic to be spread out across multiple application
+causes the authentication logic to be spread out across multiple application
 layers.
 
 With Rodauth, all authentication behaviour is encapsulated in a special
 `Rodauth::Auth` object, which is created inside a Roda middleware and has
 access to the request context. It handles everything from routing requests to
 Rodauth endpoints to performing authentication-related commands and queries.
-It's also configured as a Roda plugin and can be used in Roda's routing
-block to perform any actions before the request reaches the main app. This
-design enables us to keep our authentication logic contained in a single file.
+We configure it as a Roda plugin and can we use it in Roda's routing block to
+perform any actions before the request reaches the main app. This design
+enables us to keep our authentication logic contained in a single file.
 
 ```rb
 class RodauthMiddleware < Roda
@@ -124,7 +125,7 @@ class PostsController < ApplicationController
 end
 ```
 
-or render links in our views:
+or render authentication links in the views:
 
 ```erb
 <% if rodauth.authenticated? %>
@@ -178,10 +179,13 @@ There are many other useful features as well:
 
 In addition to the features above, Rodauth also provides **multifactor
 authentication** functionality out-of-the-box, supporting multiple MFA methods
-([TOTP], [SMS codes], [recovery codes], and [WebAuthn]).
+([TOTP], [SMS codes], [recovery codes], and [WebAuthn]). It includes complete
+endpoints for setup, authentication, disabling etc. along with templates for
+managing MFA methods.
 
 Here is an example setup that allows a user to enable TOTP verification for
-their account, along with a backup SMS number and recovery codes.
+their account, along with a backup SMS number and recovery codes (assuming
+we've created the necessary [database tables]):
 
 ```rb
 class RodauthApp < Roda
@@ -195,11 +199,6 @@ class RodauthApp < Roda
   end
 end
 ```
-
-Given we've created the necessary [database tables], we can now generate links
-to Rodauth's MFA pages, which provide a basic interface for users to manage MFA
-for their account.
-
 ```erb
 <!-- somewhere under account settings: -->
 <% if rodauth.uses_two_factor_authentication? %>
@@ -210,10 +209,9 @@ for their account.
 <% end %>
 ```
 
-The advantage of having multifactor authentication built in (as opposed to
-having an [external gem][devise-two-factor]) is that fact that Rodauth's design
-has been adjusted to accommodate this functionality. It also means this feature
-will remain compatible with new Rodauth releases.
+Having full-featured multifactor authentication built into the framework is a
+game changer, as it means it will work well with other features and will remain
+compatible with future Rodauth releases :raised_hands:
 
 ### JSON API
 
@@ -232,7 +230,7 @@ class RodauthApp < Roda
 end
 ```
 
-With this we can now trigger Rodauth actions via a JSON requests, using the
+We can now trigger Rodauth actions via a JSON requests, using the
 `Authorization` header for authentication. Here is an example flow using
 [http.rb]:
 
@@ -268,7 +266,7 @@ settings, model settings, controller settings, and routing settings. Some
 of these settings can be configured dynamically (based on either model or
 controller state), while other can only be configured statically. And some
 before/after hooks are triggered on the model level, while for others you need
-to override controller actions. This is pretty inconsistent :stuck_out_tongue:
+to override controller actions. This is pretty inconsistent :thumbsdown:
 
 In contrast, Rodauth provides a uniform configuration DSL that allows changing
 virtually any authentication behaviour, which is all defined on the
@@ -333,7 +331,7 @@ widely-used. While I'm not qualified enough to provide a direct answer, there
 are multiple indications that Jeremy takes Rodauth's security very seriously:
 
 * Rodauth incorporates some [additional security measures][rodauth security]
-  not found in other authentication frameworks (we'll talk about these below)
+  that are not common in other authentication frameworks (more on this below)
 * Jeremy [proactively patches][rodauth clearance tokens] Rodauth when new
   security issues are found in other authentication frameworks
 * Jeremy's [talks][jeremy rubyhack2018] showcase some very advanced knowledge
@@ -343,8 +341,8 @@ are multiple indications that Jeremy takes Rodauth's security very seriously:
 
 Many authentication features (remembering logins, password reset, account
 verification, email change verification etc.) generate random unique tokens as
-part of their functionality. Since these tokens often give permissions for
-performing sensitive actions, we don't want others having access to them.
+part of their functionality. Since these tokens give permissions for performing
+sensitive actions, we don't want others having access to them.
 
 When `hmac_secret` is set (rodauth-rails sets it automatically), Rodauth will
 sign the tokens sent via email using HMAC, while the raw tokens will be stored
@@ -367,32 +365,146 @@ at once.
 
 ### Protecting password hashes
 
-When the user creates an account, rather than storing their password as plain
-text, we normally hash the password using a hashing function such as [bcrypt]
-and store that instead. This helps protect against rainbow table attacks and
-brute-force search attacks in case the database is breached.
+Because cracking password hashes is always getting faster, to additionally
+protect password hashes in case of a database breach, Devise and Sorcery
+enable you to use a password [pepper], a secret key added to the password
+before it's hashed. This is pretty secure, provided that compromise of database
+doesn't also imply compromise of application secrets. A downside of peppers
+is they can't easily be rotated, as changing the pepper would invalidate all
+existing passwords stored in the database (it might be better to encrypt the
+bcrypt hash instead, see [this StackOverflow answer][bcrypt encrypt]).
 
-However, even with bcrypt, if an attacker was able to obtain the password
-hashes from the database (e.g. via an SQL injection), they can crack passwords
-vastly faster than via an online attack. For one, an online attack is easy to
-detect, nd the [lockout] feature
+```rb
+bcrypt(pepper + password) # `encrypt(bcrypt(password), pepper)` would probably be better
+```
 
-If a database breach *does* happen, however, the obtained password hashes can
-still help the attacker crack accounts that use the weakest passwords.
+Rodauth offers an alternative approach to protecting password hashes, which
+relies on **restricting database access**. Password hashes are stored in a
+separate table, for which the application database user has
+INSERT/UPDATE/DELETE access, but *not* SELECT access. This means an attacker
+cannot retrieve password hashes even in case of an SQL injection or a remote
+code execution exploit.
 
-As an additional layer of security
+```rb
+# full access by the app database user
+create_table :accounts do
+  primary_key :id
+  String :email, null: false, unique: true
+end
+
+# *restricted* access by the app database user
+create_table :account_password_hashes do
+  foreign_key :id, :accounts, primary_key: true
+  String :password_hash, null: false
+end
+```
+
+That's great, but how is your app then able to check whether an entered
+password matches the one stored in the database on login? The app database user
+doesn't have SELECT access to the password hashes table, but it has access to a
+database *function*, which takes an account id and a password hash, and returns
+whether the given password hash matches the stored password hash for the given
+account id (the *function* has access the password hashes table). This is all
+that's needed for login functionality, and it's all the attacker gets in case
+of a database breach.
+
+```sql
+SELECT rodauth_valid_password_hash(123, "<some_bcrypt_hash>") -- returns true or false
+```
+
+You can read about this in more detail [here][rodauth passwords]. Note that
+this mode is completely optional, Rodauth works just as well with storing
+password hashes in the accounts table; in this case it does password matching
+in Ruby, just like we're used to with other authentication frameworks.
 
 ## Other design highlights
 
 ### Decoupled authentication features
 
+Rodauth really did a great job in achieving loose coupling between its
+authentication features. Additionally, each Rodauth feature is contained
+*entirely* in a single file (and a single context), with the code being loaded
+only if the feature is enabled. All this makes it significantly easier to
+understand how an individual feature works.
+
+```rb
+enable :create_account,              # create account and automatically login                -- lib/features/rodauth/create_account.rb
+       :verify_account,              # require email verification after account creation     -- lib/features/rodauth/verify_account.rb
+       :verify_account_grace_period, # allow unverified login for a certain period of time   -- lib/features/rodauth/verify_account_grace_period.rb
+
+       :change_login,                # change email immediately                              -- lib/features/rodauth/change_login.rb
+       :verify_login_change,         # require email verification before change is applied   -- lib/features/rodauth/verify_login_change.rb
+
+       :password_complexity,         # add password complexity requirements                  -- lib/features/rodauth/password_complexity.rb
+       :disallow_common_passwords,   # don't allow using a weak common password              -- lib/features/rodauth/disallow_common_passwords.rb
+       :disallow_password_reuse,     # don't allow using a previously used password          -- lib/features/rodauth/disallow_password_reuse.rb
+```
+
 ### Database table per feature
+
+Rodauth features are decoupled not only in code, but also in the database.
+Instead of adding all columns to a single table, in Rodauth each feature has a
+[dedicated table][database tables]. This makes it more transparent which
+database columns belong to which features.
+
+```rb
+create_table :accounts do ... end                    # used by base feature
+create_table :account_password_reset_keys do ... end # used by reset_password feature
+create_table :account_verification_keys do ... end   # used by verify_account feature
+create_table :account_login_change_keys do ... end   # used by verify_login_change feature
+create_table :account_remember_keys do ... end       # used by remember feature
+# ...
+```
 
 ### Linear code over callbacks
 
-## Closing words
+Thanks its consistent linear approach of using simple method calls, Rodauth's
+code is very easy to follow even if you're not familiar with the internals of
+the library. Below is an excerpt of the `POST /login` endpoint from Rodauth's
+login feature (slightly simplified for brevity):
 
-* I don't get the need for "Active Authentication"
+```rb
+# `POST /login` route from lib/rodauth/features/login.rb
+catch_error do
+  unless account_from_login(param(login_param)) # retrieves account by email
+    throw_error(login_param, no_matching_login_message)
+  end
+
+  before_login_attempt # hook used by lockout feature
+
+  unless open_account? # might be unverified or closed
+    throw_error(login_param, unverified_account_message)
+  end
+
+  unless password_match?(param(password_param)) # matches on retrieved account's password
+    after_login_failure # used by the lockout feature
+    throw_error(password_param, invalid_password_message)
+  end
+
+  transaction do
+    before_login # explicit before hook
+    login_session('password')
+    after_login  # explicit after hook
+  end
+
+  set_notice_flash login_notice_flash
+  redirect login_redirect
+end
+
+set_error_flash login_error_flash
+login_view
+```
+
+## Conclusion
+
+Rodauth is one of those libraries that keep me genuinely interested in the Ruby
+ecosystem :heart_eyes: From its advanced and comprehensive set of authentication features
+(including multifactor authentication and JSON support) to the refreshing
+design that's decoupled from the web framework, it really provides overwhelming
+advantages over other authentication frameworks.
+
+Hopefully this overview will encourage you to try Rodauth out in your next
+project :wink:
 
 ## Further reading
 
@@ -466,3 +578,10 @@ As an additional layer of security
 [Rodauth documentation]: http://rodauth.jeremyevans.net/documentation.html
 [Rodauth internals]: http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html
 [rodauth feature dsl]: http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html#label-Feature+Creation+Example
+[pepper]: https://en.wikipedia.org/wiki/Pepper_(cryptography)
+[bcrypt cracking]: https://medium.com/@ScatteredSecrets/bcrypt-password-cracking-extremely-slow-not-if-you-are-using-hundreds-of-fpgas-7ae42e3272f6
+[bcrypt encrypt]: https://stackoverflow.com/a/16896216/988414
+[rodauth passwords]: http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Password+Hash+Access+Via+Database+Functions
+[devise coupling 1]: https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise/strategies/authenticatable.rb#L50-L68
+[devise coupling 2]: https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise/models/confirmable.rb#L89-L95
+[devise callbacks]: https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise/models/confirmable.rb#L49-L58
