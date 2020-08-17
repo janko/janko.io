@@ -1,39 +1,38 @@
 ---
-title: "Rodauth: A Refreshing Take on Authentication in Ruby"
+title: "Rodauth: A Refreshing Authentication Solution for Ruby"
 tags: ruby rails orm postgresql database activerecord authentication
 ---
 
 If you're working with Rails, chances are your authentication layer is
 implemented using one of the popular authentication frameworks – [Devise],
 [Sorcery], [Clearance], or [Authlogic]. These libraries provide complete
-authentication and account management functionality for Rails, allowing you to
-focus more on the actual business logic of your product.
+authentication and account management functionality for Rails, giving you more
+time to focus on the core business logic of your product.
 
 One characteristic these authentication frameworks have in common is that
 they're all built on top of Rails. This means that they plug into the existing
 Rails components (models, controllers, routes), and generally try to follow
 "The Rails Way" of doing things.
 
-However, when building on top of Rails, it can be easy for your library to also
-inherit some of Rails' *anti-patterns*, such as overburdening models and
-controllers with [additional responsibilities][srp] and overusing Active Record
-callbacks. Having had my fair share of experience with the Ruby ecosystem
-outside of Rails' [default menu][omakase], I've come to learn that taking the
-effort to make your library's implementation **decoupled from Rails** can
-provide significant advantages:
+However, libraries that build on top of Rails often tend to inherit some of
+Rails' *anti-patterns* as well, such as having high coupling, burdening models
+and controllers with [additional responsibilities][srp], and overusing Active
+Record callbacks. Having had my fair share of experience with the Ruby
+ecosystem outside of Rails' [default menu][omakase], I've come to learn that
+taking the effort to make your library's implementation **decoupled from
+Rails** can provide significant advantages:
 
 * breaking away from Rails gives you mental space to design your library better
 * your library can now be used with other Ruby web frameworks too :innocent:
 * supporting new Rails versions becomes easier too
 
 If one wanted to implement authentication in another Ruby web framework, the
-most frequently recommended solution seems to be [Warden]. Warden is a
-Rack-based library that provides a mechanism for authentication, with support
-for multiple strategies. However, the problem is that Warden doesn't actually
-*do* anything by itself. You still need to implement login, remembering,
-registration, account verification, password reset and other functionality
-yourself (which is what Devise does), and I'd argue *this* is actually the hard
-part :sweat:
+most frequent advice seems to be to use [Warden]. Warden is a Rack-based
+library that provides a mechanism for authentication, with support for multiple
+strategies. However, the problem is that Warden doesn't actually *do* anything
+by itself. You still need to implement login, remembering, registration,
+account verification, password reset and other functionality yourself (which is
+what Devise does), and I'd argue *this* is actually the hard part :sweat:
 
 ## Enter Rodauth
 
@@ -180,8 +179,8 @@ There are many other useful features as well:
 In addition to the features above, Rodauth also provides **multifactor
 authentication** functionality out-of-the-box, supporting multiple MFA methods
 ([TOTP], [SMS codes], [recovery codes], and [WebAuthn]). It includes complete
-endpoints for setup, authentication, disabling etc. along with templates for
-managing MFA methods.
+endpoints for setup, authentication, and disabling MFA methods, along with
+the related HTML templates.
 
 Here is an example setup that allows a user to enable TOTP verification for
 their account, along with a backup SMS number and recovery codes (assuming
@@ -208,6 +207,7 @@ end
   <%= link_to "Setup MFA", rodauth.two_factor_manage_path %>
 <% end %>
 ```
+![Rodauth TOTP setup page](/images/rodauth-otp-setup.png)
 
 Having full-featured multifactor authentication built into the framework is a
 game changer, as it means it will work well with other features and will remain
@@ -325,10 +325,11 @@ before_rodauth { AuthLogger.call(request) }
 
 ## Enhanced security
 
-When I would talk to people about Rodauth, one common concern would be whether
-it's secure enough, given that alternatives such as Devise are more
-widely-used. While I'm not qualified enough to provide a direct answer, there
-are multiple indications that Jeremy takes Rodauth's security very seriously:
+When I would talk to people about Rodauth, one common concern was whether it's
+secure enough, given that alternatives such as Devise are more widely-used.
+While I'm not qualified enough to provide a direct answer, what I can say is
+that there are multiple indications that Jeremy takes Rodauth's security very
+seriously:
 
 * Rodauth incorporates some [additional security measures][rodauth security]
   that are not common in other authentication frameworks (more on this below)
@@ -366,16 +367,15 @@ at once.
 ### Protecting password hashes
 
 Because cracking password hashes is always getting faster, to additionally
-protect password hashes in case of a database breach, Devise and Sorcery
-enable you to use a password [pepper], a secret key added to the password
-before it's hashed. This is pretty secure, provided that compromise of database
-doesn't also imply compromise of application secrets. A downside of peppers
-is they can't easily be rotated, as changing the pepper would invalidate all
-existing passwords stored in the database (it might be better to encrypt the
-bcrypt hash instead, see [this StackOverflow answer][bcrypt encrypt]).
+protect password hashes in case of a database breach, Devise and Sorcery enable
+you to use a password [pepper], a secret key added to the password before it's
+hashed. This is pretty secure, provided that compromise of database doesn't
+also imply compromise of application secrets. A downside of peppers is that
+they're not easy to rotate, as changing the pepper would invalidate all
+existing passwords stored in the database.
 
 ```rb
-bcrypt(pepper + password) # `encrypt(bcrypt(password), pepper)` would probably be better
+bcrypt(password + pepper)
 ```
 
 Rodauth offers an alternative approach to protecting password hashes, which
@@ -399,14 +399,14 @@ create_table :account_password_hashes do
 end
 ```
 
-That's great, but how is your app then able to check whether an entered
-password matches the one stored in the database on login? The app database user
-doesn't have SELECT access to the password hashes table, but it has access to a
-database *function*, which takes an account id and a password hash, and returns
-whether the given password hash matches the stored password hash for the given
-account id (the *function* has access the password hashes table). This is all
-that's needed for login functionality, and it's all the attacker gets in case
-of a database breach.
+That's great, but without the ability to retrieve password hashes, how is your
+app then able to check whether an entered password matches the one stored in
+the database on login? The answer: via a [database function][Rodauth
+function], which takes an account id and a password hash, and returns whether
+the given password hash matches the stored password hash for the given account
+id. This is effectively a limited SELECT query, but it's all that's needed for
+login functionality, and it's all the attacker gets in case of a database
+breach.
 
 ```sql
 SELECT rodauth_valid_password_hash(123, "<some_bcrypt_hash>") -- returns true or false
@@ -425,7 +425,7 @@ Rodauth really did a great job in achieving loose coupling between its
 authentication features. Additionally, each Rodauth feature is contained
 *entirely* in a single file (and a single context), with the code being loaded
 only if the feature is enabled. All this makes it significantly easier to
-understand how an individual feature works.
+understand how each individual feature works.
 
 ```rb
 enable :create_account,              # create account and automatically login                -- lib/features/rodauth/create_account.rb
@@ -456,52 +456,18 @@ create_table :account_remember_keys do ... end       # used by remember feature
 # ...
 ```
 
-### Linear code over callbacks
-
-Thanks its consistent linear approach of using simple method calls, Rodauth's
-code is very easy to follow even if you're not familiar with the internals of
-the library. Below is an excerpt of the `POST /login` endpoint from Rodauth's
-login feature (slightly simplified for brevity):
-
-```rb
-# `POST /login` route from lib/rodauth/features/login.rb
-catch_error do
-  unless account_from_login(param(login_param)) # retrieves account by email
-    throw_error(login_param, no_matching_login_message)
-  end
-
-  before_login_attempt # hook used by lockout feature
-
-  unless open_account? # might be unverified or closed
-    throw_error(login_param, unverified_account_message)
-  end
-
-  unless password_match?(param(password_param)) # matches on retrieved account's password
-    after_login_failure # used by the lockout feature
-    throw_error(password_param, invalid_password_message)
-  end
-
-  transaction do
-    before_login # explicit before hook
-    login_session('password')
-    after_login  # explicit after hook
-  end
-
-  set_notice_flash login_notice_flash
-  redirect login_redirect
-end
-
-set_error_flash login_error_flash
-login_view
-```
-
 ## Conclusion
 
-Rodauth is one of those libraries that keep me genuinely interested in the Ruby
-ecosystem :heart_eyes: From its advanced and comprehensive set of authentication features
-(including multifactor authentication and JSON support) to the refreshing
-design that's decoupled from the web framework, it really provides overwhelming
-advantages over other authentication frameworks.
+Rodauth is one of those libraries that come and renew my interest in the Ruby
+ecosystem :heart_eyes: Its advanced and comprehensive set of authentication
+features (including multifactor authentication and JSON support), backed by a
+powerful configuration DSL that provides immense flexibility, provide
+overwhelming advantages over other authentication frameworks.
+
+As someone who enjoys working in other Ruby web frameworks, I strongly believe
+in focusing on libraries that can be used by everyone. And Rodauth is the first
+full-featured authentication solution that can be used in any Ruby web
+framework (including Rails).
 
 Hopefully this overview will encourage you to try Rodauth out in your next
 project :wink:
@@ -582,6 +548,4 @@ project :wink:
 [bcrypt cracking]: https://medium.com/@ScatteredSecrets/bcrypt-password-cracking-extremely-slow-not-if-you-are-using-hundreds-of-fpgas-7ae42e3272f6
 [bcrypt encrypt]: https://stackoverflow.com/a/16896216/988414
 [rodauth passwords]: http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Password+Hash+Access+Via+Database+Functions
-[devise coupling 1]: https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise/strategies/authenticatable.rb#L50-L68
-[devise coupling 2]: https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise/models/confirmable.rb#L89-L95
-[devise callbacks]: https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise/models/confirmable.rb#L49-L58
+[Rodauth function]: https://github.com/jeremyevans/rodauth/blob/40f9cd83e3bd2f10f44bca087c2c85bd9e3854fd/lib/rodauth/migrations.rb#L28-L38
