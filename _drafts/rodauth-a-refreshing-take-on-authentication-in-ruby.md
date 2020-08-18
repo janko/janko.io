@@ -52,7 +52,7 @@ for me personally this was exciting, but at the same time I was worried this
 meant Rodauth cannot be used with Rails. However, it turns out Rodauth can in
 fact be used with any Rack-based web framework, including Rails.
 
-Integrating Rodauth into Rails for the first time definitely wasn't trivial;
+Integrating Rodauth into Rails for the first time definitely wasn't trivial,
 but once all the kinks had been worked out, I extracted the necessary glue code
 into **[rodauth-rails]**. It comes with generators, controller & view
 integration, mailer support, CSRF & flash integration, HMAC security and more.
