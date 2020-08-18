@@ -465,8 +465,8 @@ powerful configuration DSL that provides immense flexibility, provide
 overwhelming advantages over other authentication frameworks.
 
 As someone who enjoys working in other Ruby web frameworks, I strongly believe
-in focusing on libraries that can be used by everyone. And Rodauth is the first
-full-featured authentication solution that can be used in any Ruby web
+in focusing on libraries that are accessible to everyone. And Rodauth is the
+first full-featured authentication solution that can be used in any Ruby web
 framework (including Rails).
 
 Hopefully this overview will encourage you to try Rodauth out in your next
