@@ -278,9 +278,9 @@ article.update(published: true) # no queries executed
 ```
 
 Unlike `ActiveRecord::Base#save`, `Sequel::Model#save_changes` doesn't open a
-transaction if it won't execute the UPDATE statement. This is a much more
-elegant solution to the problem Active Record's lazy transactions intended to
-solve, but with none of the complexity.
+transaction if it won't execute the UPDATE statement. This seems like a much
+more elegant solution to the problem Active Record's lazy transactions intended
+to solve, but with none of the complexity.
 
 ## Final words
 
