@@ -41,9 +41,9 @@ end
 
 Active Record provides transaction callbacks as part of a model's lifecycle,
 allowing you to execute code after the transaction commits or rolls back. This,
-for example, allows you to spawn a background job after a record is created,
-where waiting until the transaction commits will ensure the record is available
-when the background job is picked up.
+for example, allows you to spawn a background job after a record is persisted,
+but wait until the transaction commits to ensure the record is up-to-date when
+the background job is picked up.
 
 ```rb
 class Account < ActiveRecord::Base
@@ -59,24 +59,34 @@ end
 
 In my opinion, this approach has several issues. For one, it encourages putting
 business logic into your Active Record models, and generally increases
-complexity of the model lifecycle. It's not trivial to use transaction
-callbacks *outside* of models, because Active Record transactions are [coupled
-to models][activerecord model coupling] (although there are
+complexity of the model lifecycle. It's unfortunately not trivial to use
+transaction callbacks *outside* of models, because they're [coupled to
+models][activerecord model coupling] (although there are
 [gems][after_commit_everywhere] that work around that).
 
 Transaction callbacks can also negatively impact memory usage if you're
 allocating many model instances within a transaction, as references to these
 model instances are held until the transaction is committed or rolled back,
-which prevents Ruby's GC to collect them beforehand. And you're paying this
-performance penalty regardles of whether you're using any transaction
-callbacks, as [each model instance is added to the transaction][activerecord
-add model].
+which prevents Ruby from garbage collecting them beforehand. Active Record will
+do this for any model that has any transaction callbacks defined.
 
+```rb
+class Comment < ActiveRecord::Base
+  after_commit :deliver_new_mentions, on: [:create, :update], if: :body_changed?
+
+  private
+
+  def deliver_new_mentions
+    MentionNotificationJob.deliver_later(self)
+  end
+end
+```
 ```rb
 ActiveRecord::Base.transaction do
   author.comments.find_each do |comment|
-    # Ruby cannot garbage collect these model instances until the transaction
-    # is committed or rolled back.
+    # Even though we're not triggering the `after_commit` callback here, Active
+    # Record will still keep references to these model instances, preventing
+    # Ruby from garbage collecting them until the transaction is closed.
     comment.update(author: new_author)
   end
 end
@@ -129,11 +139,9 @@ And if you really want to register transaction hooks on the model level, you
 can do that inside regular model lifecycle hooks:
 
 ```rb
-class Comment < Sequel::Model
-  def after_update
-    if column_changed?(:body)
-      db.after_commit { MentionNotificationJob.deliver_later(self) }
-    end
+class Account < Sequel::Model
+  def after_create
+    db.after_commit { AccountMailer.welcome(self).deliver_later }
   end
 end
 ```
@@ -143,16 +151,45 @@ was able to remain unaware of the existence of transaction hooks (which keeps
 it simpler), but we were still able to achieve the same functionality as we
 have with Active Record.
 
-In the above example we've intentionally put the conditional *outside* of the
-`#after_commit` block, as that allows the model instance to be garbage
-collected in long-running transactions when the condition evaluates to false
-(useful in use cases like [file attachments][shrine sequel optimization]).
+Note that the examples above will still keep references to the model instances
+until the transaction is closed. However, Sequel's API gives us the necessary
+control to change that. For example, we can choose to register a transaction
+hook only if a certain condition holds (useful in use cases like [file
+attachments][shrine sequel optimization]):
 
+```rb
+class Comment < Sequel::Model
+  def after_save
+    if column_changed?(:body)
+      db.after_commit { MentionNotificationJob.deliver_later(self) }
+    end
+  end
+end
+```
 ```rb
 DB.transaction do
   author.comments_dataset.paged_each do |comment|
-    # Ruby *can* garbage collect these model instances while the loop is executing.
+    # The transaction hooks aren't registered, so Ruby can garbage collect
+    # these model instances while the loop is running.
     comment.update(author: new_author)
+  end
+end
+```
+
+We can also register a transaction hook in a way where it will only keep the
+reference to the record id instead of the whole record instance:
+
+```rb
+class MentionNotifications
+  def self.enqueue(comment_id)
+    db.after_commit { MentionNotificationJob.deliver_later(comment_id) }
+  end
+end
+```
+```rb
+class Comment < Sequel::Model
+  def after_save
+    NotificationMentions.enqueue(id)
   end
 end
 ```
