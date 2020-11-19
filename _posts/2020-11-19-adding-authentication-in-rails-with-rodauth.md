@@ -184,25 +184,22 @@ end
 
 And scope them to the current account in the posts controller:
 
-```diff
+```rb
 # app/controllers/posts_controller.rb
 class PostsController < ApplicationController
   # ...
   def index
--   @posts = Post.all
-+   @posts = current_account.posts.all
+    @posts = current_account.posts.all
   end
   # ...
   def create
--   @post = Post.new(post_params)
-+   @post = current_account.posts.build(post_params)
+    @post = current_account.posts.build(post_params)
     # ...
   end
   # ...
   private
     def set_post
--     @post = Post.find(params[:id])
-+     @post = current_account.posts.find(params[:id])
+      @post = current_account.posts.find(params[:id])
     end
     # ...
 end
@@ -248,13 +245,15 @@ $ rails generate rodauth:views
 
 We can now open the `create_account.erb` template and add a new `name` field:
 
-```diff
+```erb
 <!-- app/views/rodauth/create_account.erb -->
 <%= form_tag rodauth.create_account_path, method: :post do %>
-+ <div class="form-group">
-+   <%= label_tag "name", "Name" %>
-+   <%= render "field", name: "name", id: "name" %>
-+ </div>
+  <!-- new "name" field -->
+  <div class="form-group">
+    <%= label_tag "name", "Name" %>
+    <%= render "field", name: "name", id: "name" %>
+  </div>
+
   <%= render "login_field" %>
   <%= render "login_confirm_field" if rodauth.require_login_confirmation? %>
   <%= render "password_field" if rodauth.create_account_set_password? %>
@@ -308,11 +307,8 @@ Now we can update our navigation header to use the user's name instead of their
 email address:
 
 ```diff
-<!-- app/views/application/_navbar.html.erb -->
-<!-- ... --->
 -     <%= link_to current_account.email, "#", class: "btn btn-info dropdown-toggle", data: { toggle: "dropdown" } %>
 +     <%= link_to current_account.profile.name, "#", class: "btn btn-info dropdown-toggle", data: { toggle: "dropdown" } %>
-<!-- ... --->
 ```
 
 ![Displayed new account name](/images/rodauth-account-name.png)
