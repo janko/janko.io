@@ -5,7 +5,7 @@ author:
   first_name: Janko
   last_name: Marohnić
   name: Janko Marohnić
-  bio: Ruby-off-Rails evangelist, Roda & Sequel fan, Rails critic, author of [Shrine](https://shrinerb.com), [test.vim](https://gihub.com/janko/vim-test) and numerous other open source libraries.
+  bio: Ruby-off-Rails evangelist, Roda & Sequel fan, Rails critic, author of [Shrine](https://shrinerb.com), [test.vim](https://github.com/janko/vim-test) and numerous other open source libraries.
   image: /images/me.jpg
   github: janko
   twitter: jankomarohnic
