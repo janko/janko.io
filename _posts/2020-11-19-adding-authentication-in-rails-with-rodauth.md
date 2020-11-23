@@ -359,24 +359,20 @@ in the background, let's uncomment the following lines in our Rodauth app:
 class RodauthApp < Rodauth::Rails::App
   configure do
     # ...
-    send_reset_password_email do
-      mailer_send(:reset_password, email_to, reset_password_email_link)
+    create_reset_password_email do
+      RodauthMailer.reset_password(email_to, reset_password_email_link)
     end
-    send_verify_account_email do
-      mailer_send(:verify_account, email_to, verify_account_email_link)
+    create_verify_account_email do
+      RodauthMailer.verify_account(email_to, verify_account_email_link)
     end
-    send_verify_login_change_email do |login|
-      mailer_send(:verify_login_change, login, verify_login_change_old_login, verify_login_change_new_login, verify_login_change_email_link)
+    create_verify_login_change_email do |login|
+      RodauthMailer.verify_login_change(login, verify_login_change_old_login, verify_login_change_new_login, verify_login_change_email_link)
     end
-    send_password_changed_email do
-      mailer_send(:password_changed, email_to)
+    create_password_changed_email do
+      RodauthMailer.password_changed(email_to)
     end
-    auth_class_eval do
-      def mailer_send(type, *args)
-        db.after_commit do
-          RodauthMailer.public_send(type, *args).deliver_later
-        end
-      end
+    send_email do |email|
+      db.after_commit { email.deliver_later }
     end
     # ...
   end
