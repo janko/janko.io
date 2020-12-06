@@ -34,7 +34,7 @@ defaults:
       type: posts
     values:
       layout: post
-      permalink: /:title
+      permalink: /:title/
   - scope:
       path: ""
       type: drafts
@@ -44,6 +44,8 @@ defaults:
 exclude:
   - Gemfile
   - Gemfile.lock
+  - yarn.lock
+  - readme.md
   - .gitignore
   - node_modules
   - css/application.css

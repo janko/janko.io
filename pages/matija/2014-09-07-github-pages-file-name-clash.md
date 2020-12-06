@@ -1,6 +1,6 @@
 ---
 title: GitHub Pages file name clash
-permalink: /github-pages-file-name-clash
+permalink: /github-pages-file-name-clash/
 redirect_from: /2014/09/github-pages-file-name-clash/
 redirect_to: http://silvenon.com/github-pages-file-name-clash
 ---

@@ -1,6 +1,6 @@
 ---
 title: Simple layouting with Gulp
-permalink: /simple-layouting-with-gulp
+permalink: /simple-layouting-with-gulp/
 redirect_from: /2014/09/simple-layouting-with-gulp/
 redirect_to: http://silvenon.com/simple-layouting-with-gulp
 ---

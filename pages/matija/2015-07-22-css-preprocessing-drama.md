@@ -1,6 +1,6 @@
 ---
 title: CSS Preprocessing Drama
-permalink: /css-preprocessing-drama
+permalink: /css-preprocessing-drama/
 redirect_to: http://silvenon.com/css-preprocessing-drama
 ---
 

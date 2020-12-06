@@ -1,6 +1,6 @@
 ---
 title: Selenium testing workflow with WebdriverIO
-permalink: /node-selenium-testing-with-webdriverio
+permalink: /node-selenium-testing-with-webdriverio/
 redirect_to: http://silvenon.com/selenium-testing-workflow-with-webdriverio
 ---
 
