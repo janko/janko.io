@@ -1,7 +1,6 @@
 ---
 title: CSS Preprocessing Drama
-hidden: true
-tags: css sass postcss polyfill
+permalink: /css-preprocessing-drama
 redirect_to: http://silvenon.com/css-preprocessing-drama
 ---
 
