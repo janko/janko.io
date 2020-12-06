@@ -1,5 +1,7 @@
 title: Janko's Blog
 description: Sharing the wonders of Ruby
+url: https://janko.io
+logo: /images/logo.png
 
 author:
   first_name: Janko
@@ -12,17 +14,6 @@ author:
   email: janko@hey.com
   facebook: janko.marohnic
 
-plugins:
-  - jemoji
-  - jekyll-redirect-from
-  - jekyll-feed
-  - jekyll-seo-tag
-  - jekyll-sitemap
-
-baseurl: ""
-url: https://janko.io
-repository: twin/twin.github.io
-
 defaults:
   - scope:
       path: ""
@@ -34,21 +25,17 @@ defaults:
       type: posts
     values:
       layout: post
-      permalink: /:title/
+      permalink: /:title
   - scope:
       path: ""
       type: drafts
     values:
       layout: post
 
-logo: /images/logo.png
-
 exclude:
   - Gemfile
   - Gemfile.lock
   - .gitignore
-  - .sass-cache
-  - vendor
 
 emoji:
   src: "/images"
