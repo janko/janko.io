@@ -1,0 +1,13 @@
+{
+  "license": "MIT",
+  "dependencies": {
+    "@tailwindcss/typography": "^0.3.1",
+    "autoprefixer": "^10.0.4",
+    "postcss": "^8.1.14",
+    "postcss-import": "^13.0.0",
+    "tailwindcss": "^2.0.1"
+  },
+  "devDependencies": {
+    "postcss-cli": "^8.3.0"
+  }
+}

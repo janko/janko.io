@@ -7,8 +7,6 @@ excerpt: "This is the 1st part of a series of blog posts about Shrine. In this
 updated: 15.9.2019.
 ---
 
-*This article is part of the "Better File Uploads with Shrine" series.*
-
 It's been over a year since I started working on [Shrine], and during that time
 Shrine has acquired a lot of cool features, the ecosystem has grown
 significantly, and many people are already using Shrine in production.

@@ -7,12 +7,10 @@ tags: ruby file attachment upload shrine library gem
 series: better-file-uploads-with-shrine
 ---
 
-*This article is part of the "Better File Uploads with Shrine" series.*
-
 In the [Processing](/better-file-uploads-with-shrine-processing) article, we
 gave an introduction on what is generally possible with [Shrine] in terms of
 file processing. In this article I would like to go deeper into Shrine's
-[**eager processing**][derivatives] feature, showing some interesting use cases
+[eager processing][derivatives] feature, showing some interesting use cases
 that are possible thanks to its advanced API.
 
 First off, I chose the term "*eager* processing" to describe the process of

@@ -200,7 +200,7 @@ ImageProcessing::MiniMagick.call(image)
 ```
 
 <div>
-  <img alt="image auto orientation example" src="{{ site.baseurl }}/images/orientation.png" />
+  <img alt="image auto orientation example" src="/images/orientation.png" />
 </div>
 
 ## Sharpening thumbnails
@@ -220,7 +220,7 @@ ImageProcessing::MiniMagick.resize_to_fit(800, 800).call(image)
 ```
 
 <div>
-  <img alt="image sharpening example" src="{{ site.baseurl }}/images/sharpening.png" />
+  <img alt="image sharpening example" src="/images/sharpening.png" />
 </div>
 
 ## VIPS

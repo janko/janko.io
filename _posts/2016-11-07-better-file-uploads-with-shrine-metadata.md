@@ -6,8 +6,6 @@ excerpt: "This is the 5th part of a series of blog posts about Shrine. In this
 updated: 15.9.2019.
 ---
 
-*This article is part of the "Better File Uploads with Shrine" series.*
-
 Shrine has very flexible and customizable support for saving file metadata.
 Whenever Shrine is about to upload a file, it extracts available metadata from
 the file, and adds it to the returned `Shrine::UploadedFile` object.

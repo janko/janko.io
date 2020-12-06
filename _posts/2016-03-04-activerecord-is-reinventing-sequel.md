@@ -35,7 +35,7 @@ on both ORMs. I will list the features roughly in reverse chronological order
 
 ## ActiveRecord 5
 
-### Or
+### OR
 
 The `ActiveRecord::Relation#or` query method allows use of the OR operator
 (previously you'd have to write SQL strings):

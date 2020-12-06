@@ -10,7 +10,7 @@ The Ruby ecosystem has many HTTP clients gems to choose from. Some are built on
 ([Faraday], [HTTPI]).
 
 <div class="media">
-  <img alt="Taxonomy of Ruby HTTP client libraries" src="{{ site.baseurl }}/images/ruby-http-client-taxonomy.png" />
+  <img alt="Taxonomy of Ruby HTTP client libraries" src="/images/ruby-http-client-taxonomy.png" />
 </div>
 
 Over the years I've had the opportunity to try out most of these libraries, but

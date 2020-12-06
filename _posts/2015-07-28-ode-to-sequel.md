@@ -37,26 +37,25 @@ ActiveRecord.*
 
 ## The plugin system
 
+<img class="h-56 lg:h-64 float-right" src="/images/sequel-plugin_system.png" alt="Sequel's plugin system">
+
 While ActiveRecord is one monolithic gem, Sequel utilizes a [plugin system].
 Sequel consists of a relatively thin **core**, which gives you the most common
 behaviour, and you can then choose to add additional functionality via
 **plugins**. Each plugin corresponds to a single file included in the gem, but
 which is required only when the plugin is loaded.
 
-<div class="media">
-  <img class="media-object pull-right" src="{{ site.baseurl }}/images/sequel-plugin_system.png" height="250" alt="Sequel's plugin system">
-  <div class="media-body">
-{% highlight ruby %}
-require "sequel" # loads the core
+<div class="clear-both">
+  {% highlight ruby %}
+  require "sequel" # loads the core
 
-DB = Sequel.connect("postgres:///my_database")
+  DB = Sequel.connect("postgres:///my_database")
 
-Sequel::Model.plugin :validation_helpers
-Sequel::Model.plugin :json_serializer
-Sequel::Model.plugin :nested_attributes
-Sequel::Model.plugin :single_table_inheritance
-{% endhighlight %}
-  </div>
+  Sequel::Model.plugin :validation_helpers
+  Sequel::Model.plugin :json_serializer
+  Sequel::Model.plugin :nested_attributes
+  Sequel::Model.plugin :single_table_inheritance
+  {% endhighlight %}
 </div>
 
 Because of this design [vanilla Sequel loads 5 times faster than

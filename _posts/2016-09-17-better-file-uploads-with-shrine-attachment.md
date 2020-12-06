@@ -7,8 +7,6 @@ excerpt: "This is the 3rd part of a series of blog posts about Shrine. In this
 updated: 15.9.2019.
 ---
 
-*This article is part of the "Better File Uploads with Shrine" series.*
-
 In the [previous post] I talked about the foundation of Shrine's design. In
 this post I want to show you Shrine's high-level interface for attaching
 uploaded files to model instances, which builds upon this foundation.

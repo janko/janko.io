@@ -198,7 +198,7 @@ then built on top of the `model` plugin.
 ## Derivatives
 
 The `Shrine::Attacher` rewrite also enabled us to implement the main new
-feature – the [**derivatives**][derivatives] plugin. It is a reimplementation
+feature – the [derivatives][derivatives] plugin. It is a reimplementation
 of the existing [`versions`][versions] plugin, but with a proper API and much
 needed flexibility.
 

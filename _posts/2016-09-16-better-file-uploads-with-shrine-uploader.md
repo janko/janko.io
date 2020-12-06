@@ -6,8 +6,6 @@ excerpt: "This is the 2nd part of a series of blog posts about Shrine. In this
 updated: 15.9.2019.
 ---
 
-*This article is part of the "Better File Uploads with Shrine" series.*
-
 In the [previous post] I talked about motivation behind creating Shrine. In
 this post I want to show you the foundation that Shrine is built upon –
 storage, uploader and uploaded file.
