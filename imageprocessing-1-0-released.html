@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="no-js wf-loading" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ImageProcessing 1.0 Released | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="ImageProcessing 1.0 Released" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The ImageProcessing gem has just reached version 1.0, and I thought this would be a good opportunity to write an article about it. For those who don’t know, ImageProcessing is a wrapper gem that provides common image processing functionality needed when accepting image uploads from users (most notably resizing images)." />
+<meta property="og:description" content="The ImageProcessing gem has just reached version 1.0, and I thought this would be a good opportunity to write an article about it. For those who don’t know, ImageProcessing is a wrapper gem that provides common image processing functionality needed when accepting image uploads from users (most notably resizing images)." />
+<link rel="canonical" href="https://janko.io/imageprocessing-1-0-released" />
+<meta property="og:url" content="https://janko.io/imageprocessing-1-0-released" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-04-02T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ImageProcessing 1.0 Released" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/imageprocessing-1-0-released"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"ImageProcessing 1.0 Released","description":"The ImageProcessing gem has just reached version 1.0, and I thought this would be a good opportunity to write an article about it. For those who don’t know, ImageProcessing is a wrapper gem that provides common image processing functionality needed when accepting image uploads from users (most notably resizing images).","dateModified":"2018-04-02T00:00:00+02:00","datePublished":"2018-04-02T00:00:00+02:00","url":"https://janko.io/imageprocessing-1-0-released","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link rel="stylesheet" href="/css/output.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo" />
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby</p>
+      </div>
+    </header>
+
+    <div class="mx-6">
+      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
+        <article class="my-8">
+  <header class="text-center my-6">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">ImageProcessing 1.0 Released</h1>
+
+    <div class="text-gray-500 text-base">
+      <p class="post-byline">
+        By Janko Marohnić on
+        <time class="post-date" datetime="2018-04-02 00:00:00 +0200">
+          02 Apr 2018
+        </time>
+        
+      </p>
+    </div>
+  </header>
+
+  <div class="prose lg:prose-xl">
+    <p>The <a href="https://github.com/janko/image_processing">ImageProcessing</a> gem has just reached version 1.0, and I thought this
+would be a good opportunity to write an article about it. For those who don’t
+know, ImageProcessing is a wrapper gem that provides common image processing
+functionality needed when accepting image uploads from users (most notably
+resizing images).</p>
+
+<p>It was originally written to be used with <a href="http://shrinerb.com">Shrine</a>, because Paperclip,
+CarrierWave, Dragonfly, and Refile all came with their own image processing
+implementations that couldn’t be reused for Shrine. The goal was to extract
+knowledge from existing implementations into a gem that’s generic and reusable.
+The initial implementation was extracted from <a href="https://github.com/refile/refile-mini_magick">refile-mini_magick</a>.</p>
+
+<h2 id="original-api">Original API</h2>
+
+<p>Until recently, the <code class="language-plaintext highlighter-rouge">ImageProcessing::MiniMagick</code> module was just a container
+for common processing methods that use the <a href="https://github.com/minimagick/minimagick">MiniMagick</a> gem, accepting file
+objects on the input and returning file objects on the output.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"image_processing/mini_magick"</span>
+
+<span class="kp">include</span> <span class="no">ImageProcessing</span><span class="o">::</span><span class="no">MiniMagick</span>
+
+<span class="n">original</span> <span class="c1">#=&gt; #&lt;File:/path/to/original.jpg&gt;</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">resize_to_fit</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span> <span class="c1"># resize image to fit inside 800x800</span>
+<span class="n">result</span> <span class="c1">#=&gt; #&lt;Tempfile:/var/folders/k7/.../image_processing20180402-5116-1g0sibv.jpg&gt;</span>
+</code></pre></div></div>
+
+<p>You could also pass a block of code to add custom options to the ImageMagick
+command:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resize_to_fit</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">cmd</span><span class="o">|</span>
+  <span class="n">cmd</span><span class="p">.</span><span class="nf">quality</span> <span class="mi">100</span>
+<span class="k">end</span>
+<span class="c1"># mogrify -quality 100 -resize 800x800 image.jpg</span>
+</code></pre></div></div>
+
+<p>You might be asking now: why wouldn’t I just use MiniMagick directly? Well,
+let’s see how much ImageProcessing does for you:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resize_to_limit</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+
+<span class="c1"># would be roughly equivalent to</span>
+
+<span class="n">tempfile</span> <span class="o">=</span> <span class="no">Tempfile</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="s2">"image_processing"</span><span class="p">,</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">original</span><span class="p">.</span><span class="nf">path</span><span class="p">)],</span> <span class="ss">binmode: </span><span class="kp">true</span><span class="p">)</span>
+
+<span class="no">MiniMagick</span><span class="o">::</span><span class="no">Tool</span><span class="o">::</span><span class="no">Convert</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">cmd</span><span class="o">|</span>
+  <span class="n">cmd</span> <span class="o">&lt;&lt;</span> <span class="n">original</span>
+  <span class="n">cmd</span><span class="p">.</span><span class="nf">resize</span> <span class="s2">"800x800&gt;"</span> <span class="c1"># resize only if larger</span>
+  <span class="n">cmd</span> <span class="o">&lt;&lt;</span> <span class="n">tempfile</span><span class="p">.</span><span class="nf">path</span>
+<span class="k">end</span>
+
+<span class="n">tempfile</span><span class="p">.</span><span class="nf">open</span> <span class="c1"># refresh file descriptor</span>
+<span class="n">tempfile</span>
+</code></pre></div></div>
+
+<h3 id="limitations">Limitations</h3>
+
+<p>This API was very simple to understand, but it had several limitations:</p>
+
+<ul>
+  <li>
+    <p>With the block implementation, <strong>it’s not possible to add custom ImageMagick
+options both before and after the resize operation</strong>. This is important because
+sometimes the order of ImageMagick options matters. For example, <a href="https://www.imagemagick.org/script/command-line-options.php#resample"><code class="language-plaintext highlighter-rouge">-resample</code></a>
+should probably be applied after <a href="https://www.imagemagick.org/script/command-line-options.php#resize"><code class="language-plaintext highlighter-rouge">-resize</code></a>, not before.</p>
+
+    <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resize_to_fit</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">cmd</span><span class="o">|</span>
+  <span class="n">cmd</span><span class="p">.</span><span class="nf">resample</span> <span class="s2">"72x72"</span> <span class="c1"># this is run before resizing, but you proably want after</span>
+<span class="k">end</span>
+<span class="c1"># mogrify -resample 72x72 -resize 800x800 image.jpg</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Custom ImageMagick options were second-class citizens</strong> compared to the
+<code class="language-plaintext highlighter-rouge">#resize_to_fit</code> methods. This led to adding methods like <code class="language-plaintext highlighter-rouge">#crop</code>,
+<code class="language-plaintext highlighter-rouge">#auto_orient</code> and <code class="language-plaintext highlighter-rouge">#resample</code> just to avoid writing more code. This created
+a slippery slope, as it invited for adding more and more methods that just
+delegate directly to MiniMagick.</p>
+
+    <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># too verbose</span>
+<span class="n">minimagick</span><span class="p">(</span><span class="n">original</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">cmd</span><span class="o">|</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">crop</span> <span class="s2">"300x300+50+50"</span> <span class="p">}</span>
+
+<span class="c1"># nicer, but what decides whether an option will receive a dedicated method?</span>
+<span class="n">crop</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="s2">"300x300+50+50"</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>There was no easy way to specify default ImageMagick options</strong> that will be
+applied to each resize command, you had to pass the block for each command.</p>
+
+    <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># add "-quiet" option to each resize command</span>
+<span class="n">large</span>  <span class="o">=</span> <span class="n">resize_to_limit</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">cmd</span><span class="o">|</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">quiet</span> <span class="p">}</span>
+<span class="n">medium</span> <span class="o">=</span> <span class="n">resize_to_limit</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">cmd</span><span class="o">|</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">quiet</span> <span class="p">}</span>
+<span class="n">small</span>  <span class="o">=</span> <span class="n">resize_to_limit</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">cmd</span><span class="o">|</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">quiet</span> <span class="p">}</span>
+<span class="n">square</span> <span class="o">=</span> <span class="n">resize_to_fill</span><span class="p">(</span><span class="n">original</span><span class="p">,</span>  <span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">cmd</span><span class="o">|</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">quiet</span> <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>I wanted to come up with an improved API that would solve these problems.</p>
+
+<h2 id="new-chainable-api">New chainable API</h2>
+
+<p>Today the <code class="language-plaintext highlighter-rouge">ImageProcessing::MiniMagick</code> API looks like this:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">result</span> <span class="o">=</span> <span class="no">ImageProcessing</span><span class="o">::</span><span class="no">MiniMagick</span>
+  <span class="p">.</span><span class="nf">source</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>              <span class="c1"># source image</span>
+  <span class="p">.</span><span class="nf">loader</span><span class="p">(</span><span class="ss">page: </span><span class="mi">0</span><span class="p">)</span>           <span class="c1"># load options</span>
+  <span class="p">.</span><span class="nf">saver</span><span class="p">(</span><span class="ss">quality: </span><span class="mi">100</span><span class="p">)</span>       <span class="c1"># save options</span>
+  <span class="p">.</span><span class="nf">resize_to_limit</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span> <span class="c1"># macro</span>
+  <span class="p">.</span><span class="nf">strip</span>                     <span class="c1"># option</span>
+  <span class="p">.</span><span class="nf">call</span>                      <span class="c1"># execute processing with above parameters</span>
+
+<span class="n">result</span> <span class="c1">#=&gt; #&lt;Tempfile:/var/folders/k7/.../image_processing20180402-5116-1g0sibv.jpg&gt;</span>
+</code></pre></div></div>
+
+<p>If you’ve ever used <a href="https://github.com/httprb/http">HTTP.rb</a>, this kind of chainable API should look familar.
+The processing parameters are specified via “builder methods” (<code class="language-plaintext highlighter-rouge">#source</code>,
+<code class="language-plaintext highlighter-rouge">#resize_to_limit</code>, <code class="language-plaintext highlighter-rouge">#quality</code>, <code class="language-plaintext highlighter-rouge">#strip</code>), and at the end a “terminal method”
+(<code class="language-plaintext highlighter-rouge">#call</code>) is invoked which executes the processing and returns the result.</p>
+
+<p>You can invoke macros that are defined on the processor (<code class="language-plaintext highlighter-rouge">#resize_to_limit</code>,
+<code class="language-plaintext highlighter-rouge">#resize_to_fit</code>, <code class="language-plaintext highlighter-rouge">#resize_to_fill</code> etc), while any undefined method will be
+interpreted as an ImageMagick option (<code class="language-plaintext highlighter-rouge">#strip</code>, <code class="language-plaintext highlighter-rouge">#resample</code>, <code class="language-plaintext highlighter-rouge">#crop</code> etc).</p>
+
+<p>The chainable API solves all the problems we’ve mentioned from the old API:</p>
+
+<ul>
+  <li>
+    <p>Adding ImageMagick options before and after the resize command is now trivial:</p>
+
+    <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ImageProcessing</span><span class="o">::</span><span class="no">MiniMagick</span>
+  <span class="p">.</span><span class="nf">auto_orient</span>               <span class="c1"># before</span>
+  <span class="p">.</span><span class="nf">resize_to_limit</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">resample</span><span class="p">(</span><span class="s2">"72x72"</span><span class="p">)</span>         <span class="c1"># after</span>
+  <span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Invoking direct ImageMagick options is now equally easy as invoking macros:</p>
+
+    <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ImageProcessing</span><span class="o">::</span><span class="no">MiniMagick</span>
+  <span class="p">.</span><span class="nf">resize_to_limit</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span> <span class="c1"># macro</span>
+  <span class="p">.</span><span class="nf">quality</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>              <span class="c1"># option</span>
+  <span class="p">.</span><span class="nf">strip</span>                     <span class="c1"># option</span>
+  <span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Adding default ImageMagick options is now trivial:</p>
+
+    <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pipeline</span> <span class="o">=</span> <span class="no">ImageProcessing</span><span class="o">::</span><span class="no">MiniMagick</span>
+  <span class="p">.</span><span class="nf">source</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">quiet</span> <span class="c1"># default "-quiet" option</span>
+
+<span class="c1"># the "-quiet" option will be applied to each of these invocations</span>
+<span class="n">large</span>  <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+<span class="n">medium</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="n">small</span>  <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">square</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_fill!</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>What I like about this API is that <strong>it’s not a DSL</strong>, it’s just Ruby code that
+you have complete control over, so you can use regular Ruby conditionals,
+refactor complex processing into methods etc. It also doesn’t pollute the class
+that performs the processing with additional methods, as there is no module
+inclusion anymore.</p>
+
+<p>In addition to the API, some very useful features got added to the gem as well.</p>
+
+<h2 id="autorotation">Autorotation</h2>
+
+<p>When viewing a photo taken from a camera, most photo apps will normally rotate
+the photo as needed, so that it displays correctly regardless of whether it was
+taken in the “landscape” or “portrait” angle of the camera.</p>
+
+<p>In reality, photos taken by the camera in “portrait” angle are often saved
+sideways, along with an <code class="language-plaintext highlighter-rouge">Orientation</code> <a href="https://en.wikipedia.org/wiki/Exif">EXIF tag</a> indicating the angle of the
+camera, and most photo apps will see that EXIF data and automatically display
+the photo in the correct orientation.</p>
+
+<p>Unfortunately, this isn’t the case for some browsers. When you load a photo
+that’s not correctly oriented into an <code class="language-plaintext highlighter-rouge">&lt;img&gt;</code> tag, the browser might ignore the
+EXIF data and display the photo as-is, without rotating it.</p>
+
+<p>That’s why it’s best to rotate the photo correctly when it is first uploaded to
+your web app and then use the rotated photo when displaying it or when
+generating thumbnails. ImageMagick supports this with the <a href="https://www.imagemagick.org/script/command-line-options.php#auto-orient"><code class="language-plaintext highlighter-rouge">-auto-orient</code></a>
+option, and ImageProcessing adds this option by default.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ImageProcessing</span><span class="o">::</span><span class="no">MiniMagick</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="c1"># convert input.jpg -auto-orient ... output.jpg</span>
+</code></pre></div></div>
+
+<div>
+  <img alt="image auto orientation example" src="/images/orientation.png" />
+</div>
+
+<h2 id="sharpening-thumbnails">Sharpening thumbnails</h2>
+
+<p>When an image is resized, the thumbnail will end up slightly blurry compared to
+the original, due to the resizing algorithm. Did you know that it’s possible to
+address this? I didn’t, not until I started reading source code of other image
+processing wrapper libraries, and stumbled on some of them doing “sharpening”
+post-resize.</p>
+
+<p>ImageMagick has a <a href="https://www.imagemagick.org/script/command-line-options.php#sharpen"><code class="language-plaintext highlighter-rouge">-sharpen</code></a> option just for that, which ImageProcessing
+automatically applies in the <code class="language-plaintext highlighter-rouge">#resize_*</code> macros after resizing.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ImageProcessing</span><span class="o">::</span><span class="no">MiniMagick</span><span class="p">.</span><span class="nf">resize_to_fit</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">).</span><span class="nf">call</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="c1"># convert input.jpg ... -resize 800x800 -sharpen 0x1 ... output.jpg</span>
+</code></pre></div></div>
+
+<div>
+  <img alt="image sharpening example" src="/images/sharpening.png" />
+</div>
+
+<h2 id="vips">VIPS</h2>
+
+<p>Let’s see how long typical thumbnail generation might take with MiniMagick:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"image_processing/mini_magick"</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="no">ImageProcessing</span><span class="o">::</span><span class="no">MiniMagick</span><span class="p">.</span><span class="nf">source</span><span class="p">(</span><span class="s2">"image.jpg"</span><span class="p">)</span>
+
+<span class="nb">puts</span> <span class="no">Benchmark</span><span class="p">.</span><span class="nf">realtime</span> <span class="p">{</span>
+  <span class="n">large_2x</span>  <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">1600</span><span class="p">,</span> <span class="mi">1600</span><span class="p">)</span>
+  <span class="n">large</span>     <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+  <span class="n">medium_2x</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+  <span class="n">medium</span>    <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+  <span class="n">small_2x</span>  <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
+  <span class="n">small</span>     <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_limit!</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+  <span class="n">square_2x</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_fill!</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+  <span class="n">square</span>    <span class="o">=</span> <span class="n">pipeline</span><span class="p">.</span><span class="nf">resize_to_fill!</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>For <a href="https://upload.wikimedia.org/wikipedia/commons/3/36/Hopetoun_falls.jpg">this test image</a> generating the thumbnails above took <strong>7.2
+seconds</strong> on my machine. This is reasonable, considering the source image has
+dimensions 3000x2000.</p>
+
+<p>However, let’s try executing the same script again, but this time we’ll swap
+out the MiniMagick module for an alternative one (the resizing code remains
+unchanged):</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"image_processing/vips"</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="no">ImageProcessing</span><span class="o">::</span><span class="no">Vips</span><span class="p">.</span><span class="nf">source</span><span class="p">(</span><span class="s2">"image.jpg"</span><span class="p">)</span>
+
+<span class="c1"># ... resizing code remains the same ...</span>
+</code></pre></div></div>
+
+<p>When I execute this on my machine, it now takes <strong>0.8 seconds</strong> to generate the
+thumbnails. That’s a <strong>9x speedup</strong> compared to the MiniMagick version, and all
+we had to do was change the constant name.</p>
+
+<p>This is because the Vips module uses <a href="http://libvips.github.io/libvips/">libvips</a> to generate thumbnails, which
+<a href="https://github.com/libvips/libvips/wiki/Speed-and-memory-use">performs significantly better than ImageMagick</a> (see <a href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is
+libvips quick</a>). Among other things, libvips automatically caches previous
+operations, which gives a huge speedup when generating multiple thumbnails from
+the same source image (see <a href="http://libvips.github.io/libvips/API/current/How-it-works.md.html">How libvips works</a> for more details on caching).</p>
+
+<p>So far we did uncover some minor limitations in libvips:</p>
+
+<ul>
+  <li>
+    <p>While libvips is able to load GIF files, it’s currently not able to save
+files in the GIF format. If you’re accepting GIFs, you’ll need to either
+convert them to another format or use ImageMagick.</p>
+  </li>
+  <li>
+    <p>The “autorotate” feature of libvips works only for <a href="http://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/">orientation values</a> of
+1, 3, 6, and 8. This covers most images, but if you need to support other
+orientations you should probably use ImageMagick.</p>
+  </li>
+</ul>
+
+<p>The <code class="language-plaintext highlighter-rouge">ImageProcessing::MiniMagick</code> and <code class="language-plaintext highlighter-rouge">ImageProcessing::Vips</code> modules both
+share the same chainable API, and they aim to maintain the same API and
+behaviour as much as possible (including autorotation and sharpening), so
+switching from one to the other should be relatively easy.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>If you’re processing images uploaded by users, ImageProcessing is a very useful
+gem to have in your toolkit. It abstracts common ways to generate thumbnails
+and includes some very useful defaults. It provides backends for both
+ImageMagick and libvips, making the API and behaviour as uniform as possible
+between the two implementations. Hopefully, this will help make libvips more
+mainstream in Ruby applications, like <a href="https://github.com/lovell/sharp">sharp</a> has done for Node.js.</p>
+
+<p>I like that for Shrine I decided not to write yet another homegrown solution
+for processing uploaded images, but instead created a generic library that
+anyone can use. This allowed it to grow independently and develop a proper
+API that can be used for a wider array of use cases.</p>
+
+<h2 id="credits">Credits</h2>
+
+<p>I want to thank:</p>
+
+<ul>
+  <li><strong><a href="https://github.com/jnicklas">@jnicklas</a></strong> for refile-mini_magick from which the initial implementation
+was extracted</li>
+  <li><strong><a href="https://github.com/GustavoCaso">@GustavoCaso</a></strong> for the initial libvips implementation</li>
+  <li><strong><a href="https://github.com/mokolabs">@mokolabs</a></strong> for all his help with sharpening and bringing ImageProcessing to version 1.0</li>
+  <li><strong><a href="https://github.com/jcupitt">@jcupitt</a></strong> for maintaining the VIPS project for the last 13 years, and
+being exceptionally responsive to my libvips/ruby-vips inquiries</li>
+</ul>
+
+
+  </div>
+</article>
+
+<div class="mt-10">
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'twinblog'; // required: replace example with your forum shortname
+    var disqus_identifier = '/imageprocessing-1-0-released';
+    var disqus_url = 'https://janko.io/imageprocessing-1-0-released';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+
+      </main>
+    </div>
+
+    
+  </body>
+</html>

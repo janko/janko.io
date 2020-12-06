@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html class="no-js wf-loading" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Adding Authentication in Rails 6 with Rodauth | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Adding Authentication in Rails 6 with Rodauth" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction." />
+<meta property="og:description" content="In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction." />
+<link rel="canonical" href="https://janko.io/adding-authentication-in-rails-with-rodauth" />
+<meta property="og:url" content="https://janko.io/adding-authentication-in-rails-with-rodauth" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-11-19T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Adding Authentication in Rails 6 with Rodauth" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Adding Authentication in Rails 6 with Rodauth","description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","url":"https://janko.io/adding-authentication-in-rails-with-rodauth","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link rel="stylesheet" href="/css/output.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo" />
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby</p>
+      </div>
+    </header>
+
+    <div class="mx-6">
+      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
+        <article class="my-8">
+  <header class="text-center my-6">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Adding Authentication in Rails 6 with Rodauth</h1>
+
+    <div class="text-gray-500 text-base">
+      <p class="post-byline">
+        By Janko Marohnić on
+        <time class="post-date" datetime="2020-11-19 00:00:00 +0100">
+          19 Nov 2020
+        </time>
+        
+      </p>
+    </div>
+  </header>
+
+  <div class="prose lg:prose-xl">
+    <p>In this tutorial, we’ll show how to add fully functional authentication and
+account management functionality into a Rails 6 app, using the <strong><a href="https://github.com/jeremyevans/rodauth">Rodauth</a></strong>
+authentication framework. Rodauth has many advantages over the mainstream
+alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
+<a href="https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/">previous article</a> for an introduction.</p>
+
+<p>We’ll be working with a fresh Rails app that has basic posts CRUD and
+<a href="https://getbootstrap.com/">Bootstrap</a> installed:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://gitlab.com/janko-m/rails_bootstrap_starter.git rodauth_blog
+<span class="nv">$ </span><span class="nb">cd </span>rodauth_blog
+<span class="nv">$ </span>bin/setup
+</code></pre></div></div>
+
+<h2 id="installing-rodauth">Installing Rodauth</h2>
+
+<p>Let’s start by adding the <a href="https://github.com/janko/rodauth-rails">rodauth-rails</a> gem to our Gemfile:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add rodauth-rails
+</code></pre></div></div>
+
+<p>Next, we’ll run the <code class="language-plaintext highlighter-rouge">rodauth:install</code> generator provided by rodauth-rails:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:install
+
+<span class="c"># create  db/migrate/20200820215819_create_rodauth.rb</span>
+<span class="c"># create  config/initializers/rodauth.rb</span>
+<span class="c"># create  config/initializers/sequel.rb</span>
+<span class="c"># create  app/lib/rodauth_app.rb</span>
+<span class="c"># create  app/controllers/rodauth_controller.rb</span>
+<span class="c"># create  app/models/account.rb</span>
+</code></pre></div></div>
+
+<p>This will create the Rodauth app with default authentication features,
+configure <a href="https://github.com/jeremyevans/sequel">Sequel</a> which Rodauth uses for database interaction to <a href="https://github.com/janko/sequel-activerecord_connection">reuse Active
+Record’s database connection</a>, and generate a
+migration that will create tables for the loaded Rodauth features. Let’s run
+the migration:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails db:migrate
+
+<span class="c"># == CreateRodauth: migrating ====================================</span>
+<span class="c"># -- create_table(:accounts)</span>
+<span class="c"># -- create_table(:account_password_hashes)</span>
+<span class="c"># -- create_table(:account_password_reset_keys)</span>
+<span class="c"># -- create_table(:account_verification_keys)</span>
+<span class="c"># -- create_table(:account_login_change_keys)</span>
+<span class="c"># -- create_table(:account_remember_keys)</span>
+<span class="c"># == CreateRodauth: migrated ===========================</span>
+</code></pre></div></div>
+
+<p>If everything was installed successfully, we should be able to open the
+<code class="language-plaintext highlighter-rouge">/create-account</code> page and see Rodauth’s default registration form.</p>
+
+<p><img src="/images/rodauth-create-account.png" alt="Rodauth create account page" /></p>
+
+<h2 id="adding-authentication-links">Adding authentication links</h2>
+
+<p>Rodauth configuration generated by rodauth-rails provides several routes for
+authentication and account management:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails rodauth:routes
+
+<span class="c"># /login                   rodauth.login_path</span>
+<span class="c"># /create-account          rodauth.create_account_path</span>
+<span class="c"># /verify-account-resend   rodauth.verify_account_resend_path</span>
+<span class="c"># /verify-account          rodauth.verify_account_path</span>
+<span class="c"># /logout                  rodauth.logout_path</span>
+<span class="c"># /remember                rodauth.remember_path</span>
+<span class="c"># /reset-password-request  rodauth.reset_password_request_path</span>
+<span class="c"># /reset-password          rodauth.reset_password_path</span>
+<span class="c"># /change-password         rodauth.change_password_path</span>
+<span class="c"># /change-login            rodauth.change_login_path</span>
+<span class="c"># /verify-login-change     rodauth.verify_login_change_path</span>
+<span class="c"># /close-account           rodauth.close_account_path</span>
+</code></pre></div></div>
+
+<p>Let’s use this information to add some main authentication links to our
+navigation header:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/application/_navbar.html.erb --&gt;</span>
+<span class="c">&lt;!-- ... ---&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">logged_in?</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"dropdown"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="n">current_account</span><span class="p">.</span><span class="nf">email</span><span class="p">,</span> <span class="s2">"#"</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-info dropdown-toggle"</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">toggle: </span><span class="s2">"dropdown"</span> <span class="p">}</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"dropdown-menu dropdown-menu-right"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Change password"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">change_password_path</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"dropdown-item"</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Change email"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">change_login_path</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"dropdown-item"</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"dropdown-divider"</span><span class="nt">&gt;&lt;/div&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Close account"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">close_account_path</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"dropdown-item text-danger"</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign out"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">logout_path</span><span class="p">,</span> <span class="ss">method: :post</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"dropdown-item"</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">else</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;div&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign in"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">login_path</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-outline-primary"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Sign up"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">create_account_path</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-success"</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="c">&lt;!-- ... ---&gt;</span>
+</code></pre></div></div>
+
+<p>Rodauth doesn’t define the <code class="language-plaintext highlighter-rouge">#current_account</code> method, so let’s copy-paste the
+example provided in the rodauth-rails README:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/controllers/application_controller.rb</span>
+<span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_action</span> <span class="ss">:current_account</span><span class="p">,</span> <span class="ss">if: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">logged_in?</span> <span class="p">}</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">current_account</span>
+    <span class="vi">@current_account</span> <span class="o">||=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">rodauth</span><span class="p">.</span><span class="nf">session_value</span><span class="p">)</span>
+  <span class="k">rescue</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">RecordNotFound</span>
+    <span class="n">rodauth</span><span class="p">.</span><span class="nf">logout</span>
+    <span class="n">rodauth</span><span class="p">.</span><span class="nf">login_required</span>
+  <span class="k">end</span>
+  <span class="n">helper_method</span> <span class="ss">:current_account</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now our application will show login and registration links when the user is not
+logged in:</p>
+
+<p><img src="/images/rodauth-login-registration-links.png" alt="Rodauth login and registration links" /></p>
+
+<p>While logged in users will see some basic account management links:</p>
+
+<p><img src="/images/rodauth-account-management-links.png" alt="Rodauth account management links" /></p>
+
+<h2 id="requiring-authentication">Requiring authentication</h2>
+
+<p>Now that we have working authentication, we’ll likely want to require the user
+to be authenticated for certain parts of our application. In our case, we want
+to authenticate the posts controller.</p>
+
+<p>We could add a <code class="language-plaintext highlighter-rouge">before_action</code> callback to the controller, but Rodauth allows
+us to do this inside the Rodauth app’s route block, which is called before each
+Rails route. This way we can keep our authentication logic contained in a
+single place.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
+<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+  <span class="c1"># ...</span>
+  <span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+    <span class="c1"># ...</span>
+    <span class="k">if</span> <span class="n">r</span><span class="p">.</span><span class="nf">path</span><span class="p">.</span><span class="nf">start_with?</span><span class="p">(</span><span class="s2">"/posts"</span><span class="p">)</span>
+      <span class="n">rodauth</span><span class="p">.</span><span class="nf">require_authentication</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now visiting the <code class="language-plaintext highlighter-rouge">/posts</code> page will redirect the user to the <code class="language-plaintext highlighter-rouge">/login</code> page if
+they’re not logged in.</p>
+
+<p><img src="/images/rodauth-login-required.png" alt="Rodauth login required" /></p>
+
+<p>We’ll also want to associate the posts to the <code class="language-plaintext highlighter-rouge">accounts</code> table:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate migration add_account_id_to_posts account:references
+<span class="nv">$ </span>rails db:migrate
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/models/account.rb</span>
+<span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:posts</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>And scope them to the current account in the posts controller:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/controllers/posts_controller.rb</span>
+<span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@posts</span> <span class="o">=</span> <span class="n">current_account</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">all</span>
+  <span class="k">end</span>
+  <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@post</span> <span class="o">=</span> <span class="n">current_account</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">build</span><span class="p">(</span><span class="n">post_params</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+  <span class="c1"># ...</span>
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">set_post</span>
+      <span class="vi">@post</span> <span class="o">=</span> <span class="n">current_account</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+    <span class="k">end</span>
+    <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="adding-new-fields">Adding new fields</h2>
+
+<p>To have something other than an email address to display our users, let’s
+require users to enter their name during registration. This will also give us
+an opportunity to see how Rodauth can be configured.</p>
+
+<p>Since we’ll need to edit the registration form, let’s first copy Rodauth’s HTML
+templates into our Rails application:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:views
+
+<span class="c"># create  app/views/rodauth/_field.html.erb</span>
+<span class="c"># create  app/views/rodauth/_field_error.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_field.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_display.html.erb</span>
+<span class="c"># create  app/views/rodauth/_password_field.html.erb</span>
+<span class="c"># create  app/views/rodauth/_submit.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_form.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_form_footer.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_form_header.html.erb</span>
+<span class="c"># create  app/views/rodauth/login.html.erb</span>
+<span class="c"># create  app/views/rodauth/multi_phase_login.html.erb</span>
+<span class="c"># create  app/views/rodauth/logout.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_confirm_field.html.erb</span>
+<span class="c"># create  app/views/rodauth/_password_confirm_field.html.erb</span>
+<span class="c"># create  app/views/rodauth/create_account.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_hidden_field.html.erb</span>
+<span class="c"># create  app/views/rodauth/verify_account_resend.html.erb</span>
+<span class="c"># create  app/views/rodauth/verify_account.html.erb</span>
+<span class="c"># create  app/views/rodauth/reset_password_request.html.erb</span>
+<span class="c"># create  app/views/rodauth/reset_password.html.erb</span>
+<span class="c"># create  app/views/rodauth/_new_password_field.html.erb</span>
+<span class="c"># create  app/views/rodauth/change_password.html.erb</span>
+<span class="c"># create  app/views/rodauth/change_login.html.erb</span>
+<span class="c"># create  app/views/rodauth/close_account.html.erb</span>
+</code></pre></div></div>
+
+<p>We can now open the <code class="language-plaintext highlighter-rouge">create_account.erb</code> template and add a new <code class="language-plaintext highlighter-rouge">name</code> field:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/rodauth/create_account.erb --&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">form_tag</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">create_account_path</span><span class="p">,</span> <span class="ss">method: :post</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  <span class="c">&lt;!-- new "name" field --&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"form-group"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">label_tag</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"Name"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"field"</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"name"</span><span class="p">,</span> <span class="ss">id: </span><span class="s2">"name"</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+
+  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"login_field"</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"login_confirm_field"</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">require_login_confirmation?</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"password_field"</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">create_account_set_password?</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"password_confirm_field"</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">create_account_set_password?</span> <span class="o">&amp;&amp;</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">require_password_confirmation?</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"submit"</span><span class="p">,</span> <span class="ss">value: </span><span class="s2">"Create Account"</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>Since the user’s name won’t be used for authentication, let’s store it in a new
+<code class="language-plaintext highlighter-rouge">profiles</code> table, and associate the <code class="language-plaintext highlighter-rouge">profiles</code> table to the <code class="language-plaintext highlighter-rouge">accounts</code> table.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate model Profile account:references name:string
+<span class="nv">$ </span>rails db:migrate
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/models/account.rb</span>
+<span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_one</span> <span class="ss">:profile</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>We now need our Rodauth app to actually handle the new <code class="language-plaintext highlighter-rouge">name</code> parameter. We’ll
+validate that it’s filled in and create the associated profile record after the
+account is created.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
+<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+    <span class="n">before_create_account</span> <span class="k">do</span>
+      <span class="c1"># Validate presence of the name field</span>
+      <span class="n">throw_error_status</span><span class="p">(</span><span class="mi">422</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"must be present"</span><span class="p">)</span> <span class="k">unless</span> <span class="n">param_or_nil</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">after_create_account</span> <span class="k">do</span>
+      <span class="c1"># Create the associated profile record with name</span>
+      <span class="no">Profile</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">account_id: </span><span class="n">account_id</span><span class="p">,</span> <span class="ss">name: </span><span class="n">param</span><span class="p">(</span><span class="s2">"name"</span><span class="p">))</span>
+    <span class="k">end</span>
+    <span class="n">after_close_account</span> <span class="k">do</span>
+      <span class="c1"># Delete the associated profile record</span>
+      <span class="no">Profile</span><span class="p">.</span><span class="nf">find_by!</span><span class="p">(</span><span class="ss">account_id: </span><span class="n">account_id</span><span class="p">).</span><span class="nf">destroy</span>
+    <span class="k">end</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now we can update our navigation header to use the user’s name instead of their
+email address:</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">-     &lt;%= link_to current_account.email, "#", class: "btn btn-info dropdown-toggle", data: { toggle: "dropdown" } %&gt;
+</span><span class="gi">+     &lt;%= link_to current_account.profile.name, "#", class: "btn btn-info dropdown-toggle", data: { toggle: "dropdown" } %&gt;
+</span></code></pre></div></div>
+
+<p><img src="/images/rodauth-account-name.png" alt="Displayed new account name" /></p>
+
+<h2 id="sending-emails-asynchronously">Sending emails asynchronously</h2>
+
+<p>Rodauth will send emails as part of account verification, email change,
+password change, and password reset. By default, these emails will be sent
+synchronously via an internal mailer, but for performance reasons we should
+send these emails asynchronously inside a background job.</p>
+
+<p>Since we’ll want to modify Rodauth’s default email templates eventually, let’s
+create our own mailer with the default templates:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:mailer
+
+<span class="c"># create  app/mailers/rodauth_mailer.rb</span>
+<span class="c"># create  app/views/rodauth_mailer/email_auth.text.erb</span>
+<span class="c"># create  app/views/rodauth_mailer/password_changed.text.erb</span>
+<span class="c"># create  app/views/rodauth_mailer/reset_password.text.erb</span>
+<span class="c"># create  app/views/rodauth_mailer/unlock_account.text.erb</span>
+<span class="c"># create  app/views/rodauth_mailer/verify_account.text.erb</span>
+<span class="c"># create  app/views/rodauth_mailer/verify_login_change.text.erb</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RodauthMailer</span> <span class="o">&lt;</span> <span class="no">ApplicationMailer</span>
+  <span class="k">def</span> <span class="nf">verify_account</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">email_link</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">reset_password</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">email_link</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">verify_login_change</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">old_login</span><span class="p">,</span> <span class="n">new_login</span><span class="p">,</span> <span class="n">email_link</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">password_changed</span><span class="p">(</span><span class="n">recipient</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now, to have our mailer automatically called by Rodauth and to deliver emails
+in the background, let’s uncomment the following lines in our Rodauth app:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
+<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+    <span class="n">create_reset_password_email</span> <span class="k">do</span>
+      <span class="no">RodauthMailer</span><span class="p">.</span><span class="nf">reset_password</span><span class="p">(</span><span class="n">email_to</span><span class="p">,</span> <span class="n">reset_password_email_link</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">create_verify_account_email</span> <span class="k">do</span>
+      <span class="no">RodauthMailer</span><span class="p">.</span><span class="nf">verify_account</span><span class="p">(</span><span class="n">email_to</span><span class="p">,</span> <span class="n">verify_account_email_link</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">create_verify_login_change_email</span> <span class="k">do</span> <span class="o">|</span><span class="n">login</span><span class="o">|</span>
+      <span class="no">RodauthMailer</span><span class="p">.</span><span class="nf">verify_login_change</span><span class="p">(</span><span class="n">login</span><span class="p">,</span> <span class="n">verify_login_change_old_login</span><span class="p">,</span> <span class="n">verify_login_change_new_login</span><span class="p">,</span> <span class="n">verify_login_change_email_link</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">create_password_changed_email</span> <span class="k">do</span>
+      <span class="no">RodauthMailer</span><span class="p">.</span><span class="nf">password_changed</span><span class="p">(</span><span class="n">email_to</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">send_email</span> <span class="k">do</span> <span class="o">|</span><span class="n">email</span><span class="o">|</span>
+      <span class="n">db</span><span class="p">.</span><span class="nf">after_commit</span> <span class="p">{</span> <span class="n">email</span><span class="p">.</span><span class="nf">deliver_later</span> <span class="p">}</span>
+    <span class="k">end</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>We enqueue the email deliveries after the database transaction commits, to
+ensure that any database changes made before Rodauth called into our mailer
+have been applied when the background job is picked up.</p>
+
+<h2 id="closing-words">Closing words</h2>
+
+<p>In this tutorial we’ve gradually built out a complete authentication and
+account management flow using the Rodauth authentication framework. It
+supports login &amp; logout, account creation with email verification and a grace
+period, password change &amp; password reset, email change with email verification,
+and close account functionality. We’ve seen how to require authentication for
+certain routes, add new fields to the registration form, and send
+authentication emails asynchrously.</p>
+
+<p>I’m personally very excited about Rodauth, as it has an impressive featureset
+and a refreshingly clean design, and also it’s not tied to Rails. I’ve been
+working hard on <a href="https://github.com/janko/rodauth-rails">rodauth-rails</a> to make it as easy as possible to get started
+with in Rails, so hopefully it will help Rodauth gain more traction in the
+Rails community.</p>
+
+
+  </div>
+</article>
+
+<div class="mt-10">
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'twinblog'; // required: replace example with your forum shortname
+    var disqus_identifier = '/adding-authentication-in-rails-with-rodauth';
+    var disqus_url = 'https://janko.io/adding-authentication-in-rails-with-rodauth';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+
+      </main>
+    </div>
+
+    
+  </body>
+</html>
