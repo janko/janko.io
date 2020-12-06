@@ -20,7 +20,7 @@ plugins:
   - jekyll-sitemap
 
 baseurl: ""
-url: http://twin.github.io
+url: https://janko.io
 repository: twin/twin.github.io
 
 defaults:
