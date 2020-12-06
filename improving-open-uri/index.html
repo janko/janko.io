@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="no-js wf-loading" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Improving open-uri | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Improving open-uri" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="When working on the Shrine library for handling file uploads, in multiple places I needed to be able to download a file from URL. If you know the Ruby standard library well, the solution might be obvious to you: open-uri." />
+<meta property="og:description" content="When working on the Shrine library for handling file uploads, in multiple places I needed to be able to download a file from URL. If you know the Ruby standard library well, the solution might be obvious to you: open-uri." />
+<link rel="canonical" href="https://janko.io/improving-open-uri/" />
+<meta property="og:url" content="https://janko.io/improving-open-uri/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-05-24T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Improving open-uri" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/improving-open-uri/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Improving open-uri","description":"When working on the Shrine library for handling file uploads, in multiple places I needed to be able to download a file from URL. If you know the Ruby standard library well, the solution might be obvious to you: open-uri.","dateModified":"2016-05-24T00:00:00+02:00","datePublished":"2016-05-24T00:00:00+02:00","url":"https://janko.io/improving-open-uri/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link rel="stylesheet" href="/css/output.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo" />
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby</p>
+      </div>
+    </header>
+
+    <div class="mx-6">
+      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
+        <article class="my-8">
+  <header class="text-center my-6">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Improving open-uri</h1>
+
+    <div class="text-gray-500 text-base">
+      <p class="post-byline">
+        By Janko Marohnić on
+        <time class="post-date" datetime="2016-05-24 00:00:00 +0200">
+          24 May 2016
+        </time>
+        
+      </p>
+    </div>
+  </header>
+
+  <div class="prose lg:prose-xl">
+    <p>When working on the <a href="https://github.com/shrinerb/shrine">Shrine</a> library for handling file uploads, in multiple
+places I needed to be able to download a file from URL. If you know the Ruby
+standard library well, the solution might be obvious to you: <a href="http://ruby-doc.org/stdlib-2.2.0/libdoc/open-uri/rdoc/OpenURI.html">open-uri</a>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"open-uri"</span>
+<span class="n">result</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"http://example.com/image.jpg"</span><span class="p">)</span>
+<span class="n">result</span> <span class="c1">#=&gt; #&lt;Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz&gt;</span>
+</code></pre></div></div>
+
+<p>Open-uri is something that I indeed very much wanted to use for my use case. It
+ships with Ruby, so there are no external dependencies (just <a href="http://ruby-doc.org/stdlib-2.3.1/libdoc/net/http/rdoc/Net/HTTP.html">Net::HTTP</a>), and
+it has many benefits:</p>
+
+<ul>
+  <li>downloads to a unique filesystem location (using Tempfile)</li>
+  <li>supports HTTP/HTTPS/FTP links</li>
+  <li>follows redirects</li>
+  <li>memory efficient</li>
+  <li>easy basic authentication</li>
+  <li>easy proxy</li>
+</ul>
+
+<p>However, also considering that in my case the URL could come from user input,
+open-uri turned out to have many limiations and quirks:</p>
+
+<ul>
+  <li>Using <code class="language-plaintext highlighter-rouge">Kernel#open</code> <a href="http://sakurity.com/blog/2015/02/28/openuri.html">makes you vulnerable to remote code execution</a></li>
+  <li>If the remote file is smaller than 10KB, open-uri actually returns a StringIO instead of a Tempfile</li>
+  <li>URL’s file extension isn’t preserved in downloaded Tempfile</li>
+  <li>You cannot limit maximum number of redirects</li>
+  <li>You cannot limit maximum filesize</li>
+</ul>
+
+<p>I’ve thought about alternatives: <a href="https://github.com/rest-client/rest-client">rest-client</a>, <code class="language-plaintext highlighter-rouge">curl</code> or <code class="language-plaintext highlighter-rouge">wget</code>. However,
+rest-client was a too heavy dependency just for downloading, and I didn’t want
+to depend on external CLI tools. Also, none of them were able to properly limit
+the maximum filesize, which I found important in context of Shrine.</p>
+
+<p>So, realizing that I still wanted to use open-uri, I decided to make a wrapper
+around it that addresses these limitations. I want to guide you through my
+journey, fixing one issue at a time.</p>
+
+<h2 id="improvements">Improvements</h2>
+
+<h3 style="text-transform: none;">Kernel#open</h3>
+
+<p>Ruby has a <code class="language-plaintext highlighter-rouge">Kernel#open</code> method, which given a file path acts as <code class="language-plaintext highlighter-rouge">File.open</code>.
+but given a string that starts with “|”, it interprets it as a shell command
+and returns an IO connected to the spawned subprocess:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">open</span><span class="p">(</span><span class="s2">"| ls"</span><span class="p">)</span> <span class="c1"># returns an IO connected to the `ls` shell command</span>
+</code></pre></div></div>
+
+<p>Open-uri extends <code class="language-plaintext highlighter-rouge">Kernel#open</code> with the ability to accept URLs. However, if the
+URL is coming from user input, we should never pass it to <code class="language-plaintext highlighter-rouge">Kernel#open</code>,
+because different users have different ideas on what is a “URL”; someone might
+think that <code class="language-plaintext highlighter-rouge">| rm -rf ~</code> is a nice looking URL.</p>
+
+<p>A little known fact is that <code class="language-plaintext highlighter-rouge">Kernel#open</code> just delegates to
+<code class="language-plaintext highlighter-rouge">URI::(HTTP|HTTPS|FTP)#open</code>, and we can simply use that instead:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="s2">"http://example.com/image.jpg"</span><span class="p">)</span> <span class="c1">#=&gt; #&lt;URI::HTTP&gt;</span>
+<span class="n">uri</span><span class="p">.</span><span class="nf">open</span> <span class="c1">#=&gt; #&lt;Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz&gt;</span>
+</code></pre></div></div>
+
+<h3 style="text-transform: none;">StringIO</h3>
+
+<p>Stangely, if the remote file has less than 10KB, open-uri will actually return
+a StringIO instead of a Tempfile.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">uri</span><span class="p">.</span><span class="nf">open</span> <span class="c1">#=&gt; #&lt;StringIO&gt;</span>
+</code></pre></div></div>
+
+<p>In context of <a href="https://github.com/shrinerb/shrine">Shrine</a> I wanted the returned IO to <em>always</em> be a file, for
+consistency and because it could later be given for processing. We can easily
+fix that:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">io</span> <span class="o">=</span> <span class="n">uri</span><span class="p">.</span><span class="nf">open</span>
+
+<span class="k">if</span> <span class="n">io</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">StringIO</span><span class="p">)</span>
+  <span class="n">downloaded</span> <span class="o">=</span> <span class="no">Tempfile</span><span class="p">.</span><span class="nf">new</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">downloaded</span><span class="p">.</span><span class="nf">path</span><span class="p">,</span> <span class="n">io</span><span class="p">.</span><span class="nf">string</span><span class="p">)</span>
+<span class="k">else</span>
+  <span class="n">downloaded</span> <span class="o">=</span> <span class="n">io</span>
+<span class="k">end</span>
+
+<span class="n">downloaded</span> <span class="c1"># now always a Tempfile</span>
+</code></pre></div></div>
+
+<h3 style="text-transform: none;">File extension</h3>
+
+<p>Surprisingly, open-uri always creates a Tempfile without a file extension,
+even if the url has one. In Shrine I wanted that downloaded files (which will
+later be uploaded) always have an extension if it’s known.</p>
+
+<p>So let’s copy the downloaded IO to a new Tempfile which has a file extension,
+but use <code class="language-plaintext highlighter-rouge">mv</code> if we can so that we don’t pay any performance penalty (and that
+the old file also gets deleted):</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">io</span> <span class="o">=</span> <span class="n">uri</span><span class="p">.</span><span class="nf">open</span>
+<span class="n">downloaded</span> <span class="o">=</span> <span class="no">Tempfile</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="no">File</span><span class="p">.</span><span class="nf">basename</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="nf">path</span><span class="p">),</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="nf">path</span><span class="p">)])</span>
+
+<span class="k">if</span> <span class="n">io</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Tempfile</span><span class="p">)</span>
+  <span class="no">FileUtils</span><span class="p">.</span><span class="nf">mv</span> <span class="n">io</span><span class="p">.</span><span class="nf">path</span><span class="p">,</span> <span class="n">downloaded</span><span class="p">.</span><span class="nf">path</span>
+<span class="k">else</span> <span class="c1"># StringIO</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="n">downloaded</span><span class="p">.</span><span class="nf">path</span><span class="p">,</span> <span class="n">io</span><span class="p">.</span><span class="nf">string</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">downloaded</span><span class="p">.</span><span class="nf">path</span><span class="p">)</span> <span class="c1">#=&gt; ".jpg"</span>
+</code></pre></div></div>
+
+<h3 style="text-transform: none;">Redirects</h3>
+
+<p>What’s good is that open-uri can automatically follow redirects. What’s bad is
+that we cannot limit the maximum number of redirects. This allows the attacker
+to give a URL which causes a redirect loop, and open-uri would continue making
+requests forever. To be fair, open-uri has a detection for redirect loops, but
+only if URLs repeat.</p>
+
+<p>So we disable open-uri’s following of redirects, which now raises
+<code class="language-plaintext highlighter-rouge">OpenURI::HTTPRedirect</code> on redirects, allowing us to reimplement it:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tries</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="k">begin</span>
+  <span class="n">uri</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="ss">redirect: </span><span class="kp">false</span><span class="p">)</span>
+<span class="k">rescue</span> <span class="no">OpenURI</span><span class="o">::</span><span class="no">HTTPRedirect</span> <span class="o">=&gt;</span> <span class="n">redirect</span>
+  <span class="n">uri</span> <span class="o">=</span> <span class="n">redirect</span><span class="p">.</span><span class="nf">uri</span> <span class="c1"># assigned from the "Location" response header</span>
+  <span class="k">retry</span> <span class="k">if</span> <span class="p">(</span><span class="n">tries</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+  <span class="k">raise</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 style="text-transform: none;">Maximum filesize</h3>
+
+<p>Since the URL can sometimes come from the user input, I wanted to give Shrine
+users the ability to limit maximum filesize of the remote file. Specifically, I
+wanted that download aborts as soon as the “Content-Length” header reveals that
+the file will be too large. Luckily, open-uri has the <code class="language-plaintext highlighter-rouge">:content_length_proc</code>
+option, which calls the given proc as soon as open-uri reads “Content-Length”:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">uri</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span>
+  <span class="ss">content_length_proc: </span><span class="o">-&gt;</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span> <span class="k">raise</span> <span class="no">FileTooLarge</span> <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_size</span> <span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>However, an attacker could theoretically create an app which returns large
+files, but where the “Content-Length” response header is ommited on purpose.
+Luckily, open-uri has got our back on this one too with <code class="language-plaintext highlighter-rouge">:progress_proc</code>, which
+calls the given proc whenever a chunk is downloaded, with the current size.
+That means we can add it as a fallback in case “Content-Length” is missing:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">uri</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span>
+  <span class="ss">content_length_proc: </span><span class="o">-&gt;</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span> <span class="k">raise</span> <span class="no">FileTooLarge</span> <span class="k">if</span> <span class="n">size</span> <span class="o">&amp;&amp;</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_size</span> <span class="p">},</span>
+  <span class="ss">progress_proc:       </span><span class="o">-&gt;</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="p">{</span> <span class="k">raise</span> <span class="no">FileTooLarge</span> <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_size</span> <span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<h3 style="text-transform: none;">User agent</h3>
+
+<p>It turns out that when we’re making requests to an application, but we don’t
+include a “User-Agent” header, most applications will start rejecting our
+requests after some time.</p>
+
+<p>Open-uri doesn’t include a “User-Agent” by default, but allows us to easily add
+one, since open-uri treats any unknown option as a request header:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">uri</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="s2">"User-Agent"</span> <span class="o">=&gt;</span> <span class="s2">"MyApp/1.0"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="result">Result</h2>
+
+<p>The result of this investigation is the <a href="https://github.com/janko/down">Down</a> gem, which incorporates all of
+these improvements, and more. You can use it like this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"down"</span>
+<span class="n">result</span> <span class="o">=</span> <span class="no">Down</span><span class="p">.</span><span class="nf">download</span><span class="p">(</span><span class="s2">"http://example.com/image.jpg"</span><span class="p">)</span>
+<span class="n">result</span> <span class="c1">#=&gt; #&lt;Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20160524-10403-xpdakz.jpg&gt;</span>
+</code></pre></div></div>
+
+<p>More advanced downloading could look something like this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Down</span><span class="p">.</span><span class="nf">download</span> <span class="s2">"http://example.com/image.jpg"</span><span class="p">,</span>
+  <span class="ss">max_size: </span><span class="mi">20</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span>   <span class="c1"># 20 MB</span>
+  <span class="ss">max_redirects: </span><span class="mi">5</span><span class="p">,</span>         <span class="c1"># default is 2</span>
+  <span class="ss">proxy: </span><span class="s2">"http://proxy.com"</span> <span class="c1"># delegates to open-uri</span>
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I like that I was able to make a lightweight wrapper around open-uri, which
+already had most of the features that I wanted, but allowed me to complete the
+ones that I was missing. If you want to use open-uri, but without any of the
+mentioned quirks, consider using <a href="https://github.com/janko/down">Down</a>.</p>
+
+
+  </div>
+</article>
+
+<div class="mt-10">
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'twinblog'; // required: replace example with your forum shortname
+    var disqus_identifier = '/improving-open-uri';
+    var disqus_url = 'https://janko.io/improving-open-uri/';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+
+      </main>
+    </div>
+
+    
+  </body>
+</html>

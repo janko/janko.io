@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="no-js wf-loading" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Evaluating (Ruby) Libraries | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Evaluating (Ruby) Libraries" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Whenever we need to solve a problem in our application, if this problem is common enough, chances are there are already libraries out there which can help us with that. Great, now we just pick the library with most GitHub stars, and start integrating it into our project. So, the next thing—" />
+<meta property="og:description" content="Whenever we need to solve a problem in our application, if this problem is common enough, chances are there are already libraries out there which can help us with that. Great, now we just pick the library with most GitHub stars, and start integrating it into our project. So, the next thing—" />
+<link rel="canonical" href="https://janko.io/evaluating-ruby-libraries/" />
+<meta property="og:url" content="https://janko.io/evaluating-ruby-libraries/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-05-23T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Evaluating (Ruby) Libraries" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/evaluating-ruby-libraries/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Evaluating (Ruby) Libraries","description":"Whenever we need to solve a problem in our application, if this problem is common enough, chances are there are already libraries out there which can help us with that. Great, now we just pick the library with most GitHub stars, and start integrating it into our project. So, the next thing—","dateModified":"2016-05-23T00:00:00+02:00","datePublished":"2016-05-23T00:00:00+02:00","url":"https://janko.io/evaluating-ruby-libraries/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link rel="stylesheet" href="/css/output.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo">
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby
+      </span>
+</div>
+    </header>
+
+    <div class="mx-6">
+      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
+        <article class="my-8">
+  <header class="text-center my-6">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Evaluating (Ruby) Libraries</h1>
+
+    <div class="text-gray-500 text-base">
+      <p class="post-byline">
+        By Janko Marohnić on
+        <time class="post-date" datetime="2016-05-23 00:00:00 +0200">
+          23 May 2016
+        </time>
+        
+      </p>
+    </div>
+  </header>
+
+  <div class="prose lg:prose-xl">
+    <p>Whenever we need to solve a problem in our application, if this problem is
+common enough, chances are there are already libraries out there which can help
+us with that. Great, now we just pick the library with most GitHub stars, and
+start integrating it into our project. So, the next thing—</p>
+
+<p>Wait. Wait just a minute. It’s great that there is a popular library for the
+functionality that we need, but we should be careful with our choice. Whatever
+library we choose, we’ll have to take the time to learn it and integrate it
+into our codebase. If this library later starts causing pain as our
+requirements grow, it is likely that at that point it’s already deeply
+integrated into our codebase, making switching to another library difficult.</p>
+
+<p>In order to save time later, we should invest some time upfront in choosing the
+right library (even web frameworks or ORMs). It’s good to make a list of all
+active libraries which solve this same problem (<a href="https://github.com/markets/awesome-ruby">awesome-ruby</a> can help here),
+and then evaluate them using different criteria than just popularity; libraries
+that are more popular don’t necessarily have to be better.</p>
+
+<p>In this post I want to talk about which criteria I use when evaluating Ruby
+libraries, and which ones I consider more valuable than others. For illustration
+I will also mention concrete libraries that I prefer and why.</p>
+
+<h2 id="more-valuable-criteria">More valuable criteria</h2>
+
+<h3 id="features--flexibility">Features &amp; Flexibility</h3>
+
+<p>The most important criteria for me is how much the library can do;
+specifically, can the library satisfy my current requirements, and potential
+future requirements that come to mind. If library <strong>A</strong> allows me to do more
+than library <strong>B</strong>, I will almost always pick library <strong>A</strong>.</p>
+
+<p>When it comes to choosing an ORM, I will always choose <a href="https://github.com/jeremyevans/sequel">Sequel</a> over
+ActiveRecord, simply because <a href="http://twin.github.io/ode-to-sequel/">you can do more with it</a>. One example (out of
+many) where this decision rewarded me: I knew that Sequel allows queries to
+return plain Ruby hashes/arrays instead of model instances, and there was one
+case where I was implementing an iterative algorithm, and just switching from
+model instances to plain hashes/arrays made my algorithm 3x faster.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">{</span><span class="n">rating</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">}.</span><span class="nf">to_a</span>       <span class="c1">#=&gt; [#&lt;Movie&gt;, #&lt;Movie&gt;, ...]</span>
+<span class="no">DB</span><span class="p">[</span><span class="ss">:movies</span><span class="p">].</span><span class="nf">where</span><span class="p">{</span><span class="n">rating</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">}.</span><span class="nf">to_a</span> <span class="c1">#=&gt; [{...}, {...}, ...]</span>
+</code></pre></div></div>
+
+<p>When it comes to choosing a web framework, <a href="https://github.com/jeremyevans/roda">Roda</a> is my first choice. The
+reason why I don’t choose Rails is because, even though Rails is really big and
+complex, I don’t actually find it to be very advanced in terms of handling
+requests, which is the main purpose of a web framework. With Roda’s ability
+to handle incoming requests while routing them, I have the ultimate flexibility
+which opens so many doors. For example, if I want to add authorization for a
+mounted Rack endpoint, this is how I would do it in Roda:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">App</span> <span class="o">&lt;</span> <span class="no">Roda</span>
+  <span class="n">plugin</span> <span class="ss">:halt</span>
+  <span class="n">plugin</span> <span class="ss">:render</span>
+
+  <span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span> <span class="c1"># yielded on each incoming request</span>
+    <span class="n">r</span><span class="p">.</span><span class="nf">on</span> <span class="s2">"videos"</span> <span class="k">do</span>
+      <span class="n">authorize!</span><span class="p">(</span><span class="ss">:upload</span><span class="p">)</span>
+      <span class="n">r</span><span class="p">.</span><span class="nf">run</span> <span class="no">VideoUploader</span><span class="o">::</span><span class="no">UploadEndpoint</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">authorize!</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">halt</span> <span class="mi">403</span><span class="p">,</span> <span class="n">render</span><span class="p">(</span><span class="ss">:unauthorized</span><span class="p">)</span> <span class="k">unless</span> <span class="n">authorized?</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">role</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>I have no idea how I would do that in Rails. We cannot be inside any
+controller, because the endpoint is what handles the request, so we have
+to do it in “nowhere land” that are Rails routes:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">upload_authorization</span> <span class="o">=</span> <span class="o">-&gt;</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="k">do</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">session</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">current_user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+      <span class="k">return</span> <span class="kp">true</span> <span class="k">if</span> <span class="no">Authorization</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="ss">:upload</span><span class="p">)</span>
+      <span class="kp">throw</span> <span class="ss">:halt</span><span class="p">,</span> <span class="p">[</span><span class="mi">403</span><span class="p">,</span> <span class="n">response</span><span class="p">.</span><span class="nf">headers</span><span class="p">,</span> <span class="p">[</span><span class="no">ApplicationController</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="ss">:unauthorized</span><span class="p">)]]</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+  <span class="n">constraints</span> <span class="n">upload_authorization</span> <span class="k">do</span>
+    <span class="n">mount</span> <span class="no">VideoUploader</span><span class="o">::</span><span class="no">UploadEndpoint</span><span class="p">,</span> <span class="ss">to: </span><span class="s2">"/videos"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HaltRequests</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="vi">@app</span> <span class="o">=</span> <span class="n">app</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="kp">catch</span><span class="p">(</span><span class="ss">:halt</span><span class="p">)</span> <span class="k">do</span>
+      <span class="vi">@app</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">middleware</span><span class="p">.</span><span class="nf">use</span> <span class="no">HaltRequests</span>
+</code></pre></div></div>
+
+<p>Gross. In the <code class="language-plaintext highlighter-rouge">constraints</code> block we’re not inside of any controller, so we
+have to reimplement authentication and authorization logic. Moreover, unlike
+Roda and Sinatra, Rails doesn’t have a feature of halting requests, so we have
+to implement that as well. No thanks, I’m sticking with Roda.</p>
+
+<h3 id="generic">Generic</h3>
+
+<p>If the problem the library is solving is generic, then the library should be
+usable in any web framework. I know, I’m biased being a Ruby-off-Rails
+developer, which means I literally cannot use any Rails-specific gems. And most
+of you who are reading this are Rails developers, so why should you care?
+Well, since it seems people are increasingly using other Ruby web frameworks,
+I think it’s future-proof to center around libraries that <em>everyone</em> can use.</p>
+
+<p>For example, for authentication and account management I believe even Rails
+developers should consider choosing <a href="https://github.com/jeremyevans/rodauth">Rodauth</a> over Devise. Rodauth is an
+authentication and account management framework which is written in Roda and
+Sequel, but can be used with <em>any web framework</em> and <em>any ORM</em>. Rodauth
+achieves this by giving you a DSL to generate a Rack app that encapsulates
+all authentication logic, which you can then use as a middleware in your
+application:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Authentication</span> <span class="o">&lt;</span> <span class="no">Roda</span>
+  <span class="n">plugin</span> <span class="ss">:rodauth</span> <span class="k">do</span>
+    <span class="n">enable</span> <span class="ss">:login</span><span class="p">,</span> <span class="ss">:logout</span><span class="p">,</span> <span class="ss">:create_account</span><span class="p">,</span> <span class="ss">:verify_account</span><span class="p">,</span> <span class="ss">:close_account</span>
+  <span class="k">end</span>
+
+  <span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+    <span class="n">r</span><span class="p">.</span><span class="nf">rodauth</span> <span class="c1"># handles all authentication routes</span>
+
+    <span class="n">r</span><span class="p">.</span><span class="nf">on</span> <span class="s2">"admin"</span> <span class="k">do</span>
+      <span class="n">rodauth</span><span class="p">.</span><span class="nf">require_authentication</span> <span class="c1"># halts the request if unauthenticated</span>
+      <span class="c1"># user is authenticated, so let the request go through to Rails</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">middleware</span><span class="p">.</span><span class="nf">use</span> <span class="no">Authentication</span>
+</code></pre></div></div>
+
+<h3 id="design">Design</h3>
+
+<p>The library also needs to be well-designed (good design usually brings more
+features). This might a bit difficult to evaluate before actually using the
+library, but I think it’s important to be able to easily understand how the
+library works and what are its main components. If the library doesn’t have
+good design, it will likely be difficult to maintain and to add more advanced
+features, and eventually the maintainer(s) could likely lose motivation to
+contribute to the library.</p>
+
+<p>To continue on the previous example, <a href="https://github.com/jeremyevans/rodauth">Rodauth</a> is much better designed than
+Devise. For example, Devise’s configuration is scattered across five different
+places: the initializer, models, routes, your controllers, and Devise’s
+controllers. In Rodauth the whole authentication logic is encapsulated inside a
+single <code class="language-plaintext highlighter-rouge">Roda</code> subclass, and everything can be configured via the same DSL.</p>
+
+<p>Rodauth was able to be born thanks to Roda and Sequel both also having great
+designs (and thus features as well). Rodauth couldn’t have been implemented
+using Rails, because with Rails you cannot create mountable Rack apps (as far
+as I know), and it couldn’t have been implemented using ActiveRecord, because
+ActiveRecord doesn’t support model-less queries (Rodauth’s design uses separate
+tables for separate features for performance and simplicity), or
+database-agnostic timestamp operations needed for 2FA.</p>
+
+<h3 id="activity">Activity</h3>
+
+<p>It’s very important that a library is being actively maintained. If the
+maintainer is only merging pull requests, that is still classified as
+“maintenance”. When scanning library’s activity, I’ll often find it a bit
+alarming if I see a legit issue that hasn’t been solved for months.</p>
+
+<p>Now, issues not being solved could be due to lack of time from maintainers.
+But it could also be due to lack of motivation; I’ve often seen maintainers
+abandoning their projects to later start a new and better one. So, while not
+always, lack of activity on the library might tell something about quality.</p>
+
+<p>It’s also important for me that new versions of libraries are regularly
+released. I really like Jeremy Evans’ monthly release cycle, in which he tries
+to release a new version every month with whatever is currently on master.
+This is also for me another downside of ActiveRecord; patch releases are
+relatively frequent, but minor releases are approximately every 5-6 months,
+which is a very long time. And if you want to pull latest ActiveRecord from
+master, with it you also have to pull the <em>whole Rails</em> from master, which can
+be very inconvenient.</p>
+
+<h2 id="less-valuable-criteria">Less valuable criteria</h2>
+
+<h3 id="familiarity">Familiarity</h3>
+
+<p>Often when I’m publicly stating somewhere that Sequel is a better ORM than
+ActiveRecord, I get a response that a big advantage of ActiveRecord is that
+it’s familiar. However, by that logic you should always use the first library
+that you ever tried, because it will always be more familiar than any new
+library.</p>
+
+<p>I think that <em>what the library can do</em> is much more important than how much
+you’re familar with it. Familiarity can always be “fixed” by reading
+documentation and source code, but if the library lacks features and good
+design, you cannot easily get around that. I’m not gonna lie, even though
+Sequel and ActiveRecord are very similar, deeply understanding Sequel still
+took a lot of time (like ActiveRecord did), but it was totally worth it.</p>
+
+<h3 id="stars">Stars</h3>
+
+<p>The amount of stars a library has on GitHub is usually a good measure for its
+popularity. However, I’ve often found that popularity isn’t a good indication
+of library’s quality. I think this is because popularity is an exponential
+function; people will often automatically choose a library based on its
+popularity, thus increasing its popularity. Then when a new library arises
+which solves the problem in a better way, it is difficult to gain popularity.</p>
+
+<h3 id="number-of-maintainers">Number of maintainers</h3>
+
+<p>I learned that some people consider it a downside if a library has only one
+maintainer, and that they will rather choose an alternative which has more
+maintainers. They are afraid that for whatever reason this maintainer might
+stop developing the library, causing the library to die. However, I don’t think
+this fear is justified. If a library has only one maintainer, that doesn’t mean
+other people wouldn’t be able to maintain it.</p>
+
+<p>For example, Sequel is maintained perfectly: most of the time there are 0 open
+issues because they are fixed quickly, and the author additionally helps anyone
+at the Sequel Google group. The reason why there aren’t more Sequel maintainers
+is because they simply wouldn’t have anything to do <img class="emoji" title=":smiley:" alt=":smiley:" src="/images/emoji/unicode/1f603.png" height="20" width="20">.</p>
+
+<p>Even though ActiveRecord has a larger number of contributors, features like
+<code class="language-plaintext highlighter-rouge">ActiveRecord::Relation#or</code> still take 2 years to get merged. So I will always
+rather choose Sequel, because it’s simply better maintained.</p>
+
+<h3 id="rails-integration">Rails integration</h3>
+
+<p>People often tend to choose library A over library B simply because library A
+has a Rails integration. However, I found that the time I spend setting up
+libraries with Rails or any other web framework is insignificant compared to
+the time it takes to actually develop my application. So I don’t think that
+Rails integration should be used as any kind of criteria for choosing a
+library.</p>
+
+<p>I’ve sometimes experienced that libraries’ “railtie” reveal a lot of complexity
+in library’s setup. For example, <a href="https://github.com/plataformatec/devise/blob/master/lib/devise/rails.rb">Devise’s Rails integration</a> among other
+things does the following: sets up Warden, extends routes with helper methods,
+tweaks route reloading, extends controllers with helper methods, sets up
+OmniAuth, and extends models with helper methods. A lot of people would react to
+this with: “Wow, Devise is so awesome that it sets up all of this for me”. But
+I think we should instead ask ourselves why does there need to be so much
+complexity.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I think we should be more mindful about the libraries we choose. The time that
+we spend evaluating alternatives is worthwhile considering the time that we’ll
+save by choosing the right library. We should try not to choose a library just
+because it’s part of Rails or because its popular, but because we really see the
+value of that library over the alternatives.</p>
+
+<p>Make good choices, and you will be greatly rewarded <img class="emoji" title=":gift:" alt=":gift:" src="/images/emoji/unicode/1f381.png" height="20" width="20"></p>
+
+
+  </div>
+</article>
+
+<div class="mt-10">
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'twinblog'; // required: replace example with your forum shortname
+    var disqus_identifier = '/evaluating-ruby-libraries';
+    var disqus_url = 'https://janko.io/evaluating-ruby-libraries/';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+
+      </main>
+    </div>
+
+    
+  </body>
+</html>

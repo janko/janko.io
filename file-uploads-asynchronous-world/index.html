@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html class="no-js wf-loading" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Asynchronous File Uploads | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Asynchronous File Uploads" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Accepting file uploads in web applications is very delicate, because all actions for dealing with attachments are slow:" />
+<meta property="og:description" content="Accepting file uploads in web applications is very delicate, because all actions for dealing with attachments are slow:" />
+<link rel="canonical" href="https://janko.io/file-uploads-asynchronous-world/" />
+<meta property="og:url" content="https://janko.io/file-uploads-asynchronous-world/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-01-18T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Asynchronous File Uploads" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/file-uploads-asynchronous-world/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Asynchronous File Uploads","description":"Accepting file uploads in web applications is very delicate, because all actions for dealing with attachments are slow:","dateModified":"2016-01-18T00:00:00+01:00","datePublished":"2016-01-18T00:00:00+01:00","url":"https://janko.io/file-uploads-asynchronous-world/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link rel="stylesheet" href="/css/output.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo">
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby
+      </span>
+</div>
+    </header>
+
+    <div class="mx-6">
+      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
+        <article class="my-8">
+  <header class="text-center my-6">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Asynchronous File Uploads</h1>
+
+    <div class="text-gray-500 text-base">
+      <p class="post-byline">
+        By Janko Marohnić on
+        <time class="post-date" datetime="2016-01-18 00:00:00 +0100">
+          18 Jan 2016
+        </time>
+        
+      </p>
+    </div>
+  </header>
+
+  <div class="prose lg:prose-xl">
+    <p>Accepting file uploads in web applications is very delicate, because all
+actions for dealing with attachments are slow:</p>
+
+<ul>
+  <li>uploading files to your app</li>
+  <li>uploading files to an external storage</li>
+  <li>file processing</li>
+  <li>deleting files</li>
+</ul>
+
+<p>A vanilla file upload implementation where all of this is synchronous has two
+main downsides: (a) the UI is blocked during these actions, (b) your
+application’s throughput is reduced.</p>
+
+<p>Even if through some miracle you only have to deal with plaintext files, you
+will likely still start experiencing these problems when your user traffic
+increases. Synchronous uploads were acceptable in early ages of web, but today
+we’re better than that.</p>
+
+<h2 id="theory">Theory</h2>
+
+<p>Generally the optimal way to implement file uploads as attachments in
+applications is to have two phases: <strong>caching</strong> and <strong>storing</strong>. Before input
+validation, the uploaded file is saved to a temporary location (“caching”).
+After validations have passed and the record is being saved, the file is taken
+from the cache, is optionally processed, and it’s saved into a permanent
+location (“storing”).</p>
+
+<p>There are numerous benefits to this design, but there is one that stands out
+and is the topic of this post – it allows you to create a <strong>completely
+asynchronous file upload workflow</strong>.</p>
+
+<p>Uploading:</p>
+
+<ol>
+  <li>User chooses the file in the form</li>
+  <li>JavaScript starts caching it asynchronously (to a separate endpoint)</li>
+  <li>After cached file is uploaded, the form field is filled with file’s identifier</li>
+  <li>When the form is submitted, only the identifier is sent over the wire</li>
+  <li>Processing and storing is kicked into a background job</li>
+  <li>Record saves instantaneously</li>
+  <li>Background job on completion updates the record with stored attachment(s)</li>
+</ol>
+
+<p>Deleting:</p>
+
+<ol>
+  <li>User clicks to delete the record with an attachment</li>
+  <li>Deleting the file(s) is kicked into a background job</li>
+  <li>Record is deleted instantaneously</li>
+</ol>
+
+<p>Even though caching of the file via AJAX still takes the same time as if it was
+done synchronously on form submit, users are now much happier since their UI
+isn’t blocked, allowing them to do other things until the upload finishes. In
+the meanwhile they ideally see a nice progress bar letting them know when the
+upload will finish.</p>
+
+<p>Utilizing this asynchronous workflow is crucial for good user experience and
+maintaining your application’s throughput. In the continuation of this post I
+want take a look at existing file upload libraries and analyze their abilities
+for asynchronicity, having the following criteria in mind:</p>
+
+<ul>
+  <li>
+<strong>Direct upload</strong> – Is it possible to implement direct (AJAX) uploads?</li>
+  <li>
+<strong>Storing</strong> – Can storing be put into a background job?</li>
+  <li>
+<strong>Deleting</strong> – Can deleting be put into a background job?</li>
+  <li>
+<strong>Simplicity</strong> – How easy is the setup and how transparent is the implementation?</li>
+  <li>
+<strong>Flexibility</strong> – How customizable is the choice of backgrounding mechanism?</li>
+  <li>
+<strong>Encapsulation</strong> – How gracefully can you degrade while the background job is working?</li>
+  <li>
+<strong>Thread-safety</strong> – Can background jobs safely run in parallel?</li>
+  <li>
+<strong>Introspection</strong> – How easy it is to debug background job failures?</li>
+  <li>
+<strong>Adaptation</strong> – Do background jobs react on state changes (e.g. record
+getting deleted)?</li>
+</ul>
+
+<h2 id="libraries">Libraries</h2>
+
+<h3 id="paperclip">Paperclip</h3>
+
+<p>Paperclip unfortunately doesn’t do file caching, so there is no straightforward
+way to implement direct (AJAX) upload. The main storage cannot be used for
+direct uploads, because then attackers would be able to easily flood it.</p>
+
+<p>For asynchronous processing there is <a href="https://github.com/jrgifford/delayed_paperclip">delayed_paperclip</a>, which has couple of
+upsides:</p>
+
+<ul>
+  <li>most backgrounding libraries are supported, and you can use your own worker
+classes (although it isn’t documented)</li>
+  <li>the original file is available to you while the background job is working, so
+you can gracefully degrade</li>
+  <li>you can process some styles in the foreground and some in the background</li>
+  <li>jobs properly abort when record is missing</li>
+</ul>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Photo</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_attached_file</span> <span class="ss">:image</span><span class="p">,</span> <span class="ss">styles: </span><span class="p">{</span><span class="ss">thumb: </span><span class="s2">"300x300&gt;"</span><span class="p">}</span>
+  <span class="n">process_in_background</span> <span class="ss">:image</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Unfortunately, a huge downside of delayed_paperclip is that storing the
+original file cannot be put into background. This means that the user has to
+wait for the file to be uploaded <em>twice</em> (first to the app, then to the
+storage), before any backgrounding even takes place. And that is really slow
+<img class="emoji" title=":snail:" alt=":snail:" src="/images/emoji/unicode/1f40c.png" height="20" width="20">. You cannot even process the original file to reduce its filesize
+(before the second upload), it has to be uploaded raw both times. This really
+hurts your application’s throughput, and database’s as well; ActiveRecord wraps
+record saving into a transaction, which means a transaction is open for the
+whole duration of the upload!</p>
+
+<p>Another big downside of delayed_paperclip is that you cannot delete files in
+the background. This is might not be such a big deal when you only have a
+single file, but it sure is when you have multiple styles (one HTTP request per
+style).</p>
+
+<p>In your views you also have to specially handle the case when the styles
+haven’t finished processing. And to be able to do that you need to add an
+additional database column (on top of the <a href="https://github.com/thoughtbot/paperclip/blob/bd016009dbf74fc8f999e78a68c9e5869eb0dd6a/README.md#usage">4 attachment columns</a> you already
+have). However, this design doesn’t handle parallel jobs well; if the user
+makes two consecutive updates, it can happen that the old job upon finishing
+sets the column to “not processing” while the new job is still working, which
+can temporarily cause broken links.</p>
+
+<p>If a background job fails because of an error, the file that caused the error
+can be found only if the attachment hasn’t changed in the meanwhile. Otherwise
+it’s necessary to either to implement context collecting for error reports, or
+keep a history of record updates.</p>
+
+<p>The setup of delayed_paperclip is quite complex; <code class="language-plaintext highlighter-rouge">ActiveRecord::Base</code> and
+<code class="language-plaintext highlighter-rouge">Paperclip::Attachment</code> have to be extended with modules, the URL generator
+needs to be replaced, a column added, and a class method called. The
+<a href="https://github.com/jrgifford/delayed_paperclip/blob/master/lib/delayed_paperclip/railtie.rb">railtie</a>
+hides most of it away from you, but it’s obvious that Paperclip wasn’t
+designed for backgrounding.</p>
+
+<h3 id="carrierwave">CarrierWave</h3>
+
+<p>CarrierWave caches files before storing them, so although there isn’t a
+built-in endpoint for direct uploads, it probably shouldn’t be too difficult to
+implement your own (although only to filesystem). For direct S3 uploads there
+is <a href="https://github.com/dwilkie/carrierwave_direct">carrierwave_direct</a>, which provides an S3 form which is usable by AJAX,
+although multiple file uploads are a bit tricky.</p>
+
+<p>Asynchronous processing/storing is given by <a href="https://github.com/lardawge/carrierwave_backgrounder">carrierwave_backgrounder</a>, which
+has some upsides:</p>
+
+<ul>
+  <li>background library support is wider than delayed_paperclip’s</li>
+  <li>the file can be both processed and stored in the background</li>
+  <li>the cached original can be displayed to the user while background job is working</li>
+</ul>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyUploader</span> <span class="o">&lt;</span> <span class="no">CarrierWave</span><span class="o">::</span><span class="no">Uploader</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">include</span> <span class="no">CarrierWave</span><span class="o">::</span><span class="no">Backgrounder</span><span class="o">::</span><span class="no">Delay</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Photo</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">mount_uploader</span> <span class="ss">:image</span><span class="p">,</span> <span class="no">MyUploader</span>
+  <span class="n">store_in_background</span> <span class="ss">:image</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>There is no explicit support for deleting in background. Replaced files are
+coincidentally deleted in new attachment’s background job (a separate job for
+deleting would be better), but removing the attachment or destroying the record
+synchronously deletes associated files.</p>
+
+<p>It requires an additional column for storing the cached file, and another
+column can be added for information whether the background job is working.
+However, the latter column doesn’t handle parallel jobs well, same as
+delayed_paperclip.</p>
+
+<p>Debugging job failures is the same as delayed_paperclip’s, it can only be done
+if the attachment hasn’t changed, or some special handling is implemented.</p>
+
+<p>Setup of carrierwave_backgrounder is complex; <code class="language-plaintext highlighter-rouge">ActiveRecord::Base</code> and the
+uploader classes need to be extended with modules, two columns need to be
+added, and a class method called. The implementation of the library is complex
+as well, a lot of metaprogramming. This complexity caused bugs like <a href="https://github.com/lardawge/carrierwave_backgrounder/pull/169">breaking
+CarrierWave’s ability to remove attachments</a>. It’s obvious that CarrierWave
+wasn’t designed for backgrounding.</p>
+
+<h3 id="dragonfly">Dragonfly</h3>
+
+<p>Dragonfly does caching (the term is “retaining” here), so even though there
+isn’t a built-in endpoint for direct uploads, it probably shouldn’t be too
+difficult to implement your own (although it would require some code-digging).
+However, it seems that the storage has to be the same for caching and storing,
+which is a bit limiting.</p>
+
+<p>Dragonfly doesn’t have an extension for backgrounding. Since Dragonfly does
+processing on-the-fly (not on upload), it might appear that backgrounding isn’t
+that important here. That can’t be further from the truth. A file upload itself
+still takes a lot of time, already for files like images, let alone videos or
+other large files, where it’s basically unusable (since a database transaction
+is open during the whole upload).</p>
+
+<p>The <a href="https://github.com/apotonick/paperdragon">paperdragon</a> gem provides a nice thin interface on top of Dragonfly,
+giving it the ability to do upfront processing. It promotes explicitness, and
+one of the advantages are that processing/storing/deleting can be put into
+background (since they’re not tied to ORM callbacks). However, with great power
+comes great reponsibility; you have all the freedom you need, but you still
+have to do a lot of manual work to implement it right, because you need to
+take care about a lot of things (generalizing jobs for all attachments,
+graceful degradation, thread-safety, introspection etc).</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="s2">"image"</span><span class="p">)</span>
+
+<span class="n">photo</span> <span class="o">=</span> <span class="no">Photo</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+<span class="c1"># This can be put into background</span>
+<span class="n">photo</span><span class="p">.</span><span class="nf">image</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span>
+  <span class="n">v</span><span class="p">.</span><span class="nf">process!</span><span class="p">(</span><span class="ss">:original</span><span class="p">)</span>
+  <span class="n">v</span><span class="p">.</span><span class="nf">process!</span><span class="p">(</span><span class="ss">:thumb</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">job</span><span class="o">|</span> <span class="n">job</span><span class="p">.</span><span class="nf">thumb!</span><span class="p">(</span><span class="s2">"300x300#"</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="n">photo</span><span class="p">.</span><span class="nf">save</span>
+</code></pre></div></div>
+
+<h3 id="refile">Refile</h3>
+
+<p><a href="https://github.com/refile/refile">Refile</a> ships with a complete solution for direct uploads. It comes with a
+Rack endpoint for direct uploads, and has special support for direct S3 uploads.
+On top of that it comes with complete plug-and-play JavaScript for hooking the
+endpoint to a file field. This is a big plus for user experience.</p>
+
+<p>Refile doesn’t have support for storing in background, for the same reasons as
+Dragonfly, because it does on-the-fly processing. If you’re using S3 for both
+cache and store, Refile will store the cached file by issuing an S3 COPY command
+(instead of reuploading the file). This is fast, but you’re still making an
+HTTP request inside a transaction. There is currently an <a href="https://github.com/refile/refile/issues/167">open issue on Refile
+for adding backgrounding</a>, but it in my opinion it would require a rewrite.</p>
+
+<h3 id="shrine">Shrine</h3>
+
+<p><a href="https://github.com/shrinerb/shrine">Shrine</a> is a relatively new library for file uploads. It was created to solve
+limitations of existing libraries; it comes with a greater arsenal of features,
+with a much simpler implementation and more flexibility.</p>
+
+<p>Shrine, like Refile, ships with an endpoint for direct uploads, with special
+support for direct S3 uploads. It doesn’t ship with a plug-and-play JavaScript
+solution, instead it encourages you to use one of the excellent JavaScript
+libraries for generic file uploads.</p>
+
+<p>Shrine has built-in support for putting processing/storing/deleting into a
+background job. It supports any backgrounding library, because instead of
+shipping with integrations for each and every backgrounding library, it simply
+lets you call the background job yourself.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Shrine</span><span class="p">.</span><span class="nf">plugin</span> <span class="ss">:backgrounding</span>
+<span class="no">Shrine</span><span class="o">::</span><span class="no">Attacher</span><span class="p">.</span><span class="nf">promote</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span> <span class="no">UploadJob</span><span class="p">.</span><span class="nf">perform_async</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">}</span>
+<span class="no">Shrine</span><span class="o">::</span><span class="no">Attacher</span><span class="p">.</span><span class="nf">delete</span> <span class="p">{</span> <span class="o">|</span><span class="n">data</span><span class="o">|</span> <span class="no">DeleteJob</span><span class="p">.</span><span class="nf">perform_async</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">}</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UploadJob</span>
+  <span class="kp">include</span> <span class="no">Sidekiq</span><span class="o">::</span><span class="no">Worker</span>
+  <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="no">Shrine</span><span class="o">::</span><span class="no">Attacher</span><span class="p">.</span><span class="nf">promote</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DeleteJob</span>
+  <span class="kp">include</span> <span class="no">Sidekiq</span><span class="o">::</span><span class="no">Worker</span>
+  <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="no">Shrine</span><span class="o">::</span><span class="no">Attacher</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">UploadJob</code> is triggered when the file is “promoted” (moved from cache to
+store), while the <code class="language-plaintext highlighter-rouge">DeleteJob</code> is triggered when: <strong>a)</strong> record is destroyed, <strong>b)</strong>
+attachment is removed, or <strong>c)</strong> attachment is replaced.</p>
+
+<p>At first glance it might seem that the setup is more complicated than in other
+solutions. However, if you observe <em>what</em> code you are required to write,
+you’ll notice it’s actually quite minimal. The only thing Shrine requires from
+you is that you call your preferred backgrounding library. This design is
+intentional; background jobs should be declared in your application, not hidden
+away in a library.</p>
+
+<p>The way Shrine is designed makes it easy to know when the background job is
+finished (changes are saved to the <code class="language-plaintext highlighter-rouge">&lt;attachment&gt;_data</code> column) so you can
+easily degrade to the original cached file, or the versions generated in the
+foreground (with the <code class="language-plaintext highlighter-rouge">recache</code> plugin).</p>
+
+<p>The jobs are thread-safe in updating the <code class="language-plaintext highlighter-rouge">&lt;attachment&gt;_data</code> column, and they
+adapt to changes in attachment or record being deleted. It’s also easy to debug
+failing jobs, since the cached file’s data is given directly in job’s
+arguments.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Making phases of file upload (caching, processing, storing, deleting)
+asynchronous is essential for scaling and good user experience. However, in all
+of the “mature” file upload libraries asynchronicity is either an incomplete
+and flawed afterthought, or nonexistent (with the exception of Refile which at
+least has direct uploads).</p>
+
+<p>Shrine is the only file upload library with complete asynchronicity support
+built-in. Its design allows you to use any backgrounding library, and the
+implementation is robust and transparent.</p>
+
+
+  </div>
+</article>
+
+<div class="mt-10">
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'twinblog'; // required: replace example with your forum shortname
+    var disqus_identifier = '/file-uploads-asynchronous-world';
+    var disqus_url = 'https://janko.io/file-uploads-asynchronous-world/';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+
+      </main>
+    </div>
+
+    
+  </body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html class="no-js wf-loading" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>The plugin system of Sequel and Roda | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="The plugin system of Sequel and Roda" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="When developing gems, often one of the difficult problems to solve is creating a good ratio between simplicity, convenience and flexibility." />
+<meta property="og:description" content="When developing gems, often one of the difficult problems to solve is creating a good ratio between simplicity, convenience and flexibility." />
+<link rel="canonical" href="https://janko.io/the-plugin-system-of-sequel-and-roda/" />
+<meta property="og:url" content="https://janko.io/the-plugin-system-of-sequel-and-roda/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-08-31T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="The plugin system of Sequel and Roda" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/the-plugin-system-of-sequel-and-roda/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"The plugin system of Sequel and Roda","description":"When developing gems, often one of the difficult problems to solve is creating a good ratio between simplicity, convenience and flexibility.","dateModified":"2015-08-31T00:00:00+02:00","datePublished":"2015-08-31T00:00:00+02:00","url":"https://janko.io/the-plugin-system-of-sequel-and-roda/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link rel="stylesheet" href="/css/output.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo" />
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby</p>
+      </div>
+    </header>
+
+    <div class="mx-6">
+      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
+        <article class="my-8">
+  <header class="text-center my-6">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">The plugin system of Sequel and Roda</h1>
+
+    <div class="text-gray-500 text-base">
+      <p class="post-byline">
+        By Janko Marohnić on
+        <time class="post-date" datetime="2015-08-31 00:00:00 +0200">
+          31 Aug 2015
+        </time>
+        
+          <span>
+            –
+            <a class="underline" href="https://github.com/janko/janko.io/commits/master/_posts/2015-08-31-the-plugin-system-of-sequel-and-roda.md">
+              Last edit on 31 Aug 2015
+            </a>
+          </span>
+        
+      </p>
+    </div>
+  </header>
+
+  <div class="prose lg:prose-xl">
+    <p>When developing gems, often one of the difficult problems to solve is creating
+a good ratio between <em>simplicity</em>, <em>convenience</em> and <em>flexibility</em>.</p>
+
+<blockquote>
+  <p>A <strong>simple</strong> gem is easy to understand, both in public interface and
+internal implementation. This gem is usually more focused and tries not to do
+too much. It often has less LOC and little or no dependencies, which means it
+loads faster and uses less memory.</p>
+</blockquote>
+
+<blockquote>
+  <p>A <strong>convenient</strong> gem comes with many features out-of-the-box which
+cover common scenarios, so that users don’t have to reimplement them over and
+over again.</p>
+</blockquote>
+
+<blockquote>
+  <p>A <strong>flexible</strong> gem provides good defaults, but allows its behaviour to
+be overriden and extended with custom functionality.</p>
+</blockquote>
+
+<p>By definition simplicity and convenience are inversely proportional; in
+order to achieve convenience (by adding features) you have to sacrifice some
+simplicity, and vice versa. On top of that your gem also needs to be flexible,
+which is more difficult to achieve the more features it has.</p>
+
+<p>By using standard gem design, it’s usually <em>impossible</em> to achieve a
+perfect ratio that will suit everyone. Almost always you will have a group of
+people which are missing features X/Y/Z and will turn to another more
+featureful gem, or you will have a group which thinks your gem does too much
+and will turn to a simpler gem. That’s why there is the division between
+<strong>Rails</strong> and <strong>Sinatra</strong>, because for some people Rails is too bloated, while
+for other people Sinatra is too simple.</p>
+
+<p>What if… what if by default a gem could give you only the essential
+functionality, but still ship with lots of additional features which you can
+load if you want to. This would be perfect, because then you could choose
+exactly how much your gem does, making the gem as simple or as complex as you
+want it to be. This would also mean that the community wouldn’t have to divide
+on different preferences.</p>
+
+<p>The <a href="https://github.com/jeremyevans/sequel">Sequel</a> and <a href="https://github.com/jeremyevans/roda">Roda</a> gems in my opinion achieve this utopia, by implementing
+a special kind of <strong>plugin system</strong>.</p>
+
+<h2 id="the-plugin-system--a-design-pattern">The plugin system – a design pattern</h2>
+
+<p>Plugin systems are not a new thing in the Ruby ecosystem. <a href="https://github.com/seattlerb/minitest#writing-extensions">Minitest</a> implements
+one, you can write plugins/extensions which Minitest will autodiscover and
+integrate into itself. The <a href="http://guides.rubygems.org/plugins/">RubyGems</a> gem also implements a similar plugin
+system. These plugin systems work great for these gems, but today I want to
+talk about a more advanced kind of plugin system, a <em>design pattern</em>, found in
+Sequel and Roda.</p>
+
+<p>The original idea was invented by the author of <a href="https://github.com/jeremyevans/sequel">Sequel</a>, but it has today’s
+form thanks to Jeremy Evans. About a year ago, Jeremy released <a href="https://github.com/jeremyevans/roda">Roda</a>, where he
+reused this plugin system. I found about this plugin system after switching to
+the Roda/Sequel stack, and I want to give you a deep dive into it to show you
+exactly how it works and why it is awesome. Note that this is not one of those
+dives for purely educational purposes, I want to teach you a very practical and
+generic design pattern which you can use in your next gem.</p>
+
+<p>Since Sequel and Roda have a very similar plugin system, it’s enough to
+demonstrate one of them, so we’ll choose Roda. Roda is a web framework that
+consists of 3 core classes:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Roda</span>                                    <span class="c1"># 1: Roda</span>
+  <span class="k">class</span> <span class="nc">RodaRequest</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Request</span><span class="p">;</span> <span class="k">end</span>      <span class="c1"># 2: Roda::RodaRequest</span>
+  <span class="k">class</span> <span class="nc">RodaResponse</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Response</span><span class="p">;</span> <span class="k">end</span>    <span class="c1"># 3: Roda::RodaResponse</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>(If it’s eating you up inside why isn’t it <code class="language-plaintext highlighter-rouge">Roda::Request</code> and
+<code class="language-plaintext highlighter-rouge">Roda::Response</code>, <a href="http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Pollution">see the reasoning</a>.)</p>
+
+<p>I think the best way to show you Roda’s plugin system is to incrementally
+design it with you, so that you can see every step and the logic behind it,
+which should help you understand it better as a whole.</p>
+
+<h3 id="plugins">Plugins</h3>
+
+<p>We want to design a plugin system where “plugins” can add new features to Roda.
+In other words, they need to be able to extend Roda’s functionality. And since
+a gem’s functionality is defined entirely by it’s methods and classes, our
+“plugins” simply need to be able to override instance and class methods for
+each class in Roda. ♣︎</p>
+
+<p>Now we just have to define what exactly a “plugin” will be. Since we want a
+“plugin” to be an individual, isolated unit of behaviour, it makes sense that
+it’s a Ruby module. ◆</p>
+
+<p>With ♣︎ and ◆ in mind, let’s define a <code class="language-plaintext highlighter-rouge">Roda.plugin</code> method that applies a
+given plugin:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Roda</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+    <span class="kp">include</span> <span class="n">plugin</span><span class="o">::</span><span class="no">InstanceMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">InstanceMethods</span><span class="p">)</span>
+    <span class="kp">extend</span> <span class="n">plugin</span><span class="o">::</span><span class="no">ClassMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">ClassMethods</span><span class="p">)</span>
+
+    <span class="no">RodaRequest</span><span class="p">.</span><span class="nf">include</span> <span class="n">plugin</span><span class="o">::</span><span class="no">RequestMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">RequestMethods</span><span class="p">)</span>
+    <span class="no">RodaRequest</span><span class="p">.</span><span class="nf">extend</span> <span class="n">plugin</span><span class="o">::</span><span class="no">RequestClassMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">RequestClassMethods</span><span class="p">)</span>
+
+    <span class="no">RodaResponse</span><span class="p">.</span><span class="nf">include</span> <span class="n">plugin</span><span class="o">::</span><span class="no">ResponseMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">ResponseMethods</span><span class="p">)</span>
+    <span class="no">RodaResponse</span><span class="p">.</span><span class="nf">extend</span> <span class="n">plugin</span><span class="o">::</span><span class="no">ResponseClassMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">ResponseClassMethods</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Roda</span><span class="p">.</span><span class="nf">plugin</span> <span class="no">MyPlugin</span>
+</code></pre></div></div>
+
+<p>Now we can make a plugin override any Roda class simply by defining a
+corresponding “Methods” module inside that plugin (just a reminder that
+<code class="language-plaintext highlighter-rouge">plugin</code> is a module, so <code class="language-plaintext highlighter-rouge">plugin::</code> simply references a constant inside that
+module). Notice that it was an important design decision to limit Roda to only
+a few core classes, because now they can all be first-class citizens.</p>
+
+<h3 id="overriding">Overriding</h3>
+
+<p>Plugins can now add new methods to Roda’s core classes, but we also want to
+support overriding existing methods. Specifically, we want that a plugin can
+override any method and be able to call <code class="language-plaintext highlighter-rouge">super</code> to get the original behaviour.
+Why do we want to allow overriding? Imagine there is a <code class="language-plaintext highlighter-rouge">#render</code> method for
+rendering templates, and you want to make a plugin for caching those templates.
+It would be nice if you could override <code class="language-plaintext highlighter-rouge">#render</code>, and return the cached version
+if it’s available, otherwise do the actual rendering, caching the result. As
+you can see, plugins could greatly benefit from this ability.</p>
+
+<p>First notice that our plugins can already override each other’s behaviour
+(because of how module inheritance works), which is what we want. What’s left
+for achieving complete extensibility is to allow plugins to also override
+Roda’s core behaviour, the one Roda has without loading any plugins.</p>
+
+<p>The problem is that, if this core behaviour is defined directly on core
+classes, it is not possible for a plugin to override it:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Roda</span>
+  <span class="c1"># This method cannot be overriden with `Roda.extend MyPlugin::ClassMethods`</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">route</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This is because plugins use module inclusion, which cannot override direct
+method definitions, because included modules follow the same rules as
+superclasses.</p>
+
+<p>If you thought about <a href="http://dev.af83.com/2012/10/19/ruby-2-0-module-prepend.html"><code class="language-plaintext highlighter-rouge">Module#prepend</code></a>, it would work (thanks @jrochkind for
+the <a href="http://twin.github.io/the-plugin-system-of-sequel-and-roda/#comment-2227674746">correction</a>), but it would bump Roda’s required Ruby version to 2.0 or
+higher. And also, there is no equivalent for <code class="language-plaintext highlighter-rouge">Module#extend</code>, so we would have
+to call <code class="language-plaintext highlighter-rouge">singleton_class.prepend MyPlugin::ClassMethods</code>, which isn’t
+pretty.</p>
+
+<p>There is a more elegant solution. We previously established that plugins can
+already override each other. What if we then make the core functionality
+<em>itself</em> a plugin (a “base” plugin), which automatically gets applied when Roda
+is required?</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Roda</span>
+  <span class="k">module</span> <span class="nn">RodaPlugins</span>
+    <span class="k">module</span> <span class="nn">Base</span>
+      <span class="k">module</span> <span class="nn">ClassMethods</span> <span class="o">...</span> <span class="k">end</span>
+      <span class="k">module</span> <span class="nn">InstanceMethods</span> <span class="o">...</span> <span class="k">end</span>
+      <span class="k">module</span> <span class="nn">RequestMethods</span> <span class="o">...</span> <span class="k">end</span>
+      <span class="k">module</span> <span class="nn">RequestClassMethods</span> <span class="o">...</span> <span class="k">end</span>
+      <span class="k">module</span> <span class="nn">ResponseMethods</span> <span class="o">...</span> <span class="k">end</span>
+      <span class="k">module</span> <span class="nn">ResponseClassMethods</span> <span class="o">...</span> <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">plugin</span> <span class="no">RodaPlugins</span><span class="o">::</span><span class="no">Base</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now all plugins can override the core behaviour (“Base”), because it’s a plugin
+like any other. This is roughly how Roda is implemented. All of Roda’s
+behaviour is contained in the “Base” plugin (<em>even</em> the <code class="language-plaintext highlighter-rouge">Roda.plugin</code> method),
+which gives plugins the ability to override <em>any</em> part of Roda.</p>
+
+<h3 id="requiring">Requiring</h3>
+
+<p>Ok, at this point we solved extending and overriding Roda with plugins, which
+is really the meat of the plugin system. Now we would like to be able to put
+plugins into separate files, so that they’re required only if the user wants
+them. Let’s extend <code class="language-plaintext highlighter-rouge">Roda.plugin</code> with the ability to load plugins by symbols,
+which first requires the plugin by requiring <code class="language-plaintext highlighter-rouge">"roda/plugins/#{name}"</code> (and then
+applies it):</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Roda</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+    <span class="n">plugin</span> <span class="o">=</span> <span class="no">RodaPlugins</span><span class="p">.</span><span class="nf">load_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span> <span class="k">if</span> <span class="n">plugin</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Symbol</span><span class="p">)</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+
+  <span class="k">module</span> <span class="nn">RodaPlugins</span>
+    <span class="vi">@plugins</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">load_plugin</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+      <span class="nb">require</span> <span class="s2">"roda/plugins/</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
+      <span class="k">raise</span> <span class="s2">"Plugin didn't correctly register itself"</span> <span class="k">unless</span> <span class="vi">@plugins</span><span class="p">[</span><span class="nb">name</span><span class="p">]</span>
+      <span class="vi">@plugins</span><span class="p">[</span><span class="nb">name</span><span class="p">]</span>
+    <span class="k">end</span>
+
+    <span class="c1"># Plugins need to call this method to register themselves:</span>
+    <span class="c1">#</span>
+    <span class="c1">#   Roda::RodaPlugins.register_plugin :render, Render</span>
+    <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">register_plugin</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
+      <span class="vi">@plugins</span><span class="p">[</span><span class="nb">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Roda</span><span class="p">.</span><span class="nf">plugin</span> <span class="ss">:render</span>
+<span class="no">Roda</span><span class="p">.</span><span class="nf">plugin</span> <span class="ss">:caching</span>
+</code></pre></div></div>
+
+<p>There is another way we could’ve approached this, that instead of doing
+<code class="language-plaintext highlighter-rouge">Roda.plugin :render</code> we simply <code class="language-plaintext highlighter-rouge">require "roda/plugins/render"</code>, and then <em>that
+file</em> should call <code class="language-plaintext highlighter-rouge">Roda.plugin</code> as soon as it defines the plugin. However, in
+this way it wouldn’t be possible to configure the plugins (see the next
+section).</p>
+
+<p>Roda has only 450 LOC of core and no extra dependencies, so it requires
+blazing-fast. In total with plugins it has 3350 LOC, but you can simply choose
+how much of that you want to require. Notice that <code class="language-plaintext highlighter-rouge">roda/plugins/#{name}</code> is
+being required from the <em>load path</em>, so Roda will load any external plugins
+shipped as gems in the same way it loads its own core plugins.</p>
+
+<h3 id="configuration">Configuration</h3>
+
+<p>Finally, it would be nice if the plugins were configurable, and able to load
+any other plugins they might potentially depend on:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Roda</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+    <span class="n">plugin</span> <span class="o">=</span> <span class="no">RodaPlugins</span><span class="p">.</span><span class="nf">load_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span> <span class="k">if</span> <span class="n">plugin</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Symbol</span><span class="p">)</span>
+    <span class="n">plugin</span><span class="p">.</span><span class="nf">load_dependencies</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span> <span class="c1"># &lt;---------------</span>
+    <span class="kp">include</span> <span class="n">plugin</span><span class="o">::</span><span class="no">InstanceMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">InstanceMethods</span><span class="p">)</span>
+    <span class="kp">extend</span> <span class="n">plugin</span><span class="o">::</span><span class="no">ClassMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">ClassMethods</span><span class="p">)</span>
+    <span class="no">RodaRequest</span><span class="p">.</span><span class="nf">include</span> <span class="n">plugin</span><span class="o">::</span><span class="no">RequestMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">RequestMethods</span><span class="p">)</span>
+    <span class="no">RodaRequest</span><span class="p">.</span><span class="nf">extend</span> <span class="n">plugin</span><span class="o">::</span><span class="no">RequestClassMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">RequestClassMethods</span><span class="p">)</span>
+    <span class="no">RodaResponse</span><span class="p">.</span><span class="nf">include</span> <span class="n">plugin</span><span class="o">::</span><span class="no">ResponseMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">ResponseMethods</span><span class="p">)</span>
+    <span class="no">RodaResponse</span><span class="p">.</span><span class="nf">extend</span> <span class="n">plugin</span><span class="o">::</span><span class="no">ResponseClassMethods</span> <span class="k">if</span> <span class="k">defined?</span><span class="p">(</span><span class="n">plugin</span><span class="o">::</span><span class="no">ResponseClassMethods</span><span class="p">)</span>
+    <span class="n">plugin</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span> <span class="c1"># &lt;-----------------------</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>We load the plugin’s dependencies before we apply its behaviour, so that the
+plugin can also load other plugins as its dependencies and be able to override
+their behaviour. We also provide a configuration method so that we can
+configure the plugin when loading it.</p>
+
+<p>The above is roughly how <code class="language-plaintext highlighter-rouge">Roda.plugin</code> really looks like, with the addition
+of handling <code class="language-plaintext highlighter-rouge">Roda</code> subclassing and freezing for thread-safety.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Let’s see again what we gain with this kind of plugin system. We are able to
+give the gem a very small core providing only the essentials, but still ship
+with additional features as plugins that users can load if they want to. These
+features are logically and physically separated from each other (e.g.
+rendering, caching, assets, flash, websockets etc.), which produces a nice and
+readable modular design.</p>
+
+<p>These plugins allow us to override any part of Roda, including other plugins,
+which maximizes the range of plugins we can write. Since Roda’s behaviour is
+split into plugins and applied by module inclusion, all methods are nicely
+introspectable:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"roda"</span>
+<span class="no">Roda</span><span class="p">.</span><span class="nf">plugin</span> <span class="ss">:render</span>
+<span class="no">Roda</span><span class="p">.</span><span class="nf">instance_method</span><span class="p">(</span><span class="ss">:render</span><span class="p">).</span><span class="nf">owner</span>           <span class="c1"># Roda::RodaPlugins::Render::InstanceMethods</span>
+<span class="no">Roda</span><span class="p">.</span><span class="nf">instance_method</span><span class="p">(</span><span class="ss">:render</span><span class="p">).</span><span class="nf">source_location</span> <span class="c1"># ~/.rbenv/.../roda/plugins/render.rb:213</span>
+</code></pre></div></div>
+
+<p>I did see a somewhat similar pattern in <a href="https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/uploader.rb">CarrierWave</a> (and some other gems),
+where the functionality is also stacked with module inclusion. But these
+modules aren’t clearly divided into features, and even if they were, you cannot
+decide which ones to pick (they’re all included).</p>
+
+<h3 id="standard-gem-design">Standard gem design</h3>
+
+<p>Finally, I want to briefly mention when the “plugin system” design pattern can
+work better than standard gem design. If you know your gem will be small and
+focused, obviously there is no need to introduce this pattern. However, if you
+think that your gem will likely grow (e.g. an “uploader” gem), then using this
+pattern can really improve the quality of the gem’s design.</p>
+
+<p>One alternative to this pattern is providing the ability to simply <code class="language-plaintext highlighter-rouge">require</code>
+additional features of a gem. There is maybe a possibility that this could
+work, but ActiveSupport is an example where this idea really failed:</p>
+
+<ol>
+  <li><strong>Some files forgot to require all their dependencies</strong> – This oversight is
+understandable, since it’s impossible to test this if you run your tests in
+the same processs. Jose Valim wrote an isolated test runner for Rails, and
+<a href="https://github.com/rails/rails/commit/f28bd9557c669cd63c31704202a46dd83f0a4102">found huge amounts of missing requires in ActiveSupport</a>.</li>
+  <li><strong>Some features are not clearly divided</strong> – I once wanted to require
+the <code class="language-plaintext highlighter-rouge">1.day.ago</code> helpers in my non-Rails project, and it took me a lot of
+source code diving to figure out how (and now I forgot again how to do it).</li>
+  <li><strong>Some features are entangled with dependencies</strong> – Once you figure out how
+to require the <code class="language-plaintext highlighter-rouge">1.day.ago</code> helpers, it turns out you have to require 5000
+LOC, even though the feature itself only has <a href="https://github.com/janko/as-duration">200 LOC</a>.</li>
+</ol>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>By designing your gem using this “plugin system” pattern, you can give your
+users all the simplicity they want, and at the same time all the features they
+want. If you start working on your next big gem, consider using this pattern.</p>
+
+<h2 id="related-reading">Related reading</h2>
+
+<ul>
+  <li><a href="http://sequel.jeremyevans.net/rdoc/files/doc/model_plugins_rdoc.html">http://sequel.jeremyevans.net/rdoc/files/doc/model_plugins_rdoc.html</a></li>
+  <li><a href="http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Plugins">http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Plugins</a></li>
+  <li><a href="http://twin.github.io/ode-to-sequel/">http://twin.github.io/ode-to-sequel/</a></li>
+  <li><a href="http://twin.github.io/introduction-to-roda/">http://twin.github.io/introduction-to-roda/</a></li>
+</ul>
+
+
+  </div>
+</article>
+
+<div class="mt-10">
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'twinblog'; // required: replace example with your forum shortname
+    var disqus_identifier = '/the-plugin-system-of-sequel-and-roda';
+    var disqus_url = 'https://janko.io/the-plugin-system-of-sequel-and-roda/';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+
+      </main>
+    </div>
+
+    
+  </body>
+</html>

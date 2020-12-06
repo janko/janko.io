@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="no-js wf-loading" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Let's keep frontend outside of Ruby | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Let’s keep frontend outside of Ruby" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Rails started as an excellent full-stack web framework. It made web development incredibly easy and fast, especially when the asset pipeline came along. However, the JavaScript world has evolved significantly since then, and it is able to take care of itself now." />
+<meta property="og:description" content="Rails started as an excellent full-stack web framework. It made web development incredibly easy and fast, especially when the asset pipeline came along. However, the JavaScript world has evolved significantly since then, and it is able to take care of itself now." />
+<link rel="canonical" href="https://janko.io/lets-keep-frontend-outside-of-ruby/" />
+<meta property="og:url" content="https://janko.io/lets-keep-frontend-outside-of-ruby/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-05-18T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Let’s keep frontend outside of Ruby" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/lets-keep-frontend-outside-of-ruby/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Let’s keep frontend outside of Ruby","description":"Rails started as an excellent full-stack web framework. It made web development incredibly easy and fast, especially when the asset pipeline came along. However, the JavaScript world has evolved significantly since then, and it is able to take care of itself now.","dateModified":"2015-05-18T00:00:00+02:00","datePublished":"2015-05-18T00:00:00+02:00","url":"https://janko.io/lets-keep-frontend-outside-of-ruby/","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    
+    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
+    <link rel="stylesheet" href="/css/output.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo" />
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby</p>
+      </div>
+    </header>
+
+    <div class="mx-6">
+      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
+        <article class="my-8">
+  <header class="text-center my-6">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Let's keep frontend outside of Ruby</h1>
+
+    <div class="text-gray-500 text-base">
+      <p class="post-byline">
+        By Janko Marohnić on
+        <time class="post-date" datetime="2015-05-18 00:00:00 +0200">
+          18 May 2015
+        </time>
+        
+          <span>
+            –
+            <a class="underline" href="https://github.com/janko/janko.io/commits/master/_posts/2015-05-18-lets-keep-frontend-outside-of-ruby.md">
+              Last edit on 27 May 2015
+            </a>
+          </span>
+        
+      </p>
+    </div>
+  </header>
+
+  <div class="prose lg:prose-xl">
+    <p>Rails started as an excellent full-stack web framework. It made web development
+incredibly easy and fast, especially when the asset pipeline came along. However,
+the JavaScript world has evolved significantly since then, and it is able to
+take care of itself now.</p>
+
+<p>I think it’s time we hand over frontend to the Node.js ecosystem of build tools
+and JavaScript frameworks, and use our Rails apps only for JSON API. What are
+the advantages of this design?</p>
+
+<h2 id="ability-to-focus-on-the-backend">Ability to focus on the backend</h2>
+
+<p>We Ruby developers like to make fun of JavaScript, but the truth is, we simply
+aren’t good at writing it. That’s because we’re so busy with our backends,
+since we have to know so many things:</p>
+
+<ul>
+  <li>The Ruby language + code design</li>
+  <li>Our web framework + the HTTP protocol</li>
+  <li>Databases and ORMs (PostgreSQL, Elasticsearch, Redis)</li>
+  <li>Background jobs</li>
+  <li>Testing</li>
+  <li>Performance</li>
+  <li>Deployment</li>
+</ul>
+
+<p>These are all huge fields, and very delicate. I really want to be good in all
+these fields, and research and experiment which are the best tools for each
+field (for example, I recently found out that
+<a href="http://sequel.jeremyevans.net">Sequel</a> is a lot better than ActiveRecord). So,
+how in the earth will I find time for frontend as well? Can’t someone else do
+frontend instead of me, let’s say a frontend person?</p>
+
+<p>If you’re a full-stack developer, you think that you can handle both very well,
+but in most cases that’s just not true, because there are too many things to know
+in the backend world alone.</p>
+
+<h2 id="ability-to-hire-actual-frontend-developers">Ability to hire actual frontend developers</h2>
+
+<p>Many job descriptions ask for full-stack developers, from which they require
+vast knowledge in both backend and frontend. That’s insane, it’s impossible to
+know both fields well, espcially since JavaScript world is developing so
+rapidly. I have an idea, why not just hire 2 developers instead, each for one
+part? They will cost the same in total, and the application will have actually
+quality frontend. It’s an enormous difference whether the frontend is written
+by full-stack developer who “knows frontend” or an actual frontend person.</p>
+
+<p>Ok, fair, buy why not still keep the frontend in Rails? Frontend developers
+generally aren’t familiar with Ruby and its ecosystem (why would they be, that
+knowledge is useless to them once they switch to a project with a PHP backend),
+so they will naturally <strong>avoid Rails jobs</strong>. That’s really unfortunate, I don’t
+want just a frontend that “works”, I want it to be awesome and well designed.
+Frontend developers shouldn’t have to care in which language/framework the
+backend is written in.</p>
+
+<p>The reason why JavaScript developers don’t need Ruby ecosystem is because they
+have their own awesome Node.js ecosystem. Node.js, along with being a backend,
+has incredible frontend build tools written in it. They have
+<a href="https://github.com/assetgraph/assetgraph-builder">Assetgraph</a>, which is their
+alternative to Sprockets, and it’s <em>much</em> more advanced and better designed
+(see <a href="https://github.com/assetgraph/assetgraph-builder#features">features</a>),
+because of course it was written by frontend developers who really know best.</p>
+
+<p>Frontend developers don’t use regular ruby Sass anymore, because it compiles
+too slowly for them as the project grows. Did you know that
+<a href="https://github.com/sass/libsass">Libsass</a> is an awesome C/C++ implementation of
+Sass, which compiles <strong>10x faster</strong> than ruby Sass? Did you know that even Libsass
+isn’t the best way to write CSS?
+<a href="https://github.com/postcss/postcss">PostCSS</a> lets you write regular CSS, and
+what it does is just corrects your CSS during compilation to be cross-browser.
+Now, wait for it… PostCSS is <strong>3x faster</strong> than Libsass. So, PostCSS is both
+the best way to write CSS <em>and</em> the fastest option.</p>
+
+<p>Does Sprockets have support for Libsass or PostCSS? Of course not, we like our
+ruby Sass, even though frontend developers aren’t using it anymore. I hope you
+have worked in a codebase with a bit more frontend code to know how compilation
+time can grow fast, and how keeping it fast is essential for productivity
+(analogous to how speed of our tests is essential to our productivity).</p>
+
+<p>We just can’t keep up with the JavaScript world and continue making
+<code class="language-plaintext highlighter-rouge">sprockets-*</code> extensions for every new thing, it’s much better to just use
+the awesome Node.js tools directly.</p>
+
+<h2 id="better-performance">Better performance</h2>
+
+<p>Most Rails developers use Turbolinks to make their websites snappy, and
+Turbolinks 3 will allow us to achieve an even better performance and UX.
+It can now keep certain parts of the webpage still, and refresh the rest.
+However, Turbolinks of course still renders the <strong>whole</strong> webpage in the
+background, and only then replaces the parts that are needed. That means that
+you don’t get any performance benefit, because the backend still has to do the
+same amount of work.</p>
+
+<p>An alternative is to just use AJAX directly, with or without UJS. However,
+that obviously doesn’t scale, that’s the whole reason why JS frameworks were
+invented in the first place, to tame spaghetti AJAX calls into something
+structured. So, for any non-trivial projects the only right choice is to use
+something like React.js.</p>
+
+<p>Another benefit of using a JavaScript framework is page caching. In JavaScript
+frameworks you <strong>don’t have to do any page caching</strong>, HTML pages are served
+from a CDN (along with the assets), because HTML pages can now also be compiled
+upfront. That means all “rendering” is done by JavaScript in place, which is
+just really fast. In Rails we can only cache parts of our templates, because
+it’s usually impossible to properly cache whole web pages, because there are
+so many things we have to handle (parts of the page that are specific to the
+logged in user, CSRF tokens etc).</p>
+
+<p>Sure, on server side you should still do HTTP caching of your JSON resources,
+but that’s now much simpler and more maintainable, because you can now cache
+one type of resource in only one place. Your frontend may want to request
+list of posts in different contexts, but if it always requests <code class="language-plaintext highlighter-rouge">/posts</code> you
+only need to cache that action.</p>
+
+<h2 id="being-frontend-agnostic">Being frontend-agnostic</h2>
+
+<p>When our backend only provides JSON API, we are agnostic to the type of client
+that is consuming it. Of course, we could expose a JSON API alongside the regular
+HTML API, but that almost always introduces duplications, and it’s harder to
+manage.</p>
+
+<p>JSON APIs provide extreme flexibility, because the company can now decide that
+they want to have an iOS app alongside the web frontend, and they can just use
+the same JSON API. Of course, building a flexible JSON APIs isn’t an easy task
+but the <a href="http://jsonapi.org">JSON-API specification</a> aims to bring conventions
+which makes this much easier, and it has almost reached version 1.0 and it’s
+already very usable with a great library ecosystem.</p>
+
+<p>When you have a flexible JSON API, you don’t need to care who consumes it; it
+can be a web frontend, iOS/Android app, or a washing machine. Those clients all
+need to speak only one common language: HTTP &amp; JSON.</p>
+
+<h2 id="easy-to-make-frontend-only-prototypes">Easy to make frontend-only prototypes</h2>
+
+<p>With frontend-backend separation it’s easy to develop independently. Frontend
+developers don’t need to wait for the backend to implement the endpoint, they
+can just write their part and use fixtures (all JS frameworks make this very
+transparent to use), and then they can just swap from fixtures to a real
+endpoint once it’s done.</p>
+
+<p>You can imagine that this makes prototyping very easy to do. Prototypes are
+crucial for rapid web development, because they enable very fast iteration.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I’ve worked a lot on full-stack Rails applications. And it just doesn’t work
+properly in the long run, because frontend is always done by Ruby developers,
+and then code design and UI are suffering due to lack of knowledge. GitHub is
+managing this very well, but you can’t always count on exceptional developers.</p>
+
+<p>Let’s keep backend and frontend separate, because they really are two separate
+fields. Let’s optimize for quality and developer happiness.</p>
+
+  </div>
+</article>
+
+<div class="mt-10">
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'twinblog'; // required: replace example with your forum shortname
+    var disqus_identifier = '/lets-keep-frontend-outside-of-ruby';
+    var disqus_url = 'https://janko.io/lets-keep-frontend-outside-of-ruby/';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</div>
+
+      </main>
+    </div>
+
+    
+  </body>
+</html>
