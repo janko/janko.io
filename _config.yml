@@ -50,6 +50,7 @@ exclude:
   - .gitignore
   - node_modules
   - css/application.css
+  - css/highlight.css
   - tailwind.config.js
   - postcss.config.js
 
