@@ -28,8 +28,8 @@ module.exports = {
               borderColor: colors.gray['300'],
             },
             pre: {
-              marginLeft: `-${spacing['6']}`,
-              marginRight: `-${spacing['6']}`,
+              marginLeft: `-${spacing['4']}`,
+              marginRight: `-${spacing['4']}`,
               backgroundColor: colors.gray['100'],
             },
             'pre code': {
@@ -70,6 +70,8 @@ module.exports = {
         xl: {
           css: {
             pre: {
+              marginLeft: `-${spacing['6']}`,
+              marginRight: `-${spacing['6']}`,
               marginTop:    spacing['4'],
               marginBottom: spacing['4'],
             },
