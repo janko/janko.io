@@ -704,8 +704,8 @@ video {
   padding-right: 1.1428571em;
   padding-bottom: 0.8571429em;
   padding-left: 1.1428571em;
-  margin-left: -1.5rem;
-  margin-right: -1.5rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
 }
 
 .prose pre code {
@@ -960,14 +960,14 @@ video {
   line-height: 2.25rem;
 }
 
+.mx-4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
 .my-6 {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-}
-
-.mx-6 {
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
 }
 
 .my-8 {
@@ -1502,6 +1502,8 @@ img.emoji {
     padding-right: 1.3333333em;
     padding-bottom: 1.1111111em;
     padding-left: 1.3333333em;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
   }
 
   .lg\:prose-xl ol {
@@ -1740,6 +1742,8 @@ img.emoji {
     padding-right: 1.3333333em;
     padding-bottom: 1.1111111em;
     padding-left: 1.3333333em;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
   }
 
   .xl\:prose-xl ol {
