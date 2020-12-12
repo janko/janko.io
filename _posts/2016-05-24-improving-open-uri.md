@@ -1,6 +1,6 @@
 ---
 title: Improving open-uri
-tags: ruby download
+tags: shrine
 ---
 
 When working on the [Shrine] library for handling file uploads, in multiple

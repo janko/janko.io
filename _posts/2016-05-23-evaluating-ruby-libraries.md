@@ -1,6 +1,5 @@
 ---
 title: Evaluating (Ruby) Libraries
-tags: ruby gem library
 ---
 
 Whenever we need to solve a problem in our application, if this problem is

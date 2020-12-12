@@ -1,6 +1,6 @@
 ---
 title: Ode to Sequel
-tags: ruby orm postgresql activerecord
+tags: sequel
 ---
 
 I've used and loved ActiveRecord for most of my Ruby life. While I was in

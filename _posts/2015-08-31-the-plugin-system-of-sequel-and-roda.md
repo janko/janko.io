@@ -1,6 +1,6 @@
 ---
 title: The plugin system of Sequel and Roda
-tags: ruby framework orm roda sequel web plugins design
+tags: roda
 updated: 31.8.2015.
 ---
 

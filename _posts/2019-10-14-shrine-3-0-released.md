@@ -1,6 +1,6 @@
 ---
 title: Shrine 3.0 Released
-tags: ruby gem upload attachment release processing orm backgrounding persistence
+tags: shrine
 ---
 
 I've just released version 3.0 of [Shrine], a gem for handling file attachments

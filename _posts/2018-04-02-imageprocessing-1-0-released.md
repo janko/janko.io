@@ -1,6 +1,6 @@
 ---
 title: ImageProcessing 1.0 Released
-tags: ruby gem library image processing vips libvips imagemagick minimagick thumbnail
+tags: shrine
 ---
 
 The [ImageProcessing] gem has just reached version 1.0, and I thought this

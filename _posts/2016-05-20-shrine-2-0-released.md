@@ -1,6 +1,6 @@
 ---
 title: Shrine 2.0 Released
-tags: ruby shrine file upload
+tags: shrine
 ---
 
 [Shrine] is a full-featured library for handling file uploads in Ruby

@@ -3,8 +3,7 @@ title: "Better File Uploads with Shrine: Eager Processing"
 excerpt: "This is the 7th part of a series of blog posts about Shrine. In this
   part we will dive deeper into Shrine's eager processing feature, showing some
   interesting use cases that are possible thanks to its advanced API."
-tags: ruby file attachment upload shrine library gem
-series: better-file-uploads-with-shrine
+tags: shrine
 ---
 
 In the [Processing](/better-file-uploads-with-shrine-processing) article, we

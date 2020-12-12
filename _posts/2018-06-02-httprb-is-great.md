@@ -1,6 +1,5 @@
 ---
 title: Http.rb is Great
-tags: ruby gem library http streaming design download upload
 ---
 
 The Ruby ecosystem has many HTTP clients gems to choose from. Some are built on

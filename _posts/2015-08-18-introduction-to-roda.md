@@ -1,6 +1,6 @@
 ---
 title: Introduction to Roda
-tags: ruby framework rails roda web
+tags: roda
 updated: 19.8.2015.
 ---
 

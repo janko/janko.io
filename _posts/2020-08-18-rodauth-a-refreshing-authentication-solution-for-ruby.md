@@ -1,6 +1,6 @@
 ---
 title: "Rodauth: A Refreshing Authentication Solution for Ruby"
-tags: ruby rails orm postgresql database activerecord authentication
+tags: rodauth
 ---
 
 If you're working with Rails, chances are your authentication layer is

@@ -1,6 +1,6 @@
 ---
 title: Shrine meets Transloadit
-tags: ruby shrine file upload processing
+tags: shrine
 updated: 15.9.2019.
 ---
 

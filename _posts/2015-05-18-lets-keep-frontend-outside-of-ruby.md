@@ -1,7 +1,6 @@
 ---
 title: Let's keep frontend outside of Ruby
 updated: 27.5.2015.
-tags: ruby rails javascript frameworks
 ---
 
 Rails started as an excellent full-stack web framework. It made web development

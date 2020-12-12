@@ -1,7 +1,6 @@
 ---
 title: Require only what you require
 updated: 12.2.2015.
-tags: ruby design
 redirect_from: /2015/01/require-only-what-you-require/
 ---
 

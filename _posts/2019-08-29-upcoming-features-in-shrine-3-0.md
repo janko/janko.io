@@ -1,6 +1,6 @@
 ---
 title: Upcoming Features in Shrine 3.0
-tags: ruby gem upload attachment processing orm backgrounding persistence
+tags: shrine
 ---
 
 The last couple of months I've been working hard to prepare for [Shrine 3.0],

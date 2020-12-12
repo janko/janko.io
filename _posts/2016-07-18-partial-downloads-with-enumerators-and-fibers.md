@@ -1,6 +1,6 @@
 ---
 title: Partial Downloads with Enumerators and Fibers
-tags: ruby download streaming partial
+tags: shrine
 updated: 23.7.2016.
 ---
 

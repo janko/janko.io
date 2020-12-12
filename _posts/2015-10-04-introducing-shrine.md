@@ -1,6 +1,6 @@
 ---
 title: Introducing Shrine – A file upload toolkit
-tags: ruby web file upload
+tags: shrine
 ---
 
 I'm really excited about this. I've just released [Shrine], a new solution for

@@ -1,6 +1,6 @@
 ---
 title: ActiveRecord is reinventing Sequel
-tags: ruby web rails framework orm activerecord sequel
+tags: sequel
 ---
 
 For those who don't know, [Sequel] is an ORM very similar to ActiveRecord, in a

@@ -1,6 +1,6 @@
 ---
 title: Asynchronous File Uploads
-tags: ruby web file upload backgrounding
+tags: shrine
 ---
 
 Accepting file uploads in web applications is very delicate, because all

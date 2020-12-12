@@ -1,5 +1,6 @@
 ---
 title: "Adding Authentication in Rails 6 with Rodauth"
+tags: rodauth
 ---
 
 In this tutorial, we'll show how to add fully functional authentication and

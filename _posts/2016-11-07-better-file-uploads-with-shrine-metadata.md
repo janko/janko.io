@@ -1,6 +1,6 @@
 ---
 title: "Better File Uploads with Shrine: Metadata"
-tags: ruby file attachment upload shrine library gem
+tags: shrine
 excerpt: "This is the 5th part of a series of blog posts about Shrine. In this
   part I talk about how Shrine extracts and stores file metadata."
 updated: 15.9.2019.

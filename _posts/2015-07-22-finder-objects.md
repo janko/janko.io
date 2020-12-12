@@ -1,6 +1,5 @@
 ---
 title: Finder Objects
-tags: ruby rails orm
 ---
 
 In Ruby applications it is considered good practice to encapsulate your

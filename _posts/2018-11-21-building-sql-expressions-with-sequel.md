@@ -1,8 +1,6 @@
 ---
-layout: post
 title: Building SQL Expressions with Sequel
-author: janko
-tags: ruby web rails framework gem orm activerecord sequel query sql builder
+tags: sequel
 ---
 
 This has been published on the [Citrusbyte blog].

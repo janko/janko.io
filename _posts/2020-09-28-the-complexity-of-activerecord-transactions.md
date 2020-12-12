@@ -1,5 +1,6 @@
 ---
 title: "The Complexity of Active Record Transactions"
+tags: sequel
 ---
 
 I've recently picked up the [sequel-activerecord_connection] gem again to make
