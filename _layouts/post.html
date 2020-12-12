@@ -2,29 +2,19 @@
 layout: default
 ---
 
-<article class="my-8">
-  <header class="text-center my-6">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">{{ page.title }}</h1>
+<article>
+  <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">{{ page.title }}</h1>
 
-    <div class="text-gray-500 text-base">
-      <p class="post-byline">
-        By {{ site.author.name }} on
-        <time class="post-date" datetime="{{ page.date }}">
-          {{ page.date | date_to_string }}
-        </time>
-        {% if page.updated %}
-          <span>
-            –
-            <a class="underline" href="{{ site.github.url }}/commits/master/{{ page.path }}">
-              Last edit on {{ page.updated | date_to_string }}
-            </a>
-          </span>
-        {% endif %}
-      </p>
-    </div>
-  </header>
+  <div class="mt-5 flex justify-center items-baseline space-x-4 text-base">
+    <span class="text-gray-500">
+      By <a class="underline hover:text-gray-700" href="/about">{{ site.author.name }}</a> on
+      <time datetime="{{ page.date }}">
+        {{ page.date | date_to_string }}
+      </time>
+    </span>
+  </div>
 
-  <div class="prose lg:prose-xl">
+  <div class="mt-6 prose lg:prose-xl">
     {{ content }}
   </div>
 </article>
