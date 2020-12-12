@@ -1,7 +1,6 @@
 ---
 title: Introduction to Roda
 tags: roda
-updated: 19.8.2015.
 ---
 
 When I decided that I want to move away from Rails, I have investigated

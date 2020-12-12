@@ -4,7 +4,6 @@ tags: shrine
 excerpt: "This is the 6th part of a series of blog posts about Shrine. In this
   part we'll show how to do direct uploads to S3 or your app on the client side,
   as well as how to handle large uploads."
-updated: 15.9.2019.
 ---
 
 So far we were talking about the server side of handling file uploads. However,

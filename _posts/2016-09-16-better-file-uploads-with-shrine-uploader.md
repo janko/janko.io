@@ -3,7 +3,6 @@ title: "Better File Uploads with Shrine: Uploader"
 tags: shrine
 excerpt: "This is the 2nd part of a series of blog posts about Shrine. In this
   part I talk about the foundation that Shrine is built upon – uploaders."
-updated: 15.9.2019.
 ---
 
 In the [previous post] I talked about motivation behind creating Shrine. In

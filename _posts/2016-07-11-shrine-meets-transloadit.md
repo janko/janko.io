@@ -1,7 +1,6 @@
 ---
 title: Shrine meets Transloadit
 tags: shrine
-updated: 15.9.2019.
 ---
 
 When I'm building web applications, a requirement that almost always comes up

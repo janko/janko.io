@@ -1,7 +1,6 @@
 ---
 title: The plugin system of Sequel and Roda
 tags: roda
-updated: 31.8.2015.
 ---
 
 When developing gems, often one of the difficult problems to solve is creating

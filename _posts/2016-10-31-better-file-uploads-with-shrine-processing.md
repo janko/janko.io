@@ -4,7 +4,6 @@ tags: shrine
 excerpt: "This is the 4th part of a series of blog posts about Shrine. In this
   part I talk about doing file processing with Shrine, both on upload and
   on-the-fly."
-updated: 15.9.2019.
 ---
 
 Whenever we accept file uploads, we usually want to apply some processing
