@@ -28,6 +28,8 @@
       </main>
     </div>
 
-    {% include analytics.html %}
+    {% unless jekyll.environment == "development" %}
+      {% include analytics.html %}
+    {% endunless %}
   </body>
 </html>
