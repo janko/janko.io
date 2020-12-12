@@ -37,7 +37,7 @@ ActiveRecord.*
 
 ## The plugin system
 
-<img class="h-56 lg:h-64 float-right" src="/images/sequel-plugin_system.png" alt="Sequel's plugin system">
+<img class="h-56 md:h-64 float-right" src="/images/sequel-plugin_system.png" alt="Sequel's plugin system">
 
 While ActiveRecord is one monolithic gem, Sequel utilizes a [plugin system].
 Sequel consists of a relatively thin **core**, which gives you the most common
