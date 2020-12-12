@@ -1,6 +1,7 @@
 ---
 title: Minimal self-contained example that reproduces the bug
 tags: ruby bug report minimal issue
+published: false
 ---
 
 TODO:
