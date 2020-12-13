@@ -1,6 +1,7 @@
 ---
 title: The plugin system of Sequel and Roda
 tags: roda
+comments: disqus
 ---
 
 When developing gems, often one of the difficult problems to solve is creating

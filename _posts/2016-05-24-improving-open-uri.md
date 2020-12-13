@@ -1,6 +1,7 @@
 ---
 title: Improving open-uri
 tags: shrine
+comments: disqus
 ---
 
 When working on the [Shrine] library for handling file uploads, in multiple

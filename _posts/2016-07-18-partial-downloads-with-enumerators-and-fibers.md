@@ -1,6 +1,7 @@
 ---
 title: Partial Downloads with Enumerators and Fibers
 tags: shrine
+comments: disqus
 ---
 
 Before talking about the implementation, I first want to explain where and why

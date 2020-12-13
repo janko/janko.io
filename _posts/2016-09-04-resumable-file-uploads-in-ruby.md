@@ -1,6 +1,7 @@
 ---
 title: Resumable File Uploads in Ruby
 tags: shrine
+comments: disqus
 ---
 
 I recently released [tus-ruby-server], a Ruby server implementation for [tus],

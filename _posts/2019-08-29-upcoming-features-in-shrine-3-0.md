@@ -1,6 +1,7 @@
 ---
 title: Upcoming Features in Shrine 3.0
 tags: shrine
+comments: disqus
 ---
 
 The last couple of months I've been working hard to prepare for [Shrine 3.0],

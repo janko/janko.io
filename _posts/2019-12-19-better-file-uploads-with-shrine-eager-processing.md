@@ -4,6 +4,7 @@ excerpt: "This is the 7th part of a series of blog posts about Shrine. In this
   part we will dive deeper into Shrine's eager processing feature, showing some
   interesting use cases that are possible thanks to its advanced API."
 tags: shrine
+comments: disqus
 ---
 
 In the [Processing](/better-file-uploads-with-shrine-processing) article, we

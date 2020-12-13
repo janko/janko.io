@@ -1,6 +1,7 @@
 ---
 title: Introduction to Roda
 tags: roda
+comments: disqus
 ---
 
 When I decided that I want to move away from Rails, I have investigated

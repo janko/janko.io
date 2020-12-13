@@ -1,6 +1,7 @@
 ---
 title: ImageProcessing 1.0 Released
 tags: shrine
+comments: disqus
 ---
 
 The [ImageProcessing] gem has just reached version 1.0, and I thought this

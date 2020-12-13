@@ -4,6 +4,7 @@ tags: shrine
 excerpt: "This is the 1st part of a series of blog posts about Shrine. In this
   part I talk about the motivation behind creating Shrine, by going over the
   limitations of existing file attachment libraries."
+comments: disqus
 ---
 
 It's been over a year since I started working on [Shrine], and during that time

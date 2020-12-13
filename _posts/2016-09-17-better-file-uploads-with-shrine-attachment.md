@@ -4,6 +4,7 @@ tags: shrine
 excerpt: "This is the 3rd part of a series of blog posts about Shrine. In this
   part I talk about Shrine's high-level interface for attaching uploaded files
   to model instances."
+comments: disqus
 ---
 
 In the [previous post] I talked about the foundation of Shrine's design. In

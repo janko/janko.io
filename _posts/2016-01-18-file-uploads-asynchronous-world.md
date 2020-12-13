@@ -1,6 +1,7 @@
 ---
 title: Asynchronous File Uploads
 tags: shrine
+comments: disqus
 ---
 
 Accepting file uploads in web applications is very delicate, because all

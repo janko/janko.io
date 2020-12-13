@@ -1,6 +1,7 @@
 ---
 title: "Rodauth: A Refreshing Authentication Solution for Ruby"
 tags: rodauth
+comments: disqus
 ---
 
 If you're working with Rails, chances are your authentication layer is

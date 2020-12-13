@@ -1,6 +1,7 @@
 ---
 title: Shrine 3.0 Released
 tags: shrine
+comments: disqus
 ---
 
 I've just released version 3.0 of [Shrine], a gem for handling file attachments

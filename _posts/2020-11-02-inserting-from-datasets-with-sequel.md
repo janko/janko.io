@@ -1,6 +1,7 @@
 ---
 title: "Inserting from Datasets with Sequel"
 tags: sequel
+comments: disqus
 ---
 
 At a previous company, I was working on an internal app for managing and

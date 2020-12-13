@@ -1,5 +1,6 @@
 ---
 title: Http.rb is Great
+comments: disqus
 ---
 
 The Ruby ecosystem has many HTTP clients gems to choose from. Some are built on

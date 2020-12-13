@@ -3,6 +3,7 @@ title: "Better File Uploads with Shrine: Metadata"
 tags: shrine
 excerpt: "This is the 5th part of a series of blog posts about Shrine. In this
   part I talk about how Shrine extracts and stores file metadata."
+comments: disqus
 ---
 
 Shrine has very flexible and customizable support for saving file metadata.

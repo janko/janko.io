@@ -1,6 +1,7 @@
 ---
 title: Introducing Shrine – A file upload toolkit
 tags: shrine
+comments: disqus
 ---
 
 I'm really excited about this. I've just released [Shrine], a new solution for

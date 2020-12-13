@@ -1,6 +1,7 @@
 ---
 title: ActiveRecord is reinventing Sequel
 tags: sequel
+comments: disqus
 ---
 
 For those who don't know, [Sequel] is an ORM very similar to ActiveRecord, in a

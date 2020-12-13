@@ -1,5 +1,6 @@
 ---
 title: Evaluating (Ruby) Libraries
+comments: disqus
 ---
 
 Whenever we need to solve a problem in our application, if this problem is

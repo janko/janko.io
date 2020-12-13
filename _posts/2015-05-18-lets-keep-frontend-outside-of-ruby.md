@@ -1,5 +1,6 @@
 ---
 title: Let's keep frontend outside of Ruby
+comments: disqus
 ---
 
 Rails started as an excellent full-stack web framework. It made web development

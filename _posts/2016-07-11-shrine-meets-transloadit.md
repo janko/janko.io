@@ -1,6 +1,7 @@
 ---
 title: Shrine meets Transloadit
 tags: shrine
+comments: disqus
 ---
 
 When I'm building web applications, a requirement that almost always comes up

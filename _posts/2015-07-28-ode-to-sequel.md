@@ -1,6 +1,7 @@
 ---
 title: Ode to Sequel
 tags: sequel
+comments: disqus
 ---
 
 I've used and loved ActiveRecord for most of my Ruby life. While I was in

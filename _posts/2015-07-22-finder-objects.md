@@ -1,5 +1,6 @@
 ---
 title: Finder Objects
+comments: disqus
 ---
 
 In Ruby applications it is considered good practice to encapsulate your
