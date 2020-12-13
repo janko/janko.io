@@ -16,6 +16,7 @@ module.exports = {
       pink: colors.pink,
       blue: colors.blue['400'],
       red: colors.red['500'],
+      white: colors.white,
     },
     extend: {
       typography: {
