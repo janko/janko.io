@@ -2,6 +2,7 @@
 title: Building SQL Expressions with Sequel
 tags: sequel
 canonical_url: https://bits.theorem.co/building-sql-expressions-with-sequel/
+comments: disqus
 ---
 
 I’ve recently started working on a new project which uses [Sequel], and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a [gentle introduction to Sequel][ode to sequel] a while back.
