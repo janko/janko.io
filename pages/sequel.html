@@ -2,6 +2,4 @@
 permalink: /sequel
 ---
 
-{% for post in site.tags.sequel %}
-  {% include post.html post=post %}
-{% endfor %}
+{% include posts.html posts=site.tags.sequel %}

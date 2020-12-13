@@ -1,0 +1,20 @@
+<div class="space-y-10">
+  {% for post in include.posts %}
+    <article>
+      <div>
+        <time class="text-sm md:text-base text-gray-500" datetime="{{ post.date }}">
+          {{ post.date | date_to_string }}
+        </time>
+      </div>
+
+      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700">
+        <a href="{{ post.url }}">{{ post.title }}</a>
+      </h1>
+
+      <div class="mt-2 prose md:prose-xl">
+        {{ post.excerpt }}
+        <a class="block -mt-5" href="{{ post.url }}">Read more &rarr;</a>
+      </div>
+    </article>
+  {% endfor %}
+</div>

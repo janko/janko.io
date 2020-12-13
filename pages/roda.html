@@ -2,6 +2,4 @@
 permalink: /roda
 ---
 
-{% for post in site.tags.roda %}
-  {% include post.html post=post %}
-{% endfor %}
+{% include posts.html posts=site.tags.roda %}
