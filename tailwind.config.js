@@ -77,6 +77,7 @@ module.exports = {
               marginRight: `-${spacing['6']}`,
               marginTop:    spacing['4'],
               marginBottom: spacing['4'],
+              lineHeight: '1.55',
             },
             'pre code': {
               fontSize: '1rem',

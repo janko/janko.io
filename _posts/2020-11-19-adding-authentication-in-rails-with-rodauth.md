@@ -49,7 +49,7 @@ the migration:
 ```sh
 $ rails db:migrate
 
-# == CreateRodauth: migrating ====================================
+# == CreateRodauth: migrating ==========================
 # -- create_table(:accounts)
 # -- create_table(:account_password_hashes)
 # -- create_table(:account_password_reset_keys)
