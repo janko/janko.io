@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js wf-loading" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Require only what you require | Janko's Blog</title>
@@ -22,13 +22,11 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/require-only-what-you-require/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Require only what you require","description":"Writing code which reveals intention is one of the most important things to me. Some time ago, I read “5 Reasons to Avoid Bundler.require” by Myron Marston, which talks about how Rails requires all of your gems at startup and some of the downsides of that approach. After reading it, I started noticing how many gems, when they need to require their parts, use a similar approach as Rails by just requiring everything in one place.","dateModified":"2015-01-31T00:00:00+01:00","datePublished":"2015-01-31T00:00:00+01:00","url":"https://janko.io/require-only-what-you-require/","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Require only what you require","dateModified":"2015-01-31T00:00:00+01:00","datePublished":"2015-01-31T00:00:00+01:00","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/require-only-what-you-require/"},"description":"Writing code which reveals intention is one of the most important things to me. Some time ago, I read “5 Reasons to Avoid Bundler.require” by Myron Marston, which talks about how Rails requires all of your gems at startup and some of the downsides of that approach. After reading it, I started noticing how many gems, when they need to require their parts, use a similar approach as Rails by just requiring everything in one place.","url":"https://janko.io/require-only-what-you-require/","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
-    
-    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
-    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/bundle.css">
   </head>
 
   <body class="text-xl text-gray-700">
@@ -45,31 +43,26 @@
 </div>
     </header>
 
-    <div class="mx-4">
-      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
-        <article class="my-8">
-  <header class="text-center my-6">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Require only what you require</h1>
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="md:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Require only what you require</h1>
 
-    <div class="text-gray-500 text-base">
-      <p class="post-byline">
-        By Janko Marohnić on
-        <time class="post-date" datetime="2015-01-31 00:00:00 +0100">
-          31 Jan 2015
-        </time>
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2015-01-31 00:00:00 +0100">
+            31 Jan 2015
+          </time>
+        </span>
         
-          <span>
-            –
-            <a class="underline" href="https://github.com/janko/janko.io/commits/master/_posts/2015-01-31-require-only-what-you-require.md">
-              Last edit on 12 Feb 2015
-            </a>
-          </span>
-        
-      </p>
+      </div>
     </div>
   </header>
 
-  <div class="prose lg:prose-xl">
+  <div class="mt-4 sm:mt-6 prose md:prose-xl">
     <p>Writing code which reveals intention is one of the most important things to me. Some time ago, I read “<a href="http://myronmars.to/n/dev-blog/2012/12/5-reasons-to-avoid-bundler-require">5 Reasons to Avoid Bundler.require</a>” by Myron Marston, which talks about how Rails requires all of your gems at startup and some of the downsides of that approach. After reading it, I started noticing how many gems, when they need to require their parts, use a similar approach as Rails by just requiring everything in one place.</p>
 
 <p>To illustrate, we’ll take a look at a library we’re all using – Rake.</p>
@@ -121,7 +114,7 @@
 
 <p>Why is <code class="language-plaintext highlighter-rouge">optparse</code> being required here? It isn’t some wide-purpose gem which many files will likely use. It’s actually quite the opposite; <code class="language-plaintext highlighter-rouge">optparse</code> is used for parsing options from the command-line, which will be done once and only once in the code. If we look at <a href="https://github.com/ruby/rake/blob/8cc7349ffbdf97345e5da15e1a05058c6dbcefec/bin/rake">bin/rake</a>, it calls <code class="language-plaintext highlighter-rouge">Rake.applicaton.run</code>, and by grepping we find out that <a href="https://github.com/ruby/rake/blob/8cc7349ffbdf97345e5da15e1a05058c6dbcefec/lib/rake/application.rb">rake/application.rb</a> is the only file which uses <code class="language-plaintext highlighter-rouge">optparse</code>.</p>
 
-<p>If each file requires only what it needs, then we have a nice overview of each file’s dependencies. Now, it can happen that multiple files require the same library. And that’s perfectly ok. Ruby will require each library only once, so the other <code class="language-plaintext highlighter-rouge">require</code>s just won’t do anything. No memory worries <img class="emoji" title=":wink:" alt=":wink:" src="/images/emoji/unicode/1f609.png" height="20" width="20"></p>
+<p>If each file requires only what it needs, then we have a nice overview of each file’s dependencies. Now, it can happen that multiple files require the same library. And that’s perfectly ok. Ruby will require each library only once, so the other <code class="language-plaintext highlighter-rouge">require</code>s just won’t do anything. No memory worries <img class="emoji" title=":wink:" alt=":wink:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png" height="20" width="20"></p>
 
 <h2 id="2-it-hides-the-important-parts-of-the-library">2. It hides the important parts of the library</h2>
 
@@ -220,6 +213,23 @@
 <p>If each file only requires the dependencies it needs, the code is easier to read and maintain. Every library can list the <em>main</em> components of the libary in its primary file, and then each component in turn can require its own dependencies. This way we get a nice logical tree structure which we can easily follow. Try applying it to your code, and you will start to understand your code better.</p>
 
   </div>
+
+  <div class="mt-10 flex">
+    
+    
+      <a class="w-1/2 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/lets-keep-frontend-outside-of-ruby/">
+        <div class="flex-grow flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Next</span>
+          <span class="text-sm sm:text-base font-semibold">Let's keep frontend outside of Ruby</span>
+        </div>
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </a>
+    
+  </div>
 </article>
 
 <div class="mt-10">
@@ -246,20 +256,6 @@
       </main>
     </div>
 
-    <script>
-  // Gauges
-  var _gauges = _gauges || [];
-  (function() {
-    var t   = document.createElement('script');
-    t.type  = 'text/javascript';
-    t.async = true;
-    t.id    = 'gauges-tracker';
-    t.setAttribute('data-site-id', '51f5bd47f5a1f545ac0000fc');
-    t.src = '//secure.gaug.es/track.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(t, s);
-  })();
-</script>
-
+    
   </body>
 </html>

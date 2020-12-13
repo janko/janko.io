@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Janko’s Blog" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Sharing the wonders of Ruby" />
+<meta property="og:description" content="Sharing the wonders of Ruby" />
+<link rel="canonical" href="https://janko.io/sequel" />
+<meta property="og:url" content="https://janko.io/sequel" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Janko’s Blog" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Janko’s Blog","author":{"@type":"Person","name":"Janko Marohnić"},"description":"Sharing the wonders of Ruby","url":"https://janko.io/sequel","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    <link rel="stylesheet" href="/css/bundle.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo" />
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby</p>
+      </div>
+    </header>
+
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        
+  <article class="my-10">
+  <div>
+    <time class="text-sm md:text-base text-gray-500" datetime="2020-11-02 00:00:00 +0100">
+      02 Nov 2020
+    </time>
+  </div>
+
+  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
+    <a href="/inserting-from-datasets-with-sequel/">Inserting from Datasets with Sequel</a>
+  </h1>
+
+  <div class="prose md:prose-xl">
+    <p>At a previous company, I was working on an internal app for managing and
+distributing video content. Content curators would create playlists of videos,
+submit them for approval, and once playlists were approved they would be
+automatically published to target devices.</p>
+
+  </div>
+</article>
+
+
+  <article class="my-10">
+  <div>
+    <time class="text-sm md:text-base text-gray-500" datetime="2020-09-28 00:00:00 +0200">
+      28 Sep 2020
+    </time>
+  </div>
+
+  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
+    <a href="/the-complexity-of-activerecord-transactions/">The Complexity of Active Record Transactions</a>
+  </h1>
+
+  <div class="prose md:prose-xl">
+    <p>I’ve recently picked up the <a href="https://github.com/janko/sequel-activerecord_connection">sequel-activerecord_connection</a> gem again to make
+some reliability improvements around database transactions. For context, this
+gem extends <a href="https://github.com/jeremyevans/sequel">Sequel</a> with the ability to reuse Active Record’s database
+connection, which should lower the barrier for trying out Sequel in apps that
+use Active Record.</p>
+
+
+  </div>
+</article>
+
+
+  <article class="my-10">
+  <div>
+    <time class="text-sm md:text-base text-gray-500" datetime="2018-11-21 00:00:00 +0100">
+      21 Nov 2018
+    </time>
+  </div>
+
+  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
+    <a href="/building-sql-expressions-with-sequel/">Building SQL Expressions with Sequel</a>
+  </h1>
+
+  <div class="prose md:prose-xl">
+    <p>I’ve recently started working on a new project which uses <a href="https://github.com/jeremyevans/sequel">Sequel</a>, and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a <a href="https://janko.io/ode-to-sequel/">gentle introduction to Sequel</a> a while back.</p>
+
+
+  </div>
+</article>
+
+
+  <article class="my-10">
+  <div>
+    <time class="text-sm md:text-base text-gray-500" datetime="2016-03-04 00:00:00 +0100">
+      04 Mar 2016
+    </time>
+  </div>
+
+  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
+    <a href="/activerecord-is-reinventing-sequel/">ActiveRecord is reinventing Sequel</a>
+  </h1>
+
+  <div class="prose md:prose-xl">
+    <p>For those who don’t know, <a href="http://github.com/jeremyevans/sequel">Sequel</a> is an ORM very similar to ActiveRecord, in a
+way that it also implements the <a href="http://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>. As of this writing
+it’s 9 years old. I’ve already <a href="http://twin.github.io/ode-to-sequel/">written</a>
+about some of the main advantages of Sequel over ActiveRecord (and other people
+have as well:
+<a href="http://rosenfeld.herokuapp.com/en/articles/ruby-rails/2013-12-18-sequel-is-awesome-and-much-better-than-activerecord">1</a>,
+<a href="https://mrbrdo.wordpress.com/2013/10/15/why-you-should-stop-using-activerecord-and-start-using-sequel/">2</a>).</p>
+
+
+  </div>
+</article>
+
+
+  <article class="my-10">
+  <div>
+    <time class="text-sm md:text-base text-gray-500" datetime="2015-07-28 00:00:00 +0200">
+      28 Jul 2015
+    </time>
+  </div>
+
+  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
+    <a href="/ode-to-sequel/">Ode to Sequel</a>
+  </h1>
+
+  <div class="prose md:prose-xl">
+    <p>I’ve used and loved ActiveRecord for most of my Ruby life. While I was in
+Rails, I couldn’t imagine why I would want to use anything else. When I moved
+away from Rails, I was still using ActiveRecord at first, but some things
+started to bother me:</p>
+
+  </div>
+</article>
+
+
+
+      </main>
+    </div>
+
+    
+  </body>
+</html>

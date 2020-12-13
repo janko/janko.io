@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js wf-loading" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Rodauth: A Refreshing Authentication Solution for Ruby | Janko's Blog</title>
@@ -22,13 +22,11 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Rodauth: A Refreshing Authentication Solution for Ruby","description":"If you’re working with Rails, chances are your authentication layer is implemented using one of the popular authentication frameworks – Devise, Sorcery, Clearance, or Authlogic. These libraries provide complete authentication and account management functionality for Rails, giving you more time to focus on the core business logic of your product.","dateModified":"2020-08-18T00:00:00+02:00","datePublished":"2020-08-18T00:00:00+02:00","url":"https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Rodauth: A Refreshing Authentication Solution for Ruby","dateModified":"2020-08-18T00:00:00+02:00","datePublished":"2020-08-18T00:00:00+02:00","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/"},"description":"If you’re working with Rails, chances are your authentication layer is implemented using one of the popular authentication frameworks – Devise, Sorcery, Clearance, or Authlogic. These libraries provide complete authentication and account management functionality for Rails, giving you more time to focus on the core business logic of your product.","url":"https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
-    
-    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
-    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/bundle.css">
   </head>
 
   <body class="text-xl text-gray-700">
@@ -45,24 +43,28 @@
 </div>
     </header>
 
-    <div class="mx-4">
-      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
-        <article class="my-8">
-  <header class="text-center my-6">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Rodauth: A Refreshing Authentication Solution for Ruby</h1>
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="md:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Rodauth: A Refreshing Authentication Solution for Ruby</h1>
 
-    <div class="text-gray-500 text-base">
-      <p class="post-byline">
-        By Janko Marohnić on
-        <time class="post-date" datetime="2020-08-18 00:00:00 +0200">
-          18 Aug 2020
-        </time>
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2020-08-18 00:00:00 +0200">
+            18 Aug 2020
+          </time>
+        </span>
         
-      </p>
+          <a class="rounded-full px-3 bg-pink-100 text-pink-800 font-semibold py-0.5" href="/rodauth">rodauth</a>
+        
+      </div>
     </div>
   </header>
 
-  <div class="prose lg:prose-xl">
+  <div class="mt-4 sm:mt-6 prose md:prose-xl">
     <p>If you’re working with Rails, chances are your authentication layer is
 implemented using one of the popular authentication frameworks – <a href="https://github.com/heartcombo/devise">Devise</a>,
 <a href="https://github.com/Sorcery/sorcery">Sorcery</a>, <a href="https://github.com/thoughtbot/clearance">Clearance</a>, or <a href="https://github.com/binarylogic/authlogic">Authlogic</a>. These libraries provide complete
@@ -84,7 +86,7 @@ Rails</strong> can provide significant advantages:</p>
 
 <ul>
   <li>breaking away from Rails gives you mental space to design your library better</li>
-  <li>your library can now be used with other Ruby web frameworks too <img class="emoji" title=":innocent:" alt=":innocent:" src="/images/emoji/unicode/1f607.png" height="20" width="20">
+  <li>your library can now be used with other Ruby web frameworks too <img class="emoji" title=":innocent:" alt=":innocent:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f607.png" height="20" width="20">
 </li>
   <li>supporting new Rails versions becomes easier too</li>
 </ul>
@@ -95,7 +97,7 @@ library that provides a mechanism for authentication, with support for multiple
 strategies. However, the problem is that Warden doesn’t actually <em>do</em> anything
 by itself. You still need to implement login, remembering, registration,
 account verification, password reset and other functionality yourself (which is
-what Devise does), and I’d argue <em>this</em> is actually the hard part <img class="emoji" title=":sweat:" alt=":sweat:" src="/images/emoji/unicode/1f613.png" height="20" width="20"></p>
+what Devise does), and I’d argue <em>this</em> is actually the hard part <img class="emoji" title=":sweat:" alt=":sweat:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f613.png" height="20" width="20"></p>
 
 <h2 id="enter-rodauth">Enter Rodauth</h2>
 
@@ -106,7 +108,7 @@ committer, and an author of numerous Ruby libraries (most popular of which is
 framework for the past several years, called <strong><a href="https://github.com/jeremyevans/rodauth/">Rodauth</a></strong>. Recently I’ve
 finally had the opportunity to integrate Rodauth into a Rails app at work, and
 I can safely say that its tagline – <em>“Ruby’s most advanced authentication
-framework”</em> – is in no way exaggerated <img class="emoji" title=":ok_hand:" alt=":ok_hand:" src="/images/emoji/unicode/1f44c.png" height="20" width="20"></p>
+framework”</em> – is in no way exaggerated <img class="emoji" title=":ok_hand:" alt=":ok_hand:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f44c.png" height="20" width="20"></p>
 
 <p>One of the first things you’ll notice is that, in constrast to other
 authentication frameworks which are built on top of Rails and Active Record,
@@ -122,10 +124,10 @@ integration, mailer support, CSRF &amp; flash integration, HMAC security and mor
 Additionally, to make Sequel coexist better with Active Record, I’ve created
 the <a href="https://github.com/janko/sequel-activerecord_connection">sequel-activerecord_connection</a> gem, which enables Sequel to reuse Active
 Record’s database connection. All this should make Rodauth as easy to get
-started with as its Rails-based counterparts <img class="emoji" title=":muscle:" alt=":muscle:" src="/images/emoji/unicode/1f4aa.png" height="20" width="20"></p>
+started with as its Rails-based counterparts <img class="emoji" title=":muscle:" alt=":muscle:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f4aa.png" height="20" width="20"></p>
 
 <p>And with its recent <a href="http://rodauth.jeremyevans.net/rdoc/files/doc/release_notes/2_0_0_txt.html">2.0 release</a>, it’s time to finally take a proper look into
-Rodauth and see what makes it so special <img class="emoji" title=":sparkles:" alt=":sparkles:" src="/images/emoji/unicode/2728.png" height="20" width="20"></p>
+Rodauth and see what makes it so special <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png" height="20" width="20"></p>
 
 <h2 id="encapsulated-authentication-logic">Encapsulated authentication logic</h2>
 
@@ -292,7 +294,7 @@ we’ve created the necessary <a href="http://rodauth.jeremyevans.net/rdoc/files
 
 <p>Having full-featured multifactor authentication built into the framework is a
 game changer, as it means it will work well with other features and will remain
-compatible with future Rodauth releases <img class="emoji" title=":raised_hands:" alt=":raised_hands:" src="/images/emoji/unicode/1f64c.png" height="20" width="20"></p>
+compatible with future Rodauth releases <img class="emoji" title=":raised_hands:" alt=":raised_hands:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f64c.png" height="20" width="20"></p>
 
 <h3 id="json-api">JSON API</h3>
 
@@ -347,7 +349,7 @@ settings, model settings, controller settings, and routing settings. Some
 of these settings can be configured dynamically (based on either model or
 controller state), while other can only be configured statically. And some
 before/after hooks are triggered on the model level, while for others you need
-to override controller actions. This is pretty inconsistent <img class="emoji" title=":thumbsdown:" alt=":thumbsdown:" src="/images/emoji/unicode/1f44e.png" height="20" width="20"></p>
+to override controller actions. This is pretty inconsistent <img class="emoji" title=":thumbsdown:" alt=":thumbsdown:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f44e.png" height="20" width="20"></p>
 
 <p>In contrast, Rodauth provides a uniform configuration DSL that allows changing
 virtually any authentication behaviour, which is all defined on the
@@ -529,7 +531,7 @@ database columns belong to which features.</p>
 <h2 id="conclusion">Conclusion</h2>
 
 <p>Rodauth is one of those libraries that come and renew my interest in the Ruby
-ecosystem <img class="emoji" title=":heart_eyes:" alt=":heart_eyes:" src="/images/emoji/unicode/1f60d.png" height="20" width="20"> Its advanced and comprehensive set of authentication
+ecosystem <img class="emoji" title=":heart_eyes:" alt=":heart_eyes:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f60d.png" height="20" width="20"> Its advanced and comprehensive set of authentication
 features (including multifactor authentication and JSON support), backed by a
 powerful configuration DSL that provides immense flexibility, provide
 overwhelming advantages over other authentication frameworks.</p>
@@ -540,7 +542,7 @@ first full-featured authentication solution that can be used in any Ruby web
 framework (including Rails).</p>
 
 <p>Hopefully this overview will encourage you to try Rodauth out in your next
-project <img class="emoji" title=":wink:" alt=":wink:" src="/images/emoji/unicode/1f609.png" height="20" width="20"></p>
+project <img class="emoji" title=":wink:" alt=":wink:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png" height="20" width="20"></p>
 
 <h2 id="further-reading">Further reading</h2>
 
@@ -551,6 +553,35 @@ project <img class="emoji" title=":wink:" alt=":wink:" src="/images/emoji/unicod
 </ul>
 
 
+  </div>
+
+  <div class="mt-10 flex">
+    
+      <a class="w-1/2 -mr-0.5 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/better-file-uploads-with-shrine-eager-processing/">
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Previous</span>
+          <span class="text-sm sm:text-base font-semibold">Better File Uploads with Shrine: Eager Processing</span>
+        </div>
+      </a>
+    
+    
+      <a class="w-1/2 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/the-complexity-of-activerecord-transactions/">
+        <div class="flex-grow flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Next</span>
+          <span class="text-sm sm:text-base font-semibold">The Complexity of Active Record Transactions</span>
+        </div>
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </a>
+    
   </div>
 </article>
 
@@ -578,20 +609,6 @@ project <img class="emoji" title=":wink:" alt=":wink:" src="/images/emoji/unicod
       </main>
     </div>
 
-    <script>
-  // Gauges
-  var _gauges = _gauges || [];
-  (function() {
-    var t   = document.createElement('script');
-    t.type  = 'text/javascript';
-    t.async = true;
-    t.id    = 'gauges-tracker';
-    t.setAttribute('data-site-id', '51f5bd47f5a1f545ac0000fc');
-    t.src = '//secure.gaug.es/track.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(t, s);
-  })();
-</script>
-
+    
   </body>
 </html>

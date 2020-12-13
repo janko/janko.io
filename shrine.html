@@ -11,8 +11,8 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Sharing the wonders of Ruby" />
 <meta property="og:description" content="Sharing the wonders of Ruby" />
-<link rel="canonical" href="https://janko.io/" />
-<meta property="og:url" content="https://janko.io/" />
+<link rel="canonical" href="https://janko.io/shrine" />
+<meta property="og:url" content="https://janko.io/shrine" />
 <meta property="og:site_name" content="Janko’s Blog" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Janko’s Blog" />
@@ -20,7 +20,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Janko’s Blog","author":{"@type":"Person","name":"Janko Marohnić"},"description":"Sharing the wonders of Ruby","url":"https://janko.io/","name":"Janko’s Blog","@type":"WebSite","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Janko’s Blog","author":{"@type":"Person","name":"Janko Marohnić"},"description":"Sharing the wonders of Ruby","url":"https://janko.io/shrine","@type":"WebPage","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
@@ -44,96 +44,6 @@
     <div class="my-6 sm:my-8 mx-4">
       <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
         
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2020-11-19 00:00:00 +0100">
-      19 Nov 2020
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/adding-authentication-in-rails-with-rodauth/">Adding Authentication in Rails 6 with Rodauth</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>In this tutorial, we’ll show how to add fully functional authentication and
-account management functionality into a Rails 6 app, using the <strong><a href="https://github.com/jeremyevans/rodauth">Rodauth</a></strong>
-authentication framework. Rodauth has many advantages over the mainstream
-alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
-<a href="https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/">previous article</a> for an introduction.</p>
-
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2020-11-02 00:00:00 +0100">
-      02 Nov 2020
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/inserting-from-datasets-with-sequel/">Inserting from Datasets with Sequel</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>At a previous company, I was working on an internal app for managing and
-distributing video content. Content curators would create playlists of videos,
-submit them for approval, and once playlists were approved they would be
-automatically published to target devices.</p>
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2020-09-28 00:00:00 +0200">
-      28 Sep 2020
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/the-complexity-of-activerecord-transactions/">The Complexity of Active Record Transactions</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>I’ve recently picked up the <a href="https://github.com/janko/sequel-activerecord_connection">sequel-activerecord_connection</a> gem again to make
-some reliability improvements around database transactions. For context, this
-gem extends <a href="https://github.com/jeremyevans/sequel">Sequel</a> with the ability to reuse Active Record’s database
-connection, which should lower the barrier for trying out Sequel in apps that
-use Active Record.</p>
-
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2020-08-18 00:00:00 +0200">
-      18 Aug 2020
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/rodauth-a-refreshing-authentication-solution-for-ruby/">Rodauth: A Refreshing Authentication Solution for Ruby</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>If you’re working with Rails, chances are your authentication layer is
-implemented using one of the popular authentication frameworks – <a href="https://github.com/heartcombo/devise">Devise</a>,
-<a href="https://github.com/Sorcery/sorcery">Sorcery</a>, <a href="https://github.com/thoughtbot/clearance">Clearance</a>, or <a href="https://github.com/binarylogic/authlogic">Authlogic</a>. These libraries provide complete
-authentication and account management functionality for Rails, giving you more
-time to focus on the core business logic of your product.</p>
-
-
-  </div>
-</article>
-
-
   <article class="my-10">
   <div>
     <time class="text-sm md:text-base text-gray-500" datetime="2019-12-19 00:00:00 +0100">
@@ -189,48 +99,6 @@ which I expect will be released by the end of October. A lot of work has gone
 into it, including some big but much needed rewrites. I feel the API has
 stabilized now, so I thought it would be a good time to share with your some of
 the new features and improvements that will be coming to 3.0. <img class="emoji" title=":tada:" alt=":tada:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f389.png" height="20" width="20"></p>
-
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2018-11-21 00:00:00 +0100">
-      21 Nov 2018
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/building-sql-expressions-with-sequel/">Building SQL Expressions with Sequel</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>I’ve recently started working on a new project which uses <a href="https://github.com/jeremyevans/sequel">Sequel</a>, and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a <a href="https://janko.io/ode-to-sequel/">gentle introduction to Sequel</a> a while back.</p>
-
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2018-06-02 00:00:00 +0200">
-      02 Jun 2018
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/httprb-is-great/">Http.rb is Great</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>The Ruby ecosystem has many HTTP clients gems to choose from. Some are built on
-<a href="https://curl.haxx.se/libcurl/">libcurl</a> (<a href="https://github.com/typhoeus/typhoeus">Typhoeus</a>, <a href="https://github.com/taf2/curb">Curb</a>, <a href="https://github.com/toland/patron">Patron</a>), some on Ruby’s <a href="https://ruby-doc.org/stdlib-2.5.0/libdoc/net/http/rdoc/Net/HTTP.html">Net::HTTP</a>
-(<a href="http://github.com/rest-client/rest-client">RestClient</a>, <a href="https://github.com/jnunemaker/httparty">HTTParty</a>, <a href="https://github.com/maccman/nestful">Nestful</a>), some in pure Ruby (<a href="https://github.com/nahi/httpclient">HTTPClient</a>,
-<a href="https://github.com/excon/excon">Excon</a>, <a href="https://github.com/httprb/http">http.rb</a>), and some are wrappers around existing libraries
-(<a href="https://github.com/lostisland/faraday">Faraday</a>, <a href="https://github.com/savonrb/httpi">HTTPI</a>).</p>
 
 
   </div>
@@ -445,27 +313,6 @@ standard library well, the solution might be obvious to you: <a href="http://rub
 
   <article class="my-10">
   <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2016-05-23 00:00:00 +0200">
-      23 May 2016
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/evaluating-ruby-libraries/">Evaluating (Ruby) Libraries</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>Whenever we need to solve a problem in our application, if this problem is
-common enough, chances are there are already libraries out there which can help
-us with that. Great, now we just pick the library with most GitHub stars, and
-start integrating it into our project. So, the next thing—</p>
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
     <time class="text-sm md:text-base text-gray-500" datetime="2016-05-20 00:00:00 +0200">
       20 May 2016
     </time>
@@ -480,31 +327,6 @@ start integrating it into our project. So, the next thing—</p>
 applications. Main advantages of Shrine are <a href="http://shrinerb.com/rdoc/files/doc/design_md.html">good design</a>, loads of flexibility
 for achieving maximum performance and best user experience for any use case, and
 advanced features like backgrounding, direct uploads, logging and more.</p>
-
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2016-03-04 00:00:00 +0100">
-      04 Mar 2016
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/activerecord-is-reinventing-sequel/">ActiveRecord is reinventing Sequel</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>For those who don’t know, <a href="http://github.com/jeremyevans/sequel">Sequel</a> is an ORM very similar to ActiveRecord, in a
-way that it also implements the <a href="http://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>. As of this writing
-it’s 9 years old. I’ve already <a href="http://twin.github.io/ode-to-sequel/">written</a>
-about some of the main advantages of Sequel over ActiveRecord (and other people
-have as well:
-<a href="http://rosenfeld.herokuapp.com/en/articles/ruby-rails/2013-12-18-sequel-is-awesome-and-much-better-than-activerecord">1</a>,
-<a href="https://mrbrdo.wordpress.com/2013/10/15/why-you-should-stop-using-activerecord-and-start-using-sequel/">2</a>).</p>
 
 
   </div>
@@ -548,126 +370,6 @@ most notably its idea of backends. However, unlike Refile, it is designed
 primarily for upfront processing (as opposed to on-the-fly). It’s also inspired
 by CarrierWave’s idea of uploaders.</p>
 
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2015-08-31 00:00:00 +0200">
-      31 Aug 2015
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/the-plugin-system-of-sequel-and-roda/">The plugin system of Sequel and Roda</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>When developing gems, often one of the difficult problems to solve is creating
-a good ratio between <em>simplicity</em>, <em>convenience</em> and <em>flexibility</em>.</p>
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2015-08-18 00:00:00 +0200">
-      18 Aug 2015
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/introduction-to-roda/">Introduction to Roda</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>When I decided that I want to move away from Rails, I have investigated
-and experimented with a lot of other Ruby web frameworks (Sinatra, Grape and
-Lotus), but this one really stood out in every regard, and it became my
-framework of choice. That’s why I want to show it to you.</p>
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2015-07-28 00:00:00 +0200">
-      28 Jul 2015
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/ode-to-sequel/">Ode to Sequel</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>I’ve used and loved ActiveRecord for most of my Ruby life. While I was in
-Rails, I couldn’t imagine why I would want to use anything else. When I moved
-away from Rails, I was still using ActiveRecord at first, but some things
-started to bother me:</p>
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2015-07-22 00:00:00 +0200">
-      22 Jul 2015
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/finder-objects/">Finder Objects</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>In Ruby applications it is considered good practice to encapsulate your
-ActiveRecord querying logic. To achieve this, it’s natural to use ActiveRecord
-scopes.</p>
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2015-05-18 00:00:00 +0200">
-      18 May 2015
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/lets-keep-frontend-outside-of-ruby/">Let's keep frontend outside of Ruby</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>Rails started as an excellent full-stack web framework. It made web development
-incredibly easy and fast, especially when the asset pipeline came along. However,
-the JavaScript world has evolved significantly since then, and it is able to
-take care of itself now.</p>
-
-  </div>
-</article>
-
-
-  <article class="my-10">
-  <div>
-    <time class="text-sm md:text-base text-gray-500" datetime="2015-01-31 00:00:00 +0100">
-      31 Jan 2015
-    </time>
-  </div>
-
-  <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 mb-2">
-    <a href="/require-only-what-you-require/">Require only what you require</a>
-  </h1>
-
-  <div class="prose md:prose-xl">
-    <p>Writing code which reveals intention is one of the most important things to me. Some time ago, I read “<a href="http://myronmars.to/n/dev-blog/2012/12/5-reasons-to-avoid-bundler-require">5 Reasons to Avoid Bundler.require</a>” by Myron Marston, which talks about how Rails requires all of your gems at startup and some of the downsides of that approach. After reading it, I started noticing how many gems, when they need to require their parts, use a similar approach as Rails by just requiring everything in one place.</p>
 
   </div>
 </article>

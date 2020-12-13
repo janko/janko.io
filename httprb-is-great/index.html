@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js wf-loading" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Http.rb is Great | Janko's Blog</title>
@@ -22,13 +22,11 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/httprb-is-great/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Http.rb is Great","description":"The Ruby ecosystem has many HTTP clients gems to choose from. Some are built on libcurl (Typhoeus, Curb, Patron), some on Ruby’s Net::HTTP (RestClient, HTTParty, Nestful), some in pure Ruby (HTTPClient, Excon, http.rb), and some are wrappers around existing libraries (Faraday, HTTPI).","dateModified":"2018-06-02T00:00:00+02:00","datePublished":"2018-06-02T00:00:00+02:00","url":"https://janko.io/httprb-is-great/","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Http.rb is Great","dateModified":"2018-06-02T00:00:00+02:00","datePublished":"2018-06-02T00:00:00+02:00","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/httprb-is-great/"},"description":"The Ruby ecosystem has many HTTP clients gems to choose from. Some are built on libcurl (Typhoeus, Curb, Patron), some on Ruby’s Net::HTTP (RestClient, HTTParty, Nestful), some in pure Ruby (HTTPClient, Excon, http.rb), and some are wrappers around existing libraries (Faraday, HTTPI).","url":"https://janko.io/httprb-is-great/","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
-    
-    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
-    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/bundle.css">
   </head>
 
   <body class="text-xl text-gray-700">
@@ -45,24 +43,26 @@
 </div>
     </header>
 
-    <div class="mx-4">
-      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
-        <article class="my-8">
-  <header class="text-center my-6">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Http.rb is Great</h1>
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="md:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Http.rb is Great</h1>
 
-    <div class="text-gray-500 text-base">
-      <p class="post-byline">
-        By Janko Marohnić on
-        <time class="post-date" datetime="2018-06-02 00:00:00 +0200">
-          02 Jun 2018
-        </time>
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2018-06-02 00:00:00 +0200">
+            02 Jun 2018
+          </time>
+        </span>
         
-      </p>
+      </div>
     </div>
   </header>
 
-  <div class="prose lg:prose-xl">
+  <div class="mt-4 sm:mt-6 prose md:prose-xl">
     <p>The Ruby ecosystem has many HTTP clients gems to choose from. Some are built on
 <a href="https://curl.haxx.se/libcurl/">libcurl</a> (<a href="https://github.com/typhoeus/typhoeus">Typhoeus</a>, <a href="https://github.com/taf2/curb">Curb</a>, <a href="https://github.com/toland/patron">Patron</a>), some on Ruby’s <a href="https://ruby-doc.org/stdlib-2.5.0/libdoc/net/http/rdoc/Net/HTTP.html">Net::HTTP</a>
 (<a href="http://github.com/rest-client/rest-client">RestClient</a>, <a href="https://github.com/jnunemaker/httparty">HTTParty</a>, <a href="https://github.com/maccman/nestful">Nestful</a>), some in pure Ruby (<a href="https://github.com/nahi/httpclient">HTTPClient</a>,
@@ -428,7 +428,7 @@ There, Eric states that what is often to blame for high memory usage in Ruby
 applications are <strong>string objects</strong>. He shows various techniques for limiting
 string allocations, as well as deallocating strings that are no longer needed.
 After all, the less “garbage” there is, the better the garbage collector will
-perform <img class="emoji" title=":wink:" alt=":wink:" src="/images/emoji/unicode/1f609.png" height="20" width="20"></p>
+perform <img class="emoji" title=":wink:" alt=":wink:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png" height="20" width="20"></p>
 
 <p>It so happens that HTTP intractions can allocate a lot of strings, especially
 for large request and response bodies. I <a href="https://gist.github.com/janko/238bbcc78b369ce3438365e5507bc671">measured</a> memory
@@ -501,6 +501,35 @@ usage makes http.rb a great choice, especially when dealing with large files.</p
 
 
   </div>
+
+  <div class="mt-10 flex">
+    
+      <a class="w-1/2 -mr-0.5 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/imageprocessing-1-0-released/">
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Previous</span>
+          <span class="text-sm sm:text-base font-semibold">ImageProcessing 1.0 Released</span>
+        </div>
+      </a>
+    
+    
+      <a class="w-1/2 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/building-sql-expressions-with-sequel/">
+        <div class="flex-grow flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Next</span>
+          <span class="text-sm sm:text-base font-semibold">Building SQL Expressions with Sequel</span>
+        </div>
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </a>
+    
+  </div>
 </article>
 
 <div class="mt-10">
@@ -527,20 +556,6 @@ usage makes http.rb a great choice, especially when dealing with large files.</p
       </main>
     </div>
 
-    <script>
-  // Gauges
-  var _gauges = _gauges || [];
-  (function() {
-    var t   = document.createElement('script');
-    t.type  = 'text/javascript';
-    t.async = true;
-    t.id    = 'gauges-tracker';
-    t.setAttribute('data-site-id', '51f5bd47f5a1f545ac0000fc');
-    t.src = '//secure.gaug.es/track.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(t, s);
-  })();
-</script>
-
+    
   </body>
 </html>

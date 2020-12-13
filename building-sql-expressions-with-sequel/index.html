@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js wf-loading" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Building SQL Expressions with Sequel | Janko's Blog</title>
@@ -7,28 +7,26 @@
     <!-- Begin Jekyll SEO tag v2.7.1 -->
 <meta name="generator" content="Jekyll v4.1.1" />
 <meta property="og:title" content="Building SQL Expressions with Sequel" />
-<meta name="author" content="janko" />
+<meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This has been published on the Citrusbyte blog." />
-<meta property="og:description" content="This has been published on the Citrusbyte blog." />
-<link rel="canonical" href="https://janko.io/building-sql-expressions-with-sequel/" />
-<meta property="og:url" content="https://janko.io/building-sql-expressions-with-sequel/" />
+<meta name="description" content="I’ve recently started working on a new project which uses Sequel, and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a gentle introduction to Sequel a while back." />
+<meta property="og:description" content="I’ve recently started working on a new project which uses Sequel, and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a gentle introduction to Sequel a while back." />
+<link rel="canonical" href="https://bits.theorem.co/building-sql-expressions-with-sequel/" />
+<meta property="og:url" content="https://bits.theorem.co/building-sql-expressions-with-sequel/" />
 <meta property="og:site_name" content="Janko’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2018-11-21T00:00:00+01:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Building SQL Expressions with Sequel" />
 <meta name="twitter:site" content="@jankomarohnic" />
-<meta name="twitter:creator" content="@janko" />
+<meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"janko"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/building-sql-expressions-with-sequel/"},"author":{"@type":"Person","name":"janko"},"headline":"Building SQL Expressions with Sequel","description":"This has been published on the Citrusbyte blog.","dateModified":"2018-11-21T00:00:00+01:00","datePublished":"2018-11-21T00:00:00+01:00","url":"https://janko.io/building-sql-expressions-with-sequel/","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Building SQL Expressions with Sequel","dateModified":"2018-11-21T00:00:00+01:00","datePublished":"2018-11-21T00:00:00+01:00","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://bits.theorem.co/building-sql-expressions-with-sequel/"},"description":"I’ve recently started working on a new project which uses Sequel, and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a gentle introduction to Sequel a while back.","url":"https://bits.theorem.co/building-sql-expressions-with-sequel/","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
-    
-    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
-    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/bundle.css">
   </head>
 
   <body class="text-xl text-gray-700">
@@ -44,27 +42,578 @@
       </div>
     </header>
 
-    <div class="mx-4">
-      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
-        <article class="my-8">
-  <header class="text-center my-6">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Building SQL Expressions with Sequel</h1>
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="md:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Building SQL Expressions with Sequel</h1>
 
-    <div class="text-gray-500 text-base">
-      <p class="post-byline">
-        By Janko Marohnić on
-        <time class="post-date" datetime="2018-11-21 00:00:00 +0100">
-          21 Nov 2018
-        </time>
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2018-11-21 00:00:00 +0100">
+            21 Nov 2018
+          </time>
+        </span>
         
-      </p>
+          <a class="rounded-full px-3 bg-pink-100 text-pink-800 font-semibold py-0.5" href="/sequel">sequel</a>
+        
+      </div>
     </div>
   </header>
 
-  <div class="prose lg:prose-xl">
-    <p>This has been published on the <a href="https://bits.citrusbyte.com/building-sql-expressions-with-sequel/">Citrusbyte blog</a>.</p>
+  <div class="mt-4 sm:mt-6 prose md:prose-xl">
+    <p>I’ve recently started working on a new project which uses <a href="https://github.com/jeremyevans/sequel">Sequel</a>, and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a <a href="https://janko.io/ode-to-sequel/">gentle introduction to Sequel</a> a while back.</p>
+
+<p>One of the prettiest parts of Sequel for me is the API for building SQL expressions, so in this article I would like to talk more about that. But before we start with Sequel, I first want to talk a little bit about Active Record.</p>
+
+<h2 id="active-record">Active Record</h2>
+
+<p>In Active Record, equality and inclusion expressions are typically built with simple ruby hashes:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">rating: </span><span class="mi">7</span><span class="p">,</span> <span class="ss">genre: </span><span class="p">[</span><span class="s2">"Adventure"</span><span class="p">,</span> <span class="s2">"Comedy"</span><span class="p">])</span>
+<span class="c1"># WHERE movies.rating = 7 AND movies.genre IN ('Adventure', 'Comedy')</span>
+</code></pre></div></div>
+
+<p>Negation is also easy with <code class="language-plaintext highlighter-rouge">where.not(...)</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">.</span><span class="nf">not</span><span class="p">(</span><span class="ss">rating: </span><span class="mi">7</span><span class="p">,</span> <span class="ss">genre: </span><span class="p">[</span><span class="s2">"Adventure"</span><span class="p">,</span> <span class="s2">"Comedy"</span><span class="p">])</span>
+<span class="c1"># WHERE movies.rating != 7 AND movies.genre NOT IN ('Adventure', 'Comedy')</span>
+</code></pre></div></div>
+
+<p>A nested hash can be used to qualify columns with a different table name (useful for joined datasets):</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:rating</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">rating: </span><span class="p">{</span> <span class="ss">imdb: </span><span class="mi">7</span><span class="p">,</span> <span class="ss">netflix: </span><span class="mi">5</span><span class="o">..</span><span class="mi">8</span> <span class="p">})</span>
+<span class="c1"># WHERE rating.imdb = 7 AND rating.netflix &gt;= 5 AND rating.netflix &lt;= 8</span>
+</code></pre></div></div>
+
+<p>However, as soon as we need something that cannot be expressed by a hash, it’s common to just reach for raw SQL strings:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"year &gt;= ? OR name LIKE ?"</span><span class="p">,</span> <span class="mi">2012</span><span class="p">,</span> <span class="s2">"Summer%"</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s2">"year &gt;= :year OR name LIKE :term"</span><span class="p">,</span> <span class="ss">year: </span><span class="mi">2012</span><span class="p">,</span> <span class="ss">term: </span><span class="s2">"Summer%"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Personally, I find this less readable than the hash version, because we need to use placeholders for values that need to be escaped, and provide actual values after the SQL string. Using raw SQL strings is also not very consistent, because now you have some expressions built in Ruby and other are provided in raw SQL.</p>
+
+<p>To address these disadvantages, many people have discovered <a href="https://blog.codeship.com/creating-advanced-active-record-db-queries-arel/">Arel</a>, Active Record’s internal query builder. It has an expression builder API that allows us to avoid SQL strings for many types of expressions.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="no">Movie</span><span class="p">.</span><span class="nf">arel_table</span><span class="p">[</span><span class="ss">:rating</span><span class="p">].</span><span class="nf">gteq</span><span class="p">(</span><span class="mi">7</span><span class="p">))</span>
+<span class="c1"># SELECT movies.* FROM movies WHERE movies.rating &gt;= 7</span>
+</code></pre></div></div>
+
+<p>We can chain method calls to create more complex expressions, and add the <a href="https://github.com/camertron/arel-helpers">arel-helpers</a> gem that aliases <code class="language-plaintext highlighter-rouge">#arel_table</code> to <code class="language-plaintext highlighter-rouge">#[]</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="no">Movie</span><span class="p">[</span><span class="ss">:rating</span><span class="p">].</span><span class="nf">gteq</span><span class="p">(</span><span class="mi">7</span><span class="p">).</span><span class="nf">or</span><span class="p">(</span><span class="no">Movie</span><span class="p">[</span><span class="ss">:director</span><span class="p">].</span><span class="nf">eq</span><span class="p">(</span><span class="s2">"Quentin Tarantino"</span><span class="p">)))</span>
+<span class="c1"># SELECT movies.* FROM movies WHERE movies.rating &gt;= 7 OR movies.director = 'Quentin Tarantino'</span>
+</code></pre></div></div>
+
+<p>However, whether this approach is better than using raw SQL strings is up for debate. On one hand, Arel allows you to inline the values that need to be escaped, so you don’t have to use the <code class="language-plaintext highlighter-rouge">?</code> placeholders. It’s also database agnostic, since you’re building an abstract syntax tree that will be converted to the database-specific SQL by the underlying Active Record adapter.</p>
+
+<p>On the other hand, Arel expressions can get difficult to read as they typically have much more parentheses than their raw SQL counterparts. Also, Arel is considered private API, so it’s not optimized for convenience and it’s subject to change. That’s probably the reason why I also found it very scarcely documented (you won’t find <code class="language-plaintext highlighter-rouge">ActiveRecord::Base.arel_table</code> in the API documentation).</p>
+
+<h2 id="sequel">Sequel</h2>
+
+<p>Sequel’s SQL expression builder API is similar to Arel in the sense that it also builds an abstract syntax tree. However, in Sequel this is public API, it’s optimized for convenience, it’s stable, and it’s very well documented.</p>
+
+<p>We will now walk through various SQL expression types, starting from the most common ones, and show how Sequel always has us covered.</p>
+
+<h3 id="operators">Operators</h3>
+
+<p>We’ve already seen that Arel uses methods for building expressions with SQL operators, which can create a lot of nested parentheses. Sequel, on the other hand, uses actual Ruby operators, which make the expressions naturally readable.</p>
+
+<h4 id="equality-operators">Equality operators</h4>
+
+<p>Sequel can use simple Ruby hashes to do equality and inclusion, just like Active Record:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span>
+  <span class="ss">director:     </span><span class="s2">"Quentin Tarantino"</span><span class="p">,</span>    <span class="c1"># string equality</span>
+  <span class="ss">genre:        </span><span class="p">[</span><span class="s2">"Adventure"</span><span class="p">,</span> <span class="s2">"Drama"</span><span class="p">],</span> <span class="c1"># set inclusion</span>
+  <span class="ss">released:     </span><span class="kp">true</span><span class="p">,</span>                   <span class="c1"># TRUE/FALSE equality</span>
+  <span class="ss">premiered_at: </span><span class="kp">nil</span><span class="p">,</span>                    <span class="c1"># NULL equality</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>But what if you want to join conditions with <code class="language-plaintext highlighter-rouge">OR</code> instead of <code class="language-plaintext highlighter-rouge">AND</code>? Or you want to use inequality (<code class="language-plaintext highlighter-rouge">&gt;</code>, <code class="language-plaintext highlighter-rouge">&gt;=</code>, <code class="language-plaintext highlighter-rouge">&lt;=</code>, <code class="language-plaintext highlighter-rouge">&lt;</code>) or numeric (<code class="language-plaintext highlighter-rouge">+</code>, <code class="language-plaintext highlighter-rouge">-</code>, <code class="language-plaintext highlighter-rouge">*</code>, <code class="language-plaintext highlighter-rouge">/</code>) operators? Or <code class="language-plaintext highlighter-rouge">LIKE</code> conditions? Sure, you can always switch to raw SQL strings, but with Sequel we can do better.</p>
+
+<p>Sequel gives you the option to break away from hashes by providing an API for building expressions. One of the simplest expression objects is a column identifier:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">[</span><span class="ss">:director</span><span class="p">]</span>
+<span class="c1"># Sequel::SQL::Identifier: director</span>
+</code></pre></div></div>
+
+<p>The basic operators defined on expression objects are <code class="language-plaintext highlighter-rouge">=~</code> (meaning “equals”) and <code class="language-plaintext highlighter-rouge">!~</code> (meaning “not equals”). The result of an operator is again an expression object.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">[</span><span class="ss">:director</span><span class="p">]</span> <span class="o">=~</span> <span class="s2">"Quentin Tarantino"</span>
+<span class="c1"># Sequel::SQL::BooleanExpression: director = 'Quentin Tarantino'</span>
+
+<span class="no">Sequel</span><span class="p">[</span><span class="ss">:genre</span><span class="p">]</span> <span class="o">!~</span> <span class="s2">"Drama"</span>
+<span class="c1"># Sequel::SQL::BooleanExpression: genre != 'Drama'</span>
+</code></pre></div></div>
+
+<p>We can go back and rewrite our hash example using Sequel expressions:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span>
+  <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:director</span><span class="p">]</span>     <span class="o">=~</span> <span class="s2">"Quentin Tarantino"</span><span class="p">)</span>    <span class="o">&amp;</span>
+  <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:genre</span><span class="p">]</span>        <span class="o">=~</span> <span class="p">[</span><span class="s2">"Adventure"</span><span class="p">,</span> <span class="s2">"Drama"</span><span class="p">])</span> <span class="o">&amp;</span>
+  <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:released</span><span class="p">]</span>     <span class="o">=~</span> <span class="kp">true</span><span class="p">)</span>                   <span class="o">&amp;</span>
+  <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:premiered_at</span><span class="p">]</span> <span class="o">=~</span> <span class="kp">nil</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>This is of course longer and more verbose than the hash version, it’s just to introduce the API, so bear with me.</p>
+
+<p>Now, having to repeat <code class="language-plaintext highlighter-rouge">Sequel[]</code> whenever we want to create an identifier object can be cumbersome, so Sequel offers the virtual row block syntax that automatically creates identifier objects via <code class="language-plaintext highlighter-rouge">method_missing</code>. All you have to do is pass a block to <code class="language-plaintext highlighter-rouge">.where</code> and then you can omit the <code class="language-plaintext highlighter-rouge">Sequel[]</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">{</span>
+  <span class="p">(</span><span class="n">director</span>     <span class="o">=~</span> <span class="s2">"Quentin Tarantino"</span><span class="p">)</span>    <span class="o">&amp;</span>
+  <span class="p">(</span><span class="n">genre</span>        <span class="o">=~</span> <span class="p">[</span><span class="s2">"Adventure"</span><span class="p">,</span> <span class="s2">"Drama"</span><span class="p">])</span> <span class="o">&amp;</span>
+  <span class="p">(</span><span class="n">released</span>     <span class="o">=~</span> <span class="kp">true</span><span class="p">)</span>                   <span class="o">&amp;</span>
+  <span class="p">(</span><span class="n">premiered_at</span> <span class="o">=~</span> <span class="kp">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Active Record users might recognize this syntax if they have ever used the Squeel Active Record extension. <a href="https://github.com/activerecord-hackery/squeel">Squeel</a> was heavily inspired by Sequel’s virtual row blocks.</p>
+
+<h4 id="boolean-operators">Boolean operators</h4>
+
+<p>You may have noticed the <code class="language-plaintext highlighter-rouge">&amp;</code> operators between the conditions above. As you might have guessed, Sequel will translate those into <code class="language-plaintext highlighter-rouge">AND</code> in SQL.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:director</span><span class="p">]</span> <span class="o">=~</span> <span class="s2">"Quentin Tarantino"</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:genre</span><span class="p">]</span> <span class="o">!~</span> <span class="s2">"Drama"</span><span class="p">)</span>
+<span class="c1"># SQL: (director = 'Quentin Tarantino') AND (genre != 'Drama')</span>
+</code></pre></div></div>
+
+<p>Up until now there was no benefit of using the expression API over hashes, because we’ve only dealt with equality conditions joined with <code class="language-plaintext highlighter-rouge">AND</code>. If we wanted to use an <code class="language-plaintext highlighter-rouge">OR</code> condition instead, in Active Record we would have to switch to raw SQL. But with Sequel we can just use the <code class="language-plaintext highlighter-rouge">|</code> operator:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:director</span><span class="p">]</span> <span class="o">=~</span> <span class="s2">"Quentin Tarantino"</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:genre</span><span class="p">]</span> <span class="o">!~</span> <span class="s2">"Drama"</span><span class="p">)</span>
+<span class="c1"># SQL: (director = 'Quentin Tarantino') OR (genre != 'Drama')</span>
+</code></pre></div></div>
+
+<p>Note that we have to put parentheses around the clauses, because <code class="language-plaintext highlighter-rouge">&amp;</code> and <code class="language-plaintext highlighter-rouge">|</code> operators have higher predence than <code class="language-plaintext highlighter-rouge">=~</code> and <code class="language-plaintext highlighter-rouge">!~</code>.</p>
+
+<p>You might be wondering why we can’t just use <code class="language-plaintext highlighter-rouge">&amp;&amp;</code> and <code class="language-plaintext highlighter-rouge">||</code> instead of <code class="language-plaintext highlighter-rouge">&amp;</code> and <code class="language-plaintext highlighter-rouge">|</code>. The reason is that <code class="language-plaintext highlighter-rouge">&amp;&amp;</code> and <code class="language-plaintext highlighter-rouge">||</code> are keywords built into the Ruby interpreter, therefore it’s not possible to change their meaning. <code class="language-plaintext highlighter-rouge">&amp;</code> and <code class="language-plaintext highlighter-rouge">|</code>, on the other hand, are just methods which can be overriden like many other operators.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">&amp;</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="nf">|</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The third boolean operator is negation (<code class="language-plaintext highlighter-rouge">NOT</code>). With Sequel we can negate expressions using the <code class="language-plaintext highlighter-rouge">~</code> unary operator:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">~</span><span class="p">((</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:director</span><span class="p">]</span> <span class="o">=~</span> <span class="s2">"Quentin Tarantino"</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:genre</span><span class="p">]</span> <span class="o">!~</span> <span class="s2">"Drama"</span><span class="p">))</span>
+<span class="c1"># SQL: (director != 'Quentin Tarantino') AND (genre = 'Drama')</span>
+</code></pre></div></div>
+
+<p>If you prefer and are able to use plain hashes, you can still use the <code class="language-plaintext highlighter-rouge">&amp;</code>, <code class="language-plaintext highlighter-rouge">|</code>, and <code class="language-plaintext highlighter-rouge">~</code> operators defined on the Sequel module:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="no">Sequel</span><span class="o">.|</span><span class="p">(</span>
+  <span class="no">Sequel</span><span class="p">.</span><span class="nf">&amp;</span><span class="p">(</span><span class="ss">genre: </span><span class="s2">"Comedy"</span><span class="p">,</span> <span class="ss">released: </span><span class="kp">true</span><span class="p">),</span>
+  <span class="no">Sequel</span><span class="p">.</span><span class="nf">~</span><span class="p">(</span><span class="ss">genre: </span><span class="s2">"Horror"</span><span class="p">),</span>
+<span class="p">))</span>
+<span class="c1"># SELECT * FROM movies WHERE ((genre = 'Comedy') AND (released IS TRUE)) </span>
+</code></pre></div></div>
+
+<h4 id="inequality-operators">Inequality operators</h4>
+
+<p>In addition to the equality operators (<code class="language-plaintext highlighter-rouge">=</code> and <code class="language-plaintext highlighter-rouge">!=</code>), Sequel also defines inequality operators (<code class="language-plaintext highlighter-rouge">&gt;</code>, <code class="language-plaintext highlighter-rouge">&gt;=</code>, <code class="language-plaintext highlighter-rouge">&lt;=</code>, <code class="language-plaintext highlighter-rouge">&lt;</code>) on the expression objects.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">[</span><span class="ss">:rating</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span> <span class="c1"># SQL: rating &gt;= 7</span>
+</code></pre></div></div>
+
+<p>We can then chain them with boolean operators in the same way:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">((</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:imdb_rating</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">7.5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:rotten_tomatoes_rating</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">))</span>
+<span class="c1"># SELECT * FROM movies WHERE imdb_rating &gt; 7.5 AND rotten_tomatoes_rating &gt;= 6</span>
+</code></pre></div></div>
+
+<p>And use virtual row blocks:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">{(</span><span class="n">imdb_rating</span> <span class="o">&gt;</span> <span class="mf">7.5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">rotten_tomatoes_rating</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">)}</span>
+<span class="c1"># SELECT * FROM movies WHERE imdb_rating &gt; 7.5 AND rotten_tomatoes_rating &gt;= 6</span>
+</code></pre></div></div>
+
+<h4 id="numeric-and-string-operators">Numeric and String operators</h4>
+
+<p>The expression objects also define some numeric operators we’d expect:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">[</span><span class="ss">:order</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="c1"># SQL: order + 2</span>
+<span class="no">Sequel</span><span class="p">[</span><span class="ss">:order</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="c1"># SQL: order - 2</span>
+<span class="no">Sequel</span><span class="p">[</span><span class="ss">:order</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="c1"># SQL: order * 2</span>
+<span class="no">Sequel</span><span class="p">[</span><span class="ss">:order</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="c1"># SQL: order / 2</span>
+</code></pre></div></div>
+
+<p>On string expressions <code class="language-plaintext highlighter-rouge">+</code> is defined as concatenation:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">[</span><span class="ss">:first_name</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="no">Sequel</span><span class="p">[</span><span class="ss">:last_name</span><span class="p">]</span>
+<span class="c1"># SQL: first_name || ' ' || last_name</span>
+</code></pre></div></div>
+
+<h3 id="qualifying">Qualifying</h3>
+
+<p>Sequel doesn’t automatically qualify column identifiers, because SQL doesn’t either.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Matrix"</span><span class="p">)</span>
+<span class="c1"># ActiveRecord: SELECT movies.* FROM movies WHERE movies.name = 'Matrix'</span>
+<span class="c1"># Sequel:       SELECT * FROM movies WHERE name = 'Matrix'</span>
+</code></pre></div></div>
+
+<p>To qualify a column identifier with a table name, you can call another square brackets on the identifier:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:movies</span><span class="p">][</span><span class="ss">:name</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="s2">"Matrix"</span><span class="p">)</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">{</span><span class="n">movies</span><span class="p">[</span><span class="ss">:name</span><span class="p">]</span> <span class="o">=~</span> <span class="s2">"Matrix"</span><span class="p">}</span>
+<span class="c1"># SELECT * FROM movies WHERE movies.name = 'Matrix'</span>
+</code></pre></div></div>
+
+<p>You can also qualify whole expressions with <code class="language-plaintext highlighter-rouge">Sequel.deep_qualify</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">.</span><span class="nf">deep_qualify</span><span class="p">(</span><span class="ss">:movies</span><span class="p">,</span>
+  <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:imdb_rating</span><span class="p">]</span> <span class="o">+</span> <span class="no">Sequel</span><span class="p">[</span><span class="ss">:rotten_tomatoes_rating</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span>
+  <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:released_at</span><span class="p">].</span><span class="nf">extract</span><span class="p">(</span><span class="ss">:year</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2000</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="c1"># SQL: (movies.imdb_rating + movies.rotten_tomatoes_rating &gt;= 10) AND</span>
+<span class="c1">#      (extract(year FROM movies.released_at) &gt;= 2000)</span>
+</code></pre></div></div>
+
+<p>To just qualify all column identifiers in a dataset, use <code class="language-plaintext highlighter-rouge">Sequel::Dataset#qualify</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="ss">:name</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">genre: </span><span class="s2">"Adventure"</span><span class="p">).</span><span class="nf">order</span><span class="p">(</span><span class="ss">:rating</span><span class="p">)</span>
+<span class="c1"># SELECT name FROM movies WHERE (genre = 'Adventure') ORDER BY rating</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="ss">:name</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">genre: </span><span class="s2">"Adventure"</span><span class="p">).</span><span class="nf">order</span><span class="p">(</span><span class="ss">:rating</span><span class="p">).</span><span class="nf">qualify</span>
+<span class="c1"># SELECT movies.name FROM movies WHERE (movies.genre = 'Adventure') ORDER BY movies.rating</span>
+</code></pre></div></div>
+
+<p>Active Record does have the more convenient hash syntax for qualifying <code class="language-plaintext highlighter-rouge">#where</code> conditions. However, I don’t find it ideal to have to nest conditions that have the same level of importance.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ActiveRecord</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:rating</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">where</span><span class="p">(</span>
+    <span class="ss">released: </span><span class="kp">true</span><span class="p">,</span>     <span class="c1"># movies.released IS TRUE</span>
+    <span class="ss">rating: </span><span class="p">{</span> <span class="ss">imdb: </span><span class="mi">7</span> <span class="p">}</span> <span class="c1"># rating.imdb = 7</span>
+  <span class="p">)</span>
+
+<span class="c1"># Sequel</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">association_join</span><span class="p">(</span><span class="ss">:rating</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">where</span><span class="p">{</span>
+    <span class="p">(</span><span class="n">released</span>     <span class="o">=~</span> <span class="kp">true</span><span class="p">)</span> <span class="o">&amp;</span> <span class="c1"># movies.released IS TRUE</span>
+    <span class="p">(</span><span class="n">rating</span><span class="p">[</span><span class="n">imdb</span><span class="p">]</span> <span class="o">=~</span> <span class="mi">7</span><span class="p">)</span>      <span class="c1"># rating.imdb = 7</span>
+  <span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="ordering">Ordering</h3>
+
+<p>Ordered expressions can be created with <code class="language-plaintext highlighter-rouge">Sequel.asc</code> and <code class="language-plaintext highlighter-rouge">Sequel.desc</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">.</span><span class="nf">desc</span><span class="p">(</span><span class="ss">:rating</span><span class="p">)</span>
+<span class="c1"># Sequel::SQL::OrderedExpression: rating DESC</span>
+<span class="no">Sequel</span><span class="p">.</span><span class="nf">asc</span><span class="p">(</span><span class="ss">:rating</span><span class="p">)</span>
+<span class="c1"># Sequel::SQL::OrderedExpression: rating ASC</span>
+</code></pre></div></div>
+
+<p>These can then be passed to <code class="language-plaintext highlighter-rouge">#order</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">order</span><span class="p">(</span><span class="no">Sequel</span><span class="p">.</span><span class="nf">desc</span><span class="p">(</span><span class="ss">:rating</span><span class="p">))</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">order</span><span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:rating</span><span class="p">].</span><span class="nf">desc</span><span class="p">)</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">order</span><span class="p">{</span><span class="n">rating</span><span class="p">.</span><span class="nf">desc</span><span class="p">}</span>
+<span class="c1"># SELECT * FROM movies ORDER rating DESC</span>
+</code></pre></div></div>
+
+<p>When I first came to Sequel after having used Active Record for many years, I was wondering if there was something like <code class="language-plaintext highlighter-rouge">order(rating: :desc)</code> in Sequel. Jeremy explained that this syntax would violate the general rule in Sequel that hashes are used for equality expressions. I also came to realize how flexible is that <code class="language-plaintext highlighter-rouge">#asc</code> and <code class="language-plaintext highlighter-rouge">#desc</code> are methods.</p>
+
+<p>For example, that allows Sequel to support <code class="language-plaintext highlighter-rouge">NULLS FIRST</code> and <code class="language-plaintext highlighter-rouge">NULLS LAST</code> via the <code class="language-plaintext highlighter-rouge">:nulls</code> option:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">order</span><span class="p">{</span><span class="n">rating</span><span class="p">.</span><span class="nf">desc</span><span class="p">(</span><span class="ss">nulls: :last</span><span class="p">)}</span>
+<span class="c1"># SELECT * FROM movies ORDER BY rating DESC NULLS LAST</span>
+</code></pre></div></div>
+
+<p>You can also order by any complex expressions:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">order</span><span class="p">{(</span><span class="n">imdb_rating</span> <span class="o">+</span> <span class="n">rotten_tomatoes_rating</span><span class="p">).</span><span class="nf">desc</span><span class="p">}</span>
+<span class="c1"># SELECT * FROM movies ORDER BY (imdb_rating + rotten_tomatoes_rating) DESC</span>
+</code></pre></div></div>
+
+<p>Since ordered expressions are expressions, Sequel will recognize them anywhere, even for example in parameters for a window function:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">{</span><span class="n">row_number</span><span class="p">.</span><span class="nf">function</span><span class="p">.</span><span class="nf">over</span><span class="p">(</span><span class="ss">partition: :director</span><span class="p">,</span> <span class="ss">order: </span><span class="n">released_at</span><span class="p">.</span><span class="nf">asc</span><span class="p">)}</span>
+<span class="c1"># SELECT row_number() OVER (PARTITION BY director ORDER BY released_at ASC) FROM movies</span>
+</code></pre></div></div>
+
+<h3 id="like">LIKE</h3>
+
+<p>Sequel supports <code class="language-plaintext highlighter-rouge">LIKE</code> and <code class="language-plaintext highlighter-rouge">ILIKE</code> expressions via <code class="language-plaintext highlighter-rouge">#like</code> and <code class="language-plaintext highlighter-rouge">#ilike</code> methods:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">.</span><span class="nf">like</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Summer%"</span><span class="p">)</span>
+<span class="c1"># Sequel::SQL::BooleanExpression: title LIKE 'Summer%'</span>
+<span class="no">Sequel</span><span class="p">.</span><span class="nf">ilike</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"summer%"</span><span class="p">)</span>
+<span class="c1"># Sequel::SQL::BooleanExpression: title ILIKE 'Summer%'</span>
+</code></pre></div></div>
+
+<p>They can then be used in <code class="language-plaintext highlighter-rouge">#where</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="no">Sequel</span><span class="p">.</span><span class="nf">like</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="s2">"Summer%"</span><span class="p">))</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:title</span><span class="p">].</span><span class="nf">like</span><span class="p">(</span><span class="s2">"Summer%"</span><span class="p">))</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">{</span><span class="n">title</span><span class="p">.</span><span class="nf">like</span><span class="p">(</span><span class="s2">"Summer%"</span><span class="p">)}</span>
+<span class="c1"># SELECT * FROM movies WHERE title LIKE 'Summer%'</span>
+</code></pre></div></div>
+
+<p>Here is an example of creating filter expression that matches a search term onto multiple columns:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">filter</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:summary</span><span class="p">,</span> <span class="ss">:director</span><span class="p">]</span>
+  <span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">column</span><span class="o">|</span> <span class="no">Sequel</span><span class="p">.</span><span class="nf">ilike</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="s2">"%</span><span class="si">#{</span><span class="n">search_term</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span> <span class="p">}</span>
+  <span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="ss">:&amp;</span><span class="p">)</span>
+
+<span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">filter</span><span class="p">)</span>
+<span class="c1"># SELECT * FROM movies WHERE title ILIKE '%foo%' AND summary ILIKE '%foo%' AND director ILIKE '%foo%'</span>
+</code></pre></div></div>
+
+<h3 id="functions">Functions</h3>
+
+<p>Some SQL functions have their dedicated API in Sequel, but in general Sequel supports calling any SQL function. <code class="language-plaintext highlighter-rouge">Sequel.function</code> can be used to create a function expression; the first argument is the function name and the rest are function arguments.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">.</span><span class="nf">function</span><span class="p">(</span><span class="ss">:max</span><span class="p">,</span> <span class="ss">:rating</span><span class="p">)</span> <span class="c1"># SQL: max(rating)</span>
+</code></pre></div></div>
+
+<p>They can then be used in places like <code class="language-plaintext highlighter-rouge">#select</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="no">Sequel</span><span class="p">.</span><span class="nf">function</span><span class="p">(</span><span class="ss">:max</span><span class="p">,</span> <span class="ss">:rating</span><span class="p">))</span>
+<span class="c1"># SELECT max(rating) FROM movies</span>
+</code></pre></div></div>
+
+<p>To create <code class="language-plaintext highlighter-rouge">count(*)</code>, you can use the <code class="language-plaintext highlighter-rouge">*</code> unary operator:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="no">Sequel</span><span class="p">.</span><span class="nf">function</span><span class="p">(</span><span class="ss">:count</span><span class="p">).</span><span class="nf">*</span><span class="p">)</span>
+<span class="c1"># SELECT count(*) FROM movies</span>
+</code></pre></div></div>
+
+<p>Sequel’s virtual row blocks make calling SQL functions more convenient via <code class="language-plaintext highlighter-rouge">method_missing</code>. An undefined method called with arguments will automatically be converted into a function, whereas to create a function without arguments you’ll need to add a call to <code class="language-plaintext highlighter-rouge">#function</code>.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">{</span><span class="n">max</span><span class="p">(</span><span class="n">rating</span><span class="p">)}</span>         <span class="c1"># SELECT max(rating)  FROM movies</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">{</span><span class="n">row_number</span><span class="p">.</span><span class="nf">function</span><span class="p">}</span> <span class="c1"># SELECT row_number() FROM movies</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">{</span><span class="n">count</span><span class="p">.</span><span class="nf">function</span><span class="p">.</span><span class="nf">*</span><span class="p">}</span>    <span class="c1"># SELECT count(*)     FROM movies</span>
+</code></pre></div></div>
+
+<p>This means you can easily convert even complex SQL queries into Sequel:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">coalesce</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span> <span class="o">||</span> <span class="s1">' '</span> <span class="o">||</span> <span class="n">coalesce</span><span class="p">(</span><span class="n">last_name</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span> <span class="k">AS</span> <span class="n">full_name</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">WHERE</span> <span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">created_at</span> <span class="o">&lt;=</span> <span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="k">lower</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span>
+  <span class="p">.</span><span class="nf">select</span><span class="p">{(</span><span class="n">coalesce</span><span class="p">(</span><span class="ss">:first_name</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="n">coalesce</span><span class="p">(</span><span class="ss">:last_name</span><span class="p">,</span> <span class="s1">''</span><span class="p">)).</span><span class="nf">as</span><span class="p">(</span><span class="ss">:full_name</span><span class="p">)}</span>
+  <span class="p">.</span><span class="nf">where</span><span class="p">{(</span><span class="n">now</span><span class="p">.</span><span class="nf">function</span> <span class="o">-</span> <span class="ss">:created_at</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="p">}</span>
+  <span class="p">.</span><span class="nf">order</span><span class="p">{</span><span class="n">lower</span><span class="p">(</span><span class="ss">:full_name</span><span class="p">)}</span>
+</code></pre></div></div>
+
+<p>In Arel you have the <code class="language-plaintext highlighter-rouge">Arel::Nodes::NamedFunction</code> counterpart, but using it is much more verbose:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ActiveRecord</span>
+<span class="no">User</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="no">Arel</span><span class="o">::</span><span class="no">Nodes</span><span class="o">::</span><span class="no">NamedFunction</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">"coalesce"</span><span class="p">,</span> <span class="p">[</span><span class="no">User</span><span class="p">.</span><span class="nf">arel_table</span><span class="p">[</span><span class="ss">:first_name</span><span class="p">],</span> <span class="no">Arel</span><span class="p">.</span><span class="nf">sql</span><span class="p">(</span><span class="s2">"''"</span><span class="p">)]))</span>
+<span class="c1"># SELECT coalesce(users.first_name, '') FROM users</span>
+</code></pre></div></div>
+
+<h3 id="aliasing">Aliasing</h3>
+
+<p>Sequel provides support for aliasing via the <code class="language-plaintext highlighter-rouge">#as</code> method. You can alias anything from column identifiers:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="no">Sequel</span><span class="p">.</span><span class="nf">as</span><span class="p">(</span><span class="ss">:imdb_rating</span><span class="p">,</span> <span class="ss">:rating</span><span class="p">))</span>
+<span class="c1"># SELECT imdb_rating AS rating FROM movies</span>
+</code></pre></div></div>
+
+<p>to expressions:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="no">Sequel</span><span class="p">.</span><span class="nf">join</span><span class="p">([</span><span class="ss">:first_name</span><span class="p">,</span> <span class="ss">:last_name</span><span class="p">],</span> <span class="s1">' '</span><span class="p">).</span><span class="nf">as</span><span class="p">(</span><span class="ss">:full_name</span><span class="p">))</span>
+<span class="c1"># SELECT (first_name || ' ' || last_name) AS full_name FROM users</span>
+</code></pre></div></div>
+
+<p>and even whole datasets:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">UserActivityLog</span><span class="p">.</span><span class="nf">order</span><span class="p">{</span><span class="n">created_at</span><span class="p">.</span><span class="nf">desc</span><span class="p">}.</span><span class="nf">limit</span><span class="p">(</span><span class="mi">100</span><span class="p">).</span><span class="nf">as</span><span class="p">(</span><span class="ss">:logs</span><span class="p">),</span> <span class="ss">user_id: :id</span><span class="p">)</span>
+<span class="c1"># SELECT * FROM users JOIN (</span>
+<span class="c1">#   SELECT * FROM user_activity_logs ORDER BY created_at DESC LIMIT 100</span>
+<span class="c1"># ) AS logs ON (logs.user_id = users.id)</span>
+</code></pre></div></div>
+
+<p>Arel also has <code class="language-plaintext highlighter-rouge">#as</code> for aliasing, but for some reason it’s not available for all types of expressions:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ActiveRecord</span>
+<span class="no">Movie</span><span class="p">.</span><span class="nf">arel_table</span><span class="p">[</span><span class="ss">:rating</span><span class="p">].</span><span class="nf">as</span><span class="p">(</span><span class="s2">"total_rating"</span><span class="p">)</span>
+<span class="c1"># SQL: rating AS total_rating</span>
+<span class="p">(</span><span class="no">Movie</span><span class="p">.</span><span class="nf">arel_table</span><span class="p">[</span><span class="ss">:imdb_rating</span><span class="p">]</span> <span class="o">+</span> <span class="no">Movie</span><span class="p">.</span><span class="nf">arel_table</span><span class="p">[</span><span class="ss">:netflix_rating</span><span class="p">]).</span><span class="nf">as</span><span class="p">(</span><span class="s2">"total_rating"</span><span class="p">)</span>
+<span class="c1"># ~&gt; NoMethodError: undefined method `as' for #&lt;Arel::Nodes::Grouping:0x00007fb915477e28&gt;</span>
+</code></pre></div></div>
+
+<h3 id="case">CASE</h3>
+
+<p>You can build <code class="language-plaintext highlighter-rouge">CASE</code> statements with <code class="language-plaintext highlighter-rouge">Sequel.case</code>, where first argument is the hash of <code class="language-plaintext highlighter-rouge">WHERE</code>/<code class="language-plaintext highlighter-rouge">THEN</code> conditions, second argument is the <code class="language-plaintext highlighter-rouge">ELSE</code> default value, and the third optional argument is the <code class="language-plaintext highlighter-rouge">CASE</code> expression.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Sequel</span><span class="p">.</span><span class="nf">case</span><span class="p">(</span>                          <span class="c1"># CASE</span>
+  <span class="p">{</span>
+    <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:rating</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="s2">"good"</span><span class="p">,</span> <span class="c1"># WHEN rating &gt;= 8 THEN 'good'</span>
+    <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:rating</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="s2">"ok"</span><span class="p">,</span>   <span class="c1"># WHEN rating &gt;= 6 THEN 'ok'</span>
+    <span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:rating</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="s2">"bad"</span><span class="p">,</span>  <span class="c1"># WHEN rating &gt;= 4 THEN 'bad'</span>
+  <span class="p">},</span>
+  <span class="s2">"abysmal"</span>                           <span class="c1"># ELSE 'abysmal'</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>A few years ago I made a pull request to RubyGems.org, which added a Rake task that syncs cached download counts from Redis into the Postgres database. Since the <code class="language-plaintext highlighter-rouge">rubygems</code> table has many rows, I didn’t want to execute an <code class="language-plaintext highlighter-rouge">UPDATE</code> query for each row, so I built a <code class="language-plaintext highlighter-rouge">CASE</code> statement in SQL:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">case_query</span> <span class="o">=</span> <span class="no">Rubygem</span><span class="p">.</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="s2">"WHEN '</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">' THEN </span><span class="si">#{</span><span class="vg">$redis</span><span class="p">[</span><span class="s2">"downloads:rubygem:</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span><span class="p">].</span><span class="nf">to_i</span><span class="si">}</span><span class="s2">"</span> <span class="p">}</span>
+  <span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">            "</span><span class="p">)</span>
+
+<span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span><span class="nf">execute</span> <span class="o">&lt;&lt;-</span><span class="no">SQL</span><span class="p">.</span><span class="nf">strip_heredoc</span><span class="sh">
+  UPDATE rubygems
+    SET downloads = CASE name
+      </span><span class="si">#{</span><span class="n">case_query</span><span class="si">}</span><span class="sh">
+    END
+</span><span class="no">SQL</span>
+</code></pre></div></div>
+
+<p>With Sequel this whole expression can be created in Ruby:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">counts_by_name</span> <span class="o">=</span> <span class="no">Rubygem</span><span class="p">.</span><span class="nf">select_map</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="p">[</span><span class="nb">name</span><span class="p">,</span> <span class="vg">$redis</span><span class="p">[</span><span class="s2">"downloads:rubygem:</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span><span class="p">].</span><span class="nf">to_i</span><span class="p">]</span> <span class="p">}</span>
+
+<span class="no">Rubygem</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="ss">downloads: </span><span class="no">Sequel</span><span class="p">.</span><span class="nf">case</span><span class="p">(</span><span class="n">counts_by_name</span><span class="p">,</span> <span class="ss">:downloads</span><span class="p">,</span> <span class="ss">:name</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>Arel also has its own <code class="language-plaintext highlighter-rouge">Arel::Nodes::Case</code>, which is built incrementally. However, Active Record’s <code class="language-plaintext highlighter-rouge">#update_all</code> method doesn’t seem to accept Arel expressions, because this case expression gets converted to <code class="language-plaintext highlighter-rouge">NULL</code>.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">download_counts</span> <span class="o">=</span> <span class="no">Arel</span><span class="o">::</span><span class="no">Nodes</span><span class="o">::</span><span class="no">Case</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">Rubygem</span><span class="p">.</span><span class="nf">arel_table</span><span class="p">[</span><span class="ss">:name</span><span class="p">])</span>
+
+<span class="no">Rubygem</span><span class="p">.</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">map</span>  <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="p">[</span><span class="nb">name</span><span class="p">,</span> <span class="vg">$redis</span><span class="p">[</span><span class="s2">"downloads:rubygem:</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span><span class="p">].</span><span class="nf">to_i</span><span class="p">]</span> <span class="p">}</span>
+  <span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="p">,</span> <span class="n">count</span><span class="o">|</span> <span class="n">download_counts</span><span class="p">.</span><span class="nf">when</span><span class="p">(</span><span class="nb">name</span><span class="p">).</span><span class="nf">then</span><span class="p">(</span><span class="n">count</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="n">download_counts</span><span class="p">.</span><span class="nf">else</span><span class="p">(</span><span class="no">Rubygem</span><span class="p">.</span><span class="nf">arel_table</span><span class="p">[</span><span class="ss">:downloads</span><span class="p">])</span>
+
+<span class="no">Rubygem</span><span class="p">.</span><span class="nf">update_all</span><span class="p">(</span><span class="ss">downloads: </span><span class="n">download_counts</span><span class="p">)</span>
+<span class="c1"># UPDATE "rubygems" SET "downloads" = NULL</span>
+</code></pre></div></div>
+
+<h3 id="array--json-operations">Array &amp; JSON operations</h3>
+
+<p>The last type of expressions we’ll cover are operations with Postgres Array and JSON types. These operations include operators and function names that can be difficult to remember, and Sequel provides a convenience API via the <a href="https://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_array_ops_rb.html">pg_array_ops</a> and <a href="https://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_json_ops_rb.html">pg_json_ops</a> extensions (see <a href="https://sequel.jeremyevans.net/rdoc/files/doc/extensions_rdoc.html">this document</a> for more on Sequel extensions).</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">extension</span> <span class="ss">:pg_array</span><span class="p">,</span> <span class="ss">:pg_json</span>             <span class="c1"># load support for array and json types</span>
+<span class="no">Sequel</span><span class="p">.</span><span class="nf">extension</span> <span class="ss">:pg_array_ops</span><span class="p">,</span> <span class="ss">:pg_json_ops</span> <span class="c1"># load methods for building array/json expressions</span>
+</code></pre></div></div>
+
+<p>We first need to create an array/json expression by calling <code class="language-plaintext highlighter-rouge">#pg_array</code> and <code class="language-plaintext highlighter-rouge">#pg_jsonb</code>, and then we can call operation methods on that object.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">{</span>
+  <span class="n">genres</span><span class="p">.</span><span class="nf">pg_array</span><span class="p">.</span><span class="nf">contains</span><span class="p">([</span><span class="s2">"Adventure"</span><span class="p">,</span> <span class="s2">"Comedy"</span><span class="p">])</span> <span class="o">&amp;</span>
+  <span class="p">(</span><span class="n">imdb</span><span class="p">.</span><span class="nf">pg_jsonb</span><span class="p">[</span><span class="s1">'Rating'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1"># SELECT * FROM movies WHERE (</span>
+<span class="c1">#   (genres @&gt; ARRAY['Adventure','Comedy']) AND</span>
+<span class="c1">#   ((imdb_data -&gt; 'Rating') &gt;= 7)</span>
+<span class="c1"># )</span>
+</code></pre></div></div>
+
+<p>If you want to avoid repeating <code class="language-plaintext highlighter-rouge">#pg_array</code> or <code class="language-plaintext highlighter-rouge">#pg_jsonb</code> in your queries, you can save the array/json expression object into a variable or a constant.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">genres</span> <span class="o">=</span> <span class="no">Sequel</span><span class="p">.</span><span class="nf">pg_array</span><span class="p">(</span><span class="ss">:genres</span><span class="p">)</span>
+<span class="n">imdb</span>   <span class="o">=</span> <span class="no">Sequel</span><span class="p">.</span><span class="nf">pg_jsonb</span><span class="p">(</span><span class="ss">:imdb</span><span class="p">)</span>
+
+<span class="no">Movie</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">genres</span><span class="p">.</span><span class="nf">contains</span><span class="p">([</span><span class="s2">"Adventure"</span><span class="p">,</span> <span class="s2">"Comedy"</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">imdb</span><span class="p">[</span><span class="s1">'Rating'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h2 id="other-uses">Other uses</h2>
+
+<p>Other than for building queries, Sequel supports the expression API in many other areas where SQL expressions are needed.</p>
+
+<p>For instance, you can use them when creating an index:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span>
+  <span class="n">primary_key</span> <span class="ss">:id</span>
+
+  <span class="no">String</span>   <span class="ss">:handle</span>
+  <span class="no">DateTime</span> <span class="ss">:deleted_at</span>
+
+  <span class="n">index</span> <span class="no">Sequel</span><span class="p">.</span><span class="nf">function</span><span class="p">(</span><span class="ss">:lower</span><span class="p">,</span> <span class="ss">:handle</span><span class="p">),</span>
+    <span class="ss">name: :users_unique_handle</span><span class="p">,</span>
+    <span class="ss">unique: </span><span class="kp">true</span><span class="p">,</span>
+    <span class="ss">where: </span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:deleted_at</span><span class="p">]</span> <span class="o">!~</span> <span class="kp">nil</span>
+
+  <span class="c1"># CREATE UNIQUE INDEX users_unique_handle</span>
+  <span class="c1"># ON users (lower(handle))</span>
+  <span class="c1"># WHERE (deleted_at IS NOT NULL)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Another example is the <code class="language-plaintext highlighter-rouge">USING</code> statement when changing column type:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alter_table</span> <span class="ss">:albums</span> <span class="k">do</span>
+  <span class="n">set_column_type</span> <span class="ss">:artist_id</span><span class="p">,</span> <span class="ss">:integer</span><span class="p">,</span> <span class="ss">using: </span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:artist_id</span><span class="p">].</span><span class="nf">cast</span><span class="p">(</span><span class="no">Integer</span><span class="p">)</span>
+  <span class="c1"># ALTER COLUMN artist_id SET DATA TYPE integer USING CAST(artist_id AS integer)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Yet another area where expressions are supported is in Sequel’s <a href="https://sequel.jeremyevans.net/rdoc/files/doc/postgresql_rdoc.html#label-INSERT+ON+CONFLICT+Support">UPSERT method</a>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Movie</span>
+  <span class="p">.</span><span class="nf">insert_conflict</span><span class="p">(</span>
+    <span class="ss">update: </span><span class="p">{</span> <span class="ss">imdb: </span><span class="no">Sequel</span><span class="p">.</span><span class="nf">pg_jsonb</span><span class="p">(</span><span class="ss">:imdb</span><span class="p">).</span><span class="nf">concat</span><span class="p">(</span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:excluded</span><span class="p">][</span><span class="ss">:imdb</span><span class="p">])</span> <span class="p">},</span>
+    <span class="ss">update_where: </span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:year</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">2000</span><span class="p">,</span>
+  <span class="p">)</span>
+  <span class="p">.</span><span class="nf">multi_insert</span><span class="p">(</span><span class="n">imported_values</span><span class="p">)</span>
+
+<span class="c1"># INSERT INTO movies VALUES ...</span>
+<span class="c1"># ON CONFLICT DO</span>
+<span class="c1"># UPDATE SET imdb = (imdb || excluded.imdb)</span>
+<span class="c1"># WHERE (year &gt;= 2000)</span>
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Sequel’s API for building SQL expressions allows you to consistently stay in Ruby even for very advanced use cases. This has numerous advantages:</p>
+
+<ul>
+  <li>it’s more readable, with different styles to choose from</li>
+  <li>it’s more hackable and reusable</li>
+  <li>doesn’t require you to look up the correct SQL syntax every time</li>
+  <li>eliminates the possibility of SQL injections</li>
+</ul>
+
+<p>We’re much more motivated to use the various features our database has to offer when our database library encourages us to.</p>
 
 
+  </div>
+
+  <div class="mt-10 flex">
+    
+      <a class="w-1/2 -mr-0.5 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/httprb-is-great/">
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Previous</span>
+          <span class="text-sm sm:text-base font-semibold">Http.rb is Great</span>
+        </div>
+      </a>
+    
+    
+      <a class="w-1/2 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/upcoming-features-in-shrine-3-0/">
+        <div class="flex-grow flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Next</span>
+          <span class="text-sm sm:text-base font-semibold">Upcoming Features in Shrine 3.0</span>
+        </div>
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </a>
+    
   </div>
 </article>
 
@@ -91,20 +640,6 @@
       </main>
     </div>
 
-    <script>
-  // Gauges
-  var _gauges = _gauges || [];
-  (function() {
-    var t   = document.createElement('script');
-    t.type  = 'text/javascript';
-    t.async = true;
-    t.id    = 'gauges-tracker';
-    t.setAttribute('data-site-id', '51f5bd47f5a1f545ac0000fc');
-    t.src = '//secure.gaug.es/track.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(t, s);
-  })();
-</script>
-
+    
   </body>
 </html>

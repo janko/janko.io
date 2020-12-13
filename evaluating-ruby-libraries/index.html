@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js wf-loading" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Evaluating (Ruby) Libraries | Janko's Blog</title>
@@ -22,13 +22,11 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/evaluating-ruby-libraries/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Evaluating (Ruby) Libraries","description":"Whenever we need to solve a problem in our application, if this problem is common enough, chances are there are already libraries out there which can help us with that. Great, now we just pick the library with most GitHub stars, and start integrating it into our project. So, the next thing—","dateModified":"2016-05-23T00:00:00+02:00","datePublished":"2016-05-23T00:00:00+02:00","url":"https://janko.io/evaluating-ruby-libraries/","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Evaluating (Ruby) Libraries","dateModified":"2016-05-23T00:00:00+02:00","datePublished":"2016-05-23T00:00:00+02:00","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/evaluating-ruby-libraries/"},"description":"Whenever we need to solve a problem in our application, if this problem is common enough, chances are there are already libraries out there which can help us with that. Great, now we just pick the library with most GitHub stars, and start integrating it into our project. So, the next thing—","url":"https://janko.io/evaluating-ruby-libraries/","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
-    
-    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
-    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/bundle.css">
   </head>
 
   <body class="text-xl text-gray-700">
@@ -45,24 +43,26 @@
 </div>
     </header>
 
-    <div class="mx-4">
-      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
-        <article class="my-8">
-  <header class="text-center my-6">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Evaluating (Ruby) Libraries</h1>
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="md:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Evaluating (Ruby) Libraries</h1>
 
-    <div class="text-gray-500 text-base">
-      <p class="post-byline">
-        By Janko Marohnić on
-        <time class="post-date" datetime="2016-05-23 00:00:00 +0200">
-          23 May 2016
-        </time>
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2016-05-23 00:00:00 +0200">
+            23 May 2016
+          </time>
+        </span>
         
-      </p>
+      </div>
     </div>
   </header>
 
-  <div class="prose lg:prose-xl">
+  <div class="mt-4 sm:mt-6 prose md:prose-xl">
     <p>Whenever we need to solve a problem in our application, if this problem is
 common enough, chances are there are already libraries out there which can help
 us with that. Great, now we just pick the library with most GitHub stars, and
@@ -284,7 +284,7 @@ other people wouldn’t be able to maintain it.</p>
 <p>For example, Sequel is maintained perfectly: most of the time there are 0 open
 issues because they are fixed quickly, and the author additionally helps anyone
 at the Sequel Google group. The reason why there aren’t more Sequel maintainers
-is because they simply wouldn’t have anything to do <img class="emoji" title=":smiley:" alt=":smiley:" src="/images/emoji/unicode/1f603.png" height="20" width="20">.</p>
+is because they simply wouldn’t have anything to do <img class="emoji" title=":smiley:" alt=":smiley:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f603.png" height="20" width="20">.</p>
 
 <p>Even though ActiveRecord has a larger number of contributors, features like
 <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation#or</code> still take 2 years to get merged. So I will always
@@ -316,9 +316,38 @@ save by choosing the right library. We should try not to choose a library just
 because it’s part of Rails or because its popular, but because we really see the
 value of that library over the alternatives.</p>
 
-<p>Make good choices, and you will be greatly rewarded <img class="emoji" title=":gift:" alt=":gift:" src="/images/emoji/unicode/1f381.png" height="20" width="20"></p>
+<p>Make good choices, and you will be greatly rewarded <img class="emoji" title=":gift:" alt=":gift:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f381.png" height="20" width="20"></p>
 
 
+  </div>
+
+  <div class="mt-10 flex">
+    
+      <a class="w-1/2 -mr-0.5 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/shrine-2-0-released/">
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Previous</span>
+          <span class="text-sm sm:text-base font-semibold">Shrine 2.0 Released</span>
+        </div>
+      </a>
+    
+    
+      <a class="w-1/2 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/improving-open-uri/">
+        <div class="flex-grow flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Next</span>
+          <span class="text-sm sm:text-base font-semibold">Improving open-uri</span>
+        </div>
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </a>
+    
   </div>
 </article>
 
@@ -346,20 +375,6 @@ value of that library over the alternatives.</p>
       </main>
     </div>
 
-    <script>
-  // Gauges
-  var _gauges = _gauges || [];
-  (function() {
-    var t   = document.createElement('script');
-    t.type  = 'text/javascript';
-    t.async = true;
-    t.id    = 'gauges-tracker';
-    t.setAttribute('data-site-id', '51f5bd47f5a1f545ac0000fc');
-    t.src = '//secure.gaug.es/track.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(t, s);
-  })();
-</script>
-
+    
   </body>
 </html>

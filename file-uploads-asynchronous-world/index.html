@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js wf-loading" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>Asynchronous File Uploads | Janko's Blog</title>
@@ -22,13 +22,11 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/file-uploads-asynchronous-world/"},"author":{"@type":"Person","name":"Janko Marohnić"},"headline":"Asynchronous File Uploads","description":"Accepting file uploads in web applications is very delicate, because all actions for dealing with attachments are slow:","dateModified":"2016-01-18T00:00:00+01:00","datePublished":"2016-01-18T00:00:00+01:00","url":"https://janko.io/file-uploads-asynchronous-world/","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Asynchronous File Uploads","dateModified":"2016-01-18T00:00:00+01:00","datePublished":"2016-01-18T00:00:00+01:00","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/file-uploads-asynchronous-world/"},"description":"Accepting file uploads in web applications is very delicate, because all actions for dealing with attachments are slow:","url":"https://janko.io/file-uploads-asynchronous-world/","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
-    
-    <script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
-    <link rel="stylesheet" href="/css/output.css">
+    <link rel="stylesheet" href="/css/bundle.css">
   </head>
 
   <body class="text-xl text-gray-700">
@@ -45,24 +43,28 @@
 </div>
     </header>
 
-    <div class="mx-4">
-      <main class="max-w-screen-sm lg:max-w-screen-md mx-auto">
-        <article class="my-8">
-  <header class="text-center my-6">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl mb-5 font-medium text-gray-900">Asynchronous File Uploads</h1>
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="md:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Asynchronous File Uploads</h1>
 
-    <div class="text-gray-500 text-base">
-      <p class="post-byline">
-        By Janko Marohnić on
-        <time class="post-date" datetime="2016-01-18 00:00:00 +0100">
-          18 Jan 2016
-        </time>
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2016-01-18 00:00:00 +0100">
+            18 Jan 2016
+          </time>
+        </span>
         
-      </p>
+          <a class="rounded-full px-3 bg-pink-100 text-pink-800 font-semibold py-0.5" href="/shrine">shrine</a>
+        
+      </div>
     </div>
   </header>
 
-  <div class="prose lg:prose-xl">
+  <div class="mt-4 sm:mt-6 prose md:prose-xl">
     <p>Accepting file uploads in web applications is very delicate, because all
 actions for dealing with attachments are slow:</p>
 
@@ -178,7 +180,7 @@ you can gracefully degrade</li>
 original file cannot be put into background. This means that the user has to
 wait for the file to be uploaded <em>twice</em> (first to the app, then to the
 storage), before any backgrounding even takes place. And that is really slow
-<img class="emoji" title=":snail:" alt=":snail:" src="/images/emoji/unicode/1f40c.png" height="20" width="20">. You cannot even process the original file to reduce its filesize
+<img class="emoji" title=":snail:" alt=":snail:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f40c.png" height="20" width="20">. You cannot even process the original file to reduce its filesize
 (before the second upload), it has to be uploaded raw both times. This really
 hurts your application’s throughput, and database’s as well; ActiveRecord wraps
 record saving into a transaction, which means a transaction is open for the
@@ -377,6 +379,35 @@ implementation is robust and transparent.</p>
 
 
   </div>
+
+  <div class="mt-10 flex">
+    
+      <a class="w-1/2 -mr-0.5 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/introducing-shrine/">
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Previous</span>
+          <span class="text-sm sm:text-base font-semibold">Introducing Shrine – A file upload toolkit</span>
+        </div>
+      </a>
+    
+    
+      <a class="w-1/2 flex sm:space-x-3 border px-3 py-2 bg-gray-50" href="/activerecord-is-reinventing-sequel/">
+        <div class="flex-grow flex flex-col space-y-1">
+          <span class="uppercase text-xs text-gray-500 font-medium tracking-wider">Next</span>
+          <span class="text-sm sm:text-base font-semibold">ActiveRecord is reinventing Sequel</span>
+        </div>
+        <div class="hidden sm:flex flex-col justify-center">
+          <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </div>
+      </a>
+    
+  </div>
 </article>
 
 <div class="mt-10">
@@ -403,20 +434,6 @@ implementation is robust and transparent.</p>
       </main>
     </div>
 
-    <script>
-  // Gauges
-  var _gauges = _gauges || [];
-  (function() {
-    var t   = document.createElement('script');
-    t.type  = 'text/javascript';
-    t.async = true;
-    t.id    = 'gauges-tracker';
-    t.setAttribute('data-site-id', '51f5bd47f5a1f545ac0000fc');
-    t.src = '//secure.gaug.es/track.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(t, s);
-  })();
-</script>
-
+    
   </body>
 </html>
