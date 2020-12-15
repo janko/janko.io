@@ -1,4 +1,4 @@
 #!/bin/bash
 
-bundle exec jekyll build JEKYLL_ENV=production
+JEKYLL_ENV=production bundle exec jekyll build
 yarn postcss css/application.css --output css/bundle.css --env production
