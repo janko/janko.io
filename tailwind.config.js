@@ -36,7 +36,7 @@ module.exports = {
               backgroundColor: colors.gray['100'],
             },
             'pre code': {
-              fontSize: '0.875rem',
+              fontSize: spacing['3.5'],
               color: colors.gray['700'],
             },
             'pre code::before': {
@@ -80,10 +80,10 @@ module.exports = {
               lineHeight: '1.55',
             },
             'pre code': {
-              fontSize: '1rem',
+              fontSize: spacing['4'],
             },
             code: {
-              fontSize: '1rem',
+              fontSize: spacing['4'],
             },
             ul: noMargin,
             'ul ul, ul ol, ol ul, ol ol': noMargin,
