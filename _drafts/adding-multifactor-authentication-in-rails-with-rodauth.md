@@ -27,12 +27,11 @@ Most common multifactor authentication methods include:
 
 In this article, I want to show you how to add multifactor authentication to
 a Rails app using [Rodauth], which has built-in support for each of the
-multifactor authentication methods mentioned above. Compared to gems like
-[devise-two-factor] or [two_factor_authentication], Rodauth provides a much
-more integrated experience by shipping with complete endpoints, default HTML
-templates, session management, lockout logic and more[^1]. To keep the tutorial
-focused, we'll be implementing just the first three methods, as they're by far
-the most common.
+multifactor authentication methods mentioned above. Compared to alternatives[^1],
+Rodauth provides a much more integrated experience by shipping with complete
+endpoints, default HTML templates, session management, lockout logic and
+more[^2]. To keep the tutorial focused, we'll be implementing just the first
+three methods, as they're by far the most common.
 
 We'll be using the [rodauth-rails] gem, and we'll be continuing off of the
 application we started building in [my previous article][rodauth basic]. The
@@ -95,7 +94,7 @@ To allow the user to configure MFA, let's display a link to the
 ```
 
 Now when the user logs in and clicks on "Manage MFA", they'll get redirected to
-the OTP setup page that Rodauth provides out-of-the-box[^2]:
+the OTP setup page that Rodauth provides out-of-the-box[^3]:
 
 ![Rodauth OTP setup page](/images/rodauth-otp-setup.png)
 
@@ -405,14 +404,16 @@ authentication is becoming an increasingly common requirement, it's very useful
 to have a framework that supports it with the same level of standard as the
 other authentication features.
 
-[^1]: See the source code for [OTP][otp source], [SMS Codes][sms source], [Recovery Codes][recovery source], and [Two Factor Base][mfa source] for more details.
-[^2]: You can override the default template by running `rails generate rodauth:views otp` and modifying `app/views/rodauth/otp_setup.html.erb`.
+[^1]: At the time of writing, most popular alternatives are [devise-two-factor], [active_model_otp], and [two_factor_authentication].
+[^2]: See the source code for [OTP][otp source], [SMS Codes][sms source], [Recovery Codes][recovery source], and [Two Factor Base][mfa source] for more details.
+[^3]: You can override the default template by running `rails generate rodauth:views otp` and modifying `app/views/rodauth/otp_setup.html.erb`.
 
 [u2f]: https://en.wikipedia.org/wiki/Universal_2nd_Factor
 [Rodauth]: https://github.com/jeremyevans/rodauth/
 [rodauth-rails]: https://github.com/janko/rodauth-rails
 [rodauth basic]: /adding-authentication-in-rails-with-rodauth/
 [devise-two-factor]: https://github.com/tinfoil/devise-two-factor
+[active_model_otp]: https://github.com/heapsource/active_model_otp
 [two_factor_authentication]: https://github.com/Houdini/two_factor_authentication
 [otp]: http://rodauth.jeremyevans.net/rdoc/files/doc/otp_rdoc.html
 [rotp]: https://github.com/mdp/rotp
