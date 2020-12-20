@@ -1,5 +1,5 @@
 .footnotes {
-  @apply text-sm;
+  @apply border-t mt-8 text-xs md:text-sm;
 }
 
 .footnotes code {
