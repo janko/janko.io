@@ -1,0 +1,15 @@
+.footnotes {
+  @apply text-sm;
+}
+
+.footnotes code {
+  @apply text-xs !important;
+}
+
+.footnotes p {
+  @apply my-2 !important;
+}
+
+.reversefootnote {
+  @apply no-underline !important;
+}

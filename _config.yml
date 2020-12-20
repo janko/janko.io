@@ -52,5 +52,6 @@ exclude:
   - node_modules
   - css/application.css
   - css/highlight.css
+  - css/footnotes.css
   - tailwind.config.js
   - postcss.config.js

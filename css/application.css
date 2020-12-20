@@ -3,18 +3,11 @@
 @import 'tailwindcss/utilities';
 
 @import 'highlight';
+@import 'footnotes';
 
 /* override tailwind and typography defaults */
 img.emoji {
   display: inline;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
-}
-
-.footnotes {
-  @apply text-sm;
-}
-
-.reversefootnote {
-  @apply no-underline !important;
 }
