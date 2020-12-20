@@ -667,11 +667,11 @@ video {
   margin-bottom: 1.7142857em;
   border-radius: 0.375rem;
   padding-top: 0.8571429em;
-  padding-right: 1.1428571em;
+  padding-right: 0.75rem;
   padding-bottom: 0.8571429em;
-  padding-left: 1.1428571em;
-  margin-left: -1rem;
-  margin-right: -1rem;
+  padding-left: 0.75rem;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
 }
 
 .prose pre code {
