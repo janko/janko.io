@@ -1037,9 +1037,9 @@ video {
   line-height: 1;
 }
 
-.mx-4 {
-  margin-left: 1rem;
-  margin-right: 1rem;
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
 }
 
 .my-6 {
@@ -1560,21 +1560,44 @@ video {
   background-color: #f8f8f8;
 }
 
+.footnotes {
+  border-top-width: 1px;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .footnotes {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+}
+
+.footnotes code {
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+}
+
+.footnotes p {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.footnote {
+  text-decoration: none !important;
+}
+
+.reversefootnote {
+  text-decoration: none !important;
+}
+
 /* override tailwind and typography defaults */
 
 img.emoji {
   display: inline;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
-}
-
-.footnotes {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.reversefootnote {
-  text-decoration: none !important;
 }
 
 @media (min-width: 640px) {
