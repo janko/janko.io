@@ -1,5 +1,5 @@
 ---
-title: "Inserting from Datasets with Sequel"
+title: "Inserting from SELECT with Sequel"
 tags: sequel
 comments: disqus
 ---
