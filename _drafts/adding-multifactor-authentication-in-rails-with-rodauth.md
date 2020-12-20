@@ -22,8 +22,8 @@ Most common multifactor authentication methods include:
 * **Recovery codes** – user is given a fixed set of one-time codes they can
   enter when logging in (this is typically used as a backup method)
 
-* **WebAuthn** – user authenticates themselves using a [U2F security
-  key][u2f] device
+* **[WebAuthn]** – user authenticates themselves using a [security key][u2f] or
+  built-in platform biometric sensors (e.g. fingerprint)
 
 In this article, I want to show you how to add multifactor authentication to
 a Rails app using [Rodauth], which has built-in support for each of the
@@ -426,3 +426,4 @@ other authentication features.
 [sms source]: https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/sms_codes.rb
 [recovery source]: https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/recovery_codes.rb
 [mfa source]: https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/two_factor_base.rb
+[WebAuthn]: https://webauthn.io/
