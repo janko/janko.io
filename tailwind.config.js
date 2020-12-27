@@ -19,6 +19,9 @@ module.exports = {
       white: colors.white,
     },
     extend: {
+      fontSize: {
+        '5xl': ['3rem', 1.125],
+      },
       typography: {
         DEFAULT: {
           css: {
