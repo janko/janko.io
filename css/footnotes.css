@@ -3,7 +3,7 @@
 }
 
 .footnotes code {
-  @apply text-xs !important;
+  @apply text-2xs py-0.5 px-1 !important;
 }
 
 .footnotes p {

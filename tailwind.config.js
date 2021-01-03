@@ -21,6 +21,7 @@ module.exports = {
     extend: {
       fontSize: {
         '5xl': ['3rem', 1.125],
+        '2xs': '0.7rem',
       },
       typography: {
         DEFAULT: {
