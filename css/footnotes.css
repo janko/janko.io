@@ -15,5 +15,5 @@
 }
 
 .reversefootnote {
-  @apply no-underline !important;
+  @apply no-underline inline-block !important;
 }
