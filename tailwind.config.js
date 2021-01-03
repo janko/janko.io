@@ -34,10 +34,10 @@ module.exports = {
               borderColor: colors.gray['300'],
             },
             pre: {
-              marginLeft: `-${spacing['3']}`,
-              marginRight: `-${spacing['3']}`,
-              paddingLeft: spacing['3'],
-              paddingRight: spacing['3'],
+              marginLeft: `-${spacing['4']}`,
+              marginRight: `-${spacing['4']}`,
+              paddingLeft: spacing['4'],
+              paddingRight: spacing['4'],
               backgroundColor: colors.gray['100'],
             },
             'pre code': {
