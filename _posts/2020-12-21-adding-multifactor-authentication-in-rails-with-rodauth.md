@@ -210,7 +210,7 @@ end
 <!-- Used for filling in missing recovery codes later on -->
 <% if rodauth.can_add_recovery_codes? %>
   <h2>Add Additional Recovery Codes</h2>
-  <%= rodauth.render("recovery-codes").html_safe %>
+  <%= rodauth.render("recovery-codes") %>
 <% end %>
 ```
 ```rb
