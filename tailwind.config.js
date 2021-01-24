@@ -14,8 +14,24 @@ module.exports = {
     colors: {
       gray: colors.gray,
       pink: colors.pink,
-      blue: colors.blue['400'],
-      red: colors.red['500'],
+      twitter: colors.blue['400'],
+      blue: {
+        dark: colors.blue['700'],
+        light: colors.blue['100'],
+      },
+      yellow: {
+        dark: colors.yellow['700'],
+        light: colors.yellow['100'],
+      },
+      green: {
+        dark: colors.green['700'],
+        light: colors.green['100'],
+      },
+      red: {
+        dark: colors.red['700'],
+        light: colors.red['100'],
+      },
+      gmail: colors.red['500'],
       white: colors.white,
     },
     extend: {

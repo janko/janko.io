@@ -15,7 +15,7 @@ layout: default
           </time>
         </span>
         {% for tag in page.tags %}
-          <a class="rounded-full px-3 bg-pink-100 text-pink-800 font-semibold py-0.5" href="/{{ tag }}">{{ tag }}</a>
+          {% include tag.html tag=tag %}
         {% endfor %}
       </div>
     </div>
