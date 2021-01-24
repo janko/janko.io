@@ -129,6 +129,10 @@
 <lastmod>2020-12-21T00:00:00+01:00</lastmod>
 </url>
 <url>
+<loc>https://janko.io/interesting-throw-catch-behaviour-in-ruby/</loc>
+<lastmod>2021-01-24T00:00:00+01:00</lastmod>
+</url>
+<url>
 <loc>https://janko.io/404</loc>
 </url>
 <url>
@@ -148,5 +152,8 @@
 </url>
 <url>
 <loc>https://janko.io/shrine</loc>
+</url>
+<url>
+<loc>https://janko.io/til</loc>
 </url>
 </urlset>

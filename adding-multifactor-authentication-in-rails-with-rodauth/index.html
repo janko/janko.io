@@ -5,7 +5,7 @@
     <title>Adding Multifactor Authentication in Rails 6 with Rodauth | Janko's Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Begin Jekyll SEO tag v2.7.1 -->
-<meta name="generator" content="Jekyll v4.1.1" />
+<meta name="generator" content="Jekyll v4.2.0" />
 <meta property="og:title" content="Adding Multifactor Authentication in Rails 6 with Rodauth" />
 <meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
@@ -22,10 +22,10 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"@type":"BlogPosting","description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
-    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko's Blog" />
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
     <link rel="stylesheet" href="/css/bundle.css">
   </head>
 
@@ -57,7 +57,10 @@
           </time>
         </span>
         
-          <a class="rounded-full px-3 bg-pink-100 text-pink-800 font-semibold py-0.5" href="/rodauth">rodauth</a>
+          
+<a class="my-1 rounded-full px-3 bg-blue-light text-blue-dark font-semibold py-0.5" href="/rodauth">rodauth</a>
+
+
         
       </div>
     </div>
@@ -273,7 +276,7 @@ nicer way and add a download link for convenience.</p>
 <span class="c">&lt;!-- Used for filling in missing recovery codes later on --&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">can_add_recovery_codes?</span> <span class="cp">%&gt;</span>
   <span class="nt">&lt;h2&gt;</span>Add Additional Recovery Codes<span class="nt">&lt;/h2&gt;</span>
-  <span class="cp">&lt;%=</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="s2">"recovery-codes"</span><span class="p">).</span><span class="nf">html_safe</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="s2">"recovery-codes"</span><span class="p">)</span> <span class="cp">%&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div></div>
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/routes.rb</span>
