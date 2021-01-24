@@ -61,12 +61,6 @@ module.exports = {
               fontSize: spacing['3.5'],
               color: colors.gray['700'],
             },
-            'pre code::before': {
-              display: 'none',
-            },
-            'pre code::after': {
-              display: 'none',
-            },
             code: {
               fontWeight: fontWeight['normal'],
               backgroundColor: colors.gray['100'],
