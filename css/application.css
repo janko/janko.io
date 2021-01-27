@@ -11,3 +11,7 @@ img.emoji {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
+
+code.highlighter-rouge {
+  overflow-wrap: break-word;
+}
