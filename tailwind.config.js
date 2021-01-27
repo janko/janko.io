@@ -12,7 +12,10 @@ module.exports = {
   darkMode: false,
   theme: {
     colors: {
-      gray: colors.gray,
+      gray: {
+        ...colors.gray,
+        '450': '#94949e',
+      },
       pink: colors.pink,
       twitter: colors.blue['400'],
       blue: {
@@ -30,6 +33,10 @@ module.exports = {
       red: {
         dark: colors.red['700'],
         light: colors.red['100'],
+      },
+      teal: {
+        dark: colors.teal['700'],
+        light: colors.teal['100'],
       },
       gmail: colors.red['500'],
       white: colors.white,
