@@ -923,40 +923,24 @@ video {
   background-color: #f4f4f5;
 }
 
-.bg-gray-600 {
-  background-color: #52525b;
-}
-
-.bg-blue-dark {
-  background-color: #1d4ed8;
-}
-
 .bg-blue-light {
   background-color: #dbeafe;
-}
-
-.bg-yellow-dark {
-  background-color: #a16207;
 }
 
 .bg-yellow-light {
   background-color: #fef9c3;
 }
 
-.bg-green-dark {
-  background-color: #15803d;
-}
-
 .bg-green-light {
   background-color: #dcfce7;
 }
 
-.bg-red-dark {
-  background-color: #b91c1c;
-}
-
 .bg-red-light {
   background-color: #fee2e2;
+}
+
+.bg-teal-light {
+  background-color: #ccfbf1;
 }
 
 .hover\:bg-pink-700:hover {
@@ -968,12 +952,41 @@ video {
   border-color: rgba(190, 24, 93, var(--tw-border-opacity));
 }
 
+.border-blue-light {
+  --tw-border-opacity: 1;
+  border-color: rgba(219, 234, 254, var(--tw-border-opacity));
+}
+
+.border-yellow-light {
+  --tw-border-opacity: 1;
+  border-color: rgba(254, 249, 195, var(--tw-border-opacity));
+}
+
+.border-green-light {
+  --tw-border-opacity: 1;
+  border-color: rgba(220, 252, 231, var(--tw-border-opacity));
+}
+
+.border-red-light {
+  --tw-border-opacity: 1;
+  border-color: rgba(254, 226, 226, var(--tw-border-opacity));
+}
+
+.border-teal-light {
+  --tw-border-opacity: 1;
+  border-color: rgba(204, 251, 241, var(--tw-border-opacity));
+}
+
 .rounded-full {
   border-radius: 9999px;
 }
 
 .border-2 {
   border-width: 2px;
+}
+
+.border-b-4 {
+  border-bottom-width: 4px;
 }
 
 .border-b {
@@ -996,10 +1009,6 @@ video {
   flex-direction: column;
 }
 
-.flex-wrap {
-  flex-wrap: wrap;
-}
-
 .items-center {
   align-items: center;
 }
@@ -1010,6 +1019,10 @@ video {
 
 .justify-center {
   justify-content: center;
+}
+
+.flex-initial {
+  flex: 0 1 auto;
 }
 
 .font-medium {
@@ -1044,6 +1057,11 @@ video {
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .text-xl {
@@ -1094,6 +1112,10 @@ video {
   margin-top: 1rem;
 }
 
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .mt-8 {
   margin-top: 2rem;
 }
@@ -1118,6 +1140,11 @@ video {
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
+}
+
+.px-0 {
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .py-1 {
@@ -1145,6 +1172,11 @@ video {
   padding-bottom: 0.125rem;
 }
 
+.px-0\.5 {
+  padding-left: 0.125rem;
+  padding-right: 0.125rem;
+}
+
 .pb-0 {
   padding-bottom: 0px;
 }
@@ -1161,12 +1193,12 @@ video {
   text-align: center;
 }
 
-.text-gray-500 {
-  color: #71717a;
+.text-gray-450 {
+  color: #94949e;
 }
 
-.text-gray-600 {
-  color: #52525b;
+.text-gray-500 {
+  color: #71717a;
 }
 
 .text-gray-700 {
@@ -1201,12 +1233,12 @@ video {
   color: #b91c1c;
 }
 
-.text-gmail {
-  color: #ef4444;
+.text-teal-dark {
+  color: #0f766e;
 }
 
-.text-white {
-  color: #fff;
+.text-gmail {
+  color: #ef4444;
 }
 
 .hover\:text-gray-700:hover {
@@ -1617,6 +1649,10 @@ img.emoji {
   margin-bottom: 0 !important;
 }
 
+code.highlighter-rouge {
+  overflow-wrap: break-word;
+}
+
 @media (min-width: 640px) {
   .sm\:space-y-0 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-y-reverse: 0;
@@ -1650,6 +1686,10 @@ img.emoji {
 
   .sm\:mt-6 {
     margin-top: 1.5rem;
+  }
+
+  .sm\:mb-8 {
+    margin-bottom: 2rem;
   }
 
   .sm\:px-10 {
@@ -1883,10 +1923,10 @@ img.emoji {
     font-size: 1rem;
   }
 
-  .md\:space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  .md\:space-x-3 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-x-reverse: 0;
-    margin-right: calc(1rem * var(--tw-space-x-reverse));
-    margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+    margin-right: calc(0.75rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
   .md\:space-y-5 > :not([hidden]) ~ :not([hidden]) {
@@ -1909,6 +1949,11 @@ img.emoji {
     line-height: 1.75rem;
   }
 
+  .md\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
   .md\:text-3xl {
     font-size: 1.875rem;
     line-height: 2.25rem;
@@ -1924,6 +1969,11 @@ img.emoji {
 
   .md\:max-w-screen-md {
     max-width: 768px;
+  }
+
+  .md\:px-1 {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
   }
 
   .md\:w-32 {
