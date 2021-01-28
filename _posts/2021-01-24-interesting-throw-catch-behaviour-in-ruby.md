@@ -164,5 +164,5 @@ it][pr] was the easy part.
 use cases. I hope this article taught you a bit more about this lesser known
 Ruby feature.
 
-[Rodauth]: https://github.com/janko/rodauth-rails
+[Rodauth]: https://github.com/jeremyevans/rodauth
 [pr]: https://github.com/rails/rails/pull/41223
