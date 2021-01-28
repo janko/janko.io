@@ -1,4 +1,12 @@
 #!/bin/bash
 
+set -e
+
 JEKYLL_ENV=production bundle exec jekyll build
 yarn postcss css/application.css --output _site/css/bundle.css --env production
+git switch gh-pages
+cp -R _site/* .
+git add --all
+git commit -m "Update build"
+git push origin gh-pages
+git switch master
