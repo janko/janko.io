@@ -44,7 +44,7 @@ The TOTP functionality is provided by Rodauth's [`otp`][otp] feature. It
 depends on the [rotp] and [rqrcode] gems, so let's first install those:
 
 ```sh
-$ bundle add rotp rqcode
+$ bundle add rotp rqrcode
 ```
 
 Next, we need to create the required database table. For this we'll use the
