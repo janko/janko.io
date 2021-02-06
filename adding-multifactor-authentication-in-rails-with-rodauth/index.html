@@ -114,7 +114,7 @@ use SMS codes and recovery codes as backup MFA methods.</p>
 <p>The TOTP functionality is provided by Rodauth’s <a href="http://rodauth.jeremyevans.net/rdoc/files/doc/otp_rdoc.html"><code class="language-plaintext highlighter-rouge">otp</code></a> feature. It
 depends on the <a href="https://github.com/mdp/rotp">rotp</a> and <a href="https://github.com/whomwah/rqrcode">rqrcode</a> gems, so let’s first install those:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add rotp rqcode
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add rotp rqrcode
 </code></pre></div></div>
 
 <p>Next, we need to create the required database table. For this we’ll use the
