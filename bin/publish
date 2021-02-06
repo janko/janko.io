@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+bin/build
+git switch gh-pages
+cp -R _site/* .
+git add --all
+git commit -m "Update build"
+git push origin gh-pages
+git switch master
