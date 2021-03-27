@@ -322,9 +322,9 @@ In this tutorial we've gradually built out a complete authentication and
 account management flow using the Rodauth authentication framework. It
 supports login & logout, account creation with email verification and a grace
 period, password change & password reset, email change with email verification,
-and close account functionality. We've seen how to require authentication for
-certain routes, add new fields to the registration form, and send
-authentication emails asynchrously.
+and close account functionality. We've seen how to add authentication links,
+require authentication for certain routes, and add new fields to the registration
+form.
 
 I'm personally very excited about Rodauth, as it has an impressive featureset
 and a refreshingly clean design, and also it's not tied to Rails. I've been
