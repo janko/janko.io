@@ -38,6 +38,7 @@ $ rails generate rodauth:install
 # create  app/lib/rodauth_app.rb
 # create  app/controllers/rodauth_controller.rb
 # create  app/models/account.rb
+# create  app/mailers/rodauth_mailer.rb
 ```
 
 This will create the Rodauth app with default authentication features,
@@ -314,76 +315,6 @@ email address:
 ```
 
 ![Displayed new account name](/images/rodauth-account-name.png)
-
-## Sending emails asynchronously
-
-Rodauth will send emails as part of account verification, email change,
-password change, and password reset. By default, these emails will be sent
-synchronously via an internal mailer, but for performance reasons we should
-send these emails asynchronously inside a background job.
-
-Since we'll want to modify Rodauth's default email templates eventually, let's
-create our own mailer with the default templates:
-
-```sh
-$ rails generate rodauth:mailer
-
-# create  app/mailers/rodauth_mailer.rb
-# create  app/views/rodauth_mailer/email_auth.text.erb
-# create  app/views/rodauth_mailer/password_changed.text.erb
-# create  app/views/rodauth_mailer/reset_password.text.erb
-# create  app/views/rodauth_mailer/unlock_account.text.erb
-# create  app/views/rodauth_mailer/verify_account.text.erb
-# create  app/views/rodauth_mailer/verify_login_change.text.erb
-```
-```rb
-class RodauthMailer < ApplicationMailer
-  def verify_account(recipient, email_link)
-    # ...
-  end
-  def reset_password(recipient, email_link)
-    # ...
-  end
-  def verify_login_change(recipient, old_login, new_login, email_link)
-    # ...
-  end
-  def password_changed(recipient)
-    # ...
-  end
-end
-```
-
-Now, to have our mailer automatically called by Rodauth and to deliver emails
-in the background, let's uncomment the following lines in our Rodauth app:
-
-```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
-  configure do
-    # ...
-    create_reset_password_email do
-      RodauthMailer.reset_password(email_to, reset_password_email_link)
-    end
-    create_verify_account_email do
-      RodauthMailer.verify_account(email_to, verify_account_email_link)
-    end
-    create_verify_login_change_email do |login|
-      RodauthMailer.verify_login_change(login, verify_login_change_old_login, verify_login_change_new_login, verify_login_change_email_link)
-    end
-    create_password_changed_email do
-      RodauthMailer.password_changed(email_to)
-    end
-    send_email do |email|
-      db.after_commit { email.deliver_later }
-    end
-    # ...
-  end
-end
-```
-
-We enqueue the email deliveries after the database transaction commits, to
-ensure that any database changes made before Rodauth called into our mailer
-have been applied when the background job is picked up.
 
 ## Closing words
 
