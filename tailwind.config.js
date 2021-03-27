@@ -11,37 +11,12 @@ module.exports = {
   ],
   darkMode: false,
   theme: {
-    colors: {
-      gray: {
-        ...colors.gray,
-        '450': '#94949e',
-      },
-      pink: colors.pink,
-      twitter: colors.blue['400'],
-      blue: {
-        dark: colors.blue['700'],
-        light: colors.blue['100'],
-      },
-      yellow: {
-        dark: colors.yellow['700'],
-        light: colors.yellow['100'],
-      },
-      green: {
-        dark: colors.green['700'],
-        light: colors.green['100'],
-      },
-      red: {
-        dark: colors.red['700'],
-        light: colors.red['100'],
-      },
-      teal: {
-        dark: colors.teal['700'],
-        light: colors.teal['100'],
-      },
-      gmail: colors.red['500'],
-      white: colors.white,
-    },
     extend: {
+      colors: {
+        gray: {
+          '450': '#94949e',
+        }
+      },
       fontSize: {
         '5xl': ['3rem', 1.125],
         '2xs': '0.7rem',
@@ -118,41 +93,7 @@ module.exports = {
       }
     },
   },
-  variants: {
-    extend: {
-      textColor: ['dark', 'hover', 'focus'],
-    },
-  },
   plugins: [
     require('@tailwindcss/typography'),
   ],
-  corePlugins: {
-    transform: false,
-    transformOrigin: false,
-    scale: false,
-    rotate: false,
-    translate: false,
-    skew: false,
-    gridTemplateColumns: false,
-    gridTemplateRows: false,
-    gridRow: false,
-    gridRowStart: false,
-    gridRowEnd: false,
-    gridColumn: false,
-    gridColumnStart: false,
-    gridColumnEnd: false,
-    gap: false,
-    opacity: false,
-    textOpacity: false,
-    placeholderOpacity: false,
-    backgroundOpacity: false,
-    ringColor: false,
-    ringWidth: false,
-    ringOpacity: false,
-    ringOffsetWidth: false,
-    ringOffsetColor: false,
-    gradientColorStops: false,
-    placeholderColor: false,
-    inset: false,
-  }
 }
