@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"BlogPosting","description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","headline":"Adding Authentication in Rails 6 with Rodauth","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Adding Authentication in Rails 6 with Rodauth","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"@type":"BlogPosting","description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -58,7 +58,7 @@
         </span>
         
           
-<a class="my-1 rounded-full px-3 bg-blue-light text-blue-dark font-semibold py-0.5" href="/rodauth">rodauth</a>
+<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5" href="/rodauth">rodauth</a>
 
 
         
@@ -98,6 +98,7 @@ alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
 <span class="c"># create  app/lib/rodauth_app.rb</span>
 <span class="c"># create  app/controllers/rodauth_controller.rb</span>
 <span class="c"># create  app/models/account.rb</span>
+<span class="c"># create  app/mailers/rodauth_mailer.rb</span>
 </code></pre></div></div>
 
 <p>This will create the Rodauth app with default authentication features,
@@ -361,82 +362,15 @@ email address:</p>
 
 <p><img src="/images/rodauth-account-name.png" alt="Displayed new account name" /></p>
 
-<h2 id="sending-emails-asynchronously">Sending emails asynchronously</h2>
-
-<p>Rodauth will send emails as part of account verification, email change,
-password change, and password reset. By default, these emails will be sent
-synchronously via an internal mailer, but for performance reasons we should
-send these emails asynchronously inside a background job.</p>
-
-<p>Since we’ll want to modify Rodauth’s default email templates eventually, let’s
-create our own mailer with the default templates:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:mailer
-
-<span class="c"># create  app/mailers/rodauth_mailer.rb</span>
-<span class="c"># create  app/views/rodauth_mailer/email_auth.text.erb</span>
-<span class="c"># create  app/views/rodauth_mailer/password_changed.text.erb</span>
-<span class="c"># create  app/views/rodauth_mailer/reset_password.text.erb</span>
-<span class="c"># create  app/views/rodauth_mailer/unlock_account.text.erb</span>
-<span class="c"># create  app/views/rodauth_mailer/verify_account.text.erb</span>
-<span class="c"># create  app/views/rodauth_mailer/verify_login_change.text.erb</span>
-</code></pre></div></div>
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RodauthMailer</span> <span class="o">&lt;</span> <span class="no">ApplicationMailer</span>
-  <span class="k">def</span> <span class="nf">verify_account</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">email_link</span><span class="p">)</span>
-    <span class="c1"># ...</span>
-  <span class="k">end</span>
-  <span class="k">def</span> <span class="nf">reset_password</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">email_link</span><span class="p">)</span>
-    <span class="c1"># ...</span>
-  <span class="k">end</span>
-  <span class="k">def</span> <span class="nf">verify_login_change</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">old_login</span><span class="p">,</span> <span class="n">new_login</span><span class="p">,</span> <span class="n">email_link</span><span class="p">)</span>
-    <span class="c1"># ...</span>
-  <span class="k">end</span>
-  <span class="k">def</span> <span class="nf">password_changed</span><span class="p">(</span><span class="n">recipient</span><span class="p">)</span>
-    <span class="c1"># ...</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
-
-<p>Now, to have our mailer automatically called by Rodauth and to deliver emails
-in the background, let’s uncomment the following lines in our Rodauth app:</p>
-
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
-  <span class="n">configure</span> <span class="k">do</span>
-    <span class="c1"># ...</span>
-    <span class="n">create_reset_password_email</span> <span class="k">do</span>
-      <span class="no">RodauthMailer</span><span class="p">.</span><span class="nf">reset_password</span><span class="p">(</span><span class="n">email_to</span><span class="p">,</span> <span class="n">reset_password_email_link</span><span class="p">)</span>
-    <span class="k">end</span>
-    <span class="n">create_verify_account_email</span> <span class="k">do</span>
-      <span class="no">RodauthMailer</span><span class="p">.</span><span class="nf">verify_account</span><span class="p">(</span><span class="n">email_to</span><span class="p">,</span> <span class="n">verify_account_email_link</span><span class="p">)</span>
-    <span class="k">end</span>
-    <span class="n">create_verify_login_change_email</span> <span class="k">do</span> <span class="o">|</span><span class="n">login</span><span class="o">|</span>
-      <span class="no">RodauthMailer</span><span class="p">.</span><span class="nf">verify_login_change</span><span class="p">(</span><span class="n">login</span><span class="p">,</span> <span class="n">verify_login_change_old_login</span><span class="p">,</span> <span class="n">verify_login_change_new_login</span><span class="p">,</span> <span class="n">verify_login_change_email_link</span><span class="p">)</span>
-    <span class="k">end</span>
-    <span class="n">create_password_changed_email</span> <span class="k">do</span>
-      <span class="no">RodauthMailer</span><span class="p">.</span><span class="nf">password_changed</span><span class="p">(</span><span class="n">email_to</span><span class="p">)</span>
-    <span class="k">end</span>
-    <span class="n">send_email</span> <span class="k">do</span> <span class="o">|</span><span class="n">email</span><span class="o">|</span>
-      <span class="n">db</span><span class="p">.</span><span class="nf">after_commit</span> <span class="p">{</span> <span class="n">email</span><span class="p">.</span><span class="nf">deliver_later</span> <span class="p">}</span>
-    <span class="k">end</span>
-    <span class="c1"># ...</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
-
-<p>We enqueue the email deliveries after the database transaction commits, to
-ensure that any database changes made before Rodauth called into our mailer
-have been applied when the background job is picked up.</p>
-
 <h2 id="closing-words">Closing words</h2>
 
 <p>In this tutorial we’ve gradually built out a complete authentication and
 account management flow using the Rodauth authentication framework. It
 supports login &amp; logout, account creation with email verification and a grace
 period, password change &amp; password reset, email change with email verification,
-and close account functionality. We’ve seen how to require authentication for
-certain routes, add new fields to the registration form, and send
-authentication emails asynchrously.</p>
+and close account functionality. We’ve seen how to add authentication links,
+require authentication for certain routes, and add new fields to the registration
+form.</p>
 
 <p>I’m personally very excited about Rodauth, as it has an impressive featureset
 and a refreshingly clean design, and also it’s not tied to Rails. I’ve been

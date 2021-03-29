@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Anything I Want With Sequel And Postgres | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Anything I Want With Sequel And Postgres" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="At work I was tasked to migrate our time-series analytics data from CSV file dumps that we’ve been feeding into Power BI to a dedicated database. Our Rails app’s primary database is currently MariaDB, but we wanted to have our analytics data in a separate database either way, so this was a good opportunity to use Postgres which we’re most comfortable with anyway." />
+<meta property="og:description" content="At work I was tasked to migrate our time-series analytics data from CSV file dumps that we’ve been feeding into Power BI to a dedicated database. Our Rails app’s primary database is currently MariaDB, but we wanted to have our analytics data in a separate database either way, so this was a good opportunity to use Postgres which we’re most comfortable with anyway." />
+<link rel="canonical" href="https://janko.io/anything-i-want-with-sequel-and-postgres/" />
+<meta property="og:url" content="https://janko.io/anything-i-want-with-sequel-and-postgres/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-03-29T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Anything I Want With Sequel And Postgres" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Anything I Want With Sequel And Postgres","dateModified":"2021-03-29T00:00:00+02:00","datePublished":"2021-03-29T00:00:00+02:00","url":"https://janko.io/anything-i-want-with-sequel-and-postgres/","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/anything-i-want-with-sequel-and-postgres/"},"@type":"BlogPosting","description":"At work I was tasked to migrate our time-series analytics data from CSV file dumps that we’ve been feeding into Power BI to a dedicated database. Our Rails app’s primary database is currently MariaDB, but we wanted to have our analytics data in a separate database either way, so this was a good opportunity to use Postgres which we’re most comfortable with anyway.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
+    <link rel="stylesheet" href="/css/bundle.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo">
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby
+      </span>
+</div>
+    </header>
+
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Anything I Want With Sequel And Postgres</h1>
+
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2021-03-29 00:00:00 +0200">
+            29 Mar 2021
+          </time>
+        </span>
+        
+          
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
+
+
+        
+      </div>
+    </div>
+  </header>
+
+  <div class="mt-4 sm:mt-6 prose md:prose-xl">
+    <p>At work I was tasked to migrate our time-series analytics data from CSV file
+dumps that we’ve been feeding into Power BI to a dedicated database. Our Rails
+app’s primary database is currently MariaDB, but we wanted to have our
+analytics data in a separate database either way, so this was a good
+opportunity to use Postgres which we’re most comfortable with anyway.</p>
+
+<p>We’re using Active Record for interaction with our primary database, which
+gained support for multiple databases in version 6.0. However, given that we
+expected the queries to our analytics database would be fairly complex, and
+that we’d probably need to be retrieving large quantities of time-series data
+(which could be performance-sensitive), I decided it would be a good
+opportunity to use <a href="https://github.com/jeremyevans/sequel">Sequel</a> instead.</p>
+
+<p>Thanks to Sequel’s <a href="http://sequel.jeremyevans.net/rdoc/files/doc/postgresql_rdoc.html">advanced Postgres support</a>, I was able to
+utilize many cool Postgres features that helped me implement this task
+efficiently. Since not all of these features are common, I wanted to showcase
+them in this article, and at the same time demonstrate what Sequel is capable
+of. <img class="emoji" title=":metal:" alt=":metal:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f918.png" height="20" width="20"></p>
+
+<h2 id="table-partitioning">Table partitioning</h2>
+
+<p>I mentioned that our analytics data is time-series, which means that we’re
+storing snapshots of our product data for each day. This results in a large
+number of new records every day, so in order to keep query performance at
+acceptable levels, I’ve decided to try out Postgres’ <a href="https://www.postgresql.org/docs/current/ddl-partitioning.html">table partitioning</a>
+feature for the first time.</p>
+
+<p>What this feature does is allow you to split data that you would otherwise have
+in a single table into multiple tables (“partitions”) based on certain
+conditions. These conditions most commonly specify a <strong>range</strong> or <strong>list</strong> of
+column values, though you can also partition based on <strong>hash</strong> values.
+Postgres’ query planner then determines which partitions it needs to read from
+(or write to) based on the SQL query. This can <strong>drammatically improve
+performance</strong> for queries where most partitions have been filtered out during
+the query planning phase.</p>
+
+<p>Sequel <a href="http://sequel.jeremyevans.net/rdoc/files/doc/postgresql_rdoc.html#label-Creating+Partitioned+Tables">supports Postgres’ table partitioning</a>
+out-of-the-box. In order to create a partitioned table (i.e. a table we can
+create partitions of), we need to specify the column(s) we want to partition by
+(<code class="language-plaintext highlighter-rouge">:partition_by</code>), as well as the type of partitioning (<code class="language-plaintext highlighter-rouge">:partition_type</code>). In
+our app, we wanted to have monthly partitions of product data for each client,
+so our schema migration contained the following table definition:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_table</span> <span class="ss">:products</span><span class="p">,</span> <span class="ss">partition_by: </span><span class="p">[</span><span class="ss">:instance_id</span><span class="p">,</span> <span class="ss">:date</span><span class="p">],</span> <span class="ss">partition_type: :range</span> <span class="k">do</span>
+  <span class="no">Date</span>    <span class="ss">:date</span><span class="p">,</span>        <span class="ss">null: </span><span class="kp">false</span>
+  <span class="no">Integer</span> <span class="ss">:instance_id</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span> <span class="c1"># in our app "instances" are e-shops</span>
+  <span class="no">String</span>  <span class="ss">:product_id</span><span class="p">,</span>  <span class="ss">null: </span><span class="kp">false</span>
+
+  <span class="c1"># Postgres requires the columns we're partitioning by to be part of the</span>
+  <span class="c1"># primary key, so we create a composite primary key</span>
+  <span class="n">primary_key</span> <span class="p">[</span><span class="ss">:date</span><span class="p">,</span> <span class="ss">:instance_id</span><span class="p">,</span> <span class="ss">:product_id</span><span class="p">]</span>
+
+  <span class="n">jsonb</span> <span class="ss">:data</span>         <span class="c1"># general data about the product</span>
+  <span class="n">jsonb</span> <span class="ss">:competitors</span>  <span class="c1"># data about this product from other competitors</span>
+  <span class="n">jsonb</span> <span class="ss">:statistics</span>   <span class="c1"># sales statistics about the product</span>
+  <span class="n">jsonb</span> <span class="ss">:applied_rule</span> <span class="c1"># information about our repricing of the product</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The partitioned table above acts as sort of an abstract table, in the sense
+that it won’t contain any data by itself, but instead it allows partitions to
+be created from it, which will be the ones holding the data. For example, let’s
+create a partition of this table which will hold data for an e-shop with ID of
+<code class="language-plaintext highlighter-rouge">10</code> for March 2021:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_table?</span> <span class="ss">:products_10_202103</span><span class="p">,</span> <span class="ss">partition_of: :products</span> <span class="k">do</span>
+  <span class="n">from</span> <span class="mi">10</span><span class="p">,</span> <span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="n">to</span> <span class="mi">10</span><span class="p">,</span> <span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># this end is excluded from the range</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The arguments we pass to <code class="language-plaintext highlighter-rouge">from</code> and <code class="language-plaintext highlighter-rouge">to</code> are the values of columns we’ve
+specified in <code class="language-plaintext highlighter-rouge">:partition_by</code> on the partitioned table (we have two arguments
+because we specified two columns – <code class="language-plaintext highlighter-rouge">:instance_id</code> and <code class="language-plaintext highlighter-rouge">:date</code>). The name of the
+table partition is custom, in this example I’ve just chosen a
+<code class="language-plaintext highlighter-rouge">products_&lt;INSTANCE_ID&gt;_YYYYMM</code> naming convention. Given that we’re creating
+these partitions on-the-fly (as opposed to in a schema migration), I’ve used
+Sequel’s <code class="language-plaintext highlighter-rouge">create_table?</code> to handle the case when the partition already exists,
+which generates a <code class="language-plaintext highlighter-rouge">CREATE TABLE IF NOT EXISTS</code> query.</p>
+
+<p>Once we’ve created the partitions and populated them with data, we can just
+reference the main table in our queries, and Postgres will know which
+partition(s) it should direct the queries to.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># queries partition `products_10_202101`</span>
+<span class="no">DB</span><span class="p">[</span><span class="ss">:products</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">instance_id: </span><span class="mi">10</span><span class="p">,</span> <span class="ss">date: </span><span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)).</span><span class="nf">to_a</span>
+
+<span class="c1"># queries partitions `products_29_202102` and `products_29_202103`</span>
+<span class="no">DB</span><span class="p">[</span><span class="ss">:products</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">instance_id: </span><span class="mi">29</span><span class="p">,</span> <span class="ss">date: </span><span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">..</span><span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">31</span><span class="p">)).</span><span class="nf">to_a</span>
+
+<span class="c1"># creates the record in partition `products_13_202012`</span>
+<span class="no">DB</span><span class="p">[</span><span class="ss">:products</span><span class="p">].</span><span class="nf">insert</span><span class="p">(</span><span class="ss">instance_id: </span><span class="mi">13</span><span class="p">,</span> <span class="ss">date: </span><span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="ss">product_id: </span><span class="s2">"abc123"</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="upserts">Upserts</h2>
+
+<p>We have 4 types of product data, each of which is retrieved, aggregated, and
+stored in a separate background job. Previously, each background job was
+writing to a separate CSV file, but now they would all be writing to a single
+table, either creating new records or updating existing records with new data.</p>
+
+<p>The simplest option which is also concurrency-safe was to use Postgres’ <code class="language-plaintext highlighter-rouge">INSERT
+... ON CONFLICT ...</code>, also known as “upsert”. Sequel supports upserts with
+all its parameters via <a href="http://sequel.jeremyevans.net/rdoc/files/doc/postgresql_rdoc.html#label-INSERT+ON+CONFLICT+Support"><code class="language-plaintext highlighter-rouge">#insert_conflict</code></a>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">[</span><span class="ss">:products</span><span class="p">]</span>
+  <span class="p">.</span><span class="nf">insert_conflict</span> <span class="c1"># by default ignores insert that fails unique constraint violation</span>
+  <span class="p">.</span><span class="nf">insert</span><span class="p">(</span><span class="ss">instance_id: </span><span class="mi">10</span><span class="p">,</span> <span class="ss">date: </span><span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="ss">product_id: </span><span class="s2">"abc123"</span><span class="p">)</span>
+
+<span class="c1"># INSERT INTO products (instance_id, date, product_id)</span>
+<span class="c1"># VALUES (10, '2021-01-01', 'abc123')</span>
+<span class="c1"># ON CONFLICT DO NOTHING</span>
+</code></pre></div></div>
+
+<p>In my task, I needed each background job to only store data it is responsible
+for, and that these jobs can be executed in any order. So, the background job
+which was responsible for storing general product data into the analytics
+database had the following code:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">product_data</span> <span class="c1">#=&gt;</span>
+<span class="c1"># [</span>
+<span class="c1">#   { instance_id: 10, date: Date.new(2021, 1, 1), product_id: "111", data: { ... } },</span>
+<span class="c1">#   { instance_id: 10, date: Date.new(2021, 1, 1), product_id: "222", data: { ... } },</span>
+<span class="c1">#   { instance_id: 10, date: Date.new(2021, 1, 1), product_id: "333", data: { ... } },</span>
+<span class="c1">#   ...</span>
+<span class="c1"># ]</span>
+
+<span class="n">product_data</span><span class="p">.</span><span class="nf">each_slice</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">values</span><span class="o">|</span>
+  <span class="no">DB</span><span class="p">[</span><span class="ss">:products</span><span class="p">]</span>
+    <span class="p">.</span><span class="nf">insert_conflict</span><span class="p">(</span>
+      <span class="ss">target: </span><span class="p">[</span><span class="ss">:date</span><span class="p">,</span> <span class="ss">:instance_id</span><span class="p">,</span> <span class="ss">:product_id</span><span class="p">],</span>
+      <span class="ss">update: </span><span class="p">{</span> <span class="ss">data: </span><span class="no">Sequel</span><span class="p">[</span><span class="ss">:excluded</span><span class="p">][</span><span class="ss">:data</span><span class="p">]</span> <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="p">.</span><span class="nf">multi_insert</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="c1"># INSERT INTO products (...) VALUES (...)</span>
+<span class="c1"># ON CONFLICT (date, instance_id, product_id) DO UPDATE data = excluded.data</span>
+</code></pre></div></div>
+
+<p>The above inserts values in batches of 1,000 records, and when the record
+already exists, only the <code class="language-plaintext highlighter-rouge">data</code> column value is replaced. In general, when a
+conflict happens, Postgres exposes the values we’ve tried to insert under the
+<code class="language-plaintext highlighter-rouge">excluded</code> qualifier. So, in the <code class="language-plaintext highlighter-rouge">DO UPDATE</code> clause we were able to do <code class="language-plaintext highlighter-rouge">data =
+excluded.data</code>, which updates only the <code class="language-plaintext highlighter-rouge">data</code> column. In this case, Postgres
+also requires us to specify the column(s) involved in the unique index, which
+in our case are <code class="language-plaintext highlighter-rouge">date</code>, <code class="language-plaintext highlighter-rouge">instance_id</code>, and <code class="language-plaintext highlighter-rouge">product_id</code> that form the primary
+key.</p>
+
+<h2 id="copy">COPY</h2>
+
+<p>Now that we’ve covered the important bits involved in modifying the code to
+write new data into Postgres, what remains is efficiently migrating all the
+historical data from our CSV files into Postgres.</p>
+
+<p>The fastest way to import CSV data into a Postgres table is using <code class="language-plaintext highlighter-rouge">COPY FROM</code>,
+which Sequel supports via <a href="http://sequel.jeremyevans.net/rdoc-adapters/classes/Sequel/Postgres/Database.html#method-i-copy_into"><code class="language-plaintext highlighter-rouge">#copy_into</code></a>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">copy_into</span> <span class="ss">:records</span><span class="p">,</span>
+  <span class="ss">format: </span><span class="s2">"csv"</span><span class="p">,</span>
+  <span class="ss">options: </span><span class="s2">"HEADERS true"</span><span class="p">,</span>
+  <span class="ss">data: </span><span class="no">File</span><span class="p">.</span><span class="nf">foreach</span><span class="p">(</span><span class="s2">"records.csv"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>In my case, I couldn’t import the CSV files directly into the <code class="language-plaintext highlighter-rouge">products</code>
+table, because I wanted to write most of the fields into JSONB columns. So I
+first imported the CSV data into a temporary table whose columns matched the
+CSV data, and then copied the data from that table into the end <code class="language-plaintext highlighter-rouge">products</code>
+table in the desired format.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">foreach</span><span class="p">(</span><span class="s2">"products_10.csv"</span><span class="p">)</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">foreach</span><span class="p">(</span><span class="s2">"products_10.csv"</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nf">chomp</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span>
+<span class="n">temp_table</span> <span class="o">=</span> <span class="ss">:"products_</span><span class="si">#{</span><span class="no">SecureRandom</span><span class="p">.</span><span class="nf">hex</span><span class="si">}</span><span class="ss">"</span>
+
+<span class="no">DB</span><span class="p">.</span><span class="nf">create_table</span> <span class="n">temp_table</span> <span class="k">do</span>
+  <span class="n">columns</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">column</span><span class="o">|</span>
+    <span class="no">String</span> <span class="n">column</span><span class="p">.</span><span class="nf">to_sym</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">DB</span><span class="p">.</span><span class="nf">copy_into</span> <span class="n">temp_table</span><span class="p">,</span> <span class="ss">format: </span><span class="s2">"csv"</span><span class="p">,</span> <span class="ss">options: </span><span class="s2">"HEADERS true"</span><span class="p">,</span> <span class="ss">data: </span><span class="n">data</span>
+
+<span class="no">DB</span><span class="p">[</span><span class="n">temp_table</span><span class="p">].</span><span class="nf">paged_each</span><span class="p">.</span><span class="nf">each_slice</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">products</span><span class="o">|</span>
+  <span class="no">DB</span><span class="p">[</span><span class="ss">:products</span><span class="p">].</span><span class="nf">insert</span> <span class="n">products</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">product</span><span class="o">|</span> <span class="o">...</span> <span class="p">}</span> <span class="c1"># transform into desired format</span>
+<span class="k">end</span>
+
+<span class="no">DB</span><span class="p">.</span><span class="nf">drop_table</span> <span class="n">temp_table</span>
+</code></pre></div></div>
+
+<h2 id="inserting-from-select">Inserting from SELECT</h2>
+
+<p>Notice how in the last example we were fetching data from the temporary
+table, transforming it in Ruby, then writing the result in batches into the
+destination table. This is a common way people copy data, but it’s actually
+pretty inefficient, both in terms of memory usage and speed.</p>
+
+<p>What we can do instead is transform the data via a <code class="language-plaintext highlighter-rouge">SELECT</code> statement, and then
+pass it directly to <code class="language-plaintext highlighter-rouge">INSERT</code>. This way we avoid retrieving any data on the
+client side, and we allow Postgres to determine the most efficient way to copy
+the data.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">my_table</span> <span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="n">col3</span><span class="p">,</span> <span class="p">...)</span>
+<span class="k">SELECT</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="n">val3</span><span class="p">,</span> <span class="p">...</span> <span class="k">FROM</span> <span class="n">another_table</span> <span class="k">WHERE</span> <span class="p">...</span>
+</code></pre></div></div>
+
+<p>Sequel’s <a href="http://sequel.jeremyevans.net/rdoc/classes/Sequel/Dataset.html#method-i-insert"><code class="language-plaintext highlighter-rouge">#insert</code></a> method supports this feature by accepting a
+dataset object:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">[</span><span class="ss">:products</span><span class="p">].</span><span class="nf">insert</span> <span class="p">[</span><span class="ss">:instance_id</span><span class="p">,</span> <span class="ss">:date</span><span class="p">,</span> <span class="ss">:product_id</span><span class="p">,</span> <span class="ss">:data</span><span class="p">],</span> <span class="no">DB</span><span class="p">[</span><span class="n">temp_table</span><span class="p">].</span><span class="nf">select</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>I’ve covered this topic in more depths in <a href="/inserting-from-datasets-with-sequel/">my recent article</a>, which includes a <a href="/inserting-from-datasets-with-sequel/#measuring-performance">benchmark</a>
+illustrating the performance benefits of this approach.</p>
+
+<h2 id="unlogged-tables">Unlogged tables</h2>
+
+<p>Lastly, writing data into a temporary table does create some overhead, which
+we can reduce by making the temporary table “unlogged”. With this setting, data
+written to this table is not written to Postgres’ write-ahead log (used for
+crash recovery), which makes the writing speed considerably faster than in
+ordinary tables.</p>
+
+<p>Sequel allows creating unlogged tables by passing the <code class="language-plaintext highlighter-rouge">:unlogged</code> option to
+<code class="language-plaintext highlighter-rouge">#create_table</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">create_table</span> <span class="n">temp_table</span><span class="p">,</span> <span class="ss">unlogged: </span><span class="kp">true</span> <span class="k">do</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+<span class="c1"># CREATE UNLOGGED TABLE products_5ea6fe37d2fde562 (...)</span>
+</code></pre></div></div>
+
+<h2 id="loose-count">Loose count</h2>
+
+<p>During this migration, I’ve often wanted to check the total number of records,
+to verify that the migration was performed for all of our customers. The
+problem is that the regular <code class="language-plaintext highlighter-rouge">SELECT count(*) ...</code> query can be slow for larger
+amounts of records.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># can take some time:</span>
+<span class="no">DB</span><span class="p">[</span><span class="ss">:products</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">instance_id: </span><span class="mi">10</span><span class="p">).</span><span class="nf">count</span>
+<span class="c1"># SELECT count(*) FROM products WHERE instance_id = 10</span>
+</code></pre></div></div>
+
+<p>Luckily, Postgres stores a rough number of records for each table, which can
+be retrieved very fast, and in my case that was more than sufficient. I
+wouldn’t have found about this Postgres feature if I hadn’t come across
+Sequel’s <a href="http://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_loose_count_rb.html">pg_loose_count</a> extension:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">extension</span> <span class="ss">:pg_loose_count</span>
+<span class="no">DB</span><span class="p">.</span><span class="nf">tables</span>
+  <span class="p">.</span><span class="nf">grep</span><span class="p">(</span><span class="sr">/products_10_.+/</span><span class="p">)</span> <span class="c1"># select only partitions for e-shop with ID of 10</span>
+  <span class="p">.</span><span class="nf">sum</span> <span class="p">{</span> <span class="o">|</span><span class="n">partition</span><span class="o">|</span> <span class="no">DB</span><span class="p">.</span><span class="nf">loose_count</span><span class="p">(</span><span class="n">partition</span><span class="p">)</span> <span class="p">}</span> <span class="c1"># fast count</span>
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>With Sequel and Postgres I was able to use table partitioning to store
+time-series data in a way that’s efficient to query, import large amounts of
+historical data from CSV files into a temporary unlogged table, and transform
+it and write it into the destination table all in SQL, while checking the data
+migration progress with Postgres’ loose record counts.</p>
+
+<p>All these Postgres features helped me to efficiently handle time-series data
+and import historical data, and I didn’t have to make any comporomises, thanks
+to Sequel supporting me every step of the way.</p>
+
+
+  </div>
+</article>
+
+<div class="mt-8 md:mt-10">
+  
+  <script src="https://utteranc.es/client.js" repo="janko/janko.io" issue-term="title" theme="github-light" crossorigin="anonymous" async>
+  </script>
+
+
+</div>
+
+      </main>
+    </div>
+
+    
+      <script>
+  // Gauges
+  var _gauges = _gauges || [];
+  (function() {
+    var t   = document.createElement('script');
+    t.type  = 'text/javascript';
+    t.async = true;
+    t.id    = 'gauges-tracker';
+    t.setAttribute('data-site-id', '51f5bd47f5a1f545ac0000fc');
+    t.src = '//secure.gaug.es/track.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(t, s);
+  })();
+</script>
+
+    
+  </body>
+</html>

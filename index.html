@@ -20,7 +20,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"url":"https://janko.io/","author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"WebSite","description":"Sharing the wonders of Ruby","name":"Janko’s Blog","headline":"Janko’s Blog","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Janko’s Blog","url":"https://janko.io/","author":{"@type":"Person","name":"Janko Marohnić"},"@type":"WebSite","description":"Sharing the wonders of Ruby","name":"Janko’s Blog","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -47,12 +47,40 @@
   
     <article>
       <div class="flex items-baseline space-x-3 text-sm md:text-base">
+        <time class="text-gray-500" datetime="2021-03-29 00:00:00 +0200">
+          29 Mar 2021
+        </time>
+        
+          
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
+
+
+        
+      </div>
+
+      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700">
+        <a href="/anything-i-want-with-sequel-and-postgres/">Anything I Want With Sequel And Postgres</a>
+      </h1>
+
+      <div class="mt-2 prose md:prose-xl">
+        <p>At work I was tasked to migrate our time-series analytics data from CSV file
+dumps that we’ve been feeding into Power BI to a dedicated database. Our Rails
+app’s primary database is currently MariaDB, but we wanted to have our
+analytics data in a separate database either way, so this was a good
+opportunity to use Postgres which we’re most comfortable with anyway.</p>
+
+        <a class="block -mt-4 md:-mt-5" href="/anything-i-want-with-sequel-and-postgres/">Read more →</a>
+      </div>
+    </article>
+  
+    <article>
+      <div class="flex items-baseline space-x-3 text-sm md:text-base">
         <time class="text-gray-500" datetime="2021-01-24 00:00:00 +0100">
           24 Jan 2021
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-teal-light text-teal-dark font-semibold py-0.5" href="/til">til</a>
+<a class="my-1 rounded-full px-3 bg-teal-100 text-teal-700 font-semibold py-0.5" href="/til">til</a>
 
 
         
@@ -79,7 +107,7 @@ redirecting inside a Rails controller action:</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-blue-light text-blue-dark font-semibold py-0.5" href="/rodauth">rodauth</a>
+<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5" href="/rodauth">rodauth</a>
 
 
         
@@ -108,7 +136,7 @@ device). This provides an extra layer of security for the user’s account.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-blue-light text-blue-dark font-semibold py-0.5" href="/rodauth">rodauth</a>
+<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5" href="/rodauth">rodauth</a>
 
 
         
@@ -137,7 +165,7 @@ alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-yellow-light text-yellow-dark font-semibold py-0.5" href="/sequel">sequel</a>
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
 
 
         
@@ -164,7 +192,7 @@ automatically published to target devices.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-yellow-light text-yellow-dark font-semibold py-0.5" href="/sequel">sequel</a>
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
 
 
         
@@ -193,7 +221,7 @@ use Active Record.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-blue-light text-blue-dark font-semibold py-0.5" href="/rodauth">rodauth</a>
+<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5" href="/rodauth">rodauth</a>
 
 
         
@@ -222,7 +250,7 @@ time to focus on the core business logic of your product.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -245,7 +273,7 @@ time to focus on the core business logic of your product.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -272,7 +300,7 @@ ready.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -301,7 +329,7 @@ the new features and improvements that will be coming to 3.0. <img class="emoji"
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-yellow-light text-yellow-dark font-semibold py-0.5" href="/sequel">sequel</a>
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
 
 
         
@@ -350,7 +378,7 @@ the new features and improvements that will be coming to 3.0. <img class="emoji"
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -379,7 +407,7 @@ resizing images).</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -402,7 +430,7 @@ resizing images).</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -425,7 +453,7 @@ resizing images).</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -448,7 +476,7 @@ resizing images).</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -471,7 +499,7 @@ resizing images).</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -494,7 +522,7 @@ resizing images).</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -517,7 +545,7 @@ resizing images).</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -543,7 +571,7 @@ an open protocol for resumable file uploads built on HTTP.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -568,7 +596,7 @@ I needed partial downloads.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -595,7 +623,7 @@ attached, or whole galleries where people can upload many photos or videos.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -644,7 +672,7 @@ start integrating it into our project. So, the next thing—</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -672,7 +700,7 @@ advanced features like backgrounding, direct uploads, logging and more.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-yellow-light text-yellow-dark font-semibold py-0.5" href="/sequel">sequel</a>
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
 
 
         
@@ -703,7 +731,7 @@ have as well:
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -728,7 +756,7 @@ actions for dealing with attachments are slow:</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-red-light text-red-dark font-semibold py-0.5" href="/shrine">shrine</a>
+<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5" href="/shrine">shrine</a>
 
 
         
@@ -757,7 +785,7 @@ by CarrierWave’s idea of uploaders.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-green-light text-green-dark font-semibold py-0.5" href="/roda">roda</a>
+<a class="my-1 rounded-full px-3 bg-green-100 text-green-700 font-semibold py-0.5" href="/roda">roda</a>
 
 
         
@@ -782,7 +810,7 @@ a good ratio between <em>simplicity</em>, <em>convenience</em> and <em>flexibili
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-green-light text-green-dark font-semibold py-0.5" href="/roda">roda</a>
+<a class="my-1 rounded-full px-3 bg-green-100 text-green-700 font-semibold py-0.5" href="/roda">roda</a>
 
 
         
@@ -809,7 +837,7 @@ framework of choice. That’s why I want to show it to you.</p>
         </time>
         
           
-<a class="my-1 rounded-full px-3 bg-yellow-light text-yellow-dark font-semibold py-0.5" href="/sequel">sequel</a>
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
 
 
         
