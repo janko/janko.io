@@ -15,7 +15,8 @@ module.exports = {
       colors: {
         gray: {
           '450': '#94949e',
-        }
+        },
+        teal: colors.teal,
       },
       fontSize: {
         '5xl': ['3rem', 1.125],
