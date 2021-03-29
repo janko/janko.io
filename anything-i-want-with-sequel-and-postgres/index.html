@@ -239,7 +239,7 @@ CSV data, and then copied the data from that table into the end <code class="lan
 table in the desired format.</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">foreach</span><span class="p">(</span><span class="s2">"products_10.csv"</span><span class="p">)</span>
-<span class="n">columns</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">foreach</span><span class="p">(</span><span class="s2">"products_10.csv"</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nf">chomp</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">foreach</span><span class="p">(</span><span class="s2">"products_10.csv"</span><span class="p">).</span><span class="nf">first</span><span class="p">.</span><span class="nf">chomp</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span>
 <span class="n">temp_table</span> <span class="o">=</span> <span class="ss">:"products_</span><span class="si">#{</span><span class="no">SecureRandom</span><span class="p">.</span><span class="nf">hex</span><span class="si">}</span><span class="ss">"</span>
 
 <span class="no">DB</span><span class="p">.</span><span class="nf">create_table</span> <span class="n">temp_table</span> <span class="k">do</span>
