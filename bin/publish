@@ -2,6 +2,7 @@
 
 set -e
 
+git push origin master
 bin/build
 git switch gh-pages
 cp -R _site/* .
