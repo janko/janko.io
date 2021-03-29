@@ -181,7 +181,7 @@ table in the desired format.
 
 ```rb
 data = File.foreach("products_10.csv")
-columns = File.foreach("products_10.csv")[0].chomp.split(",")
+columns = File.foreach("products_10.csv").first.chomp.split(",")
 temp_table = :"products_#{SecureRandom.hex}"
 
 DB.create_table temp_table do
