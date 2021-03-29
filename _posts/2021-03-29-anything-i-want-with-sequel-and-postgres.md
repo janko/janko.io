@@ -223,7 +223,7 @@ dataset object:
 DB[:products].insert [:instance_id, :date, :product_id, :data], DB[temp_table].select(...)
 ```
 
-I've covered this topic in more depths in [my recent article][insert from
+I've covered this topic in more depth in [my recent article][insert from
 select], which includes a [benchmark][insert from select benchmark]
 illustrating the performance benefits of this approach.
 
