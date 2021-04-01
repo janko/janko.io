@@ -77,7 +77,7 @@ were creating logs for these events and storing them in PostgreSQL. We were
 using <a href="https://github.com/jeremyevans/sequel">Sequel</a> for database interaction, and our logs table looked roughly like
 this:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_table</span> <span class="ss">:activity_logs</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">create_table</span> <span class="ss">:activity_logs</span> <span class="k">do</span>
   <span class="n">primary_key</span> <span class="ss">:id</span>
   <span class="n">foreign_key</span> <span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:playlists</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
   <span class="n">foreign_key</span> <span class="ss">:user_id</span><span class="p">,</span> <span class="ss">:users</span>
@@ -132,7 +132,7 @@ decided to extract the publication logs into a new <code class="language-plainte
 
 <p>We’ve started by creating our desired <code class="language-plaintext highlighter-rouge">publication_logs</code> table:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_table</span> <span class="ss">:publication_logs</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">create_table</span> <span class="ss">:publication_logs</span> <span class="k">do</span>
   <span class="n">primary_key</span> <span class="ss">:id</span>
   <span class="n">foreign_key</span> <span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:playlists</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
   <span class="no">String</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
@@ -156,11 +156,11 @@ transforming the record into the desired format, and inserting it into the new
 table, then deleting the data from the old table.</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># select records we want to move</span>
-<span class="n">publication_logs</span> <span class="o">=</span> <span class="n">from</span><span class="p">(</span><span class="ss">:activity_logs</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
+<span class="n">publication_logs</span> <span class="o">=</span> <span class="no">DB</span><span class="p">[</span><span class="ss">:activity_logs</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
 
 <span class="c1"># insert each record individually into the new table</span>
 <span class="n">publication_logs</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">log</span><span class="o">|</span>
-  <span class="n">from</span><span class="p">(</span><span class="ss">:publication_logs</span><span class="p">).</span><span class="nf">insert</span><span class="p">(</span>
+  <span class="no">DB</span><span class="p">[</span><span class="ss">:publication_logs</span><span class="p">].</span><span class="nf">insert</span><span class="p">(</span>
     <span class="ss">playlist_id: </span><span class="n">log</span><span class="p">[</span><span class="ss">:playlist_id</span><span class="p">],</span>
     <span class="ss">action:      </span><span class="n">log</span><span class="p">[</span><span class="ss">:action</span><span class="p">],</span>
     <span class="ss">target:      </span><span class="n">log</span><span class="p">[</span><span class="ss">:target</span><span class="p">],</span>
@@ -176,9 +176,9 @@ table, then deleting the data from the old table.</p>
 <a href="http://sequel.jeremyevans.net/rdoc/files/doc/prepared_statements_rdoc.html">prepared statements</a> for the inserts:</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># select records we want to move</span>
-<span class="n">publication_logs</span> <span class="o">=</span> <span class="n">from</span><span class="p">(</span><span class="ss">:activity_logs</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
+<span class="n">publication_logs</span> <span class="o">=</span> <span class="no">DB</span><span class="p">[</span><span class="ss">:activity_logs</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
 
-<span class="n">prepared_insert</span> <span class="o">=</span> <span class="n">from</span><span class="p">(</span><span class="ss">:publication_logs</span><span class="p">).</span><span class="nf">prepare</span> <span class="ss">:insert</span><span class="p">,</span> <span class="ss">:insert_publication_data</span><span class="p">,</span>
+<span class="n">prepared_insert</span> <span class="o">=</span> <span class="no">DB</span><span class="p">[</span><span class="ss">:publication_logs</span><span class="p">].</span><span class="nf">prepare</span> <span class="ss">:insert</span><span class="p">,</span> <span class="ss">:insert_publication_data</span><span class="p">,</span>
   <span class="ss">playlist_id: </span><span class="p">:</span><span class="vg">$playlist_id</span><span class="p">,</span> <span class="ss">action: </span><span class="p">:</span><span class="vg">$action</span><span class="p">,</span> <span class="ss">target: </span><span class="p">:</span><span class="vg">$target</span><span class="p">,</span> <span class="ss">created_at: </span><span class="p">:</span><span class="vg">$created_at</span>
 
 <span class="c1"># insert each record individually into the new table</span>
@@ -216,10 +216,10 @@ which accepts the list of columns as the 1st argument, and the arrays of values
 as the 2nd argument:</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># select the records we want to move</span>
-<span class="n">publication_logs</span> <span class="o">=</span> <span class="n">from</span><span class="p">(</span><span class="ss">:activity_logs</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
+<span class="n">publication_logs</span> <span class="o">=</span> <span class="no">DB</span><span class="p">[</span><span class="ss">:activity_logs</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
 
 <span class="c1"># insert all new data in a single query</span>
-<span class="n">from</span><span class="p">(</span><span class="ss">:publication_logs</span><span class="p">).</span><span class="nf">import</span> <span class="p">[</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">],</span>
+<span class="no">DB</span><span class="p">[</span><span class="ss">:publication_logs</span><span class="p">].</span><span class="nf">import</span> <span class="p">[</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">],</span>
   <span class="n">publication_logs</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">log</span><span class="o">|</span> <span class="n">log</span><span class="p">.</span><span class="nf">fetch_values</span><span class="p">(</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">)</span> <span class="p">}</span>
 
 <span class="c1"># delete records from the old table</span>
@@ -234,11 +234,11 @@ put significant load on the database.</p>
 <p>To fix both issues, we can break the multi-insert down into smaller batches:</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># select the records we want to move</span>
-<span class="n">publication_logs</span> <span class="o">=</span> <span class="n">from</span><span class="p">(</span><span class="ss">:activity_logs</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
+<span class="n">publication_logs</span> <span class="o">=</span> <span class="no">DB</span><span class="p">[</span><span class="ss">:activity_logs</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
 
 <span class="c1"># bullk-insert new records in batches</span>
 <span class="n">publication_logs</span><span class="p">.</span><span class="nf">each_slice</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">logs</span><span class="o">|</span>
-  <span class="n">from</span><span class="p">(</span><span class="ss">:publication_logs</span><span class="p">).</span><span class="nf">import</span> <span class="p">[</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">],</span>
+  <span class="no">DB</span><span class="p">[</span><span class="ss">:publication_logs</span><span class="p">].</span><span class="nf">import</span> <span class="p">[</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">],</span>
     <span class="n">logs</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">log</span><span class="o">|</span> <span class="n">log</span><span class="p">.</span><span class="nf">fetch_values</span><span class="p">(</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">)</span> <span class="p">}</span>
 <span class="k">end</span>
 
@@ -265,10 +265,10 @@ object in place of raw values. This allows us to rewrite our migration one last
 time:</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># select the records we want to move</span>
-<span class="n">publication_logs</span> <span class="o">=</span> <span class="n">from</span><span class="p">(</span><span class="ss">:activity_logs</span><span class="p">).</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
+<span class="n">publication_logs</span> <span class="o">=</span> <span class="no">DB</span><span class="p">[</span><span class="ss">:activity_logs</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"publication"</span><span class="p">)</span>
 
 <span class="c1"># form a dataset with the new data and insert from that dataset</span>
-<span class="n">from</span><span class="p">(</span><span class="ss">:publication_logs</span><span class="p">).</span><span class="nf">import</span> <span class="p">[</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">],</span>
+<span class="no">DB</span><span class="p">[</span><span class="ss">:publication_logs</span><span class="p">].</span><span class="nf">import</span> <span class="p">[</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">],</span>
   <span class="n">publication_logs</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="ss">:playlist_id</span><span class="p">,</span> <span class="ss">:action</span><span class="p">,</span> <span class="ss">:target</span><span class="p">,</span> <span class="ss">:created_at</span><span class="p">)</span>
 
 <span class="c1"># delete records from the old table</span>
@@ -280,7 +280,7 @@ time:</p>
 <p>What’s left was removing columns that were specific to publication from the
 <code class="language-plaintext highlighter-rouge">activity_logs</code> table:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alter_table</span> <span class="ss">:activity_logs</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">alter_table</span> <span class="ss">:activity_logs</span> <span class="k">do</span>
   <span class="n">drop_column</span> <span class="ss">:event</span>           <span class="c1"># this table will only hold approval logs now</span>
   <span class="n">drop_column</span> <span class="ss">:target</span>          <span class="c1"># this was specific to publication logs</span>
   <span class="n">set_column_not_null</span> <span class="ss">:user_id</span> <span class="c1"># only publication logs didn't have user id set</span>

@@ -111,7 +111,7 @@ create partitions of), we need to specify the column(s) we want to partition by
 our app, we wanted to have monthly partitions of product data for each client,
 so our schema migration contained the following table definition:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_table</span> <span class="ss">:products</span><span class="p">,</span> <span class="ss">partition_by: </span><span class="p">[</span><span class="ss">:instance_id</span><span class="p">,</span> <span class="ss">:date</span><span class="p">],</span> <span class="ss">partition_type: :range</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">create_table</span> <span class="ss">:products</span><span class="p">,</span> <span class="ss">partition_by: </span><span class="p">[</span><span class="ss">:instance_id</span><span class="p">,</span> <span class="ss">:date</span><span class="p">],</span> <span class="ss">partition_type: :range</span> <span class="k">do</span>
   <span class="no">Date</span>    <span class="ss">:date</span><span class="p">,</span>        <span class="ss">null: </span><span class="kp">false</span>
   <span class="no">Integer</span> <span class="ss">:instance_id</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span> <span class="c1"># in our app "instances" are e-shops</span>
   <span class="no">String</span>  <span class="ss">:product_id</span><span class="p">,</span>  <span class="ss">null: </span><span class="kp">false</span>
@@ -133,7 +133,7 @@ be created from it, which will be the ones holding the data. For example, let’
 create a partition of this table which will hold data for an e-shop with ID of
 <code class="language-plaintext highlighter-rouge">10</code> for March 2021:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_table?</span> <span class="ss">:products_10_202103</span><span class="p">,</span> <span class="ss">partition_of: :products</span> <span class="k">do</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">create_table?</span> <span class="ss">:products_10_202103</span><span class="p">,</span> <span class="ss">partition_of: :products</span> <span class="k">do</span>
   <span class="n">from</span> <span class="mi">10</span><span class="p">,</span> <span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
   <span class="n">to</span> <span class="mi">10</span><span class="p">,</span> <span class="no">Date</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># this end is excluded from the range</span>
 <span class="k">end</span>
