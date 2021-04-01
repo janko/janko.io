@@ -15,7 +15,7 @@ using [Sequel] for database interaction, and our logs table looked roughly like
 this:
 
 ```rb
-create_table :activity_logs do
+DB.create_table :activity_logs do
   primary_key :id
   foreign_key :playlist_id, :playlists, null: false
   foreign_key :user_id, :users
@@ -70,7 +70,7 @@ decided to extract the publication logs into a new `publication_logs` table.
 We've started by creating our desired `publication_logs` table:
 
 ```rb
-create_table :publication_logs do
+DB.create_table :publication_logs do
   primary_key :id
   foreign_key :playlist_id, :playlists, null: false
   String :action, null: false
@@ -95,11 +95,11 @@ table, then deleting the data from the old table.
 
 ```rb
 # select records we want to move
-publication_logs = from(:activity_logs).where(event: "publication")
+publication_logs = DB[:activity_logs].where(event: "publication")
 
 # insert each record individually into the new table
 publication_logs.each do |log|
-  from(:publication_logs).insert(
+  DB[:publication_logs].insert(
     playlist_id: log[:playlist_id],
     action:      log[:action],
     target:      log[:target],
@@ -116,9 +116,9 @@ We can gain an additional performance improvement here if we switch to using
 
 ```rb
 # select records we want to move
-publication_logs = from(:activity_logs).where(event: "publication")
+publication_logs = DB[:activity_logs].where(event: "publication")
 
-prepared_insert = from(:publication_logs).prepare :insert, :insert_publication_data,
+prepared_insert = DB[:publication_logs].prepare :insert, :insert_publication_data,
   playlist_id: :$playlist_id, action: :$action, target: :$target, created_at: :$created_at
 
 # insert each record individually into the new table
@@ -158,10 +158,10 @@ as the 2nd argument:
 
 ```rb
 # select the records we want to move
-publication_logs = from(:activity_logs).where(event: "publication")
+publication_logs = DB[:activity_logs].where(event: "publication")
 
 # insert all new data in a single query
-from(:publication_logs).import [:playlist_id, :action, :target, :created_at],
+DB[:publication_logs].import [:playlist_id, :action, :target, :created_at],
   publication_logs.map { |log| log.fetch_values(:playlist_id, :action, :target, :created_at) }
 
 # delete records from the old table
@@ -177,11 +177,11 @@ To fix both issues, we can break the multi-insert down into smaller batches:
 
 ```rb
 # select the records we want to move
-publication_logs = from(:activity_logs).where(event: "publication")
+publication_logs = DB[:activity_logs].where(event: "publication")
 
 # bullk-insert new records in batches
 publication_logs.each_slice(1000) do |logs|
-  from(:publication_logs).import [:playlist_id, :action, :target, :created_at],
+  DB[:publication_logs].import [:playlist_id, :action, :target, :created_at],
     logs.map { |log| log.fetch_values(:playlist_id, :action, :target, :created_at) }
 end
 
@@ -210,10 +210,10 @@ time:
 
 ```rb
 # select the records we want to move
-publication_logs = from(:activity_logs).where(event: "publication")
+publication_logs = DB[:activity_logs].where(event: "publication")
 
 # form a dataset with the new data and insert from that dataset
-from(:publication_logs).import [:playlist_id, :action, :target, :created_at],
+DB[:publication_logs].import [:playlist_id, :action, :target, :created_at],
   publication_logs.select(:playlist_id, :action, :target, :created_at)
 
 # delete records from the old table
@@ -226,7 +226,7 @@ What's left was removing columns that were specific to publication from the
 `activity_logs` table:
 
 ```rb
-alter_table :activity_logs do
+DB.alter_table :activity_logs do
   drop_column :event           # this table will only hold approval logs now
   drop_column :target          # this was specific to publication logs
   set_column_not_null :user_id # only publication logs didn't have user id set

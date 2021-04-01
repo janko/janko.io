@@ -47,7 +47,7 @@ our app, we wanted to have monthly partitions of product data for each client,
 so our schema migration contained the following table definition:
 
 ```rb
-create_table :products, partition_by: [:instance_id, :date], partition_type: :range do
+DB.create_table :products, partition_by: [:instance_id, :date], partition_type: :range do
   Date    :date,        null: false
   Integer :instance_id, null: false # in our app "instances" are e-shops
   String  :product_id,  null: false
@@ -70,7 +70,7 @@ create a partition of this table which will hold data for an e-shop with ID of
 `10` for March 2021:
 
 ```rb
-create_table? :products_10_202103, partition_of: :products do
+DB.create_table? :products_10_202103, partition_of: :products do
   from 10, Date.new(2021, 3, 1)
   to 10, Date.new(2021, 4, 1) # this end is excluded from the range
 end
