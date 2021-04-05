@@ -4,6 +4,7 @@ const { spacing, fontWeight, borderRadius } = require('tailwindcss/defaultTheme'
 const noMargin = { marginTop: 0, marginBottom: 0 }
 
 module.exports = {
+  mode: 'jit',
   purge: [
     'pages/**/*.html',
     '_layouts/**/*.html',
