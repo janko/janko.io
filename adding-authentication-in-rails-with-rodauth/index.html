@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"BlogPosting","description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","headline":"Adding Authentication in Rails 6 with Rodauth","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Adding Authentication in Rails 6 with Rodauth","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"@type":"BlogPosting","description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -170,24 +170,8 @@ navigation header:</p>
 <span class="c">&lt;!-- ... ---&gt;</span>
 </code></pre></div></div>
 
-<p>Rodauth doesn’t define the <code class="language-plaintext highlighter-rouge">#current_account</code> method, so let’s copy-paste the
-example provided in the rodauth-rails README:</p>
-
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/controllers/application_controller.rb</span>
-<span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">before_action</span> <span class="ss">:current_account</span><span class="p">,</span> <span class="ss">if: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">logged_in?</span> <span class="p">}</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">current_account</span>
-    <span class="vi">@current_account</span> <span class="o">||=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">rodauth</span><span class="p">.</span><span class="nf">session_value</span><span class="p">)</span>
-  <span class="k">rescue</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">RecordNotFound</span>
-    <span class="n">rodauth</span><span class="p">.</span><span class="nf">logout</span>
-    <span class="n">rodauth</span><span class="p">.</span><span class="nf">login_required</span>
-  <span class="k">end</span>
-  <span class="n">helper_method</span> <span class="ss">:current_account</span>
-<span class="k">end</span>
-</code></pre></div></div>
+<p>Here we’re using the <code class="language-plaintext highlighter-rouge">#current_account</code> helper method that rodauth-rails
+provides, which returns the currently signed in account.</p>
 
 <p>Now our application will show login and registration links when the user is not
 logged in:</p>

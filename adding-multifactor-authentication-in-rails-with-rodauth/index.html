@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"BlogPosting","description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"@type":"BlogPosting","description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -98,10 +98,10 @@ built-in platform biometric sensors (e.g. fingerprint)</p>
 
 <p>In this article, I want to show you how to add multifactor authentication to
 a Rails app using <a href="https://github.com/jeremyevans/rodauth/">Rodauth</a>, which has built-in support for each of the
-multifactor authentication methods mentioned above. Compared to alternatives<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote">1</a></sup>,
+multifactor authentication methods mentioned above. Compared to alternatives<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>,
 Rodauth provides a much more integrated experience by shipping with complete
 endpoints, default HTML templates, session management, lockout logic and
-more<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote">2</a></sup>. To keep the tutorial focused, we’ll be implementing just the first
+more<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>. To keep the tutorial focused, we’ll be implementing just the first
 three methods, as they’re by far the most common.</p>
 
 <p>We’ll be using the <a href="https://github.com/janko/rodauth-rails">rodauth-rails</a> gem, and we’ll be continuing off of the
@@ -163,7 +163,7 @@ migration generator provided by rodauth-rails:</p>
 </code></pre></div></div>
 
 <p>Now when the user logs in and clicks on “Manage MFA”, they’ll get redirected to
-the OTP setup page that Rodauth provides out-of-the-box<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote">3</a></sup>:</p>
+the OTP setup page that Rodauth provides out-of-the-box<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup>:</p>
 
 <p><img src="/images/rodauth-otp-setup.png" alt="Rodauth OTP setup page" /></p>
 
