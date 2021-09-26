@@ -113,25 +113,8 @@ navigation header:
 <!-- ... --->
 ```
 
-Rodauth doesn't define the `#current_account` method, so let's copy-paste the
-example provided in the rodauth-rails README:
-
-```rb
-# app/controllers/application_controller.rb
-class ApplicationController < ActionController::Base
-  before_action :current_account, if: -> { rodauth.logged_in? }
-
-  private
-
-  def current_account
-    @current_account ||= Account.find(rodauth.session_value)
-  rescue ActiveRecord::RecordNotFound
-    rodauth.logout
-    rodauth.login_required
-  end
-  helper_method :current_account
-end
-```
+Here we're using the `#current_account` helper method that rodauth-rails
+provides, which returns the currently signed in account.
 
 Now our application will show login and registration links when the user is not
 logged in:
