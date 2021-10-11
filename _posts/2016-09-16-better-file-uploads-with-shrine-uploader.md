@@ -229,12 +229,12 @@ In the next post I will talk about Shrine's high-level attachment interface,
 and again compare it to existing file upload libraries, so stay tuned!
 
 [Shrine]: https://github.com/shrinerb/shrine
-[previous post]: https://twin.github.io/better-file-uploads-with-shrine-motivation/
+[previous post]: /better-file-uploads-with-shrine-motivation/
 [plugins]: http://shrinerb.com/#plugins
 [writing plugins]: https://shrinerb.com/docs/creating-plugins
 [carrierwave inheritance]: https://jbhannah.net/articles/carrierwave-concerns/
 [Roda]: https://github.com/jeremyevans/roda
-[plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[plugin system]: /the-plugin-system-of-sequel-and-roda/
 [direct uploads]: https://github.com/shrinerb/shrine#direct-uploads
 [Rack files]: https://shrinerb.com/docs/plugins/rack_file
 [Down::ChunkedIO]: https://github.com/janko/down#streaming

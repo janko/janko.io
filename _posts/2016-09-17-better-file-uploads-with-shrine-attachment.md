@@ -248,7 +248,7 @@ possible with these core classes. The next post will be about file processing
 with Shrine, so stay tuned!
 
 [Shrine]: https://github.com/shrinerb/shrine
-[previous post]: https://twin.github.io/better-file-uploads-with-shrine-uploader/
+[previous post]: /better-file-uploads-with-shrine-uploader/
 [CarrierWave::Mount]: https://github.com/carrierwaveuploader/carrierwave/blob/1dbc8be0bb8cf3b48600c5451084ee13445747b0/lib/carrierwave/mount.rb
 [paperclip columns]: https://github.com/thoughtbot/paperclip/blob/7edb35a2a9a80c9598dfde235c7e593c023fc914/lib/paperclip/schema.rb#L6-L9
 [magic attributes]: http://markevans.github.io/dragonfly/models#magic-attributes

@@ -6,7 +6,7 @@ comments: disqus
 
 For those who don't know, [Sequel] is an ORM very similar to ActiveRecord, in a
 way that it also implements the [Active Record pattern]. As of this writing
-it's 9 years old. I've already [written](http://twin.github.io/ode-to-sequel/)
+it's 9 years old. I've already [written](/ode-to-sequel/)
 about some of the main advantages of Sequel over ActiveRecord (and other people
 have as well:
 [1](http://rosenfeld.herokuapp.com/en/articles/ruby-rails/2013-12-18-sequel-is-awesome-and-much-better-than-activerecord),

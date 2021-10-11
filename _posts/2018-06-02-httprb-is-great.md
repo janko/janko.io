@@ -446,7 +446,7 @@ I encourage you to try http.rb on your next project!
 [Net::HTTP multipart form data]: https://github.com/ruby/ruby/blob/v2_5_1/lib/net/http/generic_request.rb#L210-L285
 [RestClient multipart]: https://github.com/rest-client/rest-client/blob/v2.0.2/lib/restclient/payload.rb#L116-L207
 [HTTParty multipart]: https://github.com/jnunemaker/httparty/blob/v0.16.2/lib/httparty/request/body.rb#L5
-[use Fibers]: https://twin.github.io/partial-downloads-with-enumerators-and-fibers/
+[use Fibers]: /partial-downloads-with-enumerators-and-fibers/
 [on-demand downloads]: https://github.com/janko/down/tree/v4.5.0#streaming
 [net-http-persistent]: https://github.com/drbrain/net-http-persistent
 [Net::HTTP write timeout]: https://bugs.ruby-lang.org/issues/13396

@@ -8,7 +8,7 @@ Lately there has been some talking on the Twitters about Sass, PostCSS, cssnext 
 
 ## Terminology
 
-There seems to be confusion around the terminology, so let's get that out of the way first. The post expresses concern about the term *postprocessor*, used to describe PostCSS. In my [previous post](http://twin.github.io/css-pre-vs-post-processing/) I used that term because I wanted to express the key difference between Sass and PostCSS.
+There seems to be confusion around the terminology, so let's get that out of the way first. The post expresses concern about the term *postprocessor*, used to describe PostCSS. In my [previous post](/css-pre-vs-post-processing/) I used that term because I wanted to express the key difference between Sass and PostCSS.
 
   * [Sass] is a CSS extension language with its own [spec][sass-spec], which we preprocess into regular CSS. It provides solutions for some of CSS shortcomings and makes authoring CSS much easier. Sass is **not** what CSS will look like in the future, it's an abstraction.
 

@@ -266,7 +266,7 @@ Make good choices, and you will be greatly rewarded :gift:
 
 [awesome-ruby]: https://github.com/markets/awesome-ruby
 [Sequel]: https://github.com/jeremyevans/sequel
-[you can do more with it]: http://twin.github.io/ode-to-sequel/
+[you can do more with it]: /ode-to-sequel/
 [Roda]: https://github.com/jeremyevans/roda
 [Rodauth]: https://github.com/jeremyevans/rodauth
 [Devise's Rails integration]: https://github.com/plataformatec/devise/blob/master/lib/devise/rails.rb

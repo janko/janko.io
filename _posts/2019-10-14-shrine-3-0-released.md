@@ -234,7 +234,7 @@ forum] if you have any troubles upgrading.
 [model]: https://shrinerb.com/docs/plugins/model
 [multi_cache]: https://shrinerb.com/docs/plugins/multi_cache
 [validation]: https://shrinerb.com/docs/plugins/validation
-[Upcoming Features in Shrine 3.0]: https://twin.github.io/upcoming-features-in-shrine-3-0/
+[Upcoming Features in Shrine 3.0]: /upcoming-features-in-shrine-3-0/
 [release notes]: https://shrinerb.com/docs/release_notes/3.0.0
 [shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
 [shrine-flickr]: https://github.com/shrinerb/shrine-flickr

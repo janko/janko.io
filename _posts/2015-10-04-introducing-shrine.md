@@ -229,7 +229,7 @@ solutions and their open issues, and hopefully I succeeded in making Shrine the
 next level of file uploads.
 
 [Shrine]: https://github.com/shrinerb/shrine
-[plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[plugin system]: /the-plugin-system-of-sequel-and-roda/
 [Roda]: https://github.com/jeremyevans/roda
 [Sequel]: https://github.com/jeremyevans/sequel
 [over 25 plugins]: http://shrinerb.com#plugins

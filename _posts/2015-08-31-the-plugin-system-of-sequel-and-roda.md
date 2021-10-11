@@ -320,13 +320,13 @@ want. If you start working on your next big gem, consider using this pattern.
 
 * [http://sequel.jeremyevans.net/rdoc/files/doc/model_plugins_rdoc.html](http://sequel.jeremyevans.net/rdoc/files/doc/model_plugins_rdoc.html)
 * [http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Plugins](http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Plugins)
-* [http://twin.github.io/ode-to-sequel/](http://twin.github.io/ode-to-sequel/)
-* [http://twin.github.io/introduction-to-roda/](http://twin.github.io/introduction-to-roda/)
+* [https://janko.io/ode-to-sequel/](/ode-to-sequel/)
+* [https://janko.io/introduction-to-roda/](/introduction-to-roda/)
 
 
 [sequel]: https://github.com/jeremyevans/sequel
 [roda]: https://github.com/jeremyevans/roda
-[previous post]: http://twin.github.io/introduction-to-roda/
+[previous post]: /introduction-to-roda/
 [see the reasoning]: http://roda.jeremyevans.net/rdoc/files/README_rdoc.html#label-Pollution
 [carrierwave]: https://github.com/carrierwaveuploader/carrierwave/blob/master/lib/carrierwave/uploader.rb
 [minitest]: https://github.com/seattlerb/minitest#writing-extensions
@@ -334,4 +334,4 @@ want. If you start working on your next big gem, consider using this pattern.
 [found huge amounts of missing requires in ActiveSupport]: https://github.com/rails/rails/commit/f28bd9557c669cd63c31704202a46dd83f0a4102
 [`Module#prepend`]: http://dev.af83.com/2012/10/19/ruby-2-0-module-prepend.html
 [200 LOC]: https://github.com/janko/as-duration
-[correction]:  http://twin.github.io/the-plugin-system-of-sequel-and-roda/#comment-2227674746
+[correction]: /the-plugin-system-of-sequel-and-roda/#comment-2227674746

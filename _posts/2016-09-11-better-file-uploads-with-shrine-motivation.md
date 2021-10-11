@@ -374,13 +374,13 @@ the cool things that you can do with Shrine, so stay tuned!
 [Shrine]: https://github.com/shrinerb/shrine
 [Sequel]: https://github.com/jeremyevans/sequel
 [Roda]: https://github.com/jeremyevans/roda
-[evaluating libraries]: https://twin.github.io/evaluating-ruby-libraries/
+[evaluating libraries]: /evaluating-ruby-libraries/
 [don't allow saving to disk]: https://devcenter.heroku.com/articles/dynos#ephemeral-filesystem
 [30-second request timeout]: https://devcenter.heroku.com/articles/request-timeout
-[asynchronous uploads]: https://twin.github.io/file-uploads-asynchronous-world/
-[Sequel ≻ ActiveRecord]: https://twin.github.io/ode-to-sequel/
-[ActiveRecord ⊁ Sequel]: https://twin.github.io/activerecord-is-reinventing-sequel/
-[roda's routing]: https://twin.github.io/introduction-to-roda/
+[asynchronous uploads]: /file-uploads-asynchronous-world/
+[Sequel ≻ ActiveRecord]: /ode-to-sequel/
+[ActiveRecord ⊁ Sequel]: /activerecord-is-reinventing-sequel/
+[roda's routing]: /introduction-to-roda/
 [aws-sdk]: https://github.com/aws/aws-sdk-ruby
 [S3 object lifecycle]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [Paperclip]: https://github.com/thoughtbot/paperclip

@@ -174,7 +174,7 @@ having to scale it.
 [Shrine]: https://shrinerb.com
 [shrine-transloadit]: https://github.com/shrinerb/shrine-transloadit
 [tus]: http://tus.io/
-[fully asynchronous user experience]: https://twin.github.io/file-uploads-asynchronous-world/
+[fully asynchronous user experience]: /file-uploads-asynchronous-world/
 [plugin system]: https://shrinerb.com/docs/creating-storages
 [robots]: https://transloadit.com/docs/conversion-robots/
 [demo app]: https://github.com/shrinerb/shrine-transloadit/tree/master/demo

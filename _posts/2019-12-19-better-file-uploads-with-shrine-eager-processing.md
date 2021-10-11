@@ -391,7 +391,7 @@ processing][derivation_endpoint], so stay tuned.
 [Paperclip styles]: https://github.com/thoughtbot/paperclip#post-processing
 [CarrierWave versions]: https://github.com/carrierwaveuploader/carrierwave#adding-versions
 [versions plugin]: https://github.com/shrinerb/shrine/blob/61f36a6edda6e4654b30e78d16485c9e79a2c31f/doc/plugins/versions.md#readme
-[versions rewrite]: https://twin.github.io/upcoming-features-in-shrine-3-0/#derivatives
+[versions rewrite]: /upcoming-features-in-shrine-3-0/#derivatives
 [delayed_paperclip]: https://github.com/jrgifford/delayed_paperclip
 [carrierwave_backgrounder]: https://github.com/lardawge/carrierwave_backgrounder
 [libvips]: https://libvips.github.io/libvips/
