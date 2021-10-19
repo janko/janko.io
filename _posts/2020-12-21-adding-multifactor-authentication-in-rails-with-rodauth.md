@@ -233,6 +233,16 @@ class RodauthController < ApplicationController
 end
 ```
 
+If you're using [Turbo], you'll need to disable it in the OTP setup form,
+because Turbo doesn't support form submissions that return 200 OK responses.
+
+```rb
+<!-- app/views/rodauth/otp_setup.html.erb -->
+<%= form_tag <%= rodauth %>.otp_setup_path, method: :post, data: { turbo: false } do %>
+  <!-- ... -->
+<% end %>
+```
+
 When the user now sets up TOTP, they will be shown a page like this:
 
 ![Rodauth page for viewing and downloading recovery codes](/images/rodauth-recovery-view.png)
@@ -428,3 +438,4 @@ other authentication features.
 [recovery source]: https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/recovery_codes.rb
 [mfa source]: https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/two_factor_base.rb
 [WebAuthn]: https://webauthn.io/
+[Turbo]: https://turbo.hotwired.dev/
