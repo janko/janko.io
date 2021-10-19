@@ -297,6 +297,15 @@ nicer way and add a download link for convenience.</p>
 <span class="k">end</span>
 </code></pre></div></div>
 
+<p>If you’re using <a href="https://turbo.hotwired.dev/">Turbo</a>, you’ll need to disable it in the OTP setup form,
+because Turbo doesn’t support form submissions that return 200 OK responses.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span> <span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">rodauth</span><span class="o">/</span><span class="n">otp_setup</span><span class="p">.</span><span class="nf">html</span><span class="p">.</span><span class="nf">erb</span> <span class="o">--&gt;</span>
+<span class="o">&lt;</span><span class="sx">%= form_tag &lt;%=</span> <span class="n">rodauth</span> <span class="sx">%&gt;.otp_setup_path, method: :post, data: { turbo: false } do %&gt;</span>
+  <span class="o">&lt;!--</span> <span class="o">...</span> <span class="o">--&gt;</span>
+<span class="o">&lt;</span><span class="sx">% end </span><span class="o">%&gt;</span>
+</code></pre></div></div>
+
 <p>When the user now sets up TOTP, they will be shown a page like this:</p>
 
 <p><img src="/images/rodauth-recovery-view.png" alt="Rodauth page for viewing and downloading recovery codes" /></p>
