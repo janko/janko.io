@@ -238,7 +238,7 @@ because Turbo doesn't support form submissions that return 200 OK responses.
 
 ```erb
 <!-- app/views/rodauth/otp_setup.html.erb -->
-<%= form_tag <%= rodauth %>.otp_setup_path, method: :post, data: { turbo: false } do %>
+<%= form_tag rodauth.otp_setup_path, method: :post, data: { turbo: false } do %>
   <!-- ... -->
 <% end %>
 ```
