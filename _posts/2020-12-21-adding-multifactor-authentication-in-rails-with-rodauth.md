@@ -236,7 +236,7 @@ end
 If you're using [Turbo], you'll need to disable it in the OTP setup form,
 because Turbo doesn't support form submissions that return 200 OK responses.
 
-```rb
+```erb
 <!-- app/views/rodauth/otp_setup.html.erb -->
 <%= form_tag <%= rodauth %>.otp_setup_path, method: :post, data: { turbo: false } do %>
   <!-- ... -->
