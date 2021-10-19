@@ -300,10 +300,10 @@ nicer way and add a download link for convenience.</p>
 <p>If you’re using <a href="https://turbo.hotwired.dev/">Turbo</a>, you’ll need to disable it in the OTP setup form,
 because Turbo doesn’t support form submissions that return 200 OK responses.</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!--</span> <span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">rodauth</span><span class="o">/</span><span class="n">otp_setup</span><span class="p">.</span><span class="nf">html</span><span class="p">.</span><span class="nf">erb</span> <span class="o">--&gt;</span>
-<span class="o">&lt;</span><span class="sx">%= form_tag &lt;%=</span> <span class="n">rodauth</span> <span class="sx">%&gt;.otp_setup_path, method: :post, data: { turbo: false } do %&gt;</span>
-  <span class="o">&lt;!--</span> <span class="o">...</span> <span class="o">--&gt;</span>
-<span class="o">&lt;</span><span class="sx">% end </span><span class="o">%&gt;</span>
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/rodauth/otp_setup.html.erb --&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">form_tag</span> <span class="o">&lt;</span><span class="sx">%= rodauth </span><span class="cp">%&gt;</span>.otp_setup_path, method: :post, data: { turbo: false } do %&gt;
+  <span class="c">&lt;!-- ... --&gt;</span>
+<span class="cp">&lt;%</span><span class="sx"> end </span><span class="cp">%&gt;</span>
 </code></pre></div></div>
 
 <p>When the user now sets up TOTP, they will be shown a page like this:</p>
