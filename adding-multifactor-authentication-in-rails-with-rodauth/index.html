@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -259,19 +259,21 @@ nicer way and add a download link for convenience.</p>
 <span class="k">end</span>
 </code></pre></div></div>
 <div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/rodauth/add_recovery_codes.html.erb --&gt;</span>
-<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"border border-info rounded px-3 py-2"</span><span class="nt">&gt;</span>
-  <span class="cp">&lt;%</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">recovery_codes</span><span class="p">.</span><span class="nf">each_slice</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">code1</span><span class="p">,</span> <span class="n">code2</span><span class="o">|</span> <span class="cp">%&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row text-info text-center"</span><span class="nt">&gt;</span>
-      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-lg my-1 text-monospace"</span><span class="nt">&gt;</span><span class="cp">&lt;%=</span> <span class="n">code1</span> <span class="cp">%&gt;</span><span class="nt">&lt;/div&gt;</span>
-      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-lg my-1 text-monospace"</span><span class="nt">&gt;</span><span class="cp">&lt;%=</span> <span class="n">code2</span> <span class="cp">%&gt;</span><span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;/div&gt;</span>
-  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">recovery_codes</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"my-3"</span><span class="nt">&gt;</span>
+    Copy these recovery codes to a safe location.
+    You can also download them <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"here"</span><span class="p">,</span> <span class="n">download_recovery_codes_path</span> <span class="cp">%&gt;</span>.
+  <span class="nt">&lt;/p&gt;</span>
 
-<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"my-3 text-center"</span><span class="nt">&gt;</span>
-  Copy these recovery codes to a safe location.
-  You can also download them <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"here"</span><span class="p">,</span> <span class="n">download_recovery_codes_path</span> <span class="cp">%&gt;</span>.
-<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"d-inline-block mb-3 border border-info rounded px-3 py-2"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">recovery_codes</span><span class="p">.</span><span class="nf">each_slice</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">code1</span><span class="p">,</span> <span class="n">code2</span><span class="o">|</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row text-info text-left"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-lg my-1 font-monospace"</span><span class="nt">&gt;</span><span class="cp">&lt;%=</span> <span class="n">code1</span> <span class="cp">%&gt;</span><span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-lg my-1 font-monospace"</span><span class="nt">&gt;</span><span class="cp">&lt;%=</span> <span class="n">code2</span> <span class="cp">%&gt;</span><span class="nt">&lt;/div&gt;</span>
+      <span class="nt">&lt;/div&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 
 <span class="c">&lt;!-- Used for filling in missing recovery codes later on --&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">can_add_recovery_codes?</span> <span class="cp">%&gt;</span>
