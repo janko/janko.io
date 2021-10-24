@@ -193,19 +193,21 @@ end
 ```
 ```erb
 <!-- app/views/rodauth/add_recovery_codes.html.erb -->
-<div class="border border-info rounded px-3 py-2">
-  <% rodauth.recovery_codes.each_slice(2) do |code1, code2| %>
-    <div class="row text-info text-center">
-      <div class="col-lg my-1 text-monospace"><%= code1 %></div>
-      <div class="col-lg my-1 text-monospace"><%= code2 %></div>
-    </div>
-  <% end %>
-</div>
+<% if rodauth.recovery_codes.any? %>
+  <p class="my-3">
+    Copy these recovery codes to a safe location.
+    You can also download them <%= link_to "here", download_recovery_codes_path %>.
+  </p>
 
-<p class="my-3 text-center">
-  Copy these recovery codes to a safe location.
-  You can also download them <%= link_to "here", download_recovery_codes_path %>.
-</p>
+  <div class="d-inline-block mb-3 border border-info rounded px-3 py-2">
+    <% rodauth.recovery_codes.each_slice(2) do |code1, code2| %>
+      <div class="row text-info text-left">
+        <div class="col-lg my-1 font-monospace"><%= code1 %></div>
+        <div class="col-lg my-1 font-monospace"><%= code2 %></div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
 
 <!-- Used for filling in missing recovery codes later on -->
 <% if rodauth.can_add_recovery_codes? %>
