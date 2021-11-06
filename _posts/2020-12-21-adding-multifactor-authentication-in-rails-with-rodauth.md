@@ -193,6 +193,8 @@ end
 ```
 ```erb
 <!-- app/views/rodauth/add_recovery_codes.html.erb -->
+<% content_for :title, rodauth.add_recovery_codes_page_title %>
+
 <% if rodauth.recovery_codes.any? %>
   <p class="my-3">
     Copy these recovery codes to a safe location.
@@ -211,8 +213,8 @@ end
 
 <!-- Used for filling in missing recovery codes later on -->
 <% if rodauth.can_add_recovery_codes? %>
-  <h2>Add Additional Recovery Codes</h2>
-  <%= rodauth.render("recovery-codes") %>
+  <%== rodauth.add_recovery_codes_heading %>
+  <%= render template: "rodauth/recovery_codes", layout: false %>
 <% end %>
 ```
 ```rb
@@ -240,7 +242,7 @@ because Turbo doesn't support form submissions that return 200 OK responses.
 
 ```erb
 <!-- app/views/rodauth/otp_setup.html.erb -->
-<%= form_tag rodauth.otp_setup_path, method: :post, data: { turbo: false } do %>
+<%= form_with url: rodauth.otp_setup_path, method: :post, data: { turbo: false } do |form| %>
   <!-- ... -->
 <% end %>
 ```

@@ -83,7 +83,7 @@ perform any actions before the request reaches the main app. This design
 enables us to keep our authentication logic contained in a single file.
 
 ```rb
-class RodauthMiddleware < Roda
+class RodauthApp < Roda
   # define your Rodauth configuration
   plugin :rodauth do
     # load authentication features you need

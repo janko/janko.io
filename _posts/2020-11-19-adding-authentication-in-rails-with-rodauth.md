@@ -203,27 +203,17 @@ templates into our Rails application:
 ```sh
 $ rails generate rodauth:views
 
-# create  app/views/rodauth/_field.html.erb
-# create  app/views/rodauth/_field_error.html.erb
-# create  app/views/rodauth/_login_field.html.erb
-# create  app/views/rodauth/_login_display.html.erb
-# create  app/views/rodauth/_password_field.html.erb
-# create  app/views/rodauth/_submit.html.erb
 # create  app/views/rodauth/_login_form.html.erb
 # create  app/views/rodauth/_login_form_footer.html.erb
 # create  app/views/rodauth/_login_form_header.html.erb
 # create  app/views/rodauth/login.html.erb
 # create  app/views/rodauth/multi_phase_login.html.erb
 # create  app/views/rodauth/logout.html.erb
-# create  app/views/rodauth/_login_confirm_field.html.erb
-# create  app/views/rodauth/_password_confirm_field.html.erb
 # create  app/views/rodauth/create_account.html.erb
-# create  app/views/rodauth/_login_hidden_field.html.erb
 # create  app/views/rodauth/verify_account_resend.html.erb
 # create  app/views/rodauth/verify_account.html.erb
 # create  app/views/rodauth/reset_password_request.html.erb
 # create  app/views/rodauth/reset_password.html.erb
-# create  app/views/rodauth/_new_password_field.html.erb
 # create  app/views/rodauth/change_password.html.erb
 # create  app/views/rodauth/change_login.html.erb
 # create  app/views/rodauth/close_account.html.erb
@@ -233,18 +223,14 @@ We can now open the `create_account.erb` template and add a new `name` field:
 
 ```erb
 <!-- app/views/rodauth/create_account.erb -->
-<%= form_tag rodauth.create_account_path, method: :post do %>
+<%= form_with url: rodauth.create_account_path, method: :post do |form| %>
   <!-- new "name" field -->
   <div class="form-group">
-    <%= label_tag "name", "Name" %>
-    <%= render "field", name: "name", id: "name" %>
+    <%= form.label :name, "Name", class: "form-label" %>
+    <%= form.text_field :name, value: params[:name], required: true, class: "form-control #{"is-invalid" if rodauth.field_error("name")}", aria: ({ invalid: true, describedby: "login_error_message" } if rodauth.field_error("name")) %>
+    <%= content_tag(:span, rodauth.field_error("name"), class: "invalid-feedback", id: "login_error_message") if rodauth.field_error("name") %>
   </div>
-
-  <%= render "login_field" %>
-  <%= render "login_confirm_field" if rodauth.require_login_confirmation? %>
-  <%= render "password_field" if rodauth.create_account_set_password? %>
-  <%= render "password_confirm_field" if rodauth.create_account_set_password? && rodauth.require_password_confirmation? %>
-  <%= render "submit", value: "Create Account" %>
+  <!-- ... -->
 <% end %>
 ```
 
