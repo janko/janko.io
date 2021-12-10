@@ -2,10 +2,3 @@ _site
 .jekyll-cache
 node_modules
 css/bundle.css
-.yarn/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
-.pnp.*
