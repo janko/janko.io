@@ -3,4 +3,4 @@
 set -e
 
 JEKYLL_ENV=production bundle exec jekyll build
-yarn postcss css/application.css --output _site/css/bundle.css --env production
+npx postcss css/application.css --output _site/css/bundle.css --env production
