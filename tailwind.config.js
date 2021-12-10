@@ -4,20 +4,17 @@ const { spacing, fontWeight, borderRadius } = require('tailwindcss/defaultTheme'
 const noMargin = { marginTop: 0, marginBottom: 0 }
 
 module.exports = {
-  mode: 'jit',
-  purge: [
+  content: [
     'pages/**/*.html',
     '_layouts/**/*.html',
     '_includes/**/*.html',
   ],
-  darkMode: false,
   theme: {
     extend: {
       colors: {
         gray: {
           '450': '#94949e',
-        },
-        teal: colors.teal,
+        }
       },
       fontSize: {
         '5xl': ['3rem', 1.125],
