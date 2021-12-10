@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","@context":"https://schema.org"}</script>
+{"headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -259,6 +259,8 @@ nicer way and add a download link for convenience.</p>
 <span class="k">end</span>
 </code></pre></div></div>
 <div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/rodauth/add_recovery_codes.html.erb --&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">content_for</span> <span class="ss">:title</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">add_recovery_codes_page_title</span> <span class="cp">%&gt;</span>
+
 <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">recovery_codes</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
   <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"my-3"</span><span class="nt">&gt;</span>
     Copy these recovery codes to a safe location.
@@ -277,8 +279,8 @@ nicer way and add a download link for convenience.</p>
 
 <span class="c">&lt;!-- Used for filling in missing recovery codes later on --&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">can_add_recovery_codes?</span> <span class="cp">%&gt;</span>
-  <span class="nt">&lt;h2&gt;</span>Add Additional Recovery Codes<span class="nt">&lt;/h2&gt;</span>
-  <span class="cp">&lt;%=</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">render</span><span class="p">(</span><span class="s2">"recovery-codes"</span><span class="p">)</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span><span class="o">=</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">add_recovery_codes_heading</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="ss">template: </span><span class="s2">"rodauth/recovery_codes"</span><span class="p">,</span> <span class="ss">layout: </span><span class="kp">false</span> <span class="cp">%&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div></div>
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/routes.rb</span>
@@ -303,7 +305,7 @@ nicer way and add a download link for convenience.</p>
 because Turbo doesn’t support form submissions that return 200 OK responses.</p>
 
 <div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/rodauth/otp_setup.html.erb --&gt;</span>
-<span class="cp">&lt;%=</span> <span class="n">form_tag</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">otp_setup_path</span><span class="p">,</span> <span class="ss">method: :post</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">turbo: </span><span class="kp">false</span> <span class="p">}</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">form_with</span> <span class="ss">url: </span><span class="n">rodauth</span><span class="p">.</span><span class="nf">otp_setup_path</span><span class="p">,</span> <span class="ss">method: :post</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">turbo: </span><span class="kp">false</span> <span class="p">}</span> <span class="k">do</span> <span class="o">|</span><span class="n">form</span><span class="o">|</span> <span class="cp">%&gt;</span>
   <span class="c">&lt;!-- ... --&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div></div>

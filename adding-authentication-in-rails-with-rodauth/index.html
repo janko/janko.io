@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","headline":"Adding Authentication in Rails 6 with Rodauth","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","@context":"https://schema.org"}</script>
+{"headline":"Adding Authentication in Rails 6 with Rodauth","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -255,27 +255,17 @@ templates into our Rails application:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:views
 
-<span class="c"># create  app/views/rodauth/_field.html.erb</span>
-<span class="c"># create  app/views/rodauth/_field_error.html.erb</span>
-<span class="c"># create  app/views/rodauth/_login_field.html.erb</span>
-<span class="c"># create  app/views/rodauth/_login_display.html.erb</span>
-<span class="c"># create  app/views/rodauth/_password_field.html.erb</span>
-<span class="c"># create  app/views/rodauth/_submit.html.erb</span>
 <span class="c"># create  app/views/rodauth/_login_form.html.erb</span>
 <span class="c"># create  app/views/rodauth/_login_form_footer.html.erb</span>
 <span class="c"># create  app/views/rodauth/_login_form_header.html.erb</span>
 <span class="c"># create  app/views/rodauth/login.html.erb</span>
 <span class="c"># create  app/views/rodauth/multi_phase_login.html.erb</span>
 <span class="c"># create  app/views/rodauth/logout.html.erb</span>
-<span class="c"># create  app/views/rodauth/_login_confirm_field.html.erb</span>
-<span class="c"># create  app/views/rodauth/_password_confirm_field.html.erb</span>
 <span class="c"># create  app/views/rodauth/create_account.html.erb</span>
-<span class="c"># create  app/views/rodauth/_login_hidden_field.html.erb</span>
 <span class="c"># create  app/views/rodauth/verify_account_resend.html.erb</span>
 <span class="c"># create  app/views/rodauth/verify_account.html.erb</span>
 <span class="c"># create  app/views/rodauth/reset_password_request.html.erb</span>
 <span class="c"># create  app/views/rodauth/reset_password.html.erb</span>
-<span class="c"># create  app/views/rodauth/_new_password_field.html.erb</span>
 <span class="c"># create  app/views/rodauth/change_password.html.erb</span>
 <span class="c"># create  app/views/rodauth/change_login.html.erb</span>
 <span class="c"># create  app/views/rodauth/close_account.html.erb</span>
@@ -284,18 +274,14 @@ templates into our Rails application:</p>
 <p>We can now open the <code class="language-plaintext highlighter-rouge">create_account.erb</code> template and add a new <code class="language-plaintext highlighter-rouge">name</code> field:</p>
 
 <div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/rodauth/create_account.erb --&gt;</span>
-<span class="cp">&lt;%=</span> <span class="n">form_tag</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">create_account_path</span><span class="p">,</span> <span class="ss">method: :post</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">form_with</span> <span class="ss">url: </span><span class="n">rodauth</span><span class="p">.</span><span class="nf">create_account_path</span><span class="p">,</span> <span class="ss">method: :post</span> <span class="k">do</span> <span class="o">|</span><span class="n">form</span><span class="o">|</span> <span class="cp">%&gt;</span>
   <span class="c">&lt;!-- new "name" field --&gt;</span>
   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"form-group"</span><span class="nt">&gt;</span>
-    <span class="cp">&lt;%=</span> <span class="n">label_tag</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"Name"</span> <span class="cp">%&gt;</span>
-    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"field"</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"name"</span><span class="p">,</span> <span class="ss">id: </span><span class="s2">"name"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:name</span><span class="p">,</span> <span class="s2">"Name"</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"form-label"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">value: </span><span class="n">params</span><span class="p">[</span><span class="ss">:name</span><span class="p">],</span> <span class="ss">required: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"form-control </span><span class="si">#{</span><span class="s2">"is-invalid"</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">field_error</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">aria: </span><span class="p">({</span> <span class="ss">invalid: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">describedby: </span><span class="s2">"login_error_message"</span> <span class="p">}</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">field_error</span><span class="p">(</span><span class="s2">"name"</span><span class="p">))</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">content_tag</span><span class="p">(</span><span class="ss">:span</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">field_error</span><span class="p">(</span><span class="s2">"name"</span><span class="p">),</span> <span class="ss">class: </span><span class="s2">"invalid-feedback"</span><span class="p">,</span> <span class="ss">id: </span><span class="s2">"login_error_message"</span><span class="p">)</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">field_error</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span> <span class="cp">%&gt;</span>
   <span class="nt">&lt;/div&gt;</span>
-
-  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"login_field"</span> <span class="cp">%&gt;</span>
-  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"login_confirm_field"</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">require_login_confirmation?</span> <span class="cp">%&gt;</span>
-  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"password_field"</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">create_account_set_password?</span> <span class="cp">%&gt;</span>
-  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"password_confirm_field"</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">create_account_set_password?</span> <span class="o">&amp;&amp;</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">require_password_confirmation?</span> <span class="cp">%&gt;</span>
-  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"submit"</span><span class="p">,</span> <span class="ss">value: </span><span class="s2">"Create Account"</span> <span class="cp">%&gt;</span>
+  <span class="c">&lt;!-- ... --&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div></div>
 
