@@ -5,6 +5,10 @@
 @import 'highlight';
 @import 'footnotes';
 
+.markdown {
+  @apply prose md:prose-xl;
+}
+
 /* override tailwind and typography defaults */
 img.emoji {
   @apply inline my-0;
