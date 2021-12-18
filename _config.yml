@@ -39,9 +39,6 @@ defaults:
     values:
       layout: post
 
-kramdown:
-  footnote_backlink: ↩︎
-
 exclude:
   - Gemfile
   - Gemfile.lock
