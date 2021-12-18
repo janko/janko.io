@@ -13,7 +13,3 @@
 img.emoji {
   @apply inline my-0;
 }
-
-code.highlighter-rouge {
-  @apply break-words;
-}

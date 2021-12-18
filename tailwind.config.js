@@ -50,6 +50,7 @@ module.exports = {
               paddingLeft: spacing['1'],
               paddingRight: spacing['1'],
               borderRadius: borderRadius.md,
+              overflowWrap: 'break-word',
             },
             'code::before': {
               content: null,
