@@ -6,7 +6,7 @@
 @import 'footnotes';
 
 .markdown {
-  @apply prose md:prose-xl;
+  @apply prose md:prose-lg lg:prose-xl;
 }
 
 /* override tailwind and typography defaults */
