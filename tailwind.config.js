@@ -28,11 +28,6 @@ module.exports = {
         },
         DEFAULT: {
           css: {
-            h2: {
-              paddingBottom: spacing['2'],
-              borderBottomWidth: '1px',
-              borderColor: colors.gray['300'],
-            },
             pre: {
               marginLeft: `-${spacing['4']}`,
               marginRight: `-${spacing['4']}`,

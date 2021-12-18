@@ -6,7 +6,7 @@
 @import 'footnotes';
 
 .markdown {
-  @apply prose prose-pink md:prose-lg lg:prose-xl;
+  @apply prose prose-pink md:prose-lg lg:prose-xl prose-h2:pb-2 prose-h2:border-b-[1px] prose-h2:border-gray-300;
 }
 
 /* override tailwind and typography defaults */
