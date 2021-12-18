@@ -1,9 +1,9 @@
 ---
 title: "Better File Uploads with Shrine: Motivation"
 tags: shrine
-excerpt: "This is the 1st part of a series of blog posts about Shrine. In this
-  part I talk about the motivation behind creating Shrine, by going over the
-  limitations of existing file attachment libraries."
+excerpt: "<p>This is the 1st part of a series of blog posts about Shrine. In this
+part I talk about the motivation behind creating Shrine, by going over the
+limitations of existing file attachment libraries.</p>"
 comments: disqus
 ---
 

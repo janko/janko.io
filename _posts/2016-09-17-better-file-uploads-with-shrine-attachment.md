@@ -1,9 +1,9 @@
 ---
 title: "Better File Uploads with Shrine: Attachment"
 tags: shrine
-excerpt: "This is the 3rd part of a series of blog posts about Shrine. In this
-  part I talk about Shrine's high-level interface for attaching uploaded files
-  to model instances."
+excerpt: "<p>This is the 3rd part of a series of blog posts about Shrine. In this
+part I talk about Shrine's high-level interface for attaching uploaded files
+to model instances.</p>"
 comments: disqus
 ---
 

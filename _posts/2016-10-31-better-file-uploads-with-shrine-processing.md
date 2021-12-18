@@ -1,9 +1,9 @@
 ---
 title: "Better File Uploads with Shrine: Processing"
 tags: shrine
-excerpt: "This is the 4th part of a series of blog posts about Shrine. In this
-  part I talk about doing file processing with Shrine, both on upload and
-  on-the-fly."
+excerpt: "<p>This is the 4th part of a series of blog posts about Shrine. In this
+part I talk about doing file processing with Shrine, both on upload and
+on-the-fly.</p>"
 comments: disqus
 ---
 

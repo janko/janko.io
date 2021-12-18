@@ -1,8 +1,8 @@
 ---
 title: "Better File Uploads with Shrine: Metadata"
 tags: shrine
-excerpt: "This is the 5th part of a series of blog posts about Shrine. In this
-  part I talk about how Shrine extracts and stores file metadata."
+excerpt: "<p>This is the 5th part of a series of blog posts about Shrine. In this
+part I talk about how Shrine extracts and stores file metadata.</p>"
 comments: disqus
 ---
 
