@@ -28,9 +28,10 @@ module.exports = {
         },
         DEFAULT: {
           css: {
+            '--tw-prose-pre-code': colors.gray[700],
+            '--tw-prose-pre-bg': colors.gray[100],
             'pre code': {
               fontSize: spacing['3.5'],
-              color: colors.gray['700'],
             },
             code: {
               fontWeight: fontWeight['normal'],
