@@ -7,11 +7,9 @@
 
 /* override tailwind and typography defaults */
 img.emoji {
-  display: inline;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
+  @apply inline my-0;
 }
 
 code.highlighter-rouge {
-  overflow-wrap: break-word;
+  @apply break-words;
 }

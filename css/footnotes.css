@@ -3,17 +3,17 @@
 }
 
 .footnotes code {
-  @apply text-2xs py-0.5 px-1 !important;
+  @apply text-2xs py-0.5 px-1;
 }
 
 .footnotes p {
-  @apply my-2 !important;
+  @apply my-2;
 }
 
 .footnote {
-  @apply no-underline !important;
+  @apply no-underline;
 }
 
 .reversefootnote {
-  @apply no-underline inline-block !important;
+  @apply no-underline inline-block;
 }
