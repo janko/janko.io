@@ -43,12 +43,6 @@ module.exports = {
               borderRadius: borderRadius.md,
               overflowWrap: 'break-word',
             },
-            'code::before': {
-              content: null,
-            },
-            'code::after': {
-              content: null,
-            },
             ul: noMargin,
             'ul ul, ul ol, ol ul, ol ol': noMargin,
             li: noMargin,
