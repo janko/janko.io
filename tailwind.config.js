@@ -21,11 +21,13 @@ module.exports = {
         '2xs': '0.7rem',
       },
       typography: {
+        pink: {
+          css: {
+            '--tw-prose-links': colors.pink['700'],
+          }
+        },
         DEFAULT: {
           css: {
-            a: {
-              color: colors.pink['700'],
-            },
             h2: {
               paddingBottom: spacing['2'],
               borderBottomWidth: '1px',
@@ -57,9 +59,6 @@ module.exports = {
             },
             'code::after': {
               content: null,
-            },
-            'a code': {
-              color: colors.pink['700'],
             },
             ul: noMargin,
             'ul ul, ul ol, ol ul, ol ol': noMargin,
