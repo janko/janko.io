@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","headline":"Adding Multifactor Authentication in Rails 6 with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -66,7 +66,7 @@
     </div>
   </header>
 
-  <div class="mt-4 sm:mt-6 prose md:prose-xl">
+  <div class="mt-4 sm:mt-6 markdown">
     <p>Multi-factor authentication or MFA (generalized two-factor authentication or
 2FA) is a method of authentication where the user is required to provide two or
 more pieces of evidence (“factors”) in order to be granted access. Typically
@@ -131,8 +131,8 @@ migration generator provided by rodauth-rails:</p>
 
 <p>Now we can enable the <code class="language-plaintext highlighter-rouge">otp</code> feature in our Rodauth configuration:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
     <span class="n">enable</span> <span class="ss">:otp</span>
@@ -176,8 +176,8 @@ the OTP auth page, and generally require logged in users that have MFA setup to
 authenticate with 2nd factor. This can be achieved with the following
 configuration:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
     <span class="c1"># redirect the user to the MFA page if they have MFA setup</span>
@@ -189,7 +189,11 @@ configuration:</p>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
-
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_app.rb</span>
+<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+  <span class="c1"># ...</span>
   <span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
     <span class="c1"># ...</span>
     <span class="c1"># require MFA if the user is logged in and has MFA setup</span>
@@ -222,8 +226,8 @@ Rodauth’s <a href="http://rodauth.jeremyevans.net/rdoc/files/doc/recovery_code
 
 <p>And enabling the <code class="language-plaintext highlighter-rouge">recovery_codes</code> feature in our Rodauth configuration:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
     <span class="n">enable</span> <span class="ss">:otp</span><span class="p">,</span> <span class="ss">:recovery_codes</span>
@@ -243,8 +247,8 @@ user after they’ve successfully set up TOTP, instead of the default redirect.
 We’ll override the default Rodauth template to display the recovery codes in a
 nicer way and add a download link for convenience.</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
     <span class="c1"># auto generate recovery codes after TOTP setup</span>
@@ -338,8 +342,8 @@ codes for 2nd factor authentication. Rodauth provides a specialized
 
 <p>And enable the <code class="language-plaintext highlighter-rouge">sms_codes</code> feature in the Rodauth configuration:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
     <span class="n">enable</span> <span class="ss">:otp</span><span class="p">,</span> <span class="ss">:recovery_codes</span><span class="p">,</span> <span class="ss">:sms_codes</span>
@@ -362,8 +366,8 @@ configured phone number and a corresponding text message. This method isn’t
 defined by default, since Rodauth doesn’t know how we want to send the SMS,
 instead we’re expected to implement <code class="language-plaintext highlighter-rouge">sms_send</code>:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
     <span class="n">sms_send</span> <span class="k">do</span> <span class="o">|</span><span class="n">phone</span><span class="p">,</span> <span class="n">message</span><span class="o">|</span>
@@ -389,7 +393,7 @@ wrapper class for the Twilio client:</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add twilio-ruby dry-initializer
 </code></pre></div></div>
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/twilio_client.rb</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/twilio_client.rb</span>
 <span class="k">class</span> <span class="nc">TwilioClient</span>
   <span class="no">Error</span>              <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">StandardError</span><span class="p">)</span>
   <span class="no">InvalidPhoneNumber</span> <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">Error</span><span class="p">)</span>
@@ -417,8 +421,8 @@ wrapper class for the Twilio client:</p>
 <p>Finally, we’ll implement <code class="language-plaintext highlighter-rouge">sms_send</code> using our new <code class="language-plaintext highlighter-rouge">TwilioClient</code> class,
 converting SMS sending errors into validation errors:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
     <span class="n">sms_send</span> <span class="k">do</span> <span class="o">|</span><span class="n">phone</span><span class="p">,</span> <span class="n">message</span><span class="o">|</span>
@@ -480,13 +484,13 @@ other authentication features.</p>
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:1" role="doc-endnote">
-      <p>At the time of writing, most popular alternatives are <a href="https://github.com/tinfoil/devise-two-factor">devise-two-factor</a>, <a href="https://github.com/heapsource/active_model_otp">active_model_otp</a>, and <a href="https://github.com/Houdini/two_factor_authentication">two_factor_authentication</a>. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">↩︎</a></p>
+      <p>At the time of writing, most popular alternatives are <a href="https://github.com/tinfoil/devise-two-factor">devise-two-factor</a>, <a href="https://github.com/heapsource/active_model_otp">active_model_otp</a>, and <a href="https://github.com/Houdini/two_factor_authentication">two_factor_authentication</a>. <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:2" role="doc-endnote">
-      <p>See the source code for <a href="https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/otp.rb">OTP</a>, <a href="https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/sms_codes.rb">SMS Codes</a>, <a href="https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/recovery_codes.rb">Recovery Codes</a>, and <a href="https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/two_factor_base.rb">Two Factor Base</a> for more details. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">↩︎</a></p>
+      <p>See the source code for <a href="https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/otp.rb">OTP</a>, <a href="https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/sms_codes.rb">SMS Codes</a>, <a href="https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/recovery_codes.rb">Recovery Codes</a>, and <a href="https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/two_factor_base.rb">Two Factor Base</a> for more details. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:3" role="doc-endnote">
-      <p>You can override the default template by running <code class="language-plaintext highlighter-rouge">rails generate rodauth:views otp</code> and modifying <code class="language-plaintext highlighter-rouge">app/views/rodauth/otp_setup.html.erb</code>. <a href="#fnref:3" class="reversefootnote" role="doc-backlink">↩︎</a></p>
+      <p>You can override the default template by running <code class="language-plaintext highlighter-rouge">rails generate rodauth:views otp</code> and modifying <code class="language-plaintext highlighter-rouge">app/views/rodauth/otp_setup.html.erb</code>. <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>

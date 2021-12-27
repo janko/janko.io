@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2021-12-15T21:30:31+01:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko’s Blog</title><subtitle>Sharing the wonders of Ruby</subtitle><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Anything I Want With Sequel And Postgres</title><link href="https://janko.io/anything-i-want-with-sequel-and-postgres/" rel="alternate" type="text/html" title="Anything I Want With Sequel And Postgres" /><published>2021-03-29T00:00:00+02:00</published><updated>2021-03-29T00:00:00+02:00</updated><id>https://janko.io/anything-i-want-with-sequel-and-postgres</id><content type="html" xml:base="https://janko.io/anything-i-want-with-sequel-and-postgres/">&lt;p&gt;At work I was tasked to migrate our time-series analytics data from CSV file
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2021-12-27T22:19:16+01:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko’s Blog</title><subtitle>Sharing the wonders of Ruby</subtitle><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Anything I Want With Sequel And Postgres</title><link href="https://janko.io/anything-i-want-with-sequel-and-postgres/" rel="alternate" type="text/html" title="Anything I Want With Sequel And Postgres" /><published>2021-03-29T00:00:00+02:00</published><updated>2021-03-29T00:00:00+02:00</updated><id>https://janko.io/anything-i-want-with-sequel-and-postgres</id><content type="html" xml:base="https://janko.io/anything-i-want-with-sequel-and-postgres/">&lt;p&gt;At work I was tasked to migrate our time-series analytics data from CSV file
 dumps that we’ve been feeding into Power BI to a dedicated database. Our Rails
 app’s primary database is currently MariaDB, but we wanted to have our
 analytics data in a separate database either way, so this was a good
@@ -476,8 +476,8 @@ migration generator provided by rodauth-rails:&lt;/p&gt;
 
 &lt;p&gt;Now we can enable the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;otp&lt;/code&gt; feature in our Rodauth configuration:&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:otp&lt;/span&gt;
@@ -521,8 +521,8 @@ the OTP auth page, and generally require logged in users that have MFA setup to
 authenticate with 2nd factor. This can be achieved with the following
 configuration:&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# redirect the user to the MFA page if they have MFA setup&lt;/span&gt;
@@ -534,7 +534,11 @@ configuration:&lt;/p&gt;
       &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_app.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;route&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# require MFA if the user is logged in and has MFA setup&lt;/span&gt;
@@ -567,8 +571,8 @@ Rodauth’s &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/recov
 
 &lt;p&gt;And enabling the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;recovery_codes&lt;/code&gt; feature in our Rodauth configuration:&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:otp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:recovery_codes&lt;/span&gt;
@@ -588,8 +592,8 @@ user after they’ve successfully set up TOTP, instead of the default redirect.
 We’ll override the default Rodauth template to display the recovery codes in a
 nicer way and add a download link for convenience.&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# auto generate recovery codes after TOTP setup&lt;/span&gt;
@@ -683,8 +687,8 @@ codes for 2nd factor authentication. Rodauth provides a specialized
 
 &lt;p&gt;And enable the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sms_codes&lt;/code&gt; feature in the Rodauth configuration:&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:otp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:recovery_codes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:sms_codes&lt;/span&gt;
@@ -707,8 +711,8 @@ configured phone number and a corresponding text message. This method isn’t
 defined by default, since Rodauth doesn’t know how we want to send the SMS,
 instead we’re expected to implement &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sms_send&lt;/code&gt;:&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;sms_send&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;phone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
@@ -734,7 +738,7 @@ wrapper class for the Twilio client:&lt;/p&gt;
 
 &lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundle add twilio-ruby dry-initializer
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/twilio_client.rb&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/twilio_client.rb&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TwilioClient&lt;/span&gt;
   &lt;span class=&quot;no&quot;&gt;Error&lt;/span&gt;              &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;StandardError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
   &lt;span class=&quot;no&quot;&gt;InvalidPhoneNumber&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -762,8 +766,8 @@ wrapper class for the Twilio client:&lt;/p&gt;
 &lt;p&gt;Finally, we’ll implement &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sms_send&lt;/code&gt; using our new &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TwilioClient&lt;/code&gt; class,
 converting SMS sending errors into validation errors:&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;sms_send&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;phone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
@@ -825,13 +829,13 @@ other authentication features.&lt;/p&gt;
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
     &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;At the time of writing, most popular alternatives are &lt;a href=&quot;https://github.com/tinfoil/devise-two-factor&quot;&gt;devise-two-factor&lt;/a&gt;, &lt;a href=&quot;https://github.com/heapsource/active_model_otp&quot;&gt;active_model_otp&lt;/a&gt;, and &lt;a href=&quot;https://github.com/Houdini/two_factor_authentication&quot;&gt;two_factor_authentication&lt;/a&gt;. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;At the time of writing, most popular alternatives are &lt;a href=&quot;https://github.com/tinfoil/devise-two-factor&quot;&gt;devise-two-factor&lt;/a&gt;, &lt;a href=&quot;https://github.com/heapsource/active_model_otp&quot;&gt;active_model_otp&lt;/a&gt;, and &lt;a href=&quot;https://github.com/Houdini/two_factor_authentication&quot;&gt;two_factor_authentication&lt;/a&gt;. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;See the source code for &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/otp.rb&quot;&gt;OTP&lt;/a&gt;, &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/sms_codes.rb&quot;&gt;SMS Codes&lt;/a&gt;, &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/recovery_codes.rb&quot;&gt;Recovery Codes&lt;/a&gt;, and &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/two_factor_base.rb&quot;&gt;Two Factor Base&lt;/a&gt; for more details. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;See the source code for &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/otp.rb&quot;&gt;OTP&lt;/a&gt;, &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/sms_codes.rb&quot;&gt;SMS Codes&lt;/a&gt;, &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/recovery_codes.rb&quot;&gt;Recovery Codes&lt;/a&gt;, and &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/two_factor_base.rb&quot;&gt;Two Factor Base&lt;/a&gt; for more details. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
     &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
-      &lt;p&gt;You can override the default template by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails generate rodauth:views otp&lt;/code&gt; and modifying &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/views/rodauth/otp_setup.html.erb&lt;/code&gt;. &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;↩︎&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;You can override the default template by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails generate rodauth:views otp&lt;/code&gt; and modifying &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/views/rodauth/otp_setup.html.erb&lt;/code&gt;. &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
 &lt;/div&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="rodauth" /><summary type="html">Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.</summary></entry><entry><title type="html">Adding Authentication in Rails 6 with Rodauth</title><link href="https://janko.io/adding-authentication-in-rails-with-rodauth/" rel="alternate" type="text/html" title="Adding Authentication in Rails 6 with Rodauth" /><published>2020-11-19T00:00:00+01:00</published><updated>2020-11-19T00:00:00+01:00</updated><id>https://janko.io/adding-authentication-in-rails-with-rodauth</id><content type="html" xml:base="https://janko.io/adding-authentication-in-rails-with-rodauth/">&lt;p&gt;In this tutorial, we’ll show how to add fully functional authentication and
@@ -862,13 +866,14 @@ alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
 &lt;span class=&quot;c&quot;&gt;# create  db/migrate/20200820215819_create_rodauth.rb&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# create  config/initializers/rodauth.rb&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# create  config/initializers/sequel.rb&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# create  app/lib/rodauth_app.rb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# create  app/misc/rodauth_app.rb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# create  app/misc/rodauth_main.rb&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# create  app/controllers/rodauth_controller.rb&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# create  app/models/account.rb&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# create  app/mailers/rodauth_mailer.rb&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;This will create the Rodauth app with default authentication features,
+&lt;p&gt;This will create the Rodauth app and some default Rodauth configuration,
 configure &lt;a href=&quot;https://github.com/jeremyevans/sequel&quot;&gt;Sequel&lt;/a&gt; which Rodauth uses for database interaction to &lt;a href=&quot;https://github.com/janko/sequel-activerecord_connection&quot;&gt;reuse Active
 Record’s database connection&lt;/a&gt;, and generate a
 migration that will create tables for the loaded Rodauth features. Let’s run
@@ -960,7 +965,7 @@ us to do this inside the Rodauth app’s route block, which is called before eac
 Rails route. This way we can keep our authentication logic contained in a
 single place.&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_app.rb&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
   &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;route&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
@@ -1069,8 +1074,8 @@ templates into our Rails application:&lt;/p&gt;
 validate that it’s filled in and create the associated profile record after the
 account is created.&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/lib/rodauth_app.rb&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;App&lt;/span&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;before_create_account&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
@@ -1958,23 +1963,20 @@ authentication feature. Here is how we can configure the JWT feature:&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;We can now trigger Rodauth actions via a JSON requests, using the
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Authorization&lt;/code&gt; header for authentication. Here is an example flow using
-&lt;a href=&quot;https://github.com/httprb/http/&quot;&gt;http.rb&lt;/a&gt;:&lt;/p&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Authorization&lt;/code&gt; header for authentication. Here is an example HTTP request for
+account creation:&lt;/p&gt;
 
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# 1) create an account&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://myapp.com/create-account&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;login: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo@example.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;secret&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;token&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Authorization&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# 2) change the password&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;auth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://myapp.com/change-password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;secret&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;new-password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;new secret&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# 3) login with the new password&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://myapp.com/login&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;login: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo@example.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;new secret&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;token&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Authorization&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# 4) close the account&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;auth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://myapp.com/close-account&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;new secret&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# 5) try to login again&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://myapp.com/login&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;login: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo@example.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;password: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;new secret&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_s&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;401 Unauthorized&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/create-account&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;login&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo@example.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;secret&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;Authorization&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50X2lkIjo2NywidW52Z...&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;An email has recently been sent to you with a link to verify your account&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Other authentication frameworks haven’t yet standardized JSON API support:&lt;/p&gt;
 

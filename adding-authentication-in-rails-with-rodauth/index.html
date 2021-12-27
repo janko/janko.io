@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"headline":"Adding Authentication in Rails 6 with Rodauth","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","@context":"https://schema.org"}</script>
+{"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","headline":"Adding Authentication in Rails 6 with Rodauth","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -66,7 +66,7 @@
     </div>
   </header>
 
-  <div class="mt-4 sm:mt-6 prose md:prose-xl">
+  <div class="mt-4 sm:mt-6 markdown">
     <p>In this tutorial, we’ll show how to add fully functional authentication and
 account management functionality into a Rails 6 app, using the <strong><a href="https://github.com/jeremyevans/rodauth">Rodauth</a></strong>
 authentication framework. Rodauth has many advantages over the mainstream
@@ -95,13 +95,14 @@ alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
 <span class="c"># create  db/migrate/20200820215819_create_rodauth.rb</span>
 <span class="c"># create  config/initializers/rodauth.rb</span>
 <span class="c"># create  config/initializers/sequel.rb</span>
-<span class="c"># create  app/lib/rodauth_app.rb</span>
+<span class="c"># create  app/misc/rodauth_app.rb</span>
+<span class="c"># create  app/misc/rodauth_main.rb</span>
 <span class="c"># create  app/controllers/rodauth_controller.rb</span>
 <span class="c"># create  app/models/account.rb</span>
 <span class="c"># create  app/mailers/rodauth_mailer.rb</span>
 </code></pre></div></div>
 
-<p>This will create the Rodauth app with default authentication features,
+<p>This will create the Rodauth app and some default Rodauth configuration,
 configure <a href="https://github.com/jeremyevans/sequel">Sequel</a> which Rodauth uses for database interaction to <a href="https://github.com/janko/sequel-activerecord_connection">reuse Active
 Record’s database connection</a>, and generate a
 migration that will create tables for the loaded Rodauth features. Let’s run
@@ -193,7 +194,7 @@ us to do this inside the Rodauth app’s route block, which is called before eac
 Rails route. This way we can keep our authentication logic contained in a
 single place.</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_app.rb</span>
 <span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
   <span class="c1"># ...</span>
   <span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
@@ -302,8 +303,8 @@ templates into our Rails application:</p>
 validate that it’s filled in and create the associated profile record after the
 account is created.</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/lib/rodauth_app.rb</span>
-<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
     <span class="n">before_create_account</span> <span class="k">do</span>
