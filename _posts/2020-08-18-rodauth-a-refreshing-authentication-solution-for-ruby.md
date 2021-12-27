@@ -232,23 +232,21 @@ end
 ```
 
 We can now trigger Rodauth actions via a JSON requests, using the
-`Authorization` header for authentication. Here is an example flow using
-[http.rb]:
+`Authorization` header for authentication. Here is an example HTTP request for
+account creation:
 
-```rb
-# 1) create an account
-response = HTTP.post("https://myapp.com/create-account", json: { login: "foo@example.com", password: "secret" })
-token = response.headers["Authorization"]
-# 2) change the password
-response = HTTP.auth(token).post("https://myapp.com/change-password", json: { password: "secret", "new-password": "new secret" })
-# 3) login with the new password
-response = HTTP.post("https://myapp.com/login", json: { login: "foo@example.com", password: "new secret" })
-token = response.headers["Authorization"]
-# 4) close the account
-http.auth(token).post("https://myapp.com/close-account", json: { password: "new secret" })
-# 5) try to login again
-response = HTTP.post("https://myapp.com/login", json: { login: "foo@example.com", password: "new secret" })
-response.status.to_s # => "401 Unauthorized"
+```http
+POST /create-account HTTP/1.1
+Content-Type: application/json
+
+{ "login": "foo@example.com", "password": "secret" }
+```
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50X2lkIjo2NywidW52Z...
+
+{ "success": "An email has recently been sent to you with a link to verify your account" }
 ```
 
 Other authentication frameworks haven't yet standardized JSON API support:
@@ -533,7 +531,6 @@ project :wink:
 [sorcery #167]: https://github.com/Sorcery/sorcery/pull/167
 [sorcery #70]: https://github.com/Sorcery/sorcery/pull/70
 [clearance json]: https://github.com/thoughtbot/clearance/issues/896#issuecomment-667257763
-[http.rb]: https://github.com/httprb/http/
 [database tables]: http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Creating+tables
 [jeremy rubyhack2018]: http://confreaks.tv/videos/rubyhack2018-ruby-web-application-security-defense-in-depth
 [rodauth clearance tokens]: https://github.com/jeremyevans/rodauth/commit/18f26487c798cc5055cd5caf8bcafee1af719e3a
