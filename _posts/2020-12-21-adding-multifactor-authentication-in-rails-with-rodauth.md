@@ -63,8 +63,8 @@ $ rails db:migrate
 Now we can enable the `otp` feature in our Rodauth configuration:
 
 ```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
     enable :otp
@@ -108,8 +108,8 @@ authenticate with 2nd factor. This can be achieved with the following
 configuration:
 
 ```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
     # redirect the user to the MFA page if they have MFA setup
@@ -121,7 +121,12 @@ class RodauthApp < Rodauth::Rails::App
       end
     end
   end
-
+end
+```
+```rb
+# app/misc/rodauth_app.rb
+class RodauthApp < Rodauth::Rails::App
+  # ...
   route do |r|
     # ...
     # require MFA if the user is logged in and has MFA setup
@@ -156,8 +161,8 @@ $ rails db:migrate
 And enabling the `recovery_codes` feature in our Rodauth configuration:
 
 ```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
     enable :otp, :recovery_codes
@@ -176,8 +181,8 @@ We'll override the default Rodauth template to display the recovery codes in a
 nicer way and add a download link for convenience.
 
 ```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
     # auto generate recovery codes after TOTP setup
@@ -277,8 +282,8 @@ $ rails db:migrate
 And enable the `sms_codes` feature in the Rodauth configuration:
 
 ```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
     enable :otp, :recovery_codes, :sms_codes
@@ -300,8 +305,8 @@ defined by default, since Rodauth doesn't know how we want to send the SMS,
 instead we're expected to implement `sms_send`:
 
 ```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
     sms_send do |phone, message|
@@ -331,7 +336,7 @@ wrapper class for the Twilio client:
 $ bundle add twilio-ruby dry-initializer
 ```
 ```rb
-# app/lib/twilio_client.rb
+# app/misc/twilio_client.rb
 class TwilioClient
   Error              = Class.new(StandardError)
   InvalidPhoneNumber = Class.new(Error)
@@ -360,8 +365,8 @@ Finally, we'll implement `sms_send` using our new `TwilioClient` class,
 converting SMS sending errors into validation errors:
 
 ```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
     sms_send do |phone, message|

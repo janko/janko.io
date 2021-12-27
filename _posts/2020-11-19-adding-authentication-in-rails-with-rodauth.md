@@ -35,13 +35,14 @@ $ rails generate rodauth:install
 # create  db/migrate/20200820215819_create_rodauth.rb
 # create  config/initializers/rodauth.rb
 # create  config/initializers/sequel.rb
-# create  app/lib/rodauth_app.rb
+# create  app/misc/rodauth_app.rb
+# create  app/misc/rodauth_main.rb
 # create  app/controllers/rodauth_controller.rb
 # create  app/models/account.rb
 # create  app/mailers/rodauth_mailer.rb
 ```
 
-This will create the Rodauth app with default authentication features,
+This will create the Rodauth app and some default Rodauth configuration,
 configure [Sequel] which Rodauth uses for database interaction to [reuse Active
 Record's database connection][sequel-activerecord_connection], and generate a
 migration that will create tables for the loaded Rodauth features. Let's run
@@ -137,7 +138,7 @@ Rails route. This way we can keep our authentication logic contained in a
 single place.
 
 ```rb
-# app/lib/rodauth_app.rb
+# app/misc/rodauth_app.rb
 class RodauthApp < Rodauth::Rails::App
   # ...
   route do |r|
@@ -254,8 +255,8 @@ validate that it's filled in and create the associated profile record after the
 account is created.
 
 ```rb
-# app/lib/rodauth_app.rb
-class RodauthApp < Rodauth::Rails::App
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
     before_create_account do
