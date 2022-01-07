@@ -1,5 +1,5 @@
 ---
-title: "Adding Authentication in Rails 6 with Rodauth"
+title: "Adding Authentication in Rails 7 with Rodauth"
 tags: rodauth
 comments: disqus
 ---
@@ -10,13 +10,62 @@ authentication framework. Rodauth has many advantages over the mainstream
 alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
 [previous article][rodauth intro] for an introduction.
 
-We'll be working with a fresh Rails app that has basic posts CRUD and
-[Bootstrap] installed:
+We'll be working with a fresh Rails 7 app with PostgresSQL database,
+Hotwire, [Bootstrap], home page, navbar, flash messages, and posts scaffold
+setup.
 
 ```sh
-$ git clone https://gitlab.com/janko-m/rails_bootstrap_starter.git rodauth_blog
-$ cd rodauth_blog
-$ bin/setup
+$ rails new blog --database=postgresql --css=bootstrap
+$ cd blog
+$ rails db:create
+$ rails generate controller home index
+$ rails generate scaffold post title:string body:text
+$ rails db:migrate
+```
+```rb
+# config/routes.rb
+Rails.application.routes.draw do
+  root to: "home#index"
+  resources :posts
+end
+```
+```erb
+<!-- app/views/layouts/application.html.erb -->
+<!-- ... -->
+  <body>
+    <%= render "navbar" %>
+
+    <div class="container">
+      <%= render "flash" %>
+      <%= yield %>
+    </div>
+  </body>
+<!-- ... -->
+```
+```erb
+<!-- app/views/application/_flash.html.erb -->
+<% if notice %>
+  <div class="alert alert-success"><%= notice %></div>
+<% end %>
+<% if alert %>
+  <div class="alert alert-danger"><%= alert %></div>
+<% end %>
+```
+```erb
+<!-- app/views/application/_navbar.html.erb -->
+<nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom mb-4">
+  <div class="container">
+    <%= link_to "Rails App", root_path, class: "navbar-brand" %>
+
+    <div class="navbar-collapse">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <%= link_to "Posts", posts_path, class: "nav-link #{"active" if request.path.start_with?("/posts")" %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 ```
 
 ## Installing Rodauth
@@ -61,7 +110,18 @@ $ rails db:migrate
 # == CreateRodauth: migrated ===========================
 ```
 
-If everything was installed successfully, we should be able to open the
+We'll also need to set Action Mailer's default URL options for Rodauth to be
+able to generate email links in `RodauthMailer`:
+
+```rb
+# config/environments/development.rb
+Rails.application.configure do
+  # ...
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+end
+```
+
+After restarting the Rails server, we should be able to open the
 `/create-account` page and see Rodauth's default registration form.
 
 ![Rodauth create account page](/images/rodauth-create-account.png)
@@ -88,21 +148,22 @@ $ rails rodauth:routes
 # /close-account           rodauth.close_account_path
 ```
 
-Let's use this information to add some main authentication links to our
-navigation header:
+Let's use this information to add some main authentication links to our navbar:
 
 ```erb
 <!-- app/views/application/_navbar.html.erb -->
 <!-- ... --->
 <% if rodauth.logged_in? %>
   <div class="dropdown">
-    <%= link_to current_account.email, "#", class: "btn btn-info dropdown-toggle", data: { toggle: "dropdown" } %>
-    <div class="dropdown-menu dropdown-menu-right">
+    <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" type="button">
+      <%= current_account.email %>
+    </button>
+    <div class="dropdown-menu dropdown-menu-end">
       <%= link_to "Change password", rodauth.change_password_path, class: "dropdown-item" %>
       <%= link_to "Change email", rodauth.change_login_path, class: "dropdown-item" %>
       <div class="dropdown-divider"></div>
       <%= link_to "Close account", rodauth.close_account_path, class: "dropdown-item text-danger" %>
-      <%= link_to "Sign out", rodauth.logout_path, method: :post, class: "dropdown-item" %>
+      <%= link_to "Sign out", rodauth.logout_path, data: { turbo_method: :post }, class: "dropdown-item" %>
     </div>
   </div>
 <% else %>
@@ -164,8 +225,8 @@ $ rails db:migrate
 ```rb
 # app/models/account.rb
 class Account < ApplicationRecord
-  has_many :posts
   # ...
+  has_many :posts
 end
 ```
 
@@ -224,9 +285,9 @@ We can now open the `create_account.erb` template and add a new `name` field:
 
 ```erb
 <!-- app/views/rodauth/create_account.erb -->
-<%= form_with url: rodauth.create_account_path, method: :post do |form| %>
+<%= form_with url: rodauth.create_account_path, method: :post, data: { turbo: false } do |form| %>
   <!-- new "name" field -->
-  <div class="form-group">
+  <div class="mb-3">
     <%= form.label :name, "Name", class: "form-label" %>
     <%= form.text_field :name, value: params[:name], required: true, class: "form-control #{"is-invalid" if rodauth.field_error("name")}", aria: ({ invalid: true, describedby: "login_error_message" } if rodauth.field_error("name")) %>
     <%= content_tag(:span, rodauth.field_error("name"), class: "invalid-feedback", id: "login_error_message") if rodauth.field_error("name") %>
@@ -245,8 +306,8 @@ $ rails db:migrate
 ```rb
 # app/models/account.rb
 class Account < ApplicationRecord
-  has_one :profile
   # ...
+  has_one :profile
 end
 ```
 
@@ -276,12 +337,14 @@ class RodauthMain < Rodauth::Rails::Auth
 end
 ```
 
-Now we can update our navigation header to use the user's name instead of their
-email address:
+Now we can update our navbar to use the user's name instead of their email
+address:
 
 ```diff
--     <%= link_to current_account.email, "#", class: "btn btn-info dropdown-toggle", data: { toggle: "dropdown" } %>
-+     <%= link_to current_account.profile.name, "#", class: "btn btn-info dropdown-toggle", data: { toggle: "dropdown" } %>
+  <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" type="button">
+-   <%= current_account.email %>
++   <%= current_account.profile.name %>
+  </button>
 ```
 
 ![Displayed new account name](/images/rodauth-account-name.png)

@@ -1,5 +1,5 @@
 ---
-title: Adding Multifactor Authentication in Rails 6 with Rodauth
+title: Adding Multifactor Authentication in Rails 7 with Rodauth
 tags: rodauth
 ---
 
@@ -100,12 +100,18 @@ the OTP setup page that Rodauth provides out-of-the-box[^3]:
 
 The user can now scan the QR code using an authenticator app such as Google
 Authenticator, Microsoft Authenticator or Authy, and enter the OTP code (along
-with their current password) to finish setting up OTP.
+with their current password) to finish setting up OTP. As a developer, you can
+generate the code in ruby using the OTP secret shown on the setup page:
 
-When the user logs in the next time, we want to redirect them automatically to
-the OTP auth page, and generally require logged in users that have MFA setup to
-authenticate with 2nd factor. This can be achieved with the following
-configuration:
+```sh
+$ ruby -r rotp -e 'puts ROTP::TOTP.new("<secret>").now'
+409761
+```
+
+When the user with OTP set up logs in the next time, we want to redirect them
+automatically to the OTP auth page, and generally require logged in users that
+have MFA setup to authenticate with 2nd factor. This can be achieved with the
+following configuration:
 
 ```rb
 # app/misc/rodauth_main.rb
@@ -177,8 +183,6 @@ This adds the following routes to our app:
 
 We'll now override the `after_otp_setup` hook to display recovery codes to the
 user after they've successfully set up TOTP, instead of the default redirect.
-We'll override the default Rodauth template to display the recovery codes in a
-nicer way and add a download link for convenience.
 
 ```rb
 # app/misc/rodauth_main.rb
@@ -195,6 +199,13 @@ class RodauthMain < Rodauth::Rails::Auth
     end
   end
 end
+```
+
+We'll also override the default Rodauth template to display the recovery codes
+in a nicer way and add a download link for convenience.
+
+```sh
+$ rails generate rodauth:views recovery_codes
 ```
 ```erb
 <!-- app/views/rodauth/add_recovery_codes.html.erb -->
@@ -235,21 +246,13 @@ end
 # app/controllers/rodauth_controller.rb
 class RodauthController < ApplicationController
   def download_recovery_codes
+    rodauth.require_authentication
+
     send_data rodauth.recovery_codes.join("\n"),
       filename: "myapp-recovery-codes.txt",
       type: "text/plain"
   end
 end
-```
-
-If you're using [Turbo], you'll need to disable it in the OTP setup form,
-because Turbo doesn't support form submissions that return 200 OK responses.
-
-```erb
-<!-- app/views/rodauth/otp_setup.html.erb -->
-<%= form_with url: rodauth.otp_setup_path, method: :post, data: { turbo: false } do |form| %>
-  <!-- ... -->
-<% end %>
 ```
 
 When the user now sets up TOTP, they will be shown a page like this:
