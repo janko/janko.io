@@ -41,7 +41,6 @@ module.exports = {
               paddingLeft: spacing['1'],
               paddingRight: spacing['1'],
               borderRadius: borderRadius.md,
-              overflowWrap: 'break-word',
             },
             ul: noMargin,
             'ul ul, ul ol, ol ul, ol ol': noMargin,
