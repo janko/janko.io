@@ -1087,7 +1087,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-left: 0.25rem;
   padding-right: 0.25rem;
   border-radius: 0.375rem;
-  overflow-wrap: break-word;
 }
 .markdown :where(code):not(:where([class~="not-prose"] *))::before {
   content: "`";
@@ -1765,6 +1764,9 @@ img.emoji {
   margin-top: 0px;
   margin-bottom: 0px;
   display: inline;
+}
+code.highlighter-rouge {
+  overflow-wrap: break-word;
 }
 .hover\:bg-pink-700:hover {
   --tw-bg-opacity: 1;
