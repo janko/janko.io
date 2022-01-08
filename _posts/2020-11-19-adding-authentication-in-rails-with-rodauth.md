@@ -60,7 +60,7 @@ end
     <div class="navbar-collapse">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <%= link_to "Posts", posts_path, class: "nav-link #{"active" if request.path.start_with?("/posts")" %>
+          <%= link_to "Posts", posts_path, class: "nav-link #{"active" if request.path.start_with?("/posts")}" %>
         </li>
       </ul>
     </div>
