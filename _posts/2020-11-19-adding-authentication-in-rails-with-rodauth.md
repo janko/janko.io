@@ -1,18 +1,17 @@
 ---
-title: "Adding Authentication in Rails 7 with Rodauth"
+title: "Adding Authentication in Rails with Rodauth"
 tags: rodauth
 comments: disqus
 ---
 
 In this tutorial, we'll show how to add fully functional authentication and
-account management functionality into a Rails 6 app, using the **[Rodauth]**
+account management functionality into a Rails app, using the **[Rodauth]**
 authentication framework. Rodauth has many advantages over the mainstream
 alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
 [previous article][rodauth intro] for an introduction.
 
-We'll be working with a fresh Rails 7 app with PostgresSQL database,
-Hotwire, [Bootstrap], home page, navbar, flash messages, and posts scaffold
-setup.
+We'll be working with a fresh Rails app using PostgresSQL, Hotwire,
+[Bootstrap], home page, navbar, flash messages, and posts scaffold setup.
 
 ```sh
 $ rails new blog --database=postgresql --css=bootstrap

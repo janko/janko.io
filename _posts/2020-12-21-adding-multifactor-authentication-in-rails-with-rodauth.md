@@ -1,5 +1,5 @@
 ---
-title: Adding Multifactor Authentication in Rails 7 with Rodauth
+title: Adding Multifactor Authentication in Rails with Rodauth
 tags: rodauth
 ---
 
