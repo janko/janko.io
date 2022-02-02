@@ -2,27 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Adding Authentication in Rails 7 with Rodauth | Janko's Blog</title>
+    <title>Adding Authentication in Rails with Rodauth | Janko's Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Begin Jekyll SEO tag v2.7.1 -->
 <meta name="generator" content="Jekyll v4.2.0" />
-<meta property="og:title" content="Adding Authentication in Rails 7 with Rodauth" />
+<meta property="og:title" content="Adding Authentication in Rails with Rodauth" />
 <meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction." />
-<meta property="og:description" content="In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction." />
+<meta name="description" content="In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction." />
+<meta property="og:description" content="In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction." />
 <link rel="canonical" href="https://janko.io/adding-authentication-in-rails-with-rodauth/" />
 <meta property="og:url" content="https://janko.io/adding-authentication-in-rails-with-rodauth/" />
 <meta property="og:site_name" content="Janko’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-11-19T00:00:00+01:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Adding Authentication in Rails 7 with Rodauth" />
+<meta property="twitter:title" content="Adding Authentication in Rails with Rodauth" />
 <meta name="twitter:site" content="@jankomarohnic" />
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"headline":"Adding Authentication in Rails 7 with Rodauth","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails 6 app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","description":"In this tutorial, we’ll show how to add fully functional authentication and account management functionality into a Rails app, using the Rodauth authentication framework. Rodauth has many advantages over the mainstream alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my previous article for an introduction.","headline":"Adding Authentication in Rails with Rodauth","dateModified":"2020-11-19T00:00:00+01:00","datePublished":"2020-11-19T00:00:00+01:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/adding-authentication-in-rails-with-rodauth/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -46,7 +46,7 @@
       <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
         <article>
   <header class="space-y-4 md:space-y-5">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Adding Authentication in Rails 7 with Rodauth</h1>
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Adding Authentication in Rails with Rodauth</h1>
 
     <div class="flex justify-center">
       <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
@@ -68,14 +68,13 @@
 
   <div class="mt-4 sm:mt-6 markdown">
     <p>In this tutorial, we’ll show how to add fully functional authentication and
-account management functionality into a Rails 6 app, using the <strong><a href="https://github.com/jeremyevans/rodauth">Rodauth</a></strong>
+account management functionality into a Rails app, using the <strong><a href="https://github.com/jeremyevans/rodauth">Rodauth</a></strong>
 authentication framework. Rodauth has many advantages over the mainstream
 alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
 <a href="https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/">previous article</a> for an introduction.</p>
 
-<p>We’ll be working with a fresh Rails 7 app with PostgresSQL database,
-Hotwire, <a href="https://getbootstrap.com/">Bootstrap</a>, home page, navbar, flash messages, and posts scaffold
-setup.</p>
+<p>We’ll be working with a fresh Rails app using PostgresSQL, Hotwire,
+<a href="https://getbootstrap.com/">Bootstrap</a>, home page, navbar, flash messages, and posts scaffold setup.</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new blog <span class="nt">--database</span><span class="o">=</span>postgresql <span class="nt">--css</span><span class="o">=</span>bootstrap
 <span class="nv">$ </span><span class="nb">cd </span>blog
