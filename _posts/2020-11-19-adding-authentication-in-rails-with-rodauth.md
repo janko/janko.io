@@ -1,5 +1,5 @@
 ---
-title: "Adding Authentication in Rails with Rodauth"
+title: "Rails Authentication with Rodauth"
 tags: rodauth
 comments: disqus
 ---

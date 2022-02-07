@@ -1,5 +1,5 @@
 ---
-title: Adding Multifactor Authentication in Rails with Rodauth
+title: Multifactor Authentication in Rails with Rodauth
 tags: rodauth
 ---
 
@@ -104,7 +104,7 @@ with their current password) to finish setting up OTP. As a developer, you can
 generate the code from the OTP secret using the ROTP gem:
 
 ```sh
-$ rotp --secret omo2p3movepqyc222rp54v3cic7ky2au'
+$ rotp --secret omo2p3movepqyc222rp54v3cic7ky2au
 409761
 ```
 
