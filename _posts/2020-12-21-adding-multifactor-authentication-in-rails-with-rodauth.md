@@ -101,10 +101,10 @@ the OTP setup page that Rodauth provides out-of-the-box[^3]:
 The user can now scan the QR code using an authenticator app such as Google
 Authenticator, Microsoft Authenticator or Authy, and enter the OTP code (along
 with their current password) to finish setting up OTP. As a developer, you can
-generate the code in ruby using the OTP secret shown on the setup page:
+generate the code from the OTP secret using the ROTP gem:
 
 ```sh
-$ ruby -r rotp -e 'puts ROTP::TOTP.new("<secret>").now'
+$ rotp --secret omo2p3movepqyc222rp54v3cic7ky2au'
 409761
 ```
 
