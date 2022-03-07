@@ -202,7 +202,11 @@ end
 ```
 
 We'll also override the default Rodauth template to display the recovery codes
-in a nicer way and add a download link for convenience.
+in a nicer way. For convenience, we'll add a download link for the recovery
+codes as well, implemented on the client-side using Stimulus, as a new endpoint
+for downloading recovery codes would have to be password-protected to maintain
+security.
+
 
 ```sh
 $ rails generate rodauth:views recovery_codes
@@ -214,7 +218,12 @@ $ rails generate rodauth:views recovery_codes
 <% if rodauth.recovery_codes.any? %>
   <p class="my-3">
     Copy these recovery codes to a safe location.
-    You can also download them <%= link_to "here", download_recovery_codes_path %>.
+    You can also download them <%= link_to "here", "#", data: {
+      controller: "download",
+      action: "download#perform",
+      download_content_value: rodauth.recovery_codes.join("\n"),
+      download_filename_value: "myapp-recovery-codes.txt",
+    } %>.
   </p>
 
   <div class="d-inline-block mb-3 border border-info rounded px-3 py-2">
@@ -234,25 +243,31 @@ $ rails generate rodauth:views recovery_codes
 <% end %>
 ```
 ```rb
-# config/routes.rb
-Rails.application.routes.draw do
-  # ...
-  controller :rodauth do
-    get "download-recovery-codes"
-  end
-end
-```
-```rb
-# app/controllers/rodauth_controller.rb
-class RodauthController < ApplicationController
-  def download_recovery_codes
-    rodauth.require_authentication
+// app/javascript/controllers/download_controller.js
+import { Controller } from '@hotwired/stimulus'
 
-    send_data rodauth.recovery_codes.join("\n"),
-      filename: "myapp-recovery-codes.txt",
-      type: "text/plain"
-  end
-end
+export default class extends Controller {
+  static values = { content: String, filename: String }
+
+  perform(event) {
+    event.preventDefault()
+
+    const content = new Blob([this.contentValue])
+    const contentURL = URL.createObjectURL(content)
+
+    this.download(contentURL)
+  }
+
+  download(url) {
+    const downloadLink = document.createElement('a')
+    downloadLink.href = url
+    downloadLink.setAttribute('download', this.filenameValue)
+
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
+    document.body.removeChild(downloadLink)
+  }
+}
 ```
 
 When the user now sets up TOTP, they will be shown a page like this:
