@@ -242,7 +242,7 @@ $ rails generate rodauth:views recovery_codes
   <%= render template: "rodauth/recovery_codes", layout: false %>
 <% end %>
 ```
-```rb
+```js
 // app/javascript/controllers/download_controller.js
 import { Controller } from '@hotwired/stimulus'
 
