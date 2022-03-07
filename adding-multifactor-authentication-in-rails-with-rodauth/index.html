@@ -304,29 +304,29 @@ security.</p>
   <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="ss">template: </span><span class="s2">"rodauth/recovery_codes"</span><span class="p">,</span> <span class="ss">layout: </span><span class="kp">false</span> <span class="cp">%&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div></div>
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sr">//</span> <span class="n">app</span><span class="o">/</span><span class="n">javascript</span><span class="o">/</span><span class="n">controllers</span><span class="o">/</span><span class="n">download_controller</span><span class="p">.</span><span class="nf">js</span>
-<span class="n">import</span> <span class="p">{</span> <span class="no">Controller</span> <span class="p">}</span> <span class="n">from</span> <span class="s1">'@hotwired/stimulus'</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// app/javascript/controllers/download_controller.js</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">Controller</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@hotwired/stimulus</span><span class="dl">'</span>
 
-<span class="n">export</span> <span class="n">default</span> <span class="k">class</span> <span class="n">extends</span> <span class="no">Controller</span> <span class="p">{</span>
-  <span class="n">static</span> <span class="n">values</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">content: </span><span class="no">String</span><span class="p">,</span> <span class="ss">filename: </span><span class="no">String</span> <span class="p">}</span>
+<span class="k">export</span> <span class="k">default</span> <span class="kd">class</span> <span class="kd">extends</span> <span class="nx">Controller</span> <span class="p">{</span>
+  <span class="kd">static</span> <span class="nx">values</span> <span class="o">=</span> <span class="p">{</span> <span class="na">content</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span>
 
-  <span class="n">perform</span><span class="p">(</span><span class="n">event</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">event</span><span class="p">.</span><span class="nf">preventDefault</span><span class="p">()</span>
+  <span class="nx">perform</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span>
 
-    <span class="n">const</span> <span class="n">content</span> <span class="o">=</span> <span class="n">new</span> <span class="no">Blob</span><span class="p">([</span><span class="n">this</span><span class="p">.</span><span class="nf">contentValue</span><span class="p">])</span>
-    <span class="n">const</span> <span class="n">contentURL</span> <span class="o">=</span> <span class="no">URL</span><span class="p">.</span><span class="nf">createObjectURL</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="kd">const</span> <span class="nx">content</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Blob</span><span class="p">([</span><span class="k">this</span><span class="p">.</span><span class="nx">contentValue</span><span class="p">])</span>
+    <span class="kd">const</span> <span class="nx">contentURL</span> <span class="o">=</span> <span class="nx">URL</span><span class="p">.</span><span class="nx">createObjectURL</span><span class="p">(</span><span class="nx">content</span><span class="p">)</span>
 
-    <span class="n">this</span><span class="p">.</span><span class="nf">download</span><span class="p">(</span><span class="n">contentURL</span><span class="p">)</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">download</span><span class="p">(</span><span class="nx">contentURL</span><span class="p">)</span>
   <span class="p">}</span>
 
-  <span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">const</span> <span class="n">downloadLink</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="nf">createElement</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span>
-    <span class="n">downloadLink</span><span class="p">.</span><span class="nf">href</span> <span class="o">=</span> <span class="n">url</span>
-    <span class="n">downloadLink</span><span class="p">.</span><span class="nf">setAttribute</span><span class="p">(</span><span class="s1">'download'</span><span class="p">,</span> <span class="n">this</span><span class="p">.</span><span class="nf">filenameValue</span><span class="p">)</span>
+  <span class="nx">download</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">downloadLink</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">'</span><span class="s1">a</span><span class="dl">'</span><span class="p">)</span>
+    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">url</span>
+    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="dl">'</span><span class="s1">download</span><span class="dl">'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">filenameValue</span><span class="p">)</span>
 
-    <span class="n">document</span><span class="p">.</span><span class="nf">body</span><span class="p">.</span><span class="nf">appendChild</span><span class="p">(</span><span class="n">downloadLink</span><span class="p">)</span>
-    <span class="n">downloadLink</span><span class="p">.</span><span class="nf">click</span><span class="p">()</span>
-    <span class="n">document</span><span class="p">.</span><span class="nf">body</span><span class="p">.</span><span class="nf">removeChild</span><span class="p">(</span><span class="n">downloadLink</span><span class="p">)</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">downloadLink</span><span class="p">)</span>
+    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">click</span><span class="p">()</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">downloadLink</span><span class="p">)</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
