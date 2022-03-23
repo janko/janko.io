@@ -181,21 +181,6 @@ automatically to the OTP auth page, and generally require logged in users that
 have MFA setup to authenticate with 2nd factor. This can be achieved with the
 following configuration:</p>
 
-<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
-<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
-  <span class="n">configure</span> <span class="k">do</span>
-    <span class="c1"># ...</span>
-    <span class="c1"># redirect the user to the MFA page if they have MFA setup</span>
-    <span class="n">login_redirect</span> <span class="k">do</span>
-      <span class="k">if</span> <span class="n">uses_two_factor_authentication?</span>
-        <span class="n">two_factor_auth_required_redirect</span>
-      <span class="k">else</span>
-        <span class="s2">"/"</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_app.rb</span>
 <span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
   <span class="c1"># ...</span>
@@ -205,6 +190,17 @@ following configuration:</p>
     <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">logged_in?</span> <span class="o">&amp;&amp;</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">uses_two_factor_authentication?</span>
       <span class="n">rodauth</span><span class="p">.</span><span class="nf">require_two_factor_authenticated</span>
     <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># don't show error message when coming from the login URL</span>
+    <span class="n">two_factor_need_authentication_error_flash</span> <span class="p">{</span> <span class="n">request</span><span class="p">.</span><span class="nf">referer</span> <span class="o">==</span> <span class="n">login_url</span> <span class="p">?</span> <span class="kp">nil</span> <span class="p">:</span> <span class="k">super</span><span class="p">()</span> <span class="p">}</span>
+    <span class="c1"># show generic authentication message</span>
+    <span class="n">two_factor_auth_notice_flash</span> <span class="s2">"You have been authenticated"</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div></div>
@@ -268,9 +264,9 @@ user after they’ve successfully set up TOTP, instead of the default redirect.<
 
 <p>We’ll also override the default Rodauth template to display the recovery codes
 in a nicer way. For convenience, we’ll add a download link for the recovery
-codes as well, implemented on the client-side using Stimulus, as a new endpoint
-for downloading recovery codes would have to be password-protected to maintain
-security.</p>
+codes as well. Instead of adding a new endpoint, which would have to be
+password-protected to maintain security, we’ll just implement the download link
+in plain HTML using a data URL and <code class="language-plaintext highlighter-rouge">download</code> attribute.</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:views recovery_codes
 </code></pre></div></div>
@@ -280,12 +276,7 @@ security.</p>
 <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">recovery_codes</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
   <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"my-3"</span><span class="nt">&gt;</span>
     Copy these recovery codes to a safe location.
-    You can also download them <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"here"</span><span class="p">,</span> <span class="s2">"#"</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span>
-      <span class="ss">controller: </span><span class="s2">"download"</span><span class="p">,</span>
-      <span class="ss">action: </span><span class="s2">"download#perform"</span><span class="p">,</span>
-      <span class="ss">download_content_value: </span><span class="n">rodauth</span><span class="p">.</span><span class="nf">recovery_codes</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">),</span>
-      <span class="ss">download_filename_value: </span><span class="s2">"myapp-recovery-codes.txt"</span><span class="p">,</span>
-    <span class="p">}</span> <span class="cp">%&gt;</span>.
+    You can also download them <span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"here"</span><span class="p">,</span> <span class="s2">"data:,</span><span class="si">#{</span><span class="n">rodauth</span><span class="p">.</span><span class="nf">recovery_codes</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">download: </span><span class="s2">"myapp-recovery-codes.txt"</span> <span class="cp">%&gt;</span>.
   <span class="nt">&lt;/p&gt;</span>
 
   <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"d-inline-block mb-3 border border-info rounded px-3 py-2"</span><span class="nt">&gt;</span>
@@ -303,32 +294,6 @@ security.</p>
   <span class="cp">&lt;%=</span><span class="o">=</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">add_recovery_codes_heading</span> <span class="cp">%&gt;</span>
   <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="ss">template: </span><span class="s2">"rodauth/recovery_codes"</span><span class="p">,</span> <span class="ss">layout: </span><span class="kp">false</span> <span class="cp">%&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
-</code></pre></div></div>
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// app/javascript/controllers/download_controller.js</span>
-<span class="k">import</span> <span class="p">{</span> <span class="nx">Controller</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@hotwired/stimulus</span><span class="dl">'</span>
-
-<span class="k">export</span> <span class="k">default</span> <span class="kd">class</span> <span class="kd">extends</span> <span class="nx">Controller</span> <span class="p">{</span>
-  <span class="kd">static</span> <span class="nx">values</span> <span class="o">=</span> <span class="p">{</span> <span class="na">content</span><span class="p">:</span> <span class="nb">String</span><span class="p">,</span> <span class="na">filename</span><span class="p">:</span> <span class="nb">String</span> <span class="p">}</span>
-
-  <span class="nx">perform</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span>
-
-    <span class="kd">const</span> <span class="nx">content</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Blob</span><span class="p">([</span><span class="k">this</span><span class="p">.</span><span class="nx">contentValue</span><span class="p">])</span>
-    <span class="kd">const</span> <span class="nx">contentURL</span> <span class="o">=</span> <span class="nx">URL</span><span class="p">.</span><span class="nx">createObjectURL</span><span class="p">(</span><span class="nx">content</span><span class="p">)</span>
-
-    <span class="k">this</span><span class="p">.</span><span class="nx">download</span><span class="p">(</span><span class="nx">contentURL</span><span class="p">)</span>
-  <span class="p">}</span>
-
-  <span class="nx">download</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kd">const</span> <span class="nx">downloadLink</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="dl">'</span><span class="s1">a</span><span class="dl">'</span><span class="p">)</span>
-    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">url</span>
-    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="dl">'</span><span class="s1">download</span><span class="dl">'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">filenameValue</span><span class="p">)</span>
-
-    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">downloadLink</span><span class="p">)</span>
-    <span class="nx">downloadLink</span><span class="p">.</span><span class="nx">click</span><span class="p">()</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">downloadLink</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
 </code></pre></div></div>
 
 <p>When the user now sets up TOTP, they will be shown a page like this:</p>
