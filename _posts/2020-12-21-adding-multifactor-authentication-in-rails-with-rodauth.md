@@ -114,22 +114,6 @@ have MFA setup to authenticate with 2nd factor. This can be achieved with the
 following configuration:
 
 ```rb
-# app/misc/rodauth_main.rb
-class RodauthMain < Rodauth::Rails::Auth
-  configure do
-    # ...
-    # redirect the user to the MFA page if they have MFA setup
-    login_redirect do
-      if uses_two_factor_authentication?
-        two_factor_auth_required_redirect
-      else
-        "/"
-      end
-    end
-  end
-end
-```
-```rb
 # app/misc/rodauth_app.rb
 class RodauthApp < Rodauth::Rails::App
   # ...
@@ -139,6 +123,18 @@ class RodauthApp < Rodauth::Rails::App
     if rodauth.logged_in? && rodauth.uses_two_factor_authentication?
       rodauth.require_two_factor_authenticated
     end
+  end
+end
+```
+```rb
+# app/misc/rodauth_main.rb
+class RodauthMain < Rodauth::Rails::Auth
+  configure do
+    # ...
+    # don't show error message when coming from the login URL
+    two_factor_need_authentication_error_flash { request.referer == login_url ? nil : super() }
+    # show generic authentication message
+    two_factor_auth_notice_flash "You have been authenticated"
   end
 end
 ```
