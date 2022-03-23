@@ -203,9 +203,9 @@ end
 
 We'll also override the default Rodauth template to display the recovery codes
 in a nicer way. For convenience, we'll add a download link for the recovery
-codes as well, implemented on the client-side using Stimulus, as a new endpoint
-for downloading recovery codes would have to be password-protected to maintain
-security.
+codes as well. Instead of adding a new endpoint, which would have to be
+password-protected to maintain security, we'll just implement the download link
+in plain HTML using a data URL and `download` attribute.
 
 
 ```sh
@@ -218,12 +218,7 @@ $ rails generate rodauth:views recovery_codes
 <% if rodauth.recovery_codes.any? %>
   <p class="my-3">
     Copy these recovery codes to a safe location.
-    You can also download them <%= link_to "here", "#", data: {
-      controller: "download",
-      action: "download#perform",
-      download_content_value: rodauth.recovery_codes.join("\n"),
-      download_filename_value: "myapp-recovery-codes.txt",
-    } %>.
+    You can also download them <%= link_to "here", "data:,#{rodauth.recovery_codes.join("\n")}", download: "myapp-recovery-codes.txt" %>.
   </p>
 
   <div class="d-inline-block mb-3 border border-info rounded px-3 py-2">
@@ -241,33 +236,6 @@ $ rails generate rodauth:views recovery_codes
   <%== rodauth.add_recovery_codes_heading %>
   <%= render template: "rodauth/recovery_codes", layout: false %>
 <% end %>
-```
-```js
-// app/javascript/controllers/download_controller.js
-import { Controller } from '@hotwired/stimulus'
-
-export default class extends Controller {
-  static values = { content: String, filename: String }
-
-  perform(event) {
-    event.preventDefault()
-
-    const content = new Blob([this.contentValue])
-    const contentURL = URL.createObjectURL(content)
-
-    this.download(contentURL)
-  }
-
-  download(url) {
-    const downloadLink = document.createElement('a')
-    downloadLink.href = url
-    downloadLink.setAttribute('download', this.filenameValue)
-
-    document.body.appendChild(downloadLink)
-    downloadLink.click()
-    document.body.removeChild(downloadLink)
-  }
-}
 ```
 
 When the user now sets up TOTP, they will be shown a page like this:
