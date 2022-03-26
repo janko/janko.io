@@ -47,8 +47,9 @@ exclude:
   - readme.md
   - .gitignore
   - node_modules
-  - css/application.css
-  - css/highlight.css
-  - css/footnotes.css
+  - css
   - tailwind.config.js
   - postcss.config.js
+
+keep_files:
+  - css/bundle.css

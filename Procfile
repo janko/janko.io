@@ -1,2 +1,2 @@
 server: bundle exec jekyll serve --drafts --future --livereload
-postcss: npx postcss css/application.css --watch --output css/bundle.css --env development
+css: npx tailwindcss -i css/application.css --output _site/css/bundle.css --watch
