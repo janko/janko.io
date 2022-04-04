@@ -345,8 +345,9 @@ class TwilioClient
 end
 ```
 
-Finally, we'll implement `sms_send` using our new `TwilioClient` class,
-converting SMS sending errors into validation errors:
+Finally, we'll implement `sms_send` using our new `TwilioClient` class. We'll
+convert SMS sending errors into validation errors, and make sure we roll back
+the wrapping database transaction:
 
 ```rb
 # app/misc/rodauth_main.rb
@@ -356,9 +357,9 @@ class RodauthMain < Rodauth::Rails::Auth
     sms_send do |phone, message|
       twilio = TwilioClient.new
       twilio.send_sms(phone, message)
-    rescue TwilioClient::InvalidPhoneNumber
-      throw_error_status(422, sms_phone_param, sms_invalid_phone_message)
-    rescue TwilioClient::Error
+    rescue TwilioClient::Error => error
+      db.rollback_on_exit
+      throw_error_status(422, sms_phone_param, sms_invalid_phone_message) if error.is_a?(TwilioClient::InvalidPhoneNumber)
       throw_error_status(500, sms_phone_param, "sending the SMS code failed")
     end
   end
