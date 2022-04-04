@@ -185,8 +185,10 @@ user after they've successfully set up TOTP, instead of the default redirect.
 class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
-    # auto generate recovery codes after TOTP setup
+    # auto generate recovery codes after enabling first MFA method
     auto_add_recovery_codes? true
+    # auto remove recovery codes after disabling last MFA method
+    auto_remove_recovery_codes? true
     # display recovery codes after TOTP setup
     after_otp_setup do
       set_notice_now_flash "#{otp_setup_notice_flash}, please make note of your recovery codes"
