@@ -185,9 +185,9 @@ user after they've successfully set up TOTP, instead of the default redirect.
 class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
-    # auto generate recovery codes after enabling first MFA method
+    # automatically generate recovery codes after enabling first MFA method
     auto_add_recovery_codes? true
-    # auto remove recovery codes after disabling last MFA method
+    # automatically remove recovery codes after disabling last MFA method
     auto_remove_recovery_codes? true
     # display recovery codes after TOTP setup
     after_otp_setup do
@@ -346,8 +346,9 @@ end
 ```
 
 Finally, we'll implement `sms_send` using our new `TwilioClient` class. We'll
-convert SMS sending errors into validation errors, and make sure we roll back
-the wrapping database transaction:
+convert SMS sending errors into validation errors, making sure we roll back
+the wrapping database transaction to prevent phone number & code from being
+persisted:
 
 ```rb
 # app/misc/rodauth_main.rb
