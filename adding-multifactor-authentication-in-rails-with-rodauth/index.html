@@ -255,9 +255,9 @@ user after they’ve successfully set up TOTP, instead of the default redirect.<
 <span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
-    <span class="c1"># auto generate recovery codes after enabling first MFA method</span>
+    <span class="c1"># automatically generate recovery codes after enabling first MFA method</span>
     <span class="n">auto_add_recovery_codes?</span> <span class="kp">true</span>
-    <span class="c1"># auto remove recovery codes after disabling last MFA method</span>
+    <span class="c1"># automatically remove recovery codes after disabling last MFA method</span>
     <span class="n">auto_remove_recovery_codes?</span> <span class="kp">true</span>
     <span class="c1"># display recovery codes after TOTP setup</span>
     <span class="n">after_otp_setup</span> <span class="k">do</span>
@@ -408,8 +408,9 @@ wrapper class for the Twilio client:</p>
 </code></pre></div></div>
 
 <p>Finally, we’ll implement <code class="language-plaintext highlighter-rouge">sms_send</code> using our new <code class="language-plaintext highlighter-rouge">TwilioClient</code> class. We’ll
-convert SMS sending errors into validation errors, and make sure we roll back
-the wrapping database transaction:</p>
+convert SMS sending errors into validation errors, making sure we roll back
+the wrapping database transaction to prevent phone number &amp; code from being
+persisted:</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
 <span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
