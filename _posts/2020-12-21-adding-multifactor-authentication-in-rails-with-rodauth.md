@@ -108,10 +108,10 @@ $ rotp --secret omo2p3movepqyc222rp54v3cic7ky2au
 409761
 ```
 
-When the user with OTP set up logs in the next time, we want to redirect them
-automatically to the OTP auth page, and generally require logged in users that
-have MFA setup to authenticate with 2nd factor. This can be achieved with the
-following configuration:
+When the user with OTP set up logs in the next time, we want them to be
+automatically redirected to the OTP auth page. We can achieve this by requiring
+logged in users that have MFA set up to authenticate with 2nd factor, and
+tweaking the flash messages to make it feel like part of one signin:
 
 ```rb
 # app/misc/rodauth_app.rb
@@ -120,7 +120,7 @@ class RodauthApp < Rodauth::Rails::App
   route do |r|
     # ...
     # require MFA if the user is logged in and has MFA setup
-    if rodauth.logged_in? && rodauth.uses_two_factor_authentication?
+    if rodauth.uses_two_factor_authentication?
       rodauth.require_two_factor_authenticated
     end
   end
