@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","author":{"@type":"Person","name":"Janko Marohnić"},"datePublished":"2020-12-21T00:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","headline":"Multifactor Authentication in Rails with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","description":"Multi-factor authentication or MFA (generalized two-factor authentication or 2FA) is a method of authentication where the user is required to provide two or more pieces of evidence (“factors”) in order to be granted access. Typically the user would first prove knowledge of something only they know (e.g. their password), and then prove posession of something only they own (e.g. another device). This provides an extra layer of security for the user’s account.","headline":"Multifactor Authentication in Rails with Rodauth","dateModified":"2020-12-21T00:00:00+01:00","datePublished":"2020-12-21T00:00:00+01:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -181,10 +181,10 @@ generate the code from the OTP secret using the ROTP gem:</p>
 409761
 </code></pre></div></div>
 
-<p>When the user with OTP set up logs in the next time, we want to redirect them
-automatically to the OTP auth page, and generally require logged in users that
-have MFA setup to authenticate with 2nd factor. This can be achieved with the
-following configuration:</p>
+<p>When the user with OTP set up logs in the next time, we want them to be
+automatically redirected to the OTP auth page. We can achieve this by requiring
+logged in users that have MFA set up to authenticate with 2nd factor, and
+tweaking the flash messages to make it feel like part of one signin:</p>
 
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_app.rb</span>
 <span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
@@ -192,7 +192,7 @@ following configuration:</p>
   <span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
     <span class="c1"># ...</span>
     <span class="c1"># require MFA if the user is logged in and has MFA setup</span>
-    <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">logged_in?</span> <span class="o">&amp;&amp;</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">uses_two_factor_authentication?</span>
+    <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">uses_two_factor_authentication?</span>
       <span class="n">rodauth</span><span class="p">.</span><span class="nf">require_two_factor_authenticated</span>
     <span class="k">end</span>
   <span class="k">end</span>
