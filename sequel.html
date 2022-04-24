@@ -20,7 +20,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"WebPage","author":{"@type":"Person","name":"Janko Marohnić"},"description":"Sharing the wonders of Ruby","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/sequel","headline":"Janko’s Blog","@context":"https://schema.org"}</script>
+{"@type":"WebPage","description":"Sharing the wonders of Ruby","headline":"Janko’s Blog","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/sequel","author":{"@type":"Person","name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -57,6 +57,31 @@
 
 
 <div class="space-y-10">
+  
+    <article>
+      <div class="flex items-baseline space-x-3 text-sm md:text-base">
+        <time class="text-gray-500" datetime="2022-04-24 00:00:00 +0200">
+          24 Apr 2022
+        </time>
+        
+          
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
+
+
+        
+      </div>
+
+      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700">
+        <a href="/how-i-enabled-sequel-to-reuse-active-record-connection/">How I Enabled Sequel to Reuse Active Record's Database Connection</a>
+      </h1>
+
+      <div class="mt-2 markdown prose-p:mb-0">
+        <p>When I started developing the <a href="https://github.com/janko/rodauth-rails">Rails integration for Rodauth</a>, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses <a href="https://sequel.jeremyevans.net/">Sequel</a> for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database.</p>
+
+
+        <a class="block mt-1" href="/how-i-enabled-sequel-to-reuse-active-record-connection/">Read more &rarr;</a>
+      </div>
+    </article>
   
     <article>
       <div class="flex items-baseline space-x-3 text-sm md:text-base">

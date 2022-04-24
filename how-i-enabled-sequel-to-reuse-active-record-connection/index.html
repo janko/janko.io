@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>How I Enabled Sequel to Reuse Active Record's Database Connection | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="How I Enabled Sequel to Reuse Active Record’s Database Connection" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="When I started developing the Rails integration for Rodauth, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses Sequel for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database." />
+<meta property="og:description" content="When I started developing the Rails integration for Rodauth, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses Sequel for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database." />
+<link rel="canonical" href="https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/" />
+<meta property="og:url" content="https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-24T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How I Enabled Sequel to Reuse Active Record’s Database Connection" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","description":"When I started developing the Rails integration for Rodauth, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses Sequel for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database.","headline":"How I Enabled Sequel to Reuse Active Record’s Database Connection","dateModified":"2022-04-24T00:00:00+02:00","datePublished":"2022-04-24T00:00:00+02:00","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/"},"author":{"@type":"Person","name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
+    <link rel="stylesheet" href="/css/bundle.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo" />
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby</p>
+      </div>
+    </header>
+
+    <div class="text-center py-3 bg-sky-50 border-b border-sky-100 text-sky-600">
+      Dear Russian friends, please watch President Zelenskyy's <a href="https://www.youtube.com/watch?v=p-zilnPtZ2M" class="underline text-blue-600 hover:text-blue-500">speech addressed to you</a>.
+      🇺🇦 Support Ukraine by <a href="https://war.ukraine.ua/support-ukraine/" class="underline text-yellow-600 hover:text-yellow-500">donating</a> to humanitarian aid.
+    </div>
+
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">How I Enabled Sequel to Reuse Active Record's Database Connection</h1>
+
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2022-04-24 00:00:00 +0200">
+            24 Apr 2022
+          </time>
+        </span>
+        
+          
+<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5" href="/sequel">sequel</a>
+
+
+        
+      </div>
+    </div>
+  </header>
+
+  <div class="mt-4 sm:mt-6 markdown">
+    <p>When I started developing the <a href="https://github.com/janko/rodauth-rails">Rails integration for Rodauth</a>, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses <a href="https://sequel.jeremyevans.net/">Sequel</a> for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database.</p>
+
+<p>My first approach was to have Sequel connect to the same database as Active Record, and create and close connections in <a href="https://github.com/janko/rodauth-rails/blob/2b54cba3018d95940fd34af0bc0b17a540b8d2ea/lib/rodauth/rails/active_record_extension.rb">lockstep with Active Record</a>, so that Sequel is connected to the database if and only if Active Record is too. While this was functional, it didn’t play well with transactions. Some of Rodauth’s configuration blocks are executed within a Sequel transaction, and I wanted developers to be able to call Active Record inside them, and have it just work. But this wasn’t the case, because it turns out, if you have two different connections, they aren’t aware of each other’s transactions; you might as well be using two different processes.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">establish_connection</span><span class="p">(</span><span class="s2">"postgresql:///mydb"</span><span class="p">)</span>
+<span class="no">DB</span> <span class="o">=</span> <span class="no">Sequel</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="s2">"postgresql:///mydb"</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">Sequel</span><span class="o">::</span><span class="no">Model</span>
+<span class="k">end</span>
+<span class="k">class</span> <span class="nc">Profile</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<span class="k">end</span>
+
+<span class="c1"># open sequel transaction</span>
+<span class="no">DB</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="c1"># create record using sequel connection</span>
+  <span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span> <span class="ss">password_hash: </span><span class="s2">"..."</span><span class="p">)</span>
+
+  <span class="c1"># open active record transaction</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+    <span class="c1"># create associates record using active record connection</span>
+    <span class="no">Profile</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"User"</span><span class="p">,</span> <span class="ss">account_id: </span><span class="n">account</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+    <span class="c1">#~&gt; foreign key constraint violation: given account_id is not present in table "accounts"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The example above fails because, while the account record was created by Sequel’s connection, its transaction hasn’t yet been committed at the time Active Record’s connection attempted to create the associated profile record. Even though Active Record’s transaction block is physically nested inside Sequel’s, transactions are tied to connections that opened them, so as far as the database is concerned these are two independent transactions.</p>
+
+<p>Moreover, if Sequel did use its own database connection, that would mean the number of open connections to the database would double, which could impact performance and hit maximum connection limits. So, I knew I needed to find a way to make Sequel reuse Active Record’s database connection instead of creating its own.</p>
+
+<p>I decided to build this as a <a href="https://sequel.jeremyevans.net/rdoc/files/doc/extensions_rdoc.html#label-Database+Extensions">database extension</a> for Sequel, which when loaded, switches Sequel to use Active Record’s database connection:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Sequel</span>
+  <span class="k">class</span> <span class="nc">ActiveRecordConnection</span>
+    <span class="c1"># ... database overrides ...</span>
+  <span class="k">end</span>
+
+  <span class="no">Database</span><span class="p">.</span><span class="nf">register_extension</span><span class="p">(</span><span class="ss">:activerecord_connection</span><span class="p">,</span> <span class="no">ActiveRecordConnection</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span> <span class="o">=</span> <span class="no">Sequel</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="no">DB</span><span class="p">.</span><span class="nf">extension</span> <span class="ss">:activerecord_connection</span>
+<span class="no">DB</span><span class="p">.</span><span class="nf">run</span> <span class="s2">"SELECT ..."</span> <span class="c1"># executed on Active Record's database connection</span>
+</code></pre></div></div>
+
+<h2 id="reusing-the-connection">Reusing the connection</h2>
+
+<p>Sequel’s connection pool is the one in charge of creating new database connections when they’re needed. So, the first and most important step was to bypass it, and retrieve Active Record’s database connection instead.</p>
+
+<p>The Sequel connection is retrieved in <code class="language-plaintext highlighter-rouge">Database#synchronize</code>, which gets called for every query, so that’s the ideal place to put the override:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Sequel::ActiveRecordConnection</span>
+  <span class="k">def</span> <span class="nf">synchronize</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">activerecord_connection</span><span class="p">.</span><span class="nf">raw_connection</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">activerecord_connection</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">synchronize</span> <span class="k">do</span> <span class="o">|</span><span class="n">connection</span><span class="o">|</span>
+  <span class="n">connection</span> <span class="c1"># Active Record's connection object</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>I also needed to account for the fact that Sequel adapters use different connection options than Active Record, and store prepared statements in the connection object. For <a href="https://github.com/janko/sequel-activerecord_connection/blob/ee2039e2a1d297f70c0a7d7adab7aff47c52084b/lib/sequel/extensions/activerecord_connection/sqlite.rb">SQLite</a> and <a href="https://github.com/janko/sequel-activerecord_connection/blob/ee2039e2a1d297f70c0a7d7adab7aff47c52084b/lib/sequel/extensions/activerecord_connection/mysql2.rb">MySQL</a> handling this required relatively little code, while for <a href="https://github.com/janko/sequel-activerecord_connection/blob/ee2039e2a1d297f70c0a7d7adab7aff47c52084b/lib/sequel/extensions/activerecord_connection/postgres.rb">PostgreSQL</a> I unfortunately needed to copy-paste methods defined on Sequel adapter’s subclass of <code class="language-plaintext highlighter-rouge">PG::Connection</code>.</p>
+
+<h2 id="syncing-transaction-state">Syncing transaction state</h2>
+
+<p>Both Sequel and Active Record track which transactions are in progress and in which order. Currently, even though the connection is shared, Sequel doesn’t know about transactions opened by Active Record and vice-versa.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span><span class="nf">open_transactions</span> <span class="c1">#=&gt; 0</span>
+<span class="k">end</span>
+
+<span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">in_transaction?</span> <span class="c1">#=&gt; false</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Syncing this state is important for handling nested transaction blocks, which should either reuse the outer transaction or use a savepoint, depending on the setup. Sequel saves informations about transactions for each connection in <code class="language-plaintext highlighter-rouge">@transactions</code> instance variable:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">transaction</span><span class="p">(</span><span class="ss">auto_savepoint: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">conn</span><span class="o">|</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">instance_variable_get</span><span class="p">(</span><span class="ss">:@transactions</span><span class="p">)[</span><span class="n">conn</span><span class="p">]</span> <span class="c1">#=&gt; {savepoints: [{auto_savepoint: true}]}</span>
+
+  <span class="no">DB</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span> <span class="c1"># creates a savepoint</span>
+    <span class="no">DB</span><span class="p">.</span><span class="nf">instance_variable_get</span><span class="p">(</span><span class="ss">:@transactions</span><span class="p">)[</span><span class="n">conn</span><span class="p">]</span> <span class="c1">#=&gt; {savepoints: [{auto_savepoint: true}, {auto_savepoint: nil}]}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>We’ll override the method accessing this instance variable, and sync state about any transactions opened by Active Record:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Sequel::ActiveRecordConnection</span>
+  <span class="c1"># ...</span>
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">_trans</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="k">super</span> <span class="o">||</span> <span class="p">{</span> <span class="ss">savepoints: </span><span class="p">[],</span> <span class="ss">activerecord: </span><span class="kp">true</span> <span class="p">}</span>
+
+    <span class="c1"># add any transactions/savepoints opened via Active Record</span>
+    <span class="k">while</span> <span class="nb">hash</span><span class="p">[</span><span class="ss">:savepoints</span><span class="p">].</span><span class="nf">length</span> <span class="o">&lt;</span> <span class="n">activerecord_connection</span><span class="p">.</span><span class="nf">open_transactions</span>
+      <span class="nb">hash</span><span class="p">[</span><span class="ss">:savepoints</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="p">{</span> <span class="ss">activerecord: </span><span class="kp">true</span> <span class="p">}</span>
+    <span class="k">end</span>
+    <span class="c1"># remove any transactions/savepoints closed via Active Record</span>
+    <span class="k">while</span> <span class="nb">hash</span><span class="p">[</span><span class="ss">:savepoints</span><span class="p">].</span><span class="nf">length</span> <span class="o">&gt;</span> <span class="n">activerecord_connection</span><span class="p">.</span><span class="nf">open_transactions</span> <span class="o">&amp;&amp;</span> <span class="nb">hash</span><span class="p">[</span><span class="ss">:savepoints</span><span class="p">].</span><span class="nf">last</span><span class="p">[</span><span class="ss">:activerecord</span><span class="p">]</span>
+      <span class="nb">hash</span><span class="p">[</span><span class="ss">:savepoints</span><span class="p">].</span><span class="nf">pop</span>
+    <span class="k">end</span>
+    <span class="c1"># sync knowledge about joinability of current Active Record transaction/savepoint</span>
+    <span class="k">if</span> <span class="n">activerecord_connection</span><span class="p">.</span><span class="nf">transaction_open?</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">activerecord_connection</span><span class="p">.</span><span class="nf">current_transaction</span><span class="p">.</span><span class="nf">joinable?</span>
+      <span class="nb">hash</span><span class="p">[</span><span class="ss">:savepoints</span><span class="p">].</span><span class="nf">last</span><span class="p">[</span><span class="ss">:auto_savepoint</span><span class="p">]</span> <span class="o">=</span> <span class="kp">true</span>
+    <span class="k">end</span>
+
+    <span class="k">if</span> <span class="nb">hash</span><span class="p">[</span><span class="ss">:savepoints</span><span class="p">].</span><span class="nf">empty?</span> <span class="o">&amp;&amp;</span> <span class="nb">hash</span><span class="p">[</span><span class="ss">:activerecord</span><span class="p">]</span> <span class="c1"># Active Record closed last transaction</span>
+      <span class="no">Sequel</span><span class="p">.</span><span class="nf">synchronize</span> <span class="p">{</span> <span class="vi">@transactions</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">else</span>
+      <span class="no">Sequel</span><span class="p">.</span><span class="nf">synchronize</span> <span class="p">{</span> <span class="vi">@transactions</span><span class="p">[</span><span class="n">conn</span><span class="p">]</span> <span class="o">=</span> <span class="nb">hash</span> <span class="p">}</span>
+    <span class="k">end</span>
+
+    <span class="k">super</span>
+  <span class="k">end</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span><span class="p">(</span><span class="ss">requires_new: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">in_transaction?</span> <span class="c1">#=&gt; true</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+    <span class="no">DB</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="ss">:in_savepoint?</span><span class="p">)</span> <span class="c1">#=&gt; true</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This takes care of Sequel state, now we need to ensure that Active Record’s state is updated when opening transactions via Sequel. We can do this by calling Active Record for beginning, committing, and rolling back transactions:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Sequel::ActiveRecordConnection</span>
+  <span class="c1"># ...</span>
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">begin_transaction</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">opts</span> <span class="o">=</span> <span class="no">OPTS</span><span class="p">)</span>
+    <span class="n">activerecord_connection</span><span class="p">.</span><span class="nf">begin_transaction</span><span class="p">(</span><span class="ss">joinable: </span><span class="o">!</span><span class="n">opts</span><span class="p">[</span><span class="ss">:auto_savepoint</span><span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">commit_transaction</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">opts</span> <span class="o">=</span> <span class="no">OPTS</span><span class="p">)</span>
+    <span class="n">activerecord_connection</span><span class="p">.</span><span class="nf">commit_transaction</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">rollback_transaction</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">opts</span> <span class="o">=</span> <span class="no">OPTS</span><span class="p">)</span>
+    <span class="n">activerecord_connection</span><span class="p">.</span><span class="nf">rollback_transaction</span>
+  <span class="k">end</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">transaction</span><span class="p">(</span><span class="ss">auto_savepoint: </span><span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span><span class="nf">open_transactions</span> <span class="c1">#=&gt; 1</span>
+  <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span><span class="nf">open_transactions</span> <span class="c1">#=&gt; 2</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="fixing-transaction-hooks">Fixing transaction hooks</h2>
+
+<p>Because we’ve preserved the format of transaction state, Sequel’s after commit/rollback hooks still work when Sequel holds the outer transaction:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">after_commit</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"=&gt; after commit"</span> <span class="p">}</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">after_rollback</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"=&gt; after rollback"</span> <span class="p">}</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">run</span> <span class="s2">"SELECT 1"</span>
+<span class="k">end</span>
+<span class="c1"># BEGIN</span>
+<span class="c1"># SELECT 1</span>
+<span class="c1"># COMMIT</span>
+<span class="c1"># =&gt; after commit</span>
+</code></pre></div></div>
+
+<p>However, they don’t work when Active Record holds the outer transaction, because in that case Active Record is the one committing the transaction, and Sequel doesn’t get notified.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">after_commit</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"doesn't get called"</span> <span class="p">}</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">run</span> <span class="s2">"SELECT 1"</span>
+<span class="k">end</span>
+<span class="c1"># BEGIN</span>
+<span class="c1"># SELECT 1</span>
+<span class="c1"># COMMIT</span>
+</code></pre></div></div>
+
+<p>We can fix this by using the <a href="https://github.com/Envek/after_commit_everywhere">after_commit_everywhere</a> gem to register after commit/rollback callbacks into Active Record when it holds the outer transaction. Sequel will call either <code class="language-plaintext highlighter-rouge">#add_transaction_hook</code> or <code class="language-plaintext highlighter-rouge">#add_savepoint_hook</code> method, depending on whether the hook was registered within a transaction or a savepoint, so we’ll override those:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gem <span class="nb">install </span>after_commit_everywhere
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"after_commit_everywhere"</span>
+
+<span class="k">class</span> <span class="nc">Sequel::ActiveRecordConnection</span>
+  <span class="c1"># ...</span>
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">add_transaction_hook</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">block</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_trans</span><span class="p">(</span><span class="n">conn</span><span class="p">)[</span><span class="ss">:activerecord</span><span class="p">]</span> <span class="c1"># Active Record holds the outer transaction</span>
+      <span class="no">AfterCommitEverywhere</span><span class="p">.</span><span class="nf">public_send</span><span class="p">(</span><span class="n">type</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="k">super</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">add_savepoint_hook</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">block</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_trans</span><span class="p">(</span><span class="n">conn</span><span class="p">)[</span><span class="ss">:savepoints</span><span class="p">].</span><span class="nf">last</span><span class="p">[</span><span class="ss">:activerecord</span><span class="p">]</span> <span class="c1"># Active Record holds the savepoint</span>
+      <span class="no">AfterCommitEverywhere</span><span class="p">.</span><span class="nf">public_send</span><span class="p">(</span><span class="n">type</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="k">super</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">after_commit</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s2">"=&gt; gets called"</span> <span class="p">}</span>
+  <span class="no">DB</span><span class="p">.</span><span class="nf">run</span> <span class="s2">"SELECT 1"</span>
+<span class="k">end</span>
+<span class="c1"># BEGIN</span>
+<span class="c1"># SELECT 1</span>
+<span class="c1"># COMMIT</span>
+<span class="c1"># =&gt; gets called</span>
+</code></pre></div></div>
+
+<h2 id="instrumenting-sql-queries">Instrumenting SQL queries</h2>
+
+<p>Active Record logs its SQL queries through a <a href="https://github.com/rails/rails/blob/main/activerecord/lib/active_record/log_subscriber.rb">log subscriber</a> that listens for <code class="language-plaintext highlighter-rouge">sql.active_record</code> notifications. To make the integration seamless, I wanted Sequel’s SQL queries to be logged via Active Record’s logger.</p>
+
+<p>Sequel logging is happening in <code class="language-plaintext highlighter-rouge">Database#log_connection_yield</code>, so we’ll want to override that, and instrument the query execution with Active Support:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Sequel::ActiveRecordConnection</span>
+  <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">log_connection_yield</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+    <span class="n">sql</span> <span class="o">+=</span> <span class="s2">"; </span><span class="si">#{</span><span class="n">args</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">args</span> <span class="c1"># include bound variables in the output</span>
+
+    <span class="n">activerecord_log</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span> <span class="p">{</span> <span class="k">super</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">activerecord_log</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+    <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Notifications</span><span class="p">.</span><span class="nf">instrument</span><span class="p">(</span>
+      <span class="s2">"sql.active_record"</span><span class="p">,</span>
+      <span class="ss">sql:        </span><span class="n">sql</span><span class="p">,</span>
+      <span class="ss">name:       </span><span class="s2">"Sequel"</span><span class="p">,</span>
+      <span class="ss">connection: </span><span class="n">activerecord_connection</span><span class="p">,</span>
+      <span class="o">&amp;</span><span class="n">block</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">logger</span> <span class="o">=</span> <span class="no">Logger</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="vg">$stdout</span><span class="p">)</span>
+
+<span class="no">DB</span><span class="p">[</span><span class="ss">:records</span><span class="p">].</span><span class="nf">where</span><span class="p">(</span><span class="ss">foo: </span><span class="s2">"bar"</span><span class="p">).</span><span class="nf">all</span>
+<span class="c1">#&gt;&gt; Sequel (0.7ms) SELECT * "records" WHERE "foo" = 'bar'</span>
+</code></pre></div></div>
+
+<h2 id="wrapping-it-up">Wrapping it up</h2>
+
+<p>I committed the initial version into the rodauth-rails gem, but I soon realized that getting Sequel to reuse Active Record’s database connection is not specific to Rodauth, so I extracted it into the <a href="https://github.com/janko/sequel-activerecord_connection">sequel-activerecord_connection</a> gem.</p>
+
+<p>I’m glad I did, because it opened doors that weren’t previously open. People can now try out Sequel alongside Active Record without any performance cost or mental overhead, which can be pretty handy given that <a href="/anything-i-want-with-sequel-and-postgres/">Sequel can do lots of things</a> Active Record can’t.</p>
+
+<p>It <a href="https://github.com/janko/sequel-activerecord_connection/commit/0dc74427548e48eb0574b28ebefd65578b490f57">took</a> <a href="https://github.com/janko/sequel-activerecord_connection/commit/a30953269cbe4bc764b055e33efb2a4acff977e2">several</a> <a href="https://github.com/janko/sequel-activerecord_connection/commit/aadfb6e34d0a14bff2fa6e61b905e1e64621460d">iterations</a> to get the implementation right, but extracting it into its own gem helped me focus on this problem in isolation, and converge on the correct behaviour. The end result is a solution that covers much wider use cases than the original problem.</p>
+
+
+  </div>
+</article>
+
+<div class="mt-8 md:mt-10">
+  
+  <script src="https://utteranc.es/client.js"
+          repo="janko/janko.io"
+          issue-term="title"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+
+
+</div>
+
+      </main>
+    </div>
+
+    
+      <script>
+  // Gauges
+  var _gauges = _gauges || [];
+  (function() {
+    var t   = document.createElement('script');
+    t.type  = 'text/javascript';
+    t.async = true;
+    t.id    = 'gauges-tracker';
+    t.setAttribute('data-site-id', '51f5bd47f5a1f545ac0000fc');
+    t.src = '//secure.gaug.es/track.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(t, s);
+  })();
+</script>
+
+    
+  </body>
+</html>
