@@ -262,8 +262,7 @@ user after they’ve successfully set up TOTP, instead of the default redirect.<
     <span class="c1"># display recovery codes after TOTP setup</span>
     <span class="n">after_otp_setup</span> <span class="k">do</span>
       <span class="n">set_notice_now_flash</span> <span class="s2">"</span><span class="si">#{</span><span class="n">otp_setup_notice_flash</span><span class="si">}</span><span class="s2">, please make note of your recovery codes"</span>
-      <span class="n">response</span><span class="p">.</span><span class="nf">write</span> <span class="n">add_recovery_codes_view</span>
-      <span class="n">request</span><span class="p">.</span><span class="nf">halt</span> <span class="c1"># don't process the request any further</span>
+      <span class="n">return_response</span> <span class="n">add_recovery_codes_view</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
