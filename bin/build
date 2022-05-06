@@ -3,4 +3,4 @@
 set -e
 
 JEKYLL_ENV=production bundle exec jekyll build
-npx postcss css/application.css --output _site/css/bundle.css --env production
+npx tailwindcss --input css/application.css --output _site/css/bundle.css --env production --postcss
