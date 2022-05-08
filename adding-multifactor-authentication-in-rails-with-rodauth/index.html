@@ -202,10 +202,10 @@ tweaking the flash messages to make it feel like part of one signin:</p>
 <span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
   <span class="n">configure</span> <span class="k">do</span>
     <span class="c1"># ...</span>
-    <span class="c1"># don't show error message when coming from the login URL</span>
-    <span class="n">two_factor_need_authentication_error_flash</span> <span class="p">{</span> <span class="n">request</span><span class="p">.</span><span class="nf">referer</span> <span class="o">==</span> <span class="n">login_url</span> <span class="p">?</span> <span class="kp">nil</span> <span class="p">:</span> <span class="k">super</span><span class="p">()</span> <span class="p">}</span>
+    <span class="c1"># don't show error message when redirected after login</span>
+    <span class="n">two_factor_need_authentication_error_flash</span> <span class="p">{</span> <span class="n">flash</span><span class="p">[</span><span class="ss">:notice</span><span class="p">]</span> <span class="o">==</span> <span class="n">login_notice_flash</span> <span class="p">?</span> <span class="kp">nil</span> <span class="p">:</span> <span class="k">super</span><span class="p">()</span> <span class="p">}</span>
     <span class="c1"># show generic authentication message</span>
-    <span class="n">two_factor_auth_notice_flash</span> <span class="s2">"You have been authenticated"</span>
+    <span class="n">two_factor_auth_notice_flash</span> <span class="p">{</span> <span class="n">login_notice_flash</span> <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div></div>
@@ -376,24 +376,24 @@ we’ll add the account SID, auth token, and phone number to Rails credentials:<
   <span class="na">phone_number</span><span class="pi">:</span> <span class="s">&lt;YOUR_PHONE_NUMBER&gt;</span>
 </code></pre></div></div>
 
-<p>Next, we’ll install the <a href="https://github.com/twilio/twilio-ruby">twilio-ruby</a> and <a href="https://dry-rb.org/gems/dry-initializer">dry-initializer</a> gems, and create a
-wrapper class for the Twilio client:</p>
+<p>Next, we’ll install the <a href="https://github.com/twilio/twilio-ruby">twilio-ruby</a> gem, and create a wrapper class for the
+Twilio client that uses the configured credentials:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add twilio-ruby dry-initializer
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add twilio-ruby
 </code></pre></div></div>
 <div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/twilio_client.rb</span>
 <span class="k">class</span> <span class="nc">TwilioClient</span>
   <span class="no">Error</span>              <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">StandardError</span><span class="p">)</span>
   <span class="no">InvalidPhoneNumber</span> <span class="o">=</span> <span class="no">Class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">Error</span><span class="p">)</span>
 
-  <span class="kp">extend</span> <span class="no">Dry</span><span class="o">::</span><span class="no">Initializer</span>
-
-  <span class="n">option</span> <span class="ss">:account_sid</span><span class="p">,</span>  <span class="ss">default: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">twilio</span><span class="p">[</span><span class="ss">:account_sid</span><span class="p">]</span> <span class="p">}</span>
-  <span class="n">option</span> <span class="ss">:auth_token</span><span class="p">,</span>   <span class="ss">default: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">twilio</span><span class="p">[</span><span class="ss">:auth_token</span><span class="p">]</span> <span class="p">}</span>
-  <span class="n">option</span> <span class="ss">:phone_number</span><span class="p">,</span> <span class="ss">default: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">twilio</span><span class="p">[</span><span class="ss">:phone_number</span><span class="p">]</span> <span class="p">}</span>
+  <span class="k">def</span> <span class="nf">initialize</span>
+    <span class="vi">@account_sid</span> <span class="o">=</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">twilio</span><span class="p">.</span><span class="nf">account_sid!</span>
+    <span class="vi">@auth_token</span> <span class="o">=</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">twilio</span><span class="p">.</span><span class="nf">auth_token!</span>
+    <span class="vi">@phone_number</span> <span class="o">=</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">twilio</span><span class="p">.</span><span class="nf">phone_number!</span>
+  <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">send_sms</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-    <span class="n">client</span><span class="p">.</span><span class="nf">messages</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">from: </span><span class="n">phone_number</span><span class="p">,</span> <span class="ss">to: </span><span class="n">to</span><span class="p">,</span> <span class="ss">body: </span><span class="n">message</span><span class="p">)</span>
+    <span class="n">client</span><span class="p">.</span><span class="nf">messages</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">from: </span><span class="vi">@phone_number</span><span class="p">,</span> <span class="ss">to: </span><span class="n">to</span><span class="p">,</span> <span class="ss">body: </span><span class="n">message</span><span class="p">)</span>
   <span class="k">rescue</span> <span class="no">Twilio</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">RestError</span> <span class="o">=&gt;</span> <span class="n">error</span>
     <span class="c1"># more details here: https://www.twilio.com/docs/api/errors/21211</span>
     <span class="k">raise</span> <span class="no">TwilioClient</span><span class="o">::</span><span class="no">InvalidPhoneNumber</span><span class="p">,</span> <span class="n">error</span><span class="p">.</span><span class="nf">message</span> <span class="k">if</span> <span class="n">error</span><span class="p">.</span><span class="nf">code</span> <span class="o">==</span> <span class="mi">21211</span>
@@ -401,7 +401,7 @@ wrapper class for the Twilio client:</p>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">client</span>
-    <span class="no">Twilio</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">account_sid</span><span class="p">,</span> <span class="n">auth_token</span><span class="p">)</span>
+    <span class="no">Twilio</span><span class="o">::</span><span class="no">REST</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="vi">@account_sid</span><span class="p">,</span> <span class="vi">@auth_token</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div></div>
