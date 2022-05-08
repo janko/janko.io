@@ -131,10 +131,10 @@ end
 class RodauthMain < Rodauth::Rails::Auth
   configure do
     # ...
-    # don't show error message when coming from the login URL
-    two_factor_need_authentication_error_flash { request.referer == login_url ? nil : super() }
+    # don't show error message when redirected after login
+    two_factor_need_authentication_error_flash { flash[:notice] == login_notice_flash ? nil : super() }
     # show generic authentication message
-    two_factor_auth_notice_flash "You have been authenticated"
+    two_factor_auth_notice_flash { login_notice_flash }
   end
 end
 ```
@@ -312,11 +312,11 @@ twilio:
   phone_number: <YOUR_PHONE_NUMBER>
 ```
 
-Next, we'll install the [twilio-ruby] and [dry-initializer] gems, and create a
-wrapper class for the Twilio client:
+Next, we'll install the [twilio-ruby] gem, and create a wrapper class for the
+Twilio client that uses the configured credentials:
 
 ```sh
-$ bundle add twilio-ruby dry-initializer
+$ bundle add twilio-ruby
 ```
 ```rb
 # app/misc/twilio_client.rb
@@ -324,14 +324,14 @@ class TwilioClient
   Error              = Class.new(StandardError)
   InvalidPhoneNumber = Class.new(Error)
 
-  extend Dry::Initializer
-
-  option :account_sid,  default: -> { Rails.application.credentials.twilio[:account_sid] }
-  option :auth_token,   default: -> { Rails.application.credentials.twilio[:auth_token] }
-  option :phone_number, default: -> { Rails.application.credentials.twilio[:phone_number] }
+  def initialize
+    @account_sid = Rails.application.credentials.twilio.account_sid!
+    @auth_token = Rails.application.credentials.twilio.auth_token!
+    @phone_number = Rails.application.credentials.twilio.phone_number!
+  end
 
   def send_sms(to, message)
-    client.messages.create(from: phone_number, to: to, body: message)
+    client.messages.create(from: @phone_number, to: to, body: message)
   rescue Twilio::REST::RestError => error
     # more details here: https://www.twilio.com/docs/api/errors/21211
     raise TwilioClient::InvalidPhoneNumber, error.message if error.code == 21211
@@ -339,7 +339,7 @@ class TwilioClient
   end
 
   def client
-    Twilio::REST::Client.new(account_sid, auth_token)
+    Twilio::REST::Client.new(@account_sid, @auth_token)
   end
 end
 ```
