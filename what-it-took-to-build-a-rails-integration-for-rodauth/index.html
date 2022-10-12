@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>What It Took to Build a Rails Integration for Rodauth | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="What It Took to Build a Rails Integration for Rodauth" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="When Rodauth came out, I was excited to finally have a full-featured authentication framework that wasn’t tied to Rails, given that existing solutions required either Rails (Devise, Sorcery), or at least Active Record (Authlogic). Even though I mainly develop in Rails, I want other Ruby web frameworks to be viable alternatives, so I’m naturally drawn to generic solutions that everyone can use." />
+<meta property="og:description" content="When Rodauth came out, I was excited to finally have a full-featured authentication framework that wasn’t tied to Rails, given that existing solutions required either Rails (Devise, Sorcery), or at least Active Record (Authlogic). Even though I mainly develop in Rails, I want other Ruby web frameworks to be viable alternatives, so I’m naturally drawn to generic solutions that everyone can use." />
+<link rel="canonical" href="https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth/" />
+<meta property="og:url" content="https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-10-12T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What It Took to Build a Rails Integration for Rodauth" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","author":{"@type":"Person","name":"Janko Marohnić"},"datePublished":"2022-10-12T00:00:00+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth/"},"description":"When Rodauth came out, I was excited to finally have a full-featured authentication framework that wasn’t tied to Rails, given that existing solutions required either Rails (Devise, Sorcery), or at least Active Record (Authlogic). Even though I mainly develop in Rails, I want other Ruby web frameworks to be viable alternatives, so I’m naturally drawn to generic solutions that everyone can use.","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth/","headline":"What It Took to Build a Rails Integration for Rodauth","dateModified":"2022-10-12T00:00:00+02:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
+    <link rel="stylesheet" href="/css/bundle.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo">
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby
+      </span>
+</div>
+    </header>
+
+    <div class="text-center py-3 px-4 bg-sky-50 border-b border-sky-100 text-sky-600 text-base md:text-md lg:text-lg">
+      Dear Russian friends, please watch President Zelenskyy's <a href="https://www.youtube.com/watch?v=p-zilnPtZ2M" class="underline text-blue-600 hover:text-blue-500">speech addressed to you</a>.
+      🇺🇦 Support Ukraine by <a href="https://war.ukraine.ua/support-ukraine/" class="underline text-yellow-600 hover:text-yellow-500">donating</a> to humanitarian aid.
+    </div>
+
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">What It Took to Build a Rails Integration for Rodauth</h1>
+
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2022-10-12 00:00:00 +0200">
+            12 Oct 2022
+          </time>
+        </span>
+        
+          
+<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5" href="/rodauth">rodauth</a>
+
+
+        
+      </div>
+    </div>
+  </header>
+
+  <div class="mt-4 sm:mt-6 markdown">
+    <p>When <a href="https://github.com/jeremyevans/rodauth">Rodauth</a> came out, I was excited to finally have a full-featured authentication framework that <em>wasn’t</em> tied to Rails, given that existing solutions required either Rails (Devise, Sorcery), or at least Active Record (Authlogic). Even though I mainly develop in Rails, I want other Ruby web frameworks to be viable alternatives, so I’m naturally drawn to generic solutions that everyone can use.</p>
+
+<p>Even though Rodauth is built on top of <a href="https://github.com/jeremyevans/roda">Roda</a> and <a href="https://github.com/jeremyevans/sequel">Sequel</a>, it can work as a Rack middleware in any Ruby web framework. In the beginning, there was a <a href="https://github.com/jeremyevans/rodauth-demo-rails/blob/master/config/initializers/rodauth.rb">demo app</a> showing how Rodauth can be used in Rails, which leveraged the (now discontinued) <a href="https://github.com/jeremyevans/roda-rails">roda-rails</a> gem. However, the integration felt fairly raw, and definitely lacked the ergonomics Rails developers are used to.</p>
+
+<p>Rodauth has a <a href="https://rodauth.jeremyevans.net/documentation.html#plugins">vast feature set</a>, but if it was going to compete with other authentication solutions, it needed to match their level of convenience in context of Rails. That meant deeply integrating into the Rails framework, having clear drawers where code goes, and defaults that are easy to get started with. At the start of 2020, I set on a mission to make using Rodauth in Rails easy.</p>
+
+<h2 id="initial-spike">Initial spike</h2>
+
+<p>I first created a <a href="https://github.com/janko/rodauth-demo-rails">demo Rails app</a>, and started setting up Rodauth there. In the <a href="https://github.com/janko/rodauth-demo-rails/commit/8affb9499801b6d2545f57b1554295f03502d2fa#diff-3c9dfcead9f75d230dc142b713a4bfc1e95faf07a3a027176b46519d95468453">early</a> <a href="https://github.com/janko/rodauth-demo-rails/commit/e69f9bd2149760d4d5e47ecf23d6239dc5448497#diff-c2af93c5a8391da5143ed228699395dc7ac8722b9e184abad40b4ea3213bacd5">iterations</a>, I managed to hook up view rendering, flash messages, CSRF protection, and email delivery to use Rails instead of Roda, with significantly less code compared to roda-rails. I also managed to make Rodauth code reloadable by inserting a proxy Rack middleware that just calls the Roda app.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_app.rb</span>
+<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Roda</span>
+  <span class="n">plugin</span> <span class="ss">:rodauth</span><span class="p">,</span> <span class="ss">csrf: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">flash: </span><span class="kp">false</span> <span class="k">do</span>
+    <span class="n">enable</span> <span class="ss">:rails</span><span class="p">,</span> <span class="ss">:login</span><span class="p">,</span> <span class="ss">:create_account</span><span class="p">,</span> <span class="ss">:verify_account</span><span class="p">,</span> <span class="ss">:reset_password</span><span class="p">,</span> <span class="ss">:logout</span>
+    <span class="c1"># ... rodauth configuration ...</span>
+  <span class="k">end</span>
+
+  <span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+    <span class="n">r</span><span class="p">.</span><span class="nf">rodauth</span> <span class="c1"># handle rodauth requests</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># lib/rodauth/features/rails.rb</span>
+<span class="k">module</span> <span class="nn">Rodauth</span>
+  <span class="no">Feature</span><span class="p">.</span><span class="nf">define</span><span class="p">(</span><span class="ss">:rails</span><span class="p">,</span> <span class="ss">:Rails</span><span class="p">)</span> <span class="k">do</span>
+    <span class="c1"># ... rails integration ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/initializers/rodauth.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMiddleware</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="vi">@app</span> <span class="o">=</span> <span class="n">app</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="no">RodauthApp</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="vi">@app</span><span class="p">).</span><span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span> <span class="c1"># keeps RodauthApp reloadable</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">middleware</span><span class="p">.</span><span class="nf">use</span> <span class="no">RodauthMiddleware</span>
+</code></pre></div></div>
+
+<p>Once I felt things were functioning well enough, I extracted the glue code into the <a href="https://github.com/janko/rodauth-rails">rodauth-rails</a> gem and added tests. I also included an install generator, which created the initial skeleton with sensible default configuration. A new Roda superclass provided a convenience <code class="language-plaintext highlighter-rouge">configure</code> method for loading the Rodauth plugin together with the <code class="language-plaintext highlighter-rouge">rails</code> feature.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add rodauth-rails
+<span class="nv">$ </span>rails generate rodauth:install
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_app.rb</span>
+<span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+  <span class="n">configure</span> <span class="k">do</span> <span class="c1"># automatically loads the rails feature</span>
+    <span class="n">enable</span> <span class="ss">:login</span><span class="p">,</span> <span class="ss">:create_account</span><span class="p">,</span> <span class="ss">:verify_account</span><span class="p">,</span> <span class="ss">:reset_password</span><span class="p">,</span> <span class="ss">:logout</span>
+    <span class="c1"># ... rodauth configuration ...</span>
+  <span class="k">end</span>
+
+  <span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
+    <span class="n">r</span><span class="p">.</span><span class="nf">rodauth</span> <span class="c1"># handle rodauth requests</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>By default, Rodauth uses database authentication functions for password matching, which coupled with a <a href="https://github.com/jeremyevans/rodauth#label-PostgreSQL+Database+Setup">two-user database setup</a> allows protecting password hashes even in case of SQL injection (<a href="https://github.com/jeremyevans/rodauth#label-Password+Hash+Access+Via+Database+Functions">read here</a> on how this works). However, I felt this complexity could be daunting when getting started, so I changed the default to do password matching in ruby instead.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">use_database_authentication_functions?</span> <span class="kp">false</span>
+<span class="n">account_password_hash_column</span> <span class="ss">:password_hash</span>
+</code></pre></div></div>
+
+<p>Rodauth also optionally uses <a href="https://github.com/jeremyevans/rodauth#label-HMAC">HMACs</a> for signing tokens, providing additional security. Since this is quite important, rodauth-rails turns this on by setting the HMAC secret to the Rails’ secret key base.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">hmac_secret</span> <span class="p">{</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">secret_key_base</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="active-record">Active Record</h2>
+
+<p>While Rodauth uses Sequel for database interaction, most Rails apps are using Active Record. This meant Rodauth needed to work seamlessly alongside Active Record.</p>
+
+<p>One idea was to develop a Rodauth extension that replaces all Sequel calls with Active Record code. However, given Rodauth’s advanced SQL usage, that would’ve been a monumental effort. It would also have been a huge maintenance burden, since the extension would break with new Rodauth changes, and 3rd-party Rodauth extensions would need to maintain their own Active Record integrations.</p>
+
+<p>So, the initial integration simply connected Sequel to the same database Active Record was connected to, which was then picked up by Rodauth.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">db_config</span> <span class="o">=</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection_db_config</span>
+
+<span class="no">Sequel</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="ss">adapter: </span><span class="n">db_config</span><span class="p">.</span><span class="nf">adapter</span><span class="p">,</span> <span class="ss">database: </span><span class="n">db_config</span><span class="p">.</span><span class="nf">database</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>However, I noticed that this breaks features such as <a href="https://guides.rubyonrails.org/testing.html#maintaining-the-test-database-schema">maintaining test schema</a>, which requires temporarily disconnecting from the database in order to re-create the test database; even though Active Record connections were closed, Sequel was still holding an open connection, which was blocking database dropping. To address this, I extended Active Record to <a href="https://github.com/janko/rodauth-rails/blob/2b54cba3018d95940fd34af0bc0b17a540b8d2ea/lib/rodauth/rails/active_record_extension.rb">connect &amp; disconnect Sequel in lockstep with Active Record</a>.</p>
+
+<p>This worked, but I quickly encountered a new kind of problem. Because Active Record and Sequel used separate database connections, Active Record code couldn’t reference records created within a Sequel transaction, because to that connection the record simply doesn’t exist (remember, database transactions are tied to a connection).</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Profile</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:account</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RodauthApp</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">App</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># we're still in a Sequel transaction that created the account record</span>
+    <span class="n">after_create_account</span> <span class="k">do</span>
+      <span class="c1"># creating an associated record with Sequel worked:</span>
+      <span class="c1"># db[:profiles].insert(account_id: account_id, name: "New User")</span>
+
+      <span class="c1"># but with Active Record it failed with a foreign key constraint violation:</span>
+      <span class="no">Profile</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">account_id: </span><span class="n">account_id</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"New User"</span><span class="p">)</span> <span class="c1"># ~&gt; account record not found</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>My goal was for developers not to have to care that Rodauth uses Sequel, so calling Active Record inside Rodauth should just work. Moreover, <a href="https://github.com/bruno-">Bruno Sutic</a> warned me if Sequel uses a separate database connection, it would mean production databases would have up to twice as many open connections. It became apparent this approach could never achieve the desired developer experience.</p>
+
+<blockquote class="twitter-tweet" data-conversation="none">
+<p lang="en" dir="ltr">Just browsed the repo. Sequel connection is a bummer.</p>— Josef Strzibny (@strzibnyj) <a href="https://twitter.com/strzibnyj/status/1253344181650518023?ref_src=twsrc%5Etfw">April 23, 2020</a>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>For the integration to work, I would need to make Sequel reuse Active Record’s database connection. I <a href="https://groups.google.com/g/sequel-talk/c/yQt4ptIDQO4/m/U7yghTFKBAAJ">discussed this idea with Jeremy Evans</a> (the lead Sequel maintainer), and he provided me with some guidance, thanks to which I was able to come up a <a href="https://github.com/janko/sequel-activerecord_connection">solution</a>. It was a Sequel extension that retrieved Active Record connections, kept transaction state and callbacks   synchronized between Sequel and Active Record, integrated SQL instrumentation, and reconciliated adapter differences (see my <a href="https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/">previous article</a> for more details).</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add sequel-activerecord_connection
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">DB</span> <span class="o">=</span> <span class="no">Sequel</span><span class="p">.</span><span class="nf">postgres</span><span class="p">(</span><span class="ss">extensions: :activerecord_connection</span><span class="p">)</span>
+<span class="no">DB</span><span class="p">[</span><span class="ss">:accounts</span><span class="p">].</span><span class="nf">all</span> <span class="c1"># uses Active Record's database connection</span>
+</code></pre></div></div>
+
+<h2 id="model">Model</h2>
+
+<p>Unlike Devise or Sorcery, Rodauth is completely decoupled from models, and any calls need to go through the Rodauth object. If you need to perform Rodauth actions outside of an HTTP request, you can use the <a href="http://rodauth.jeremyevans.net/rdoc/files/doc/internal_request_rdoc.html">internal request</a> feature, which makes an actual Rack call to the Rodauth app:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># performing rodauth actions (class level)</span>
+<span class="no">RodauthApp</span><span class="p">.</span><span class="nf">rodauth</span><span class="p">.</span><span class="nf">create_account</span><span class="p">(</span><span class="ss">login: </span><span class="s2">"user@example.com"</span><span class="p">,</span> <span class="ss">password: </span><span class="s2">"secret123"</span><span class="p">)</span>
+<span class="no">RodauthApp</span><span class="p">.</span><span class="nf">rodauth</span><span class="p">.</span><span class="nf">verify_account</span><span class="p">(</span><span class="ss">account_login: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+
+<span class="c1"># calling rodauth methods (instance level)</span>
+<span class="n">rodauth</span> <span class="o">=</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="p">.</span><span class="nf">rodauth</span><span class="p">(</span><span class="ss">account_login: </span><span class="s2">"user@example.com"</span><span class="p">)</span>
+<span class="n">rodauth</span><span class="p">.</span><span class="nf">get_password_reset_key</span><span class="p">(</span><span class="n">account_id</span><span class="p">)</span> <span class="c1">#=&gt; "DS6dtRNnvzSCWzm8jg4lltOzBE5vTN_xflNdToIPw3A"</span>
+<span class="n">rodauth</span><span class="p">.</span><span class="nf">recovery_codes</span> <span class="c1">#=&gt; ["30GRJkr1BheZztvFZcDeRSNy6yhzigXH6zB-yvzP4Io", ...]</span>
+</code></pre></div></div>
+
+<p>While I love this decoupling, it would still be nice to be able to at least create accounts and retrieve associations directly through the model. So, I created the <a href="https://github.com/janko/rodauth-model">rodauth-model</a> gem, which provides an interface similar to Active Record’s <code class="language-plaintext highlighter-rouge">has_secure_password</code>, and defines associations based on your Rodauth configuration (together with associated models).</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">include</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="p">.</span><span class="nf">model</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># generating a password hash</span>
+<span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">email: </span><span class="s2">"user@example.com"</span><span class="p">,</span> <span class="ss">password: </span><span class="s2">"secret123"</span><span class="p">)</span>
+<span class="n">account</span><span class="p">.</span><span class="nf">password_hash</span> <span class="c1">#=&gt; "$2a$12$k/Ub1I2iomi84RacqY89Hu4.M0vK7klRnRtzorDyvOkVI.hKhkNw."</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">password_reset_key</span> <span class="c1">#=&gt; #&lt;Account::PasswordResetKey id: 1, key: "DS6dtRNnvzSCWzm8jg4lltOzBE5vTN_xflNdToIPw3A" ...&gt;</span>
+<span class="n">account</span><span class="p">.</span><span class="nf">recovery_codes</span> <span class="c1">#=&gt; [#&lt;Account::RecoveryCode id: 1, code: "30GRJkr1BheZztvFZcDeRSNy6yhzigXH6zB-yvzP4Io"&gt;, ...]</span>
+</code></pre></div></div>
+
+<p>Rodauth stores account statuses (unverified, verified, closed) as integers, but we can use <a href="https://api.rubyonrails.org/classes/ActiveRecord/Enum.html"><code class="language-plaintext highlighter-rouge">ActiveRecord::Enum</code></a> to map them to strings, which is what the install generator now does.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Account</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># ...</span>
+  <span class="n">enum</span> <span class="ss">:status</span><span class="p">,</span> <span class="ss">unverified: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">verified: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">closed: </span><span class="mi">3</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">account</span><span class="p">.</span><span class="nf">status</span> <span class="c1">#=&gt; "unverified"</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">verified?</span> <span class="c1">#=&gt; false</span>
+<span class="n">account</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="s2">"verified"</span>
+<span class="n">account</span><span class="p">.</span><span class="nf">verified?</span> <span class="c1">#=&gt; true</span>
+
+<span class="no">Account</span><span class="p">.</span><span class="nf">closed</span> <span class="c1">#=&gt; [#&lt;Account id: 456, status: "closed" ...&gt;, ...]</span>
+</code></pre></div></div>
+
+<h2 id="routes-introspection">Routes introspection</h2>
+
+<p>In this architecture, Rodauth routes are handled by the Rack middleware that’s sitting in front of the Rails router. This has the benefit of allowing you to perform authentication actions such as requiring authentication, checking active sessions, and remembering from cookie in a single place, thus better encapsulating authentication logic.</p>
+
+<p>However, since Rodauth routes aren’t registered within the Rails router, they don’t show up in <code class="language-plaintext highlighter-rouge">rails routes</code>. Rails’ routes introspection doesn’t currently have capability of registering custom routes, and Roda’s routing is <a href="https://janko.io/introduction-to-roda/">dynamic</a>, so it’s not possible to retrieve its routes programmatically.</p>
+
+<p>Eventually I managed to implement a <a href="https://github.com/janko/rodauth-rails/blob/169e9e06bf9cf0dc4ecfe669af2f7f542bf5ba63/lib/rodauth/rails/tasks.rake"><code class="language-plaintext highlighter-rouge">rodauth:routes</code></a> Rake task, which retrieves the route paths from the Rodauth app, and parses the source code for HTTP verbs. It’s not ideal, but it should be good enough.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails rodauth:routes
+<span class="c"># Routes handled by RodauthApp:</span>
+<span class="c"># </span>
+<span class="c">#   GET/POST  /login                   rodauth.login_path</span>
+<span class="c">#   GET/POST  /create-account          rodauth.create_account_path</span>
+<span class="c">#   POST      /email-auth-request      rodauth.email_auth_request_path</span>
+<span class="c">#   GET/POST  /email-auth              rodauth.email_auth_path</span>
+<span class="c">#   GET/POST  /logout                  rodauth.logout_path</span>
+<span class="c">#   GET/POST  /reset-password-request  rodauth.reset_password_request_path</span>
+<span class="c">#   GET/POST  /reset-password          rodauth.reset_password_path</span>
+<span class="c">#   GET/POST  /change-password         rodauth.change_password_path</span>
+<span class="c">#   GET/POST  /change-login            rodauth.change_login_path</span>
+<span class="c">#   GET/POST  /verify-login-change     rodauth.verify_login_change_path</span>
+<span class="c">#   GET/POST  /close-account           rodauth.close_account_path</span>
+<span class="c">#   GET/POST  /verify-account-resend   rodauth.verify_account_resend_path</span>
+<span class="c">#   GET/POST  /verify-account          rodauth.verify_account_path</span>
+<span class="c"># </span>
+<span class="c">#   GET       /admin/multifactor-manage      rodauth(:admin).two_factor_manage_path</span>
+<span class="c">#   GET       /admin/multifactor-auth        rodauth(:admin).two_factor_auth_path</span>
+<span class="c">#   GET/POST  /admin/multifactor-disable     rodauth(:admin).two_factor_disable_path</span>
+<span class="c">#   GET/POST  /admin/otp-auth                rodauth(:admin).otp_auth_path</span>
+<span class="c">#   GET/POST  /admin/otp-setup               rodauth(:admin).otp_setup_path</span>
+<span class="c">#   GET/POST  /admin/otp-disable             rodauth(:admin).otp_disable_path</span>
+<span class="c">#   GET/POST  /admin/recovery-auth           rodauth(:admin).recovery_auth_path</span>
+<span class="c">#   GET/POST  /admin/recovery-codes          rodauth(:admin).recovery_codes_path</span>
+<span class="c">#   POST      /admin/unlock-account-request  rodauth(:admin).unlock_account_request_path</span>
+<span class="c">#   GET/POST  /admin/unlock-account          rodauth(:admin).unlock_account_path</span>
+</code></pre></div></div>
+
+<h2 id="generators">Generators</h2>
+
+<p>Before working on this gem, I didn’t realize how important code generators are for convenience, and also how difficult they are to get right. There are currently three generators rodauth-rails ships with:</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">rodauth:install</code> – sets up initial skeleton with default auth features and migrations</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">rodauth:views</code> – imports ERB view templates for customization</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">rodauth:migration</code> – generates migrations for selected authentication features</li>
+</ul>
+
+<p>The generators needed to handle various scenarios, such as RSpec vs Minitest, fixtures vs factory_bot, Active Record vs Sequel, different SQL adapters, API-only mode, UUID primary keys, and more.</p>
+
+<h3 id="schema-migrations">Schema migrations</h3>
+
+<p>I wanted to remove any Sequel code from sight, so I translated <a href="http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Creating+tables">Sequel migrations</a> into Active Record code, and generated those in Active Record migrations. If Sequel happens to be used as the main database library, we’d generate Sequel migrations instead.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:migration otp active_sessions
+<span class="c"># create  db/migrate/20221012110706_create_rodauth_otp_active_sessions.rb</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateRodauthOtpActiveSessions</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">7.0</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="c1"># Used by the otp feature</span>
+    <span class="n">create_table</span> <span class="ss">:account_otp_keys</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">foreign_key</span> <span class="ss">:accounts</span><span class="p">,</span> <span class="ss">column: :id</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:key</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">integer</span> <span class="ss">:num_failures</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">default: </span><span class="mi">0</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">datetime</span> <span class="ss">:last_use</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">default: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="s2">"CURRENT_TIMESTAMP"</span> <span class="p">}</span>
+    <span class="k">end</span>
+
+    <span class="c1"># Used by the active sessions feature</span>
+    <span class="n">create_table</span> <span class="ss">:account_active_session_keys</span><span class="p">,</span> <span class="ss">primary_key: </span><span class="p">[</span><span class="ss">:account_id</span><span class="p">,</span> <span class="ss">:session_id</span><span class="p">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">references</span> <span class="ss">:account</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="kp">true</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:session_id</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">datetime</span> <span class="ss">:created_at</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">default: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="s2">"CURRENT_TIMESTAMP"</span> <span class="p">}</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">datetime</span> <span class="ss">:last_use</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">default: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="s2">"CURRENT_TIMESTAMP"</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="view-templates">View templates</h3>
+
+<p>The <a href="https://github.com/jeremyevans/rodauth/tree/master/templates">built-in view templates</a> use <a href="https://github.com/rtomayko/tilt">Tilt</a>’s interpolated string engine, which avoids ERB dependency, but requires work to adapt for Rails. So, rodauth-rails’ views generator imports already converted <a href="https://github.com/janko/rodauth-rails/tree/2b54cba3018d95940fd34af0bc0b17a540b8d2ea/lib/generators/rodauth/templates/app/views/rodauth">ERB view templates</a> that use familiar Rails’ form helpers.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:views login create_account lockout 
+<span class="c"># create  app/views/rodauth/_login_form.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_form_footer.html.erb</span>
+<span class="c"># create  app/views/rodauth/_login_form_header.html.erb</span>
+<span class="c"># create  app/views/rodauth/login.html.erb</span>
+<span class="c"># create  app/views/rodauth/multi_phase_login.html.erb</span>
+<span class="c"># create  app/views/rodauth/create_account.html.erb</span>
+<span class="c"># create  app/views/rodauth/unlock_account_request.html.erb</span>
+<span class="c"># create  app/views/rodauth/unlock_account.html.erb</span>
+</code></pre></div></div>
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">form_with</span> <span class="ss">url: </span><span class="n">rodauth</span><span class="p">.</span><span class="nf">unlock_account_path</span><span class="p">,</span> <span class="ss">method: :post</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">turbo: </span><span class="kp">false</span> <span class="p">}</span> <span class="k">do</span> <span class="o">|</span><span class="n">form</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span><span class="o">=</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">unlock_account_explanatory_text</span> <span class="cp">%&gt;</span>
+
+  <span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">unlock_account_requires_password?</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"mb-3"</span><span class="nt">&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">label</span> <span class="s2">"password"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">password_label</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"form-label"</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">password_field</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">password_param</span><span class="p">,</span> <span class="ss">value: </span><span class="s2">""</span><span class="p">,</span> <span class="ss">id: </span><span class="s2">"password"</span><span class="p">,</span> <span class="ss">autocomplete: </span><span class="n">rodauth</span><span class="p">.</span><span class="nf">password_field_autocomplete_value</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"form-control </span><span class="si">#{</span><span class="s2">"is-invalid"</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">field_error</span><span class="p">(</span><span class="n">rodauth</span><span class="p">.</span><span class="nf">password_param</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="ss">aria: </span><span class="p">({</span> <span class="ss">invalid: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">describedby: </span><span class="s2">"password_error_message"</span> <span class="p">}</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">field_error</span><span class="p">(</span><span class="n">rodauth</span><span class="p">.</span><span class="nf">password_param</span><span class="p">))</span> <span class="cp">%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">content_tag</span><span class="p">(</span><span class="ss">:span</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">field_error</span><span class="p">(</span><span class="n">rodauth</span><span class="p">.</span><span class="nf">password_param</span><span class="p">),</span> <span class="ss">class: </span><span class="s2">"invalid-feedback"</span><span class="p">,</span> <span class="ss">id: </span><span class="s2">"password_error_message"</span><span class="p">)</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">field_error</span><span class="p">(</span><span class="n">rodauth</span><span class="p">.</span><span class="nf">password_param</span><span class="p">)</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"mb-3"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">submit</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">unlock_account_button</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-primary"</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>Because not all Rodauth actions are Turbo-compatible (multi-phase login and viewing recovery codes return a 200 response on form submits), I have chosen to disable Turbo by default for all HTML forms, to ensure everything works.</p>
+
+<h2 id="future-plans">Future plans</h2>
+
+<ul>
+  <li>
+    <p>I would like the migration generator to support database authentication functions, to make it easier for developers to better secure their password hashes. I have been working on it on &amp; off, but it’s fairly complex to generate correct migration code, especially since different SQL databases (PostgreSQL, MySQL, SQL Server) require different setups.</p>
+  </li>
+  <li>
+    <p>Default Rodauth view templates use Bootstrap markup, but Ben Koshy has been working on adding <a href="https://github.com/janko/rodauth-rails/pull/114">Tailwind CSS support</a>, which will be a nice addition. You’ll be able to pass <code class="language-plaintext highlighter-rouge">--css=tailwind</code>, which will be the default when the <code class="language-plaintext highlighter-rouge">tailwindcss-rails</code> gem is used.</p>
+  </li>
+  <li>
+    <p>I want to make it easier for 3rd-party Rodauth extensions to provide migrations/views for Rails generators. The <a href="https://github.com/HoneyryderChuck/rodauth-oauth">rodauth-oauth</a> gem currently provides its own generators (<code class="language-plaintext highlighter-rouge">rodauth:oauth:install</code> and <code class="language-plaintext highlighter-rouge">rodauth:oauth:views</code>), but it would be nice if they didn’t have to be duplicated.</p>
+  </li>
+  <li>
+    <p>Rodauth methods are called through the Rodauth object, and you’re encouraged to define convenience controller/view helpers that suit your application’s needs. That being said, having some default helpers <a href="https://github.com/heartcombo/devise#controller-filters-and-helpers">like Devise has</a> (and even something like <a href="https://github.com/heartcombo/devise/blob/6d32d2447cc0f3739d9732246b5a5bde98d9e032/lib/devise/controllers/helpers.rb#L18-L38">Devise groups</a>) probably might go a long way. I was also considering more convenient routing helpers, perhaps even a builder for defining custom ones.</p>
+
+    <div class="language-rb highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code><span class="c1"># config/routes.rb</span>
+<span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="c1"># this is what we have today</span>
+  <span class="n">constraints</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="p">.</span><span class="nf">authenticated</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+
+  <span class="c1"># but maybe Devise syntax is worthwhile</span>
+  <span class="n">authenticate</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="closing-words">Closing words</h2>
+
+<p>There are many more things the Rails integration takes care of, such as ignoring asset requests from Sprockets or Propshaft, instrumentation/logging of Rodauth requests, executing controller callbacks &amp; rescue handlers, handling background emails, testing helpers, and Rails 4.2+ &amp; JRuby support. But I think I rambled on for long enough.</p>
+
+<p>The purpose for this article wasn’t to bolster on my achievements, but to share my realization about the price of convenience, and how much work it can actually take integrate a generic library into Rails, especially when it does the work of a Rails engine. I cannot thank Jeremy Evans enough for discussing, reviewing, and merging <a href="https://github.com/jeremyevans/rodauth/pulls?q=is%3Apr+author%3Ajanko">every one of my additions</a> to Rodauth that helped enable a smooth Rails integration <img class="emoji" title=":pray:" alt=":pray:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f64f.png" height="20" width="20"></p>
+
+<p>I hope I fulfilled my goal of making Rodauth easy to work with in Rails. That being said, I’m grateful for the continuous feedback I’m getting from people that are using Rodauth. I’m trying to convert many of my answers into a <a href="https://github.com/janko/rodauth-rails/wiki">wiki page</a>, a <a href="https://rodauth.jeremyevans.net/documentation.html#guides">how-to guide</a> or a <a href="https://www.youtube.com/user/Junky098">screencast</a>, to grow the knowledge around handling common use cases.</p>
+
+
+  </div>
+</article>
+
+<div class="mt-8 md:mt-10">
+  
+  <script src="https://utteranc.es/client.js" repo="janko/janko.io" issue-term="title" theme="github-light" crossorigin="anonymous" async>
+  </script>
+
+
+</div>
+
+      </main>
+    </div>
+
+    
+      <!-- Fathom - beautiful, simple website analytics -->
+<script src="https://bouncy-van.janko.io/script.js" data-site="EKJCVCTX" defer></script>
+<!-- / Fathom -->
+
+    
+  </body>
+</html>
