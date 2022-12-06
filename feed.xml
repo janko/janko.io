@@ -1,4 +1,307 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2022-10-12T16:05:58+02:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko’s Blog</title><subtitle>Sharing the wonders of Ruby</subtitle><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">What It Took to Build a Rails Integration for Rodauth</title><link href="https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth/" rel="alternate" type="text/html" title="What It Took to Build a Rails Integration for Rodauth" /><published>2022-10-12T00:00:00+02:00</published><updated>2022-10-12T00:00:00+02:00</updated><id>https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth</id><content type="html" xml:base="https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth/">&lt;p&gt;When &lt;a href=&quot;https://github.com/jeremyevans/rodauth&quot;&gt;Rodauth&lt;/a&gt; came out, I was excited to finally have a full-featured authentication framework that &lt;em&gt;wasn’t&lt;/em&gt; tied to Rails, given that existing solutions required either Rails (Devise, Sorcery), or at least Active Record (Authlogic). Even though I mainly develop in Rails, I want other Ruby web frameworks to be viable alternatives, so I’m naturally drawn to generic solutions that everyone can use.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.1">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2022-12-06T10:48:56+01:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko’s Blog</title><subtitle>Sharing the wonders of Ruby</subtitle><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Social Login in Rails with Rodauth</title><link href="https://janko.io/social-login-in-rails-with-rodauth/" rel="alternate" type="text/html" title="Social Login in Rails with Rodauth" /><published>2022-12-06T00:00:00+01:00</published><updated>2022-12-06T00:00:00+01:00</updated><id>https://janko.io/social-login-in-rails-with-rodauth</id><content type="html" xml:base="https://janko.io/social-login-in-rails-with-rodauth/">&lt;p&gt;&lt;a href=&quot;https://github.com/omniauth/omniauth&quot;&gt;OmniAuth&lt;/a&gt; provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a &lt;a href=&quot;https://github.com/omniauth/omniauth/wiki/Managing-Multiple-Providers&quot;&gt;wiki page&lt;/a&gt; laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task.&lt;/p&gt;
+
+&lt;p&gt;While Devise provides a convenience layer around OmniAuth, it does nothing to actually sign the user into your app. When I started writing the OmniAuth integration for &lt;a href=&quot;https://github.com/jeremyevans/rodauth&quot;&gt;Rodauth&lt;/a&gt;, I wanted to go one step further and actually handle things like persistence of external identities, account creation and login, while still allowing the developer to customize the behaviour. That’s how &lt;a href=&quot;https://github.com/janko/rodauth-omniauth&quot;&gt;rodauth-omniauth&lt;/a&gt; was created. :sparkles:&lt;/p&gt;
+
+&lt;p&gt;In this article, I will show how to add social login to an existing Rails app that’s using Rodauth, and extend the default behaviour with some custom logic. If you’re looking to get started with Rodauth, check out &lt;a href=&quot;https://janko.io/adding-authentication-in-rails-with-rodauth/&quot;&gt;my previous article&lt;/a&gt;. With that out of the way, let’s dive in.&lt;/p&gt;
+
+&lt;h2 id=&quot;setup&quot;&gt;Setup&lt;/h2&gt;
+
+&lt;p&gt;We’ll start by installing the Rodauth extension and the desired OmniAuth strategies:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundle add rodauth-omniauth omniauth-facebook omniauth-google_oauth2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You don’t need to install any gems for CSRF protection of OmniAuth request endpoints, because rodauth-omniauth will automatically use whichever CSRF protection mechanism Rodauth was configured with, which in case of Rails will be &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActionController::RequestForgeryProtection&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you haven’t already, create the necessary OAuth apps, and configure the callback URL to be &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;https://localhost:3000/auth/{provider}/callback&lt;/code&gt;, where &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;{provider}&lt;/code&gt; is either &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facebook&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;google&lt;/code&gt;. We’ll save the credentials for the OAuth apps into our project:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails credentials:edit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;facebook&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;app_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;lt;YOUR_APP_ID&amp;gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;app_secret&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;lt;YOUR_APP_SECRET&amp;gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;client_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;lt;YOUR_CLIENT_ID&amp;gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;client_secret&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;lt;YOUR_CLIENT_SECRET&amp;gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next, we’ll need to create the table that rodauth-omniauth will use for storing external identities:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails generate migration create_account_identities
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails db:migrate
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CreateAccountIdentities&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;change&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_identities&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;references&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;on_delete: :cascade&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;unique: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the Rodauth configuration, we can now enable the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;omniauth&lt;/code&gt; feature and register our strategies:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:omniauth&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;omniauth_provider&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:facebook&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;credentials&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;facebook&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:app_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;credentials&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;facebook&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:app_secret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;scope: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;email&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;omniauth_provider&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:google_oauth2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;credentials&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:client_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;credentials&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:client_secret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;name: :google&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# rename it from &quot;google_oauth2&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally, we can import the view templates for the login form, and add the social login links there:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails generate rodauth:views login
+&lt;span class=&quot;c&quot;&gt;#  create  app/views/rodauth/_login_form.html.erb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#  create  app/views/rodauth/_login_form_footer.html.erb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#  create  app/views/rodauth/_login_form_footer.html.erb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#  create  app/views/rodauth/_login_form_header.html.erb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#  create  app/views/rodauth/login.html.erb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#  create  app/views/rodauth/multi_phase_login.html.erb&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- app/views/rodauth/_login_form_footer.html.erb --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- ... --&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;button_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Login via Facebook&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;omniauth_request_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:facebook&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;method: :post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;turbo: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;btn btn-link p-0&quot;&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;button_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Login via Google&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;omniauth_request_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;method: :post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;data: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;turbo: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;btn btn-link p-0&quot;&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- ... --&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We’re using POST form submits, because OmniAuth doesn’t allow GET requests for the request phase anymore by default. You’ll notice we had to disable Turbo for the request links, as those redirect to an external authorize URL, which don’t support AJAX visits.&lt;/p&gt;
+
+&lt;p&gt;Some OAuth authorizations require that the web app is served over HTTPS. Assuming you’re using Puma, a quick way to enable this locally would be to install the &lt;a href=&quot;https://github.com/socketry/localhost&quot;&gt;localhost&lt;/a&gt; gem, and tell the Rails server you want to use SSL:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundle add localhost &lt;span class=&quot;nt&quot;&gt;--group&lt;/span&gt; development
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails server &lt;span class=&quot;nt&quot;&gt;-b&lt;/span&gt; ssl://localhost:3000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now you should be able to open &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;https://localhost:3000/login&lt;/code&gt;, and see the Rodauth login page with social login links.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/social-login-links.png&quot; alt=&quot;Login page with Facebook and Google login links&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;login--registration&quot;&gt;Login &amp;amp; Registration&lt;/h2&gt;
+
+&lt;p&gt;When we visit the Facebook login link, and authorize the OAuth app, upon returning to the app a new verified account with your Facebook email address should be automatically created, along with the external identity, and you should be logged in.&lt;/p&gt;
+
+&lt;p&gt;You should see something like this in the database:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;last&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; #&amp;lt;Account id: 123, status: &quot;verified&quot;, email: &quot;janko.marohnic@gmail.com&quot;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;identities&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [#&amp;lt;Account::Identity id: 456, account_id: 123, provider: &quot;facebook&quot;, uid: &quot;350872771&quot;&amp;gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;A problem I often experienced as a user was forgetting which social provider I initially logged into on a certain app, and whether I had even logged in with a social provider (though I can now easily determine the latter by checking my password manager). If I would sign in with the wrong provider, this would usually result in a new account being created for me.&lt;/p&gt;
+
+&lt;p&gt;Wouldn’t it be nice if the app could detect that the email address of my existing account matches the one of the external identity, and automatically assign that identity to the existing account? Well, rodauth-omniauth does that automatically. If I were to authenticate with Google the next time, I would get logged into my existing account, with the new Google identity connected to it.&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;identities&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   #&amp;lt;Account::Identity id: 456, account_id: 123, provider: &quot;facebook&quot;, uid: &quot;350872771&quot;&amp;gt;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#   #&amp;lt;Account::Identity id: 789, account_id: 123, provider: &quot;google&quot;, uid: &quot;987349876343&quot;&amp;gt;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If for whatever reason you want to change or disable this behaviour, you can override &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;account_from_omniauth&lt;/code&gt;, which is what searches existing accounts when authenticating with a provider for the first time:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;account_from_omniauth&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# this is roughly the default implementation&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;account_table_ds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;email: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;omniauth_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;email&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# OR&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;account_from_omniauth&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# new identity = new account&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;storing-additional-data&quot;&gt;Storing additional data&lt;/h2&gt;
+
+&lt;p&gt;Let’s say users in our app can fill in their full name, and we decided to inherit it from their external identity when possible, to save them extra work.&lt;/p&gt;
+
+&lt;p&gt;We’ll assume we have a separate &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;profiles&lt;/code&gt; table associated to accounts, and we’re already creating a profile record on normal registration:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# in a migration:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:profiles&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;references&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;timestamps&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# create profile after normal registration&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;after_create_account&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;account_id: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;account_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can override the hook for creating the account via OmniAuth login, and create the profile with the name prefilled:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# create profile after registration through OmniAuth login&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;after_omniauth_create_account&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;account_id: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;account_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;omniauth_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s say we now want to store additional data on identities, which by default have only the mandatory &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;provider&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uid&lt;/code&gt; columns. We might want to store &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;created_at&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updated_at&lt;/code&gt; timestamps, as well as an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;email&lt;/code&gt; for each identity. We can start by creating the necessary columns:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# in a migration:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;add_timestamps&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_identities&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;add_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_identities&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:string&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can now ensure &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;created_at&lt;/code&gt; is set the first time we authenticate with a provider, and that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;updated_at&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;email&lt;/code&gt; are updated each time we authenticate with the provider:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# store `created_at` only when the identity is created&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;omniauth_identity_insert_hash&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;created_at: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# update `updated_at` and `email` each time the identity is updated&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;omniauth_identity_update_hash&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;updated_at: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;email: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;omniauth_email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now our account &amp;amp; identity data might look as follows:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;last&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; #&amp;lt;Account id: 123,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    status: &quot;verified&quot;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    email: &quot;janko@hey.com&quot;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    name: &quot;Janko Marohnić&quot;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;identities&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; #&amp;lt;Account::Identity&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    id: 789,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    account_id: 123,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    provider: &quot;google&quot;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    uid: &quot;987349876343&quot;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    email: &quot;janko.marohnic@gmail.com&quot;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    created_at: Fri, 11 Nov 2022 13:11:85 UTC,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    updated_at: Fri, 02 Dec 2022 08:01:26 UTC&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;multiple-account-types&quot;&gt;Multiple account types&lt;/h2&gt;
+
+&lt;p&gt;If your app has different account types which require potentially different authentication rules, you’ll be glad to know that rodauth-omniauth supports distinct configurations.&lt;/p&gt;
+
+&lt;p&gt;Let’s say we have an &lt;strong&gt;admin&lt;/strong&gt; account type, for which we want to provide logging in via GitHub. Assuming we’ve already created the OAuth app, we’ll install the OmniAuth strategy gem:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundle add omniauth-github
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails credentials:edit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;client_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;lt;YOUR_CLIENT_ID&amp;gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;client_secret&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;lt;YOUR_CLIENT_SECRET&amp;gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To protect the admin section, we’ll only allow users that are members of the company’s GitHub organization. For this, we might have the following Rodauth configuration:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_admin.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthAdmin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:omniauth&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;prefix&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/admin&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;session_key_prefix&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;admin_&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;omniauth_provider&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;credentials&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:client_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;credentials&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:client_secret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;before_omniauth_callback_route&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;omniauth_provider&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:github&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;organization_member?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;omniauth_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;set_redirect_error_flash&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;User is not a member of our GitHub organization&quot;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;redirect&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/admin&quot;&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;organization_member?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# ... check if user is a member of company&apos;s GitHub organization ...&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Since we’ve set admin routes to be prefixed with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/admin&lt;/code&gt;, OmniAuth routes will be prefixed as well, so the request phase will be at &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/admin/auth/github&lt;/code&gt;. This ensures authentication doesn’t overlap with the main account type.&lt;/p&gt;
+
+&lt;p&gt;If we had decided to use a separate table for admin accounts (e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;admins&lt;/code&gt;), we can also use a separate identities table:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# in a migration:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:admin_identities&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;references&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:admin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;on_delete: :cascade&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;unique: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthAdmin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;omniauth_identities_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:admin_identities&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;omniauth_identities_account_id_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:admin_id&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;future-work&quot;&gt;Future work&lt;/h2&gt;
+
+&lt;h3 id=&quot;separate-registration-step&quot;&gt;Separate registration step&lt;/h3&gt;
+
+&lt;p&gt;The current automatic registration assumes the external login will always return the user’s email address, which is not always the case (hello Twitter). It also assumes we don’t need additional information from the user before creating their account.&lt;/p&gt;
+
+&lt;p&gt;After external login, I would like to support having a separate registration step, with fields like email address already being filled in. The main challenge is preventing an attacker from signing up with another person’s identity. I would definitely welcome any contributions. :pray:&lt;/p&gt;
+
+&lt;h3 id=&quot;connecting-additional-identities&quot;&gt;Connecting additional identities&lt;/h3&gt;
+
+&lt;p&gt;Once the user is signed in, it would be useful to allow them to connect additional external identities, as well as disconnect already linked identities, to make future logins more reliable.&lt;/p&gt;
+
+&lt;figure&gt;
+  &lt;img alt=&quot;GitLab section for connection &amp;amp; disconnecting additional external identities&quot; src=&quot;/images/connecting-identities.png&quot; /&gt;
+  &lt;figcaption&gt;GitLab account interface&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;This feature seems more straightforward to implement. However, it’s tricky to handle the scenario when a logged in user wants to authenticate via a different provider, because by default Rodauth doesn’t disallow access to the login page in this case. There are also questions around connecting identities that are currently assigned to a different account.&lt;/p&gt;
+
+&lt;h2 id=&quot;closing-words&quot;&gt;Closing words&lt;/h2&gt;
+
+&lt;p&gt;This was definitely the most challenging Rodauth extension I’ve built. I had been working on it periodically for 2 years, and was only able to release it once I decided to postpone the mentioned features. It took a while to find the right balance between respecting OmniAuth configuration and Rodauth conventions, support JSON API with JWT, handle inheritance, figure out the OmniAuth 2.0 upgrade, and implement a customizable callback phase.&lt;/p&gt;
+
+&lt;p&gt;I was able to do all this thanks to the strong foundation Rodauth provides. Its layered design allowed me to hook at the right level to make it work well with other authentication features, while the &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html#label-Feature+Creation+Example&quot;&gt;configuration DSL&lt;/a&gt; made it easy to make any part customizable. Because Rodauth supports feature dependencies, I was able to extract the &lt;a href=&quot;https://github.com/janko/rodauth-omniauth#base&quot;&gt;pure OmniAuth integration&lt;/a&gt; for standalone usage, for those who don’t need any of the database logic.&lt;/p&gt;
+
+&lt;p&gt;While it was previously possible to use OmniAuth directly, I’m happy that Rodauth now has a social login story. Given that this is a much more integrated solution compared to what Devise offers, and other people might have more custom authentication flows, I’m curious to get everyone’s feedback. :wink:&lt;/p&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="rodauth" /><summary type="html">OmniAuth provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a wiki page laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task.</summary></entry><entry><title type="html">What It Took to Build a Rails Integration for Rodauth</title><link href="https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth/" rel="alternate" type="text/html" title="What It Took to Build a Rails Integration for Rodauth" /><published>2022-10-12T00:00:00+02:00</published><updated>2022-10-12T00:00:00+02:00</updated><id>https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth</id><content type="html" xml:base="https://janko.io/what-it-took-to-build-a-rails-integration-for-rodauth/">&lt;p&gt;When &lt;a href=&quot;https://github.com/jeremyevans/rodauth&quot;&gt;Rodauth&lt;/a&gt; came out, I was excited to finally have a full-featured authentication framework that &lt;em&gt;wasn’t&lt;/em&gt; tied to Rails, given that existing solutions required either Rails (Devise, Sorcery), or at least Active Record (Authlogic). Even though I mainly develop in Rails, I want other Ruby web frameworks to be viable alternatives, so I’m naturally drawn to generic solutions that everyone can use.&lt;/p&gt;
 
 &lt;p&gt;Even though Rodauth is built on top of &lt;a href=&quot;https://github.com/jeremyevans/roda&quot;&gt;Roda&lt;/a&gt; and &lt;a href=&quot;https://github.com/jeremyevans/sequel&quot;&gt;Sequel&lt;/a&gt;, it can work as a Rack middleware in any Ruby web framework. In the beginning, there was a &lt;a href=&quot;https://github.com/jeremyevans/rodauth-demo-rails/blob/master/config/initializers/rodauth.rb&quot;&gt;demo app&lt;/a&gt; showing how Rodauth can be used in Rails, which leveraged the (now discontinued) &lt;a href=&quot;https://github.com/jeremyevans/roda-rails&quot;&gt;roda-rails&lt;/a&gt; gem. However, the integration felt fairly raw, and definitely lacked the ergonomics Rails developers are used to.&lt;/p&gt;
 
@@ -2818,367 +3121,4 @@ project :wink:&lt;/p&gt;
   &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/documentation.html&quot;&gt;Rodauth documentation&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://github.com/janko/rodauth-rails&quot;&gt;rodauth-rails&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html&quot;&gt;Rodauth internals&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="rodauth" /><summary type="html">If you’re working with Rails, chances are your authentication layer is implemented using one of the popular authentication frameworks – Devise, Sorcery, Clearance, or Authlogic. These libraries provide complete authentication and account management functionality for Rails, giving you more time to focus on the core business logic of your product.</summary></entry><entry><title type="html">Better File Uploads with Shrine: Eager Processing</title><link href="https://janko.io/better-file-uploads-with-shrine-eager-processing/" rel="alternate" type="text/html" title="Better File Uploads with Shrine: Eager Processing" /><published>2019-12-19T00:00:00+01:00</published><updated>2019-12-19T00:00:00+01:00</updated><id>https://janko.io/better-file-uploads-with-shrine-eager-processing</id><content type="html" xml:base="https://janko.io/better-file-uploads-with-shrine-eager-processing/">&lt;p&gt;In the &lt;a href=&quot;/better-file-uploads-with-shrine-processing&quot;&gt;Processing&lt;/a&gt; article, we
-gave an introduction on what is generally possible with &lt;a href=&quot;https://github.com/shrinerb/shrine&quot;&gt;Shrine&lt;/a&gt; in terms of
-file processing. In this article I would like to go deeper into Shrine’s
-&lt;a href=&quot;https://shrinerb.com/docs/plugins/derivatives&quot;&gt;eager processing&lt;/a&gt; feature, showing some interesting use cases
-that are possible thanks to its advanced API.&lt;/p&gt;
-
-&lt;p&gt;First off, I chose the term “&lt;em&gt;eager&lt;/em&gt; processing” to describe the process of
-generating a pre-defined set of processed files (e.g. image thumbnails, encoded
-videos) and saving them alongside the main file. Paperclip and CarrierWave use
-this processing strategy. This is in contrast to “&lt;em&gt;on-the-fly&lt;/em&gt; processing”,
-where processing happens lazily when the file is requested, which is the
-strategy used by Active Storage, Refile and Dragonfly (and which &lt;a href=&quot;https://shrinerb.com/docs/plugins/derivation_endpoint&quot;&gt;Shrine
-supports as well&lt;/a&gt;).&lt;/p&gt;
-
-&lt;p&gt;When I used &lt;a href=&quot;https://github.com/thoughtbot/paperclip#post-processing&quot;&gt;Paperclip&lt;/a&gt; and &lt;a href=&quot;https://github.com/carrierwaveuploader/carrierwave#adding-versions&quot;&gt;CarrierWave&lt;/a&gt;, I was never fond of their processing implementation. The class-level
-DSLs don’t provide much flexibility for things such as dynamic versions,
-sharing objects during processing, or parallelizing processing. The processors
-themselves are coupled to the attachment context, which increases complexity
-and &lt;a href=&quot;https://github.com/carrierwaveuploader/carrierwave/wiki#add-ons&quot;&gt;encourages creating library-specific extensions&lt;/a&gt;.
-Also, moving processing to a background job is far from straightforward
-(&lt;a href=&quot;https://github.com/jrgifford/delayed_paperclip&quot;&gt;delayed_paperclip&lt;/a&gt; and &lt;a href=&quot;https://github.com/lardawge/carrierwave_backgrounder&quot;&gt;carrierwave_backgrounder&lt;/a&gt; are pretty complex).&lt;/p&gt;
-
-&lt;h2 id=&quot;derivatives&quot;&gt;Derivatives&lt;/h2&gt;
-
-&lt;p&gt;While building Shrine, I wanted to take the opportunity to solve these
-limitations, and build the API I wish I had. The &lt;a href=&quot;https://github.com/shrinerb/shrine/blob/61f36a6edda6e4654b30e78d16485c9e79a2c31f/doc/plugins/versions.md#readme&quot;&gt;first attempt&lt;/a&gt; wasn’t quite as successful, but I’ve learned a lot from it, and the
-&lt;a href=&quot;/upcoming-features-in-shrine-3-0/#derivatives&quot;&gt;next attempt&lt;/a&gt; resulted in what we can see today:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ImageUploader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;Attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ImageProcessing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MiniMagick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;large:  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;resize_to_limit!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-      &lt;span class=&quot;ss&quot;&gt;medium: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;resize_to_limit!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-      &lt;span class=&quot;ss&quot;&gt;small:  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;resize_to_limit!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Photo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Sequel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Model&lt;/span&gt;
-  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ImageUploader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Attachment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;photo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Photo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;image: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;photo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;image_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:large&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; nil&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;photo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;image_derivatives!&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# create derivatives&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;photo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;image_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:large&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;https://my-bucket.s3.amazonaws.com/path/to/large.jpg&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;How it works is that your processing block is called with the original file,
-inside which you can perform processing in any way you like (in this example
-we’re using the &lt;a href=&quot;https://github.com/janko/image_processing&quot;&gt;ImageProcessing&lt;/a&gt; gem), and then the processed files returned
-by the block are uploaded to the storage.&lt;/p&gt;
-
-&lt;p&gt;The implementation &lt;em&gt;doesn’t&lt;/em&gt; rely on &lt;a href=&quot;https://github.com/carrierwaveuploader/carrierwave/blob/712f4050913603be3a264dd114e162f3e3821727/lib/carrierwave/processing/mini_magick.rb#L305-L311&quot;&gt;in-place processing&lt;/a&gt;, &lt;a href=&quot;https://github.com/thoughtbot/paperclip/blob/6661480c5b321709ad44c7ef9572d7f908857a9d/lib/paperclip/attachment.rb#L536&quot;&gt;intermediary state mutation&lt;/a&gt;, or &lt;a href=&quot;https://github.com/thoughtbot/paperclip/blob/6661480c5b321709ad44c7ef9572d7f908857a9d/lib/paperclip/processor.rb#L21&quot;&gt;unnecessary
-processor abstractions&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;layered-api&quot;&gt;Layered API&lt;/h2&gt;
-
-&lt;p&gt;The derivatives creation API is built on top of lower level methods, each of
-which you can use standalone. This kind of layered API opens up a lot of
-possibilities, as we’ll see in the next section.&lt;/p&gt;
-
-&lt;h3 id=&quot;create-derivatives&quot;&gt;Create derivatives&lt;/h3&gt;
-
-&lt;p&gt;On the top level we have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Attacher#create_derivatives&lt;/code&gt; (in our example that’s
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;photo.image_derivatives!&lt;/code&gt;), which triggers processing and stores processed
-files:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;attach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create_derivatives&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# {&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    large: #&amp;lt;Shrine::UploadedFile id=&quot;74dbd2dd.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    medium: #&amp;lt;Shrine::UploadedFile id=&quot;92144e77.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    small: #&amp;lt;Shrine::UploadedFile id=&quot;04165c6c.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# }&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;process-derivatives&quot;&gt;Process derivatives&lt;/h3&gt;
-
-&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Attacher#process_derivatives&lt;/code&gt; method executes our processing block with
-the downloaded attached file:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;attach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;process_derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# {&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   large: #&amp;lt;File:/tmp/.../path/to/large.jpg&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   medium: #&amp;lt;File:/tmp/.../path/to/medium.jpg&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   small: #&amp;lt;File:/tmp/.../path/to/small.jpg&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# }&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;add-derivatives&quot;&gt;Add derivatives&lt;/h3&gt;
-
-&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Attacher#add_derivatives&lt;/code&gt; method uploads and saves given files:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add_derivatives&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;large:  &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/path/to/large.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;s2&quot;&gt;&quot;rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;medium: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/path/to/medium.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;small:  &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/path/to/small.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;s2&quot;&gt;&quot;rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# {&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    large: #&amp;lt;Shrine::UploadedFile id=&quot;74dbd2dd.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    medium: #&amp;lt;Shrine::UploadedFile id=&quot;92144e77.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    small: #&amp;lt;Shrine::UploadedFile id=&quot;04165c6c.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# }&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;upload-derivatives&quot;&gt;Upload derivatives&lt;/h3&gt;
-
-&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Attacher#upload_derivatives&lt;/code&gt; only uploads given files:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;upload_derivatives&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;large:  &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/path/to/large.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;s2&quot;&gt;&quot;rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;medium: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/path/to/medium.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;small:  &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/path/to/small.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;s2&quot;&gt;&quot;rb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# {&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    large: #&amp;lt;Shrine::UploadedFile id=&quot;74dbd2dd.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    medium: #&amp;lt;Shrine::UploadedFile id=&quot;92144e77.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    small: #&amp;lt;Shrine::UploadedFile id=&quot;04165c6c.jpg&quot; storage=:store metadata={...}&amp;gt;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# }&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;merge-derivatives&quot;&gt;Merge derivatives&lt;/h3&gt;
-
-&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Attacher#merge_derivatives&lt;/code&gt; method adds given uploaded files to the
-collection:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;merge_derivatives&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;large:  &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;uploaded_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;74dbd2dd.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;storage: :store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;metadata: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;medium: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;uploaded_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;92144e77.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;storage: :store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;metadata: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;small:  &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;uploaded_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;04165c6c.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;storage: :store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;metadata: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; { large: ..., medium: ..., small: ... }&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;merge_derivatives&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;sepia: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;uploaded_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;c1d7b25e.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;storage: :store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;metadata: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt;
-  &lt;span class=&quot;ss&quot;&gt;gray:  &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;uploaded_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;f2661456.jpg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;storage: :store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;metadata: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; { large: ..., medium: ..., small: ..., sepia: ..., gray: ... }&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;set-derivatives&quot;&gt;Set derivatives&lt;/h3&gt;
-
-&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Attacher#set_derivatives&lt;/code&gt; method writes derivatives data to the attachment
-column, so that the derivatives can later be loaded from it:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;set_derivatives&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;derivatives&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# {&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   &quot;id&quot;: &quot;e03d8b7d.jpg&quot;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   &quot;storage&quot;: &quot;store&quot;,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   &quot;metadata&quot;: { ... },&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   &quot;derivatives&quot;: {&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#      &quot;large&quot;: { &quot;id&quot;: &quot;74dbd2dd.jpg&quot;, &quot;storage&quot;: &quot;store&quot;, &quot;metadata&quot;: { ... } },&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#      &quot;medium&quot;: { &quot;id&quot;: &quot;92144e77.jpg&quot;, &quot;storage&quot;: &quot;store&quot;, &quot;metadata&quot;: { ... } },&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#      &quot;small&quot;: { &quot;id&quot;: &quot;04165c6c.jpg&quot;, &quot;storage&quot;: &quot;store&quot;, &quot;metadata&quot;: { ... } },&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   }&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# }&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;overview&quot;&gt;Overview&lt;/h3&gt;
-
-&lt;p&gt;These methods are composed together to form a hierarchy:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#create_derivatives&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#process_derivatives&lt;/code&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#add_derivatives&lt;/code&gt;
-        &lt;ul&gt;
-          &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#upload_derivatives&lt;/code&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#merge_derivatives&lt;/code&gt;
-            &lt;ul&gt;
-              &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#set_derivatives&lt;/code&gt;&lt;/li&gt;
-            &lt;/ul&gt;
-          &lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;use-cases&quot;&gt;Use cases&lt;/h2&gt;
-
-&lt;p&gt;I think the best way to show the flexibility of Shrine’s derivatives API is by
-showing specific use cases that might come up when building your app.&lt;/p&gt;
-
-&lt;h3 id=&quot;a-image-cropping&quot;&gt;A. Image cropping&lt;/h3&gt;
-
-&lt;p&gt;Let’s say we want to create a set of image thumbnails, but from a cropped
-version of the original. This is how we might implement this processing:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ImageUploader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;Attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;crop: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ImageProcesing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MiniMagick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;crop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;crop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;crop&lt;/span&gt;
-
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;ss&quot;&gt;large:  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;resize_to_limit!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-      &lt;span class=&quot;ss&quot;&gt;medium: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;resize_to_limit!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-      &lt;span class=&quot;ss&quot;&gt;small:  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;resize_to_limit!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;photo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;image_derivatives!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;crop: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;x: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;y: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;w: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;h: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;With CarrierWave we’d need to &lt;a href=&quot;http://railscasts.com/episodes/182-cropping-images-revised&quot;&gt;add virtual attributes for cropping&lt;/a&gt; to our model, which increases coupling, whereas with Shrine we were
-able to just pass the cropping parameters directly to the processor block.&lt;/p&gt;
-
-&lt;h3 id=&quot;b-pdf-splitting&quot;&gt;B. PDF splitting&lt;/h3&gt;
-
-&lt;p&gt;Let’s say we’re accepting PDFs and we want to extract individual pages. We can
-do this by saving each page into a file and returning them at the end of the
-process block:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PdfUploader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;Attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;page_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MiniMagick&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;pages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;count&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;pages&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;page_count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;page_number&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-      &lt;span class=&quot;no&quot;&gt;ImageProcessing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MiniMagick&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;page: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;page_number&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;convert!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jpeg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;pages: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pages&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;music_sheet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MusicSheet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;file: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pdf_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;music_sheet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;file_derivatives!&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# create pages&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;music_sheet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;file_derivatives&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:pages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# [&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   #&amp;lt;Shrine::UploadedFile id=&quot;b8725d50300a2f5a.jpg&quot; ...&amp;gt;, (page 1)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   #&amp;lt;Shrine::UploadedFile id=&quot;e2f75c340e393539.jpg&quot; ...&amp;gt;, (page 2)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   #&amp;lt;Shrine::UploadedFile id=&quot;8da9204d26cc3f73.jpg&quot; ...&amp;gt;, (page 3)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   ...&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#   #&amp;lt;Shrine::UploadedFile id=&quot;c4b0a7e396afff4d.jpg&quot; ...&amp;gt;, (page n)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# ]&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;With Paperclip or CarrierWave this is not really possible, as neither of them
-supports nested versions/styles (and CarrierWave requires declaring version
-names up front). In constrast, Shrine allows us to return &lt;a href=&quot;https://shrinerb.com/docs/plugins/derivatives#nesting-derivatives&quot;&gt;any combination of
-hashes and arrays&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;c-processing-with-libvips&quot;&gt;C. Processing with libvips&lt;/h3&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://libvips.github.io/libvips/&quot;&gt;libvips&lt;/a&gt; is a high-performance alternative to ImageMagick. Let’s say we want
-to use it to speed up our processing, using the &lt;a href=&quot;https://github.com/libvips/ruby-vips&quot;&gt;ruby-vips&lt;/a&gt; gem. This is how we
-might implement thumbnail generation:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;GenerateThumbnail&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Tempfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;thumb-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;extname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;image&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Vips&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;thumbnail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;height: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;size: :down&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;write_to_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ImageUploader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;THUMBNAILS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;ss&quot;&gt;xl: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-    &lt;span class=&quot;ss&quot;&gt;l:  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-    &lt;span class=&quot;ss&quot;&gt;m:  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-    &lt;span class=&quot;ss&quot;&gt;s:  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-    &lt;span class=&quot;ss&quot;&gt;xs: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;150&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;150&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-  &lt;span class=&quot;no&quot;&gt;Attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;no&quot;&gt;THUMBNAILS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transform_values&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-      &lt;span class=&quot;no&quot;&gt;GenerateThumbnail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Notice how our processing code is neatly encapsulated in a PORO, agnostic to
-which file upload library we’re using. By the way, the ImageProcessing gem
-already comes with a &lt;a href=&quot;https://github.com/janko/image_processing/blob/master/doc/vips.md#usage&quot;&gt;libvips backend&lt;/a&gt; for maximum
-convenience :wink:.&lt;/p&gt;
-
-&lt;h3 id=&quot;d-conditional-processing&quot;&gt;D. Conditional processing&lt;/h3&gt;
-
-&lt;p&gt;Sometimes we need to apply different processing options based on the type of
-the source file. Since the derivatives block is invoked at the time of
-processing, we can use regular conditionals for this:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ImageUploader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;plugin&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:type_predicates&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;methods: &lt;/span&gt;&lt;span class=&quot;sx&quot;&gt;%i[jpeg svg webp]&lt;/span&gt;
-
-  &lt;span class=&quot;no&quot;&gt;Attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;derivatives&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ImageProcessing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MiniMagick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;original&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;# convert SVG to PNG&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;transparent: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;white&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;convert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;svg?&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# produce progressive JPEGs&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;saver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;interlace: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;JPEG&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;quality: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;90&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;jpeg?&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# use lossless WEBP compression&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;saver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;define: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;webp: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;lossless: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webp?&lt;/span&gt;
-
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;thumbnail: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;magick&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;resize_to_limit!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;800&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;convert &lt;span class=&quot;nt&quot;&gt;-transparent&lt;/span&gt; white input.svg &lt;span class=&quot;nt&quot;&gt;-resize&lt;/span&gt; 800x800&amp;gt; output.png           &lt;span class=&quot;c&quot;&gt;# for SVG&lt;/span&gt;
-convert input.jpg &lt;span class=&quot;nt&quot;&gt;-resize&lt;/span&gt; 800x800&amp;gt; &lt;span class=&quot;nt&quot;&gt;-interlace&lt;/span&gt; JPEG &lt;span class=&quot;nt&quot;&gt;-quality&lt;/span&gt; 90 output.jpg  &lt;span class=&quot;c&quot;&gt;# for JPEG&lt;/span&gt;
-convert input.webp &lt;span class=&quot;nt&quot;&gt;-resize&lt;/span&gt; 800x800&amp;gt; &lt;span class=&quot;nt&quot;&gt;-define&lt;/span&gt; webp:lossless&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true &lt;/span&gt;output.webp &lt;span class=&quot;c&quot;&gt;# for WEBP&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;e-backgrounding&quot;&gt;E. Backgrounding&lt;/h3&gt;
-
-&lt;p&gt;Moving processing into a background job is useful for maintaining our request
-throughput and for handling retries. Since with Shrine processing is triggered
-explicitly, we can just move the processing call from the controller into the
-background worker:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;plugin&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:backgrounding&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;promote_block&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;PromoteJob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;perform_later&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PromoteJob&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveJob&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;perform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;retrieve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;model: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;record&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;name: &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;file: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create_derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# trigger our processing here&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;attacher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;atomic_promote&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;rescue&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Shrine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;AttachmentChanged&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;RecordNotFound&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# attachment has changed or record has been deleted, nothing to do&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;photo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Photo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;image: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# spawns PromoteJob&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;photo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;image_derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; {}&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# ... background job finishes ...&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;photo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;image_derivatives&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; { large: ..., medium: ..., small: ... }&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Here we’re piggybacking onto the background job that is spawned for promoting
-the cached file to permanent storage. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Attacher.retrieve&lt;/code&gt; and
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Attacher#atomic_promote&lt;/code&gt; methods are used to provide concurrency-safety,
-handling the potential case of attachment changing or the record being deleted
-during processing, and making sure any orphan files are deleted.&lt;/p&gt;
-
-&lt;h2 id=&quot;in-closing&quot;&gt;In closing&lt;/h2&gt;
-
-&lt;p&gt;For times when on-the-fly processing isn’t suitable, having a flexible eager
-processing API can really make life simpler. I believe Shrine’s take on this is
-a big improvement over what other file attachment libraries have to offer.&lt;/p&gt;
-
-&lt;p&gt;The next article I plan to write will be about Shrine’s &lt;a href=&quot;https://shrinerb.com/docs/plugins/derivation_endpoint&quot;&gt;on-the-fly
-processing&lt;/a&gt;, so stay tuned.&lt;/p&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="shrine" /><summary type="html">This is the 7th part of a series of blog posts about Shrine. In this part we will dive deeper into Shrine&apos;s eager processing feature, showing some interesting use cases that are possible thanks to its advanced API.</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="rodauth" /><summary type="html">If you’re working with Rails, chances are your authentication layer is implemented using one of the popular authentication frameworks – Devise, Sorcery, Clearance, or Authlogic. These libraries provide complete authentication and account management functionality for Rails, giving you more time to focus on the core business logic of your product.</summary></entry></feed>

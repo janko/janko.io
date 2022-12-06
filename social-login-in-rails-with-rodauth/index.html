@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Social Login in Rails with Rodauth | Janko's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Social Login in Rails with Rodauth" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="OmniAuth provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a wiki page laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task." />
+<meta property="og:description" content="OmniAuth provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a wiki page laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task." />
+<link rel="canonical" href="https://janko.io/social-login-in-rails-with-rodauth/" />
+<meta property="og:url" content="https://janko.io/social-login-in-rails-with-rodauth/" />
+<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-12-06T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Social Login in Rails with Rodauth" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@jankomarohnic" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","headline":"Social Login in Rails with Rodauth","dateModified":"2022-12-06T00:00:00+01:00","description":"OmniAuth provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a wiki page laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task.","datePublished":"2022-12-06T00:00:00+01:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/social-login-in-rails-with-rodauth/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/social-login-in-rails-with-rodauth/","author":{"@type":"Person","name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
+    <link rel="stylesheet" href="/css/bundle.css">
+  </head>
+
+  <body class="text-xl text-gray-700">
+    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b">
+      <div class="flex justify-center">
+        <a class="flex items-center space-x-2" href="/">
+          <img class="h-8" src="/images/logo.png" alt="logo">
+          <span class="text-2xl md:text-3xl font-semibold text-pink-700">Janko's Blog</span>
+        </a>
+      </div>
+      <div class="flex justify-center">
+        <span class="text-base md:text-lg text-gray-500">Sharing the wonders of Ruby
+      </span>
+</div>
+    </header>
+
+    <div class="text-center py-3 px-4 bg-sky-50 border-b border-sky-100 text-sky-600 text-base md:text-md lg:text-lg">
+      Dear Russian friends, please watch President Zelenskyy's <a href="https://www.youtube.com/watch?v=p-zilnPtZ2M" class="underline text-blue-600 hover:text-blue-500">speech addressed to you</a>.
+      🇺🇦 Support Ukraine by <a href="https://war.ukraine.ua/support-ukraine/" class="underline text-yellow-600 hover:text-yellow-500">donating</a> to humanitarian aid.
+    </div>
+
+    <div class="my-6 sm:my-8 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article>
+  <header class="space-y-4 md:space-y-5">
+    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900">Social Login in Rails with Rodauth</h1>
+
+    <div class="flex justify-center">
+      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
+        <span class="text-gray-500">
+          By <a class="underline hover:text-gray-700" href="/about">Janko Marohnić</a> on
+          <time datetime="2022-12-06 00:00:00 +0100">
+            06 Dec 2022
+          </time>
+        </span>
+        
+          
+<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5" href="/rodauth">rodauth</a>
+
+
+        
+      </div>
+    </div>
+  </header>
+
+  <div class="mt-4 sm:mt-6 markdown">
+    <p><a href="https://github.com/omniauth/omniauth">OmniAuth</a> provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a <a href="https://github.com/omniauth/omniauth/wiki/Managing-Multiple-Providers">wiki page</a> laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task.</p>
+
+<p>While Devise provides a convenience layer around OmniAuth, it does nothing to actually sign the user into your app. When I started writing the OmniAuth integration for <a href="https://github.com/jeremyevans/rodauth">Rodauth</a>, I wanted to go one step further and actually handle things like persistence of external identities, account creation and login, while still allowing the developer to customize the behaviour. That’s how <a href="https://github.com/janko/rodauth-omniauth">rodauth-omniauth</a> was created. <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png" height="20" width="20"></p>
+
+<p>In this article, I will show how to add social login to an existing Rails app that’s using Rodauth, and extend the default behaviour with some custom logic. If you’re looking to get started with Rodauth, check out <a href="https://janko.io/adding-authentication-in-rails-with-rodauth/">my previous article</a>. With that out of the way, let’s dive in.</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>We’ll start by installing the Rodauth extension and the desired OmniAuth strategies:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add rodauth-omniauth omniauth-facebook omniauth-google_oauth2
+</code></pre></div></div>
+
+<p>You don’t need to install any gems for CSRF protection of OmniAuth request endpoints, because rodauth-omniauth will automatically use whichever CSRF protection mechanism Rodauth was configured with, which in case of Rails will be <code class="language-plaintext highlighter-rouge">ActionController::RequestForgeryProtection</code>.</p>
+
+<p>If you haven’t already, create the necessary OAuth apps, and configure the callback URL to be <code class="language-plaintext highlighter-rouge">https://localhost:3000/auth/{provider}/callback</code>, where <code class="language-plaintext highlighter-rouge">{provider}</code> is either <code class="language-plaintext highlighter-rouge">facebook</code> or <code class="language-plaintext highlighter-rouge">google</code>. We’ll save the credentials for the OAuth apps into our project:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails credentials:edit
+</code></pre></div></div>
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ...</span>
+<span class="na">facebook</span><span class="pi">:</span>
+  <span class="na">app_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;YOUR_APP_ID&gt;"</span>
+  <span class="na">app_secret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;YOUR_APP_SECRET&gt;"</span>
+<span class="na">google</span><span class="pi">:</span>
+  <span class="na">client_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;YOUR_CLIENT_ID&gt;"</span>
+  <span class="na">client_secret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;YOUR_CLIENT_SECRET&gt;"</span>
+</code></pre></div></div>
+
+<p>Next, we’ll need to create the table that rodauth-omniauth will use for storing external identities:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate migration create_account_identities
+<span class="nv">$ </span>rails db:migrate
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateAccountIdentities</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:account_identities</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">references</span> <span class="ss">:account</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="p">{</span> <span class="ss">on_delete: :cascade</span> <span class="p">}</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:provider</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:uid</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">index</span> <span class="p">[</span><span class="ss">:provider</span><span class="p">,</span> <span class="ss">:uid</span><span class="p">],</span> <span class="ss">unique: </span><span class="kp">true</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>In the Rodauth configuration, we can now enable the <code class="language-plaintext highlighter-rouge">omniauth</code> feature and register our strategies:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_main.rb</span>
+<span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="n">enable</span> <span class="ss">:omniauth</span>
+
+    <span class="n">omniauth_provider</span> <span class="ss">:facebook</span><span class="p">,</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">facebook</span><span class="p">[</span><span class="ss">:app_id</span><span class="p">],</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">facebook</span><span class="p">[</span><span class="ss">:app_secret</span><span class="p">],</span>
+      <span class="ss">scope: </span><span class="s2">"email"</span>
+
+    <span class="n">omniauth_provider</span> <span class="ss">:google_oauth2</span><span class="p">,</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">google</span><span class="p">[</span><span class="ss">:client_id</span><span class="p">],</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">google</span><span class="p">[</span><span class="ss">:client_secret</span><span class="p">],</span>
+      <span class="ss">name: :google</span> <span class="c1"># rename it from "google_oauth2"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Finally, we can import the view templates for the login form, and add the social login links there:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails generate rodauth:views login
+<span class="c">#  create  app/views/rodauth/_login_form.html.erb</span>
+<span class="c">#  create  app/views/rodauth/_login_form_footer.html.erb</span>
+<span class="c">#  create  app/views/rodauth/_login_form_footer.html.erb</span>
+<span class="c">#  create  app/views/rodauth/_login_form_header.html.erb</span>
+<span class="c">#  create  app/views/rodauth/login.html.erb</span>
+<span class="c">#  create  app/views/rodauth/multi_phase_login.html.erb</span>
+</code></pre></div></div>
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/rodauth/_login_form_footer.html.erb --&gt;</span>
+<span class="c">&lt;!-- ... --&gt;</span>
+  <span class="nt">&lt;li&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">button_to</span> <span class="s2">"Login via Facebook"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">omniauth_request_path</span><span class="p">(</span><span class="ss">:facebook</span><span class="p">),</span>
+      <span class="ss">method: :post</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">turbo: </span><span class="kp">false</span> <span class="p">},</span> <span class="ss">class: </span><span class="s2">"btn btn-link p-0"</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/li&gt;</span>
+  <span class="nt">&lt;li&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">button_to</span> <span class="s2">"Login via Google"</span><span class="p">,</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">omniauth_request_path</span><span class="p">(</span><span class="ss">:google</span><span class="p">),</span>
+      <span class="ss">method: :post</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">turbo: </span><span class="kp">false</span> <span class="p">},</span> <span class="ss">class: </span><span class="s2">"btn btn-link p-0"</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/li&gt;</span>
+<span class="c">&lt;!-- ... --&gt;</span>
+</code></pre></div></div>
+
+<p>We’re using POST form submits, because OmniAuth doesn’t allow GET requests for the request phase anymore by default. You’ll notice we had to disable Turbo for the request links, as those redirect to an external authorize URL, which don’t support AJAX visits.</p>
+
+<p>Some OAuth authorizations require that the web app is served over HTTPS. Assuming you’re using Puma, a quick way to enable this locally would be to install the <a href="https://github.com/socketry/localhost">localhost</a> gem, and tell the Rails server you want to use SSL:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add localhost <span class="nt">--group</span> development
+<span class="nv">$ </span>rails server <span class="nt">-b</span> ssl://localhost:3000
+</code></pre></div></div>
+
+<p>Now you should be able to open <code class="language-plaintext highlighter-rouge">https://localhost:3000/login</code>, and see the Rodauth login page with social login links.</p>
+
+<p><img src="/images/social-login-links.png" alt="Login page with Facebook and Google login links"></p>
+
+<h2 id="login--registration">Login &amp; Registration</h2>
+
+<p>When we visit the Facebook login link, and authorize the OAuth app, upon returning to the app a new verified account with your Facebook email address should be automatically created, along with the external identity, and you should be logged in.</p>
+
+<p>You should see something like this in the database:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">last</span>
+<span class="c1">#=&gt; #&lt;Account id: 123, status: "verified", email: "janko.marohnic@gmail.com"&gt;</span>
+<span class="n">account</span><span class="p">.</span><span class="nf">identities</span>
+<span class="c1">#=&gt; [#&lt;Account::Identity id: 456, account_id: 123, provider: "facebook", uid: "350872771"&gt;]</span>
+</code></pre></div></div>
+
+<p>A problem I often experienced as a user was forgetting which social provider I initially logged into on a certain app, and whether I had even logged in with a social provider (though I can now easily determine the latter by checking my password manager). If I would sign in with the wrong provider, this would usually result in a new account being created for me.</p>
+
+<p>Wouldn’t it be nice if the app could detect that the email address of my existing account matches the one of the external identity, and automatically assign that identity to the existing account? Well, rodauth-omniauth does that automatically. If I were to authenticate with Google the next time, I would get logged into my existing account, with the new Google identity connected to it.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span><span class="p">.</span><span class="nf">identities</span> <span class="c1">#=&gt; [</span>
+<span class="c1">#   #&lt;Account::Identity id: 456, account_id: 123, provider: "facebook", uid: "350872771"&gt;,</span>
+<span class="c1">#   #&lt;Account::Identity id: 789, account_id: 123, provider: "google", uid: "987349876343"&gt;,</span>
+<span class="c1"># ]</span>
+</code></pre></div></div>
+
+<p>If for whatever reason you want to change or disable this behaviour, you can override <code class="language-plaintext highlighter-rouge">account_from_omniauth</code>, which is what searches existing accounts when authenticating with a provider for the first time:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+    <span class="n">account_from_omniauth</span> <span class="k">do</span>
+      <span class="c1"># this is roughly the default implementation</span>
+      <span class="n">account_table_ds</span><span class="p">.</span><span class="nf">first</span><span class="p">(</span><span class="ss">email: </span><span class="n">omniauth_info</span><span class="p">[</span><span class="s2">"email"</span><span class="p">])</span>
+    <span class="k">end</span>
+    <span class="c1"># OR</span>
+    <span class="n">account_from_omniauth</span> <span class="p">{}</span> <span class="c1"># new identity = new account</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="storing-additional-data">Storing additional data</h2>
+
+<p>Let’s say users in our app can fill in their full name, and we decided to inherit it from their external identity when possible, to save them extra work.</p>
+
+<p>We’ll assume we have a separate <code class="language-plaintext highlighter-rouge">profiles</code> table associated to accounts, and we’re already creating a profile record on normal registration:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># in a migration:</span>
+<span class="n">create_table</span> <span class="ss">:profiles</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+  <span class="n">t</span><span class="p">.</span><span class="nf">references</span> <span class="ss">:account</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="kp">true</span>
+  <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:name</span>
+  <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># create profile after normal registration</span>
+    <span class="n">after_create_account</span> <span class="p">{</span> <span class="no">Profile</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">account_id: </span><span class="n">account_id</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>We can override the hook for creating the account via OmniAuth login, and create the profile with the name prefilled:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># create profile after registration through OmniAuth login</span>
+    <span class="n">after_omniauth_create_account</span> <span class="k">do</span>
+      <span class="no">Profile</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">account_id: </span><span class="n">account_id</span><span class="p">,</span> <span class="ss">name: </span><span class="n">omniauth_info</span><span class="p">[</span><span class="s2">"name"</span><span class="p">])</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Let’s say we now want to store additional data on identities, which by default have only the mandatory <code class="language-plaintext highlighter-rouge">provider</code> and <code class="language-plaintext highlighter-rouge">uid</code> columns. We might want to store <code class="language-plaintext highlighter-rouge">created_at</code> &amp; <code class="language-plaintext highlighter-rouge">updated_at</code> timestamps, as well as an <code class="language-plaintext highlighter-rouge">email</code> for each identity. We can start by creating the necessary columns:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># in a migration:</span>
+<span class="n">add_timestamps</span> <span class="ss">:account_identities</span>
+<span class="n">add_column</span> <span class="ss">:account_identities</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:string</span>
+</code></pre></div></div>
+
+<p>We can now ensure <code class="language-plaintext highlighter-rouge">created_at</code> is set the first time we authenticate with a provider, and that <code class="language-plaintext highlighter-rouge">updated_at</code> and <code class="language-plaintext highlighter-rouge">email</code> are updated each time we authenticate with the provider:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RodauthMain</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># store `created_at` only when the identity is created</span>
+    <span class="n">omniauth_identity_insert_hash</span> <span class="k">do</span>
+      <span class="k">super</span><span class="p">().</span><span class="nf">merge</span><span class="p">(</span><span class="ss">created_at: </span><span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="c1"># update `updated_at` and `email` each time the identity is updated</span>
+    <span class="n">omniauth_identity_update_hash</span> <span class="k">do</span>
+      <span class="k">super</span><span class="p">().</span><span class="nf">merge</span><span class="p">(</span><span class="ss">updated_at: </span><span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">,</span> <span class="ss">email: </span><span class="n">omniauth_email</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now our account &amp; identity data might look as follows:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">account</span> <span class="o">=</span> <span class="no">Account</span><span class="p">.</span><span class="nf">last</span>
+<span class="c1">#=&gt; #&lt;Account id: 123,</span>
+<span class="c1">#    status: "verified",</span>
+<span class="c1">#    email: "janko@hey.com",</span>
+<span class="c1">#    name: "Janko Marohnić"&gt;</span>
+
+<span class="n">account</span><span class="p">.</span><span class="nf">identities</span><span class="p">.</span><span class="nf">first</span>
+<span class="c1">#=&gt; #&lt;Account::Identity</span>
+<span class="c1">#    id: 789,</span>
+<span class="c1">#    account_id: 123,</span>
+<span class="c1">#    provider: "google",</span>
+<span class="c1">#    uid: "987349876343",</span>
+<span class="c1">#    email: "janko.marohnic@gmail.com",</span>
+<span class="c1">#    created_at: Fri, 11 Nov 2022 13:11:85 UTC,</span>
+<span class="c1">#    updated_at: Fri, 02 Dec 2022 08:01:26 UTC&gt;</span>
+</code></pre></div></div>
+
+<h2 id="multiple-account-types">Multiple account types</h2>
+
+<p>If your app has different account types which require potentially different authentication rules, you’ll be glad to know that rodauth-omniauth supports distinct configurations.</p>
+
+<p>Let’s say we have an <strong>admin</strong> account type, for which we want to provide logging in via GitHub. Assuming we’ve already created the OAuth app, we’ll install the OmniAuth strategy gem:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle add omniauth-github
+<span class="nv">$ </span>rails credentials:edit
+</code></pre></div></div>
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># ...</span>
+<span class="na">github</span><span class="pi">:</span>
+  <span class="na">client_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;YOUR_CLIENT_ID&gt;"</span>
+  <span class="na">client_secret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;YOUR_CLIENT_SECRET&gt;"</span>
+</code></pre></div></div>
+
+<p>To protect the admin section, we’ll only allow users that are members of the company’s GitHub organization. For this, we might have the following Rodauth configuration:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/misc/rodauth_admin.rb</span>
+<span class="k">class</span> <span class="nc">RodauthAdmin</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="n">enable</span> <span class="ss">:omniauth</span>
+
+    <span class="n">prefix</span> <span class="s2">"/admin"</span>
+    <span class="n">session_key_prefix</span> <span class="s2">"admin_"</span>
+
+    <span class="n">omniauth_provider</span> <span class="ss">:github</span><span class="p">,</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">github</span><span class="p">[</span><span class="ss">:client_id</span><span class="p">],</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">credentials</span><span class="p">.</span><span class="nf">github</span><span class="p">[</span><span class="ss">:client_secret</span><span class="p">]</span>
+
+    <span class="n">before_omniauth_callback_route</span> <span class="k">do</span>
+      <span class="k">if</span> <span class="n">omniauth_provider</span> <span class="o">==</span> <span class="ss">:github</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">organization_member?</span><span class="p">(</span><span class="n">omniauth_info</span><span class="p">[</span><span class="s2">"nickname"</span><span class="p">])</span>
+        <span class="n">set_redirect_error_flash</span> <span class="s2">"User is not a member of our GitHub organization"</span>
+        <span class="n">redirect</span> <span class="s2">"/admin"</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">organization_member?</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+    <span class="c1"># ... check if user is a member of company's GitHub organization ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Since we’ve set admin routes to be prefixed with <code class="language-plaintext highlighter-rouge">/admin</code>, OmniAuth routes will be prefixed as well, so the request phase will be at <code class="language-plaintext highlighter-rouge">/admin/auth/github</code>. This ensures authentication doesn’t overlap with the main account type.</p>
+
+<p>If we had decided to use a separate table for admin accounts (e.g. <code class="language-plaintext highlighter-rouge">admins</code>), we can also use a separate identities table:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># in a migration:</span>
+<span class="n">create_table</span> <span class="ss">:admin_identities</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+  <span class="n">t</span><span class="p">.</span><span class="nf">references</span> <span class="ss">:admin</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">foreign_key: </span><span class="p">{</span> <span class="ss">on_delete: :cascade</span> <span class="p">}</span>
+  <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:provider</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+  <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:uid</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+  <span class="n">t</span><span class="p">.</span><span class="nf">index</span> <span class="p">[</span><span class="ss">:provider</span><span class="p">,</span> <span class="ss">:uid</span><span class="p">],</span> <span class="ss">unique: </span><span class="kp">true</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RodauthAdmin</span> <span class="o">&lt;</span> <span class="no">Rodauth</span><span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Auth</span>
+  <span class="n">configure</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+    <span class="n">omniauth_identities_table</span> <span class="ss">:admin_identities</span>
+    <span class="n">omniauth_identities_account_id_column</span> <span class="ss">:admin_id</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="future-work">Future work</h2>
+
+<h3 id="separate-registration-step">Separate registration step</h3>
+
+<p>The current automatic registration assumes the external login will always return the user’s email address, which is not always the case (hello Twitter). It also assumes we don’t need additional information from the user before creating their account.</p>
+
+<p>After external login, I would like to support having a separate registration step, with fields like email address already being filled in. The main challenge is preventing an attacker from signing up with another person’s identity. I would definitely welcome any contributions. <img class="emoji" title=":pray:" alt=":pray:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f64f.png" height="20" width="20"></p>
+
+<h3 id="connecting-additional-identities">Connecting additional identities</h3>
+
+<p>Once the user is signed in, it would be useful to allow them to connect additional external identities, as well as disconnect already linked identities, to make future logins more reliable.</p>
+
+<figure>
+  <img alt="GitLab section for connection &amp; disconnecting additional external identities" src="/images/connecting-identities.png">
+  <figcaption>GitLab account interface</figcaption>
+</figure>
+
+<p>This feature seems more straightforward to implement. However, it’s tricky to handle the scenario when a logged in user wants to authenticate via a different provider, because by default Rodauth doesn’t disallow access to the login page in this case. There are also questions around connecting identities that are currently assigned to a different account.</p>
+
+<h2 id="closing-words">Closing words</h2>
+
+<p>This was definitely the most challenging Rodauth extension I’ve built. I had been working on it periodically for 2 years, and was only able to release it once I decided to postpone the mentioned features. It took a while to find the right balance between respecting OmniAuth configuration and Rodauth conventions, support JSON API with JWT, handle inheritance, figure out the OmniAuth 2.0 upgrade, and implement a customizable callback phase.</p>
+
+<p>I was able to do all this thanks to the strong foundation Rodauth provides. Its layered design allowed me to hook at the right level to make it work well with other authentication features, while the <a href="http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html#label-Feature+Creation+Example">configuration DSL</a> made it easy to make any part customizable. Because Rodauth supports feature dependencies, I was able to extract the <a href="https://github.com/janko/rodauth-omniauth#base">pure OmniAuth integration</a> for standalone usage, for those who don’t need any of the database logic.</p>
+
+<p>While it was previously possible to use OmniAuth directly, I’m happy that Rodauth now has a social login story. Given that this is a much more integrated solution compared to what Devise offers, and other people might have more custom authentication flows, I’m curious to get everyone’s feedback. <img class="emoji" title=":wink:" alt=":wink:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png" height="20" width="20"></p>
+
+
+  </div>
+</article>
+
+<div class="mt-8 md:mt-10">
+  
+  <script src="https://utteranc.es/client.js" repo="janko/janko.io" issue-term="title" theme="github-light" crossorigin="anonymous" async>
+  </script>
+
+
+</div>
+
+      </main>
+    </div>
+
+    
+      <!-- Fathom - beautiful, simple website analytics -->
+<script src="https://bouncy-van.janko.io/script.js" data-site="EKJCVCTX" defer></script>
+<!-- / Fathom -->
+
+    
+  </body>
+</html>
