@@ -13,6 +13,10 @@
   @apply shadow border rounded;
 }
 
+.markdown figcaption {
+  @apply text-base italic text-center;
+}
+
 /* override tailwind and typography defaults */
 img.emoji {
   @apply inline my-0;
