@@ -63,6 +63,23 @@ module.exports = {
             '> ol > li > *:last-child': noMargin,
             '> ul > li > *:last-child': noMargin,
           }
+        },
+        invert: {
+          css: {
+            '--tw-prose-invert-pre-bg': 'black',
+            code: {
+              backgroundColor: 'var(--tw-prose-invert-pre-bg)',
+              borderWidth: '1px',
+              borderColor: colors.gray['800'],
+            },
+            'pre code': {
+              borderWidth: '0px',
+            },
+            pre: {
+              borderWidth: '1px',
+              borderColor: colors.gray['800'],
+            }
+          }
         }
       }
     },

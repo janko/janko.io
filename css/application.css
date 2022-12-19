@@ -6,7 +6,7 @@
 @import 'footnotes';
 
 .markdown {
-  @apply prose prose-pink md:prose-lg lg:prose-xl prose-h2:pb-2 prose-h2:border-b-[1px] prose-h2:border-gray-300 prose-pre:-mx-4 prose-pre:px-4 md:prose-pre:-mx-6 md:prose-pre:my-3 lg:prose-pre:my-4 lg:prose-pre:leading-[1.55] before:prose-code:content-none after:prose-code:content-none;
+  @apply prose prose-pink dark:prose-invert md:prose-lg lg:prose-xl prose-h2:pb-2 prose-h2:border-b-[1px] prose-h2:border-gray-300 prose-pre:-mx-4 prose-pre:px-4 md:prose-pre:-mx-6 md:prose-pre:my-3 lg:prose-pre:my-4 lg:prose-pre:leading-[1.55] before:prose-code:content-none after:prose-code:content-none;
 }
 
 .markdown img:not(.emoji) {
