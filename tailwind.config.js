@@ -66,18 +66,18 @@ module.exports = {
         },
         invert: {
           css: {
-            '--tw-prose-invert-pre-bg': 'black',
+            '--tw-prose-invert-pre-bg': colors.slate[800],
             code: {
               backgroundColor: 'var(--tw-prose-invert-pre-bg)',
               borderWidth: '1px',
-              borderColor: colors.gray['800'],
+              borderColor: colors.slate[700],
             },
             'pre code': {
               borderWidth: '0px',
             },
             pre: {
               borderWidth: '1px',
-              borderColor: colors.gray['800'],
+              borderColor: colors.slate[700],
             }
           }
         }
