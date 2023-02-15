@@ -20,7 +20,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"@type":"WebPage","headline":"Janko’s Blog","description":"Sharing the wonders of Ruby","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/sequel","author":{"@type":"Person","name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
+{"headline":"Janko’s Blog","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"WebPage","description":"Sharing the wonders of Ruby","url":"https://janko.io/sequel","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -71,15 +71,17 @@
         
       </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 dark:text-pink-500">
-        <a href="/how-i-enabled-sequel-to-reuse-active-record-connection/">How I Enabled Sequel to Reuse Active Record's Database Connection</a>
+      <h1 class="text-2xl md:text-3xl underline font-medium">
+        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/how-i-enabled-sequel-to-reuse-active-record-connection/">
+          How I Enabled Sequel to Reuse Active Record's Database Connection
+        </a>
       </h1>
 
       <div class="mt-2 markdown prose-p:mb-0">
         <p>When I started developing the <a href="https://github.com/janko/rodauth-rails">Rails integration for Rodauth</a>, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses <a href="https://sequel.jeremyevans.net/">Sequel</a> for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database.</p>
 
 
-        <a class="block mt-1" href="/how-i-enabled-sequel-to-reuse-active-record-connection/">Read more &rarr;</a>
+        <a class="inline-block mt-1" href="/how-i-enabled-sequel-to-reuse-active-record-connection/">Read more &rarr;</a>
       </div>
     </article>
   
@@ -96,8 +98,10 @@
         
       </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 dark:text-pink-500">
-        <a href="/anything-i-want-with-sequel-and-postgres/">Anything I Want With Sequel And Postgres</a>
+      <h1 class="text-2xl md:text-3xl underline font-medium">
+        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/anything-i-want-with-sequel-and-postgres/">
+          Anything I Want With Sequel And Postgres
+        </a>
       </h1>
 
       <div class="mt-2 markdown prose-p:mb-0">
@@ -107,7 +111,7 @@ app’s primary database is currently MariaDB, but we wanted to have our
 analytics data in a separate database either way, so this was a good
 opportunity to use Postgres which we’re most comfortable with anyway.</p>
 
-        <a class="block mt-1" href="/anything-i-want-with-sequel-and-postgres/">Read more &rarr;</a>
+        <a class="inline-block mt-1" href="/anything-i-want-with-sequel-and-postgres/">Read more &rarr;</a>
       </div>
     </article>
   
@@ -124,8 +128,10 @@ opportunity to use Postgres which we’re most comfortable with anyway.</p>
         
       </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 dark:text-pink-500">
-        <a href="/inserting-from-datasets-with-sequel/">Inserting from SELECT with Sequel</a>
+      <h1 class="text-2xl md:text-3xl underline font-medium">
+        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/inserting-from-datasets-with-sequel/">
+          Inserting from SELECT with Sequel
+        </a>
       </h1>
 
       <div class="mt-2 markdown prose-p:mb-0">
@@ -134,7 +140,7 @@ distributing video content. Content curators would create playlists of videos,
 submit them for approval, and once playlists were approved they would be
 automatically published to target devices.</p>
 
-        <a class="block mt-1" href="/inserting-from-datasets-with-sequel/">Read more &rarr;</a>
+        <a class="inline-block mt-1" href="/inserting-from-datasets-with-sequel/">Read more &rarr;</a>
       </div>
     </article>
   
@@ -151,8 +157,10 @@ automatically published to target devices.</p>
         
       </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 dark:text-pink-500">
-        <a href="/the-complexity-of-activerecord-transactions/">The Complexity of Active Record Transactions</a>
+      <h1 class="text-2xl md:text-3xl underline font-medium">
+        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/the-complexity-of-activerecord-transactions/">
+          The Complexity of Active Record Transactions
+        </a>
       </h1>
 
       <div class="mt-2 markdown prose-p:mb-0">
@@ -163,7 +171,7 @@ connection, which should lower the barrier for trying out Sequel in apps that
 use Active Record.</p>
 
 
-        <a class="block mt-1" href="/the-complexity-of-activerecord-transactions/">Read more &rarr;</a>
+        <a class="inline-block mt-1" href="/the-complexity-of-activerecord-transactions/">Read more &rarr;</a>
       </div>
     </article>
   
@@ -180,15 +188,17 @@ use Active Record.</p>
         
       </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 dark:text-pink-500">
-        <a href="/building-sql-expressions-with-sequel/">Building SQL Expressions with Sequel</a>
+      <h1 class="text-2xl md:text-3xl underline font-medium">
+        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/building-sql-expressions-with-sequel/">
+          Building SQL Expressions with Sequel
+        </a>
       </h1>
 
       <div class="mt-2 markdown prose-p:mb-0">
         <p>I’ve recently started working on a new project which uses <a href="https://github.com/jeremyevans/sequel">Sequel</a>, and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a <a href="https://janko.io/ode-to-sequel/">gentle introduction to Sequel</a> a while back.</p>
 
 
-        <a class="block mt-1" href="/building-sql-expressions-with-sequel/">Read more &rarr;</a>
+        <a class="inline-block mt-1" href="/building-sql-expressions-with-sequel/">Read more &rarr;</a>
       </div>
     </article>
   
@@ -205,8 +215,10 @@ use Active Record.</p>
         
       </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 dark:text-pink-500">
-        <a href="/activerecord-is-reinventing-sequel/">ActiveRecord is reinventing Sequel</a>
+      <h1 class="text-2xl md:text-3xl underline font-medium">
+        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/activerecord-is-reinventing-sequel/">
+          ActiveRecord is reinventing Sequel
+        </a>
       </h1>
 
       <div class="mt-2 markdown prose-p:mb-0">
@@ -219,7 +231,7 @@ have as well:
 <a href="https://mrbrdo.wordpress.com/2013/10/15/why-you-should-stop-using-activerecord-and-start-using-sequel/">2</a>).</p>
 
 
-        <a class="block mt-1" href="/activerecord-is-reinventing-sequel/">Read more &rarr;</a>
+        <a class="inline-block mt-1" href="/activerecord-is-reinventing-sequel/">Read more &rarr;</a>
       </div>
     </article>
   
@@ -236,8 +248,10 @@ have as well:
         
       </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 dark:text-pink-500">
-        <a href="/ode-to-sequel/">Ode to Sequel</a>
+      <h1 class="text-2xl md:text-3xl underline font-medium">
+        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/ode-to-sequel/">
+          Ode to Sequel
+        </a>
       </h1>
 
       <div class="mt-2 markdown prose-p:mb-0">
@@ -246,7 +260,7 @@ Rails, I couldn’t imagine why I would want to use anything else. When I moved
 away from Rails, I was still using ActiveRecord at first, but some things
 started to bother me:</p>
 
-        <a class="block mt-1" href="/ode-to-sequel/">Read more &rarr;</a>
+        <a class="inline-block mt-1" href="/ode-to-sequel/">Read more &rarr;</a>
       </div>
     </article>
   
