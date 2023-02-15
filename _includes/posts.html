@@ -10,13 +10,15 @@
         {% endfor %}
       </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium text-pink-700 dark:text-pink-500">
-        <a href="{{ post.url }}">{{ post.title }}</a>
+      <h1 class="text-2xl md:text-3xl underline font-medium">
+        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="{{ post.url }}">
+          {{ post.title }}
+        </a>
       </h1>
 
       <div class="mt-2 markdown prose-p:mb-0">
         {{ post.excerpt }}
-        <a class="block mt-1" href="{{ post.url }}">Read more &rarr;</a>
+        <a class="inline-block mt-1" href="{{ post.url }}">Read more &rarr;</a>
       </div>
     </article>
   {% endfor %}
