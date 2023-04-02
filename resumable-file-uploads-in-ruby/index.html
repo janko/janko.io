@@ -22,7 +22,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"dateModified":"2016-09-04T00:00:00+02:00","datePublished":"2016-09-04T00:00:00+02:00","headline":"Resumable File Uploads in Ruby","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/resumable-file-uploads-in-ruby/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","description":"I recently released tus-ruby-server, a Ruby server implementation for tus, an open protocol for resumable file uploads built on HTTP.","url":"https://janko.io/resumable-file-uploads-in-ruby/","@context":"https://schema.org"}</script>
+{"headline":"Resumable File Uploads in Ruby","dateModified":"2016-09-04T00:00:00+02:00","datePublished":"2016-09-04T00:00:00+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/resumable-file-uploads-in-ruby/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","description":"I recently released tus-ruby-server, a Ruby server implementation for tus, an open protocol for resumable file uploads built on HTTP.","url":"https://janko.io/resumable-file-uploads-in-ruby/","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
@@ -139,15 +139,15 @@ which you can run standalone or as part of your app:</p>
 <p>On the client-side you can now use <a href="https://github.com/tus/tus-js-client">tus-js-client</a> to listen on file select,
 and initiate a tus upload to the endpoint.</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">fileInput</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">"</span><span class="s2">change</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">fileInput</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">"</span><span class="s2">change</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">file</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">files</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
 
-  <span class="kd">var</span> <span class="nx">upload</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">tus</span><span class="p">.</span><span class="nx">Upload</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">upload</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">tus</span><span class="p">.</span><span class="nc">Upload</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="p">{</span>
     <span class="na">endpoint</span><span class="p">:</span>  <span class="dl">"</span><span class="s2">http://localhost:9292/files/</span><span class="dl">"</span><span class="p">,</span>
     <span class="na">chunkSize</span><span class="p">:</span> <span class="mi">15</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span> <span class="c1">// 15MB</span>
   <span class="p">});</span>
 
-  <span class="nx">upload</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+  <span class="nx">upload</span><span class="p">.</span><span class="nf">start</span><span class="p">();</span>
 <span class="p">});</span>
 </code></pre></div></div>
 
@@ -339,7 +339,7 @@ just need to configure tus-js-client or whichever client library you’re using
 to upload in multiple chunks. This way if the connection gets interrupted, all
 previously uploaded chunks will remain on the server.</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nx">tus</span><span class="p">.</span><span class="nx">Upload</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="p">{</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nx">tus</span><span class="p">.</span><span class="nc">Upload</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">endpoint</span><span class="p">:</span>  <span class="dl">"</span><span class="s2">http://localhost:9292/files/</span><span class="dl">"</span><span class="p">,</span>
   <span class="na">chunkSize</span><span class="p">:</span> <span class="mi">15</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span> <span class="c1">// 15MB</span>
 <span class="p">});</span>
