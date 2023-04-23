@@ -2,23 +2,15 @@
 layout: default
 ---
 
-<article>
-  <header class="space-y-4 md:space-y-5">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900 dark:text-gray-100">{{ page.title }}</h1>
+<article class="mt-4">
+  <time datetime="{{ page.date | date: "%Y-%m-%d" }}" class="flex items-center text-slate-400 text-sm md:text-base">
+    <span class="h-4 md:h-5 w-0.5 rounded-full bg-slate-200 dark:bg-slate-500"></span>
+    <span class="ml-3">{{ page.date | date: "%B %d, %Y" }}</span>
+  </time>
 
-    <div class="flex justify-center">
-      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
-        <span class="text-gray-500 dark:text-gray-400">
-          By <a class="underline transition hover:text-gray-300" href="/about">{{ site.author.name }}</a> on
-          <time datetime="{{ page.date }}">
-            {{ page.date | date_to_string }}
-          </time>
-        </span>
-      </div>
-    </div>
-  </header>
+  <h1 class="mt-5 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-semibold text-gray-900 tracking-tight dark:text-gray-100">{{ page.title }}</h1>
 
-  <div class="mt-4 sm:mt-6 markdown">
+  <div class="mt-6 sm:mt-8 markdown">
     {{ content }}
   </div>
 </article>
