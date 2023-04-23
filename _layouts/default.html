@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/bundle.css">
   </head>
 
-  <body class="text-xl text-slate-700 dark:bg-slate-900 dark:text-slate-400">
+  <body class="text-xl text-slate-700 dark:bg-slate-900 dark:text-slate-400 min-h-screen flex flex-col">
     <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b dark:bg-slate-800/70 dark:border-slate-700">
       <div class="flex justify-center">
         <a class="flex items-center space-x-2" href="/">
@@ -19,7 +19,7 @@
       </div>
     </header>
 
-    <div class="my-6 sm:my-8 mx-4">
+    <div class="flex-1 my-6 sm:my-8 mx-4">
       <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
         {{ content }}
       </main>
