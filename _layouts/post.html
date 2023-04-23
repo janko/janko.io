@@ -14,9 +14,6 @@ layout: default
             {{ page.date | date_to_string }}
           </time>
         </span>
-        {% for tag in page.tags %}
-          {% include category.html category=tag %}
-        {% endfor %}
       </div>
     </div>
   </header>
