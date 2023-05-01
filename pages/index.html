@@ -1,5 +1,12 @@
 ---
 permalink: /
+redirect_from: /about
 ---
 
-{% include posts.html posts=site.posts %}
+<div class="mt-4">
+  {% include about.html posts=site.posts %}
+</div>
+
+<div class="mt-2 xs:mt-4 md:mt-6">
+  {% include posts.html posts=site.posts %}
+</div>

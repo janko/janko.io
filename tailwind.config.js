@@ -11,6 +11,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: '460px',
+      },
       colors: {
         gray: {
           '450': '#94949e',

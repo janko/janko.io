@@ -2,21 +2,21 @@
   {% for post in include.posts %}
     {% assign year = post.date | date: "%Y" %}
     {% if year != current_year %}
-      <div class="text-sm md:text-base text-slate-600 font-medium tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">{{ year }}</div>
+      <div class="text-sm md:text-base text-slate-600 font-semibold tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">{{ year }}</div>
       {% assign current_year = year %}
     {% endif %}
 
     <article class="py-2 relative group">
       <div class="flex items-center space-x-2">
-        <time class="min-w-[3.5rem] md:min-w-[4rem] text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="{{ post.date | date: "%Y-%m-%d" }}">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="{{ post.date | date: "%Y-%m-%d" }}">
           {{ post.date | date: "%b %d" }}
         </time>
 
-        <h2 class="text-lg flex-1 md:text-xl text-slate-900 truncate group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           {{ post.title }}
         </h2>
 
-        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition">
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
