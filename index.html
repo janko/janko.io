@@ -2,1078 +2,1017 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Janko's Blog</title>
+    <title>Janko Marohnić</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Begin Jekyll SEO tag v2.7.1 -->
-<meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="Janko’s Blog" />
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="Janko Marohnić" />
 <meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
 <link rel="canonical" href="https://janko.io/" />
 <meta property="og:url" content="https://janko.io/" />
-<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:site_name" content="Janko Marohnić" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Janko’s Blog" />
+<meta property="twitter:title" content="Janko Marohnić" />
 <meta name="twitter:site" content="@jankomarohnic" />
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"name":"Janko’s Blog","headline":"Janko’s Blog","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"WebSite","url":"https://janko.io/","@context":"https://schema.org"}</script>
+{"name":"Janko Marohnić","headline":"Janko Marohnić","@type":"WebSite","author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
-    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko Marohnić" />
     <link rel="stylesheet" href="/css/bundle.css">
+    <script>
+      function updateTheme() {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+      }
+      updateTheme()
+    </script>
   </head>
 
-  <body class="text-xl text-slate-700 dark:bg-slate-900 dark:text-slate-400">
-    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b dark:bg-slate-800/70 dark:border-slate-700">
-      <div class="flex justify-center">
-        <a class="flex items-center space-x-2" href="/">
-          <img class="h-8" src="/images/logo.png" alt="logo">
-          <span class="text-2xl md:text-3xl font-semibold text-pink-700 dark:text-pink-500">Janko's Blog</span>
+  <body class="text-xl text-slate-700 dark:bg-slate-900 dark:text-slate-400 min-h-screen flex flex-col">
+    <header class="py-3 px-4 bg-gray-100 border-b dark:bg-slate-800/70 dark:border-slate-700">
+      <div class="max-w-screen-sm md:max-w-screen-md mx-auto flex items-center">
+        <a class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide text-pink-700/80 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400 flex-1 transition" href="/">
+          Janko Marohnić
         </a>
+
+        <a class="flex items-center space-x-2 justify-self-center" href="/">
+          <svg class="h-7 w-7 rounded lg:h-10 lg:w-10 lg:rounded-lg" role="img" aria-labelledby="logo-title" viewBox="0 0 64 64">
+            <title id="logo-title">logo</title>
+            <clipPath id="topLeft"><path d="M64,0.025l-64,64l0,-64l64,0Z"></path></clipPath>
+            <clipPath id="bottomRight"><path d="M0,64l64,-64l0,64l-64,0Z"></path></clipPath>
+            <g clip-path="url(#topLeft)"><rect class="fill-current text-pink-500" x="0.025" y="0.025" width="64" height="64"></rect><path class="fill-current text-white" d="M31.989,22.518c-0.031,-4.597 -0.902,-8.134 -2.612,-10.613c-1.71,-2.478 -4.165,-3.717 -7.365,-3.717c-3.2,0 -5.655,1.251 -7.365,3.753c-1.71,2.502 -2.565,6.114 -2.565,10.836l0,6.471c0.063,4.549 0.953,8.043 2.671,10.483c1.718,2.439 4.153,3.659 7.306,3.659c3.185,0 5.636,-1.255 7.354,-3.765c1.717,-2.51 2.576,-6.134 2.576,-10.871l0,-6.236Zm-6.682,7.647c-0.032,2.605 -0.31,4.538 -0.836,5.801c-0.525,1.263 -1.329,1.894 -2.412,1.894c-1.145,0 -1.988,-0.675 -2.529,-2.024c-0.542,-1.349 -0.812,-3.404 -0.812,-6.165l0,-8.541c0.078,-4.942 1.176,-7.413 3.294,-7.413c1.13,0 1.961,0.675 2.494,2.024c0.534,1.349 0.801,3.373 0.801,6.071l0,8.353Z"></path></g><g clip-path="url(#bottomRight)"><rect class="fill-current text-pink-700" x="0.025" y="0.025" width="64" height="64"></rect><path class="fill-current text-white" d="M44.945,55.261l-6.553,0l0,-25.659l-6.392,2.469l0,-5.446l12.253,-5.007l0.692,0l0,33.643Z"></path><
+          </svg>
+        </a>
+
+        <span class="flex-1 flex space-x-2 justify-end">
+          <button type="button" class="theme-reset rounded-full bg-sky-200 dark:bg-sky-900 px-2.5 py-1 text-xs font-medium text-sky-700 dark:text-white shadow-sm dark:hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-200">Reset to OS</button>
+
+          <button type="button" class="theme-toggle bg-gray-200 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transitikon-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-700 focus:ring-offset-2 dark:focus:ring-pink-500 dark:focus:ring-offset-slate-900" role="switch" aria-checked="false">
+            <span class="sr-only">Use setting</span>
+            <span class="theme-toggle-ring translate-x-0 pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out">
+              <span class="theme-toggle-light opacity-100 duration-200 ease-in absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4kkkkkkk h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                </svg>
+              </span>
+              <span class="theme-toggle-dark opacity-0 duration-100 ease-out absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-pink-500">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+              </span>
+            </span>
+          </button>
+        </span>
       </div>
     </header>
 
-    <div class="my-6 sm:my-8 mx-4">
+    <div class="flex-1 my-2 sm:my-4 mx-4">
       <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
-        <div class="space-y-10">
+        <div class="mt-4">
+  <div class="flex items-center space-x-4 md:space-x-6 mx-0 lg:-mx-6 bg-blue-50 border border-sky-200 bg-sky-50 px-4 py-3 md:py-5 md:px-6 rounded-xl overflow-x-scroll dark:bg-sky-950 dark:border-sky-600">
+  <img src="/images/me.jpg" class="h-20 xs:h-24 sm:h-32 rounded-xl">
+  <div class="flex flex-col justify-center">
+    
+    <p class="text-slate-900 dark:text-slate-200 text-sm xs:text-base md:text-lg ">Ruby developer, Rails critic, open source maintainer, authentication consultant.</p>
+
+    <div class="mt-2 xs:mt-4 sm:mt-5 flex items-center space-x-3 xs:space-x-5">
+      
+
+      <a href="https://github.com/janko" title="GitHub" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 dark:hidden transition hover:scale-110" viewBox="0 0 24 24">
+          <path xmlns="http://www.w3.org/2000/svg" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+        </svg>
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 hidden dark:block transition hover:scale-110" viewBox="0 0 100 100">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" fill="#fff"/>
+        </svg>
+      </a>
+      <a href="https://twitter.com/jankomarohnic" title="Twitter" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 text-blue-400 transition hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M17.316 6.246c0.008 0.162 0.011 0.326 0.011 0.488 0 4.99-3.797 10.742-10.74 10.742-2.133 0-4.116-0.625-5.787-1.697 0.296 0.035 0.596 0.053 0.9 0.053 1.77 0 3.397-0.604 4.688-1.615-1.651-0.031-3.046-1.121-3.526-2.621 0.23 0.043 0.467 0.066 0.71 0.066 0.345 0 0.679-0.045 0.995-0.131-1.727-0.348-3.028-1.873-3.028-3.703 0-0.016 0-0.031 0-0.047 0.509 0.283 1.092 0.453 1.71 0.473-1.013-0.678-1.68-1.832-1.68-3.143 0-0.691 0.186-1.34 0.512-1.898 1.861 2.285 4.644 3.787 7.781 3.945-0.064-0.277-0.097-0.564-0.097-0.861 0-2.084 1.689-3.773 3.774-3.773 1.086 0 2.067 0.457 2.756 1.191 0.859-0.17 1.667-0.484 2.397-0.916-0.282 0.881-0.881 1.621-1.66 2.088 0.764-0.092 1.49-0.293 2.168-0.594-0.506 0.758-1.146 1.422-1.884 1.953z"></path>
+        </svg>
+      </a>
+      <a href="https://www.youtube.com/@jankomarohnic" title="YouTube" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-110" viewBox="0 0 159 110" fill="currentColor">
+          <path d="m154 17.5c-1.82-6.73-7.07-12-13.8-13.8-9.04-3.49-96.6-5.2-122 0.1-6.73 1.82-12 7.07-13.8 13.8-4.08 17.9-4.39 56.6 0.1 74.9 1.82 6.73 7.07 12 13.8 13.8 17.9 4.12 103 4.7 122 0 6.73-1.82 12-7.07 13.8-13.8 4.35-19.5 4.66-55.8-0.1-75z" fill="#f00"/>
+          <path d="m105 55-40.8-23.4v46.8z" fill="#fff"/>
+        </svg>
+      </a>
+      <a href="https://www.linkedin.com/in/janko-marohnic/" title="LinkedIn" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-110" viewBox="0 0 72 72" width="72" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" fill-rule="evenodd"><path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" fill="#007EBB"/><path d="M62,62 L51.315625,62 L51.315625,43.8021149 C51.315625,38.8127542 49.4197917,36.0245323 45.4707031,36.0245323 C41.1746094,36.0245323 38.9300781,38.9261103 38.9300781,43.8021149 L38.9300781,62 L28.6333333,62 L28.6333333,27.3333333 L38.9300781,27.3333333 L38.9300781,32.0029283 C38.9300781,32.0029283 42.0260417,26.2742151 49.3825521,26.2742151 C56.7356771,26.2742151 62,30.7644705 62,40.051212 L62,62 Z M16.349349,22.7940133 C12.8420573,22.7940133 10,19.9296567 10,16.3970067 C10,12.8643566 12.8420573,10 16.349349,10 C19.8566406,10 22.6970052,12.8643566 22.6970052,16.3970067 C22.6970052,19.9296567 19.8566406,22.7940133 16.349349,22.7940133 Z M11.0325521,62 L21.769401,62 L21.769401,27.3333333 L11.0325521,27.3333333 L11.0325521,62 Z" fill="#FFF"/></g>
+        </svg>
+      </a>
+      <a href="https://speakerdeck.com/janko_m" title="Speaker Deck">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-110" viewBox="0 0 256 160">
+          <g><path d="M106.932331,100 L50,100 C22.3857624,100 0,77.6142376 0,50 C0,22.3857624 22.3857624,0 50,0 L116.421053,0 C127.466748,0 136.421053,8.9543048 136.421053,20 C136.421053,31.0456952 127.466748,40 116.421053,40 L48.977444,40 C43.454596,40 38.977444,44.4771528 38.977444,50 C38.977444,55.5228472 43.454596,60 48.977444,60 L105.909774,60 C133.524012,60 155.909774,82.3857624 155.909774,110 C155.909774,137.614238 133.524012,160 105.909774,160 L20,160 C8.9543048,160 0,151.045695 0,140 C0,128.954305 8.9543048,120 20,120 L106.932331,120 C112.455178,120 116.932331,115.522847 116.932331,110 C116.932331,104.477153 112.455178,100 106.932331,100 Z M149.013633,160 C162.31303,151.005667 171.818454,136.66797 174.567639,120 L206.843433,120 C212.273117,120 216.674746,115.522847 216.674746,110 L216.674746,50 C216.674746,44.4771528 212.273117,40 206.843433,40 L148.210526,40 C152.880793,34.6924352 155.720602,27.683544 155.720602,20 C155.720602,12.316456 152.880793,5.3075648 148.210526,0 L216.674746,0 C238.393484,0 256,17.9086104 256,40 L256,120 C256,142.09139 238.393484,160 216.674746,160 L149.013633,160 Z" fill="#009287"></path></g>
+        </svg>
+      </a>
+      <a href="mailto:janko@hey.com" title="Email">
+        <svg class="w-7 h-7 text-red-500 transition hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M1.574 5.286c0.488 0.262 7.248 3.894 7.5 4.029s0.578 0.199 0.906 0.199c0.328 0 0.654-0.064 0.906-0.199s7.012-3.767 7.5-4.029c0.489-0.263 0.951-1.286 0.054-1.286h-16.919c-0.897 0-0.435 1.023 0.053 1.286zM18.613 7.489c-0.555 0.289-7.387 3.849-7.727 4.027s-0.578 0.199-0.906 0.199-0.566-0.021-0.906-0.199-7.133-3.739-7.688-4.028c-0.39-0.204-0.386 0.035-0.386 0.219s0 7.293 0 7.293c0 0.42 0.566 1 1 1h16c0.434 0 1-0.58 1-1 0 0 0-7.108 0-7.292s0.004-0.423-0.387-0.219z"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="mt-2 xs:mt-4 md:mt-6">
+  <div class="divide-y dark:divide-slate-600">
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2022-12-06 00:00:00 +0100">
-          06 Dec 2022
+    
+    
+      <div class="text-sm md:text-base text-slate-600 font-semibold tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">2022</div>
+      
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2022-12-06">
+          Dec 06
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5 dark:bg-blue-900 dark:text-blue-300" href="/rodauth">rodauth</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/social-login-in-rails-with-rodauth/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Social Login in Rails with Rodauth
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p><a href="https://github.com/omniauth/omniauth">OmniAuth</a> provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a <a href="https://github.com/omniauth/omniauth/wiki/Managing-Multiple-Providers">wiki page</a> laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task.</p>
-
-
-        <a class="inline-block mt-1" href="/social-login-in-rails-with-rodauth/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/social-login-in-rails-with-rodauth/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2022-10-12 00:00:00 +0200">
-          12 Oct 2022
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2022-10-12">
+          Oct 12
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5 dark:bg-blue-900 dark:text-blue-300" href="/rodauth">rodauth</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/what-it-took-to-build-a-rails-integration-for-rodauth/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           What It Took to Build a Rails Integration for Rodauth
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>When <a href="https://github.com/jeremyevans/rodauth">Rodauth</a> came out, I was excited to finally have a full-featured authentication framework that <em>wasn’t</em> tied to Rails, given that existing solutions required either Rails (Devise, Sorcery), or at least Active Record (Authlogic). Even though I mainly develop in Rails, I want other Ruby web frameworks to be viable alternatives, so I’m naturally drawn to generic solutions that everyone can use.</p>
-
-
-        <a class="inline-block mt-1" href="/what-it-took-to-build-a-rails-integration-for-rodauth/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/what-it-took-to-build-a-rails-integration-for-rodauth/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2022-04-24 00:00:00 +0200">
-          24 Apr 2022
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2022-04-24">
+          Apr 24
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5 dark:bg-yellow-900 dark:text-yellow-300" href="/sequel">sequel</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/how-i-enabled-sequel-to-reuse-active-record-connection/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           How I Enabled Sequel to Reuse Active Record's Database Connection
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>When I started developing the <a href="https://github.com/janko/rodauth-rails">Rails integration for Rodauth</a>, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses <a href="https://sequel.jeremyevans.net/">Sequel</a> for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database.</p>
-
-
-        <a class="inline-block mt-1" href="/how-i-enabled-sequel-to-reuse-active-record-connection/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/how-i-enabled-sequel-to-reuse-active-record-connection/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2021-03-29 00:00:00 +0200">
-          29 Mar 2021
+    
+    
+      <div class="text-sm md:text-base text-slate-600 font-semibold tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">2021</div>
+      
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2021-03-29">
+          Mar 29
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5 dark:bg-yellow-900 dark:text-yellow-300" href="/sequel">sequel</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/anything-i-want-with-sequel-and-postgres/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Anything I Want With Sequel And Postgres
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>At work I was tasked to migrate our time-series analytics data from CSV file
-dumps that we’ve been feeding into Power BI to a dedicated database. Our Rails
-app’s primary database is currently MariaDB, but we wanted to have our
-analytics data in a separate database either way, so this was a good
-opportunity to use Postgres which we’re most comfortable with anyway.</p>
-
-        <a class="inline-block mt-1" href="/anything-i-want-with-sequel-and-postgres/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/anything-i-want-with-sequel-and-postgres/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2021-01-24 00:00:00 +0100">
-          24 Jan 2021
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2021-01-24">
+          Jan 24
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-teal-100 text-teal-700 font-semibold py-0.5 dark:bg-teal-900 dark:text-teal-300" href="/til">til</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/interesting-throw-catch-behaviour-in-ruby/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Interesting throw/catch behaviour in Ruby
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>When I was working on integrating <a href="https://github.com/jeremyevans/rodauth">Rodauth</a> with OmniAuth authentication, I
-noticed an error warning after upgrading to Rails 6.1, when Rodauth was
-redirecting inside a Rails controller action:</p>
-
-
-        <a class="inline-block mt-1" href="/interesting-throw-catch-behaviour-in-ruby/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/interesting-throw-catch-behaviour-in-ruby/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2020-12-21 00:00:00 +0100">
-          21 Dec 2020
+    
+    
+      <div class="text-sm md:text-base text-slate-600 font-semibold tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">2020</div>
+      
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2020-12-21">
+          Dec 21
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5 dark:bg-blue-900 dark:text-blue-300" href="/rodauth">rodauth</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/adding-multifactor-authentication-in-rails-with-rodauth/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Multifactor Authentication in Rails with Rodauth
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>Multi-factor authentication or MFA (generalized two-factor authentication or
-2FA) is a method of authentication where the user is required to provide two or
-more pieces of evidence (“factors”) in order to be granted access. Typically
-the user would first prove knowledge of something only they <em>know</em> (e.g. their
-password), and then prove posession of something only they <em>own</em> (e.g. another
-device). This provides an extra layer of security for the user’s account.</p>
-
-        <a class="inline-block mt-1" href="/adding-multifactor-authentication-in-rails-with-rodauth/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/adding-multifactor-authentication-in-rails-with-rodauth/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2020-11-19 00:00:00 +0100">
-          19 Nov 2020
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2020-11-19">
+          Nov 19
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5 dark:bg-blue-900 dark:text-blue-300" href="/rodauth">rodauth</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/adding-authentication-in-rails-with-rodauth/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Rails Authentication with Rodauth
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>In this tutorial, we’ll show how to add fully functional authentication and
-account management functionality into a Rails app, using the <strong><a href="https://github.com/jeremyevans/rodauth">Rodauth</a></strong>
-authentication framework. Rodauth has many advantages over the mainstream
-alternatives such as Devise, Sorcery, Clearance, and Authlogic, see my
-<a href="https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/">previous article</a> for an introduction.</p>
-
-
-        <a class="inline-block mt-1" href="/adding-authentication-in-rails-with-rodauth/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/adding-authentication-in-rails-with-rodauth/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2020-11-02 00:00:00 +0100">
-          02 Nov 2020
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2020-11-02">
+          Nov 02
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5 dark:bg-yellow-900 dark:text-yellow-300" href="/sequel">sequel</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/inserting-from-datasets-with-sequel/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Inserting from SELECT with Sequel
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>At a previous company, I was working on an internal app for managing and
-distributing video content. Content curators would create playlists of videos,
-submit them for approval, and once playlists were approved they would be
-automatically published to target devices.</p>
-
-        <a class="inline-block mt-1" href="/inserting-from-datasets-with-sequel/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/inserting-from-datasets-with-sequel/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2020-09-28 00:00:00 +0200">
-          28 Sep 2020
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2020-09-28">
+          Sep 28
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5 dark:bg-yellow-900 dark:text-yellow-300" href="/sequel">sequel</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/the-complexity-of-activerecord-transactions/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           The Complexity of Active Record Transactions
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>I’ve recently picked up the <a href="https://github.com/janko/sequel-activerecord_connection">sequel-activerecord_connection</a> gem again to make
-some reliability improvements around database transactions. For context, this
-gem extends <a href="https://github.com/jeremyevans/sequel">Sequel</a> with the ability to reuse Active Record’s database
-connection, which should lower the barrier for trying out Sequel in apps that
-use Active Record.</p>
-
-
-        <a class="inline-block mt-1" href="/the-complexity-of-activerecord-transactions/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/the-complexity-of-activerecord-transactions/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2020-08-18 00:00:00 +0200">
-          18 Aug 2020
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2020-08-18">
+          Aug 18
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-blue-100 text-blue-700 font-semibold py-0.5 dark:bg-blue-900 dark:text-blue-300" href="/rodauth">rodauth</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/rodauth-a-refreshing-authentication-solution-for-ruby/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Rodauth: A Refreshing Authentication Solution for Ruby
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>If you’re working with Rails, chances are your authentication layer is
-implemented using one of the popular authentication frameworks – <a href="https://github.com/heartcombo/devise">Devise</a>,
-<a href="https://github.com/Sorcery/sorcery">Sorcery</a>, <a href="https://github.com/thoughtbot/clearance">Clearance</a>, or <a href="https://github.com/binarylogic/authlogic">Authlogic</a>. These libraries provide complete
-authentication and account management functionality for Rails, giving you more
-time to focus on the core business logic of your product.</p>
-
-
-        <a class="inline-block mt-1" href="/rodauth-a-refreshing-authentication-solution-for-ruby/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/rodauth-a-refreshing-authentication-solution-for-ruby/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2019-12-19 00:00:00 +0100">
-          19 Dec 2019
+    
+    
+      <div class="text-sm md:text-base text-slate-600 font-semibold tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">2019</div>
+      
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2019-12-19">
+          Dec 19
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/better-file-uploads-with-shrine-eager-processing/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Better File Uploads with Shrine: Eager Processing
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>This is the 7th part of a series of blog posts about Shrine. In this part we will dive deeper into Shrine's eager processing feature, showing some interesting use cases that are possible thanks to its advanced API.</p>
-        <a class="inline-block mt-1" href="/better-file-uploads-with-shrine-eager-processing/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/better-file-uploads-with-shrine-eager-processing/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2019-10-14 00:00:00 +0200">
-          14 Oct 2019
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2019-10-14">
+          Oct 14
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/shrine-3-0-released/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Shrine 3.0 Released
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>I’ve just released version 3.0 of <a href="https://shrinerb.com">Shrine</a>, a gem for handling file attachments
-in Ruby applications. It’s been months of hard work, but I feel it’s finally
-ready.</p>
-
-
-        <a class="inline-block mt-1" href="/shrine-3-0-released/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/shrine-3-0-released/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2019-08-29 00:00:00 +0200">
-          29 Aug 2019
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2019-08-29">
+          Aug 29
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/upcoming-features-in-shrine-3-0/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Upcoming Features in Shrine 3.0
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>The last couple of months I’ve been working hard to prepare for <a href="https://shrinerb.com/docs/release_notes/3.0.0">Shrine 3.0</a>,
-which I expect will be released by the end of October. A lot of work has gone
-into it, including some big but much needed rewrites. I feel the API has
-stabilized now, so I thought it would be a good time to share with your some of
-the new features and improvements that will be coming to 3.0. <img class="emoji" title=":tada:" alt=":tada:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f389.png" height="20" width="20"></p>
-
-
-        <a class="inline-block mt-1" href="/upcoming-features-in-shrine-3-0/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/upcoming-features-in-shrine-3-0/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2018-11-21 00:00:00 +0100">
-          21 Nov 2018
+    
+    
+      <div class="text-sm md:text-base text-slate-600 font-semibold tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">2018</div>
+      
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2018-11-21">
+          Nov 21
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5 dark:bg-yellow-900 dark:text-yellow-300" href="/sequel">sequel</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/building-sql-expressions-with-sequel/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Building SQL Expressions with Sequel
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>I’ve recently started working on a new project which uses <a href="https://github.com/jeremyevans/sequel">Sequel</a>, and it reminded me how much I love it. For those who don’t know, Sequel is a superb alternative to Active Record. I wrote a <a href="https://janko.io/ode-to-sequel/">gentle introduction to Sequel</a> a while back.</p>
-
-
-        <a class="inline-block mt-1" href="/building-sql-expressions-with-sequel/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/building-sql-expressions-with-sequel/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2018-06-02 00:00:00 +0200">
-          02 Jun 2018
-        </time>
-        
-      </div>
+    
+    
 
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/httprb-is-great/">
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2018-06-02">
+          Jun 02
+        </time>
+
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Http.rb is Great
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>The Ruby ecosystem has many HTTP clients gems to choose from. Some are built on
-<a href="https://curl.haxx.se/libcurl/">libcurl</a> (<a href="https://github.com/typhoeus/typhoeus">Typhoeus</a>, <a href="https://github.com/taf2/curb">Curb</a>, <a href="https://github.com/toland/patron">Patron</a>), some on Ruby’s <a href="https://ruby-doc.org/stdlib-2.5.0/libdoc/net/http/rdoc/Net/HTTP.html">Net::HTTP</a>
-(<a href="http://github.com/rest-client/rest-client">RestClient</a>, <a href="https://github.com/jnunemaker/httparty">HTTParty</a>, <a href="https://github.com/maccman/nestful">Nestful</a>), some in pure Ruby (<a href="https://github.com/nahi/httpclient">HTTPClient</a>,
-<a href="https://github.com/excon/excon">Excon</a>, <a href="https://github.com/httprb/http">http.rb</a>), and some are wrappers around existing libraries
-(<a href="https://github.com/lostisland/faraday">Faraday</a>, <a href="https://github.com/savonrb/httpi">HTTPI</a>).</p>
-
-
-        <a class="inline-block mt-1" href="/httprb-is-great/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/httprb-is-great/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2018-04-02 00:00:00 +0200">
-          02 Apr 2018
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2018-04-02">
+          Apr 02
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/imageprocessing-1-0-released/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           ImageProcessing 1.0 Released
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>The <a href="https://github.com/janko/image_processing">ImageProcessing</a> gem has just reached version 1.0, and I thought this
-would be a good opportunity to write an article about it. For those who don’t
-know, ImageProcessing is a wrapper gem that provides common image processing
-functionality needed when accepting image uploads from users (most notably
-resizing images).</p>
-
-
-        <a class="inline-block mt-1" href="/imageprocessing-1-0-released/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/imageprocessing-1-0-released/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2018-01-08 00:00:00 +0100">
-          08 Jan 2018
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2018-01-08">
+          Jan 08
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/better-file-uploads-with-shrine-direct-uploads/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Better File Uploads with Shrine: Direct Uploads
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>This is the 6th part of a series of blog posts about Shrine. In this part we'll show how to do direct uploads to S3 or your app on the client side, as well as how to handle large uploads.</p>
-        <a class="inline-block mt-1" href="/better-file-uploads-with-shrine-direct-uploads/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/better-file-uploads-with-shrine-direct-uploads/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-11-07 00:00:00 +0100">
-          07 Nov 2016
+    
+    
+      <div class="text-sm md:text-base text-slate-600 font-semibold tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">2016</div>
+      
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-11-07">
+          Nov 07
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/better-file-uploads-with-shrine-metadata/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Better File Uploads with Shrine: Metadata
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>This is the 5th part of a series of blog posts about Shrine. In this part I talk about how Shrine extracts and stores file metadata.</p>
-        <a class="inline-block mt-1" href="/better-file-uploads-with-shrine-metadata/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/better-file-uploads-with-shrine-metadata/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-10-31 00:00:00 +0100">
-          31 Oct 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-10-31">
+          Oct 31
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/better-file-uploads-with-shrine-processing/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Better File Uploads with Shrine: Processing
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>This is the 4th part of a series of blog posts about Shrine. In this part I talk about doing file processing with Shrine, both on upload and on-the-fly.</p>
-        <a class="inline-block mt-1" href="/better-file-uploads-with-shrine-processing/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/better-file-uploads-with-shrine-processing/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-09-17 00:00:00 +0200">
-          17 Sep 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-09-17">
+          Sep 17
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/better-file-uploads-with-shrine-attachment/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Better File Uploads with Shrine: Attachment
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>This is the 3rd part of a series of blog posts about Shrine. In this part I talk about Shrine's high-level interface for attaching uploaded files to model instances.</p>
-        <a class="inline-block mt-1" href="/better-file-uploads-with-shrine-attachment/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/better-file-uploads-with-shrine-attachment/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-09-16 00:00:00 +0200">
-          16 Sep 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-09-16">
+          Sep 16
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/better-file-uploads-with-shrine-uploader/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Better File Uploads with Shrine: Uploader
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>This is the 2nd part of a series of blog posts about Shrine. In this part I talk about the foundation that Shrine is built upon – uploaders.</p>
-        <a class="inline-block mt-1" href="/better-file-uploads-with-shrine-uploader/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/better-file-uploads-with-shrine-uploader/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-09-11 00:00:00 +0200">
-          11 Sep 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-09-11">
+          Sep 11
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/better-file-uploads-with-shrine-motivation/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Better File Uploads with Shrine: Motivation
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>This is the 1st part of a series of blog posts about Shrine. In this part I talk about the motivation behind creating Shrine, by going over the limitations of existing file attachment libraries.</p>
-        <a class="inline-block mt-1" href="/better-file-uploads-with-shrine-motivation/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/better-file-uploads-with-shrine-motivation/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-09-04 00:00:00 +0200">
-          04 Sep 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-09-04">
+          Sep 04
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/resumable-file-uploads-in-ruby/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Resumable File Uploads in Ruby
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>I recently released <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a>, a Ruby server implementation for <a href="http://tus.io/">tus</a>,
-an open protocol for resumable file uploads built on HTTP.</p>
-
-
-        <a class="inline-block mt-1" href="/resumable-file-uploads-in-ruby/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/resumable-file-uploads-in-ruby/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-07-18 00:00:00 +0200">
-          18 Jul 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-07-18">
+          Jul 18
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/partial-downloads-with-enumerators-and-fibers/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Partial Downloads with Enumerators and Fibers
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>Before talking about the implementation, I first want to explain where and why
-I needed partial downloads.</p>
-
-        <a class="inline-block mt-1" href="/partial-downloads-with-enumerators-and-fibers/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/partial-downloads-with-enumerators-and-fibers/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-07-11 00:00:00 +0200">
-          11 Jul 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-07-11">
+          Jul 11
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/shrine-meets-transloadit/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Shrine meets Transloadit
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>When I’m building web applications, a requirement that almost always comes up
-is that the app needs to accept file uploads. It can be an app with users that
-have profile images, posts that have cover photos and some additional documents
-attached, or whole galleries where people can upload many photos or videos.</p>
-
-        <a class="inline-block mt-1" href="/shrine-meets-transloadit/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/shrine-meets-transloadit/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-05-24 00:00:00 +0200">
-          24 May 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-05-24">
+          May 24
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/improving-open-uri/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Improving open-uri
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>When working on the <a href="https://github.com/shrinerb/shrine">Shrine</a> library for handling file uploads, in multiple
-places I needed to be able to download a file from URL. If you know the Ruby
-standard library well, the solution might be obvious to you: <a href="http://ruby-doc.org/stdlib-2.2.0/libdoc/open-uri/rdoc/OpenURI.html">open-uri</a>.</p>
-
-
-        <a class="inline-block mt-1" href="/improving-open-uri/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/improving-open-uri/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-05-23 00:00:00 +0200">
-          23 May 2016
-        </time>
-        
-      </div>
+    
+    
 
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/evaluating-ruby-libraries/">
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-05-23">
+          May 23
+        </time>
+
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Evaluating (Ruby) Libraries
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>Whenever we need to solve a problem in our application, if this problem is
-common enough, chances are there are already libraries out there which can help
-us with that. Great, now we just pick the library with most GitHub stars, and
-start integrating it into our project. So, the next thing—</p>
-
-        <a class="inline-block mt-1" href="/evaluating-ruby-libraries/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/evaluating-ruby-libraries/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-05-20 00:00:00 +0200">
-          20 May 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-05-20">
+          May 20
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/shrine-2-0-released/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Shrine 2.0 Released
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p><a href="https://github.com/shrinerb/shrine">Shrine</a> is a full-featured library for handling file uploads in Ruby
-applications. Main advantages of Shrine are <a href="http://shrinerb.com/rdoc/files/doc/design_md.html">good design</a>, loads of flexibility
-for achieving maximum performance and best user experience for any use case, and
-advanced features like backgrounding, direct uploads, logging and more.</p>
-
-
-        <a class="inline-block mt-1" href="/shrine-2-0-released/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/shrine-2-0-released/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-03-04 00:00:00 +0100">
-          04 Mar 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-03-04">
+          Mar 04
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5 dark:bg-yellow-900 dark:text-yellow-300" href="/sequel">sequel</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/activerecord-is-reinventing-sequel/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           ActiveRecord is reinventing Sequel
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>For those who don’t know, <a href="http://github.com/jeremyevans/sequel">Sequel</a> is an ORM very similar to ActiveRecord, in a
-way that it also implements the <a href="http://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>. As of this writing
-it’s 9 years old. I’ve already <a href="/ode-to-sequel/">written</a>
-about some of the main advantages of Sequel over ActiveRecord (and other people
-have as well:
-<a href="http://rosenfeld.herokuapp.com/en/articles/ruby-rails/2013-12-18-sequel-is-awesome-and-much-better-than-activerecord">1</a>,
-<a href="https://mrbrdo.wordpress.com/2013/10/15/why-you-should-stop-using-activerecord-and-start-using-sequel/">2</a>).</p>
-
-
-        <a class="inline-block mt-1" href="/activerecord-is-reinventing-sequel/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/activerecord-is-reinventing-sequel/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2016-01-18 00:00:00 +0100">
-          18 Jan 2016
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2016-01-18">
+          Jan 18
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/file-uploads-asynchronous-world/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Asynchronous File Uploads
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>Accepting file uploads in web applications is very delicate, because all
-actions for dealing with attachments are slow:</p>
-
-        <a class="inline-block mt-1" href="/file-uploads-asynchronous-world/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/file-uploads-asynchronous-world/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2015-10-04 00:00:00 +0200">
-          04 Oct 2015
+    
+    
+      <div class="text-sm md:text-base text-slate-600 font-semibold tracking-widest dark:text-slate-400 pt-8 md:pt-9 pb-2">2015</div>
+      
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2015-10-04">
+          Oct 04
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/introducing-shrine/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Introducing Shrine – A file upload toolkit
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>I’m really excited about this. I’ve just released <a href="https://github.com/shrinerb/shrine">Shrine</a>, a new solution for
-handling file uploads in Ruby applications. It was heavily inspired by Refile,
-most notably its idea of backends. However, unlike Refile, it is designed
-primarily for upfront processing (as opposed to on-the-fly). It’s also inspired
-by CarrierWave’s idea of uploaders.</p>
-
-
-        <a class="inline-block mt-1" href="/introducing-shrine/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/introducing-shrine/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2015-08-31 00:00:00 +0200">
-          31 Aug 2015
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2015-08-31">
+          Aug 31
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-green-100 text-green-700 font-semibold py-0.5 dark:bg-green-900 dark:text-green-300" href="/roda">roda</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/the-plugin-system-of-sequel-and-roda/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           The plugin system of Sequel and Roda
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>When developing gems, often one of the difficult problems to solve is creating
-a good ratio between <em>simplicity</em>, <em>convenience</em> and <em>flexibility</em>.</p>
-
-        <a class="inline-block mt-1" href="/the-plugin-system-of-sequel-and-roda/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/the-plugin-system-of-sequel-and-roda/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2015-08-18 00:00:00 +0200">
-          18 Aug 2015
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2015-08-18">
+          Aug 18
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-green-100 text-green-700 font-semibold py-0.5 dark:bg-green-900 dark:text-green-300" href="/roda">roda</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/introduction-to-roda/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Introduction to Roda
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>When I decided that I want to move away from Rails, I have investigated
-and experimented with a lot of other Ruby web frameworks (Sinatra, Grape and
-Lotus), but this one really stood out in every regard, and it became my
-framework of choice. That’s why I want to show it to you.</p>
-
-        <a class="inline-block mt-1" href="/introduction-to-roda/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/introduction-to-roda/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2015-07-28 00:00:00 +0200">
-          28 Jul 2015
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2015-07-28">
+          Jul 28
         </time>
-        
-          
-<a class="my-1 rounded-full px-3 bg-yellow-100 text-yellow-700 font-semibold py-0.5 dark:bg-yellow-900 dark:text-yellow-300" href="/sequel">sequel</a>
 
-
-        
-      </div>
-
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/ode-to-sequel/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Ode to Sequel
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>I’ve used and loved ActiveRecord for most of my Ruby life. While I was in
-Rails, I couldn’t imagine why I would want to use anything else. When I moved
-away from Rails, I was still using ActiveRecord at first, but some things
-started to bother me:</p>
-
-        <a class="inline-block mt-1" href="/ode-to-sequel/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/ode-to-sequel/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2015-07-22 00:00:00 +0200">
-          22 Jul 2015
-        </time>
-        
-      </div>
+    
+    
 
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/finder-objects/">
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2015-07-22">
+          Jul 22
+        </time>
+
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Finder Objects
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>In Ruby applications it is considered good practice to encapsulate your
-ActiveRecord querying logic. To achieve this, it’s natural to use ActiveRecord
-scopes.</p>
-
-        <a class="inline-block mt-1" href="/finder-objects/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/finder-objects/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2015-05-18 00:00:00 +0200">
-          18 May 2015
-        </time>
-        
-      </div>
+    
+    
 
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/lets-keep-frontend-outside-of-ruby/">
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2015-05-18">
+          May 18
+        </time>
+
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Let's keep frontend outside of Ruby
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>Rails started as an excellent full-stack web framework. It made web development
-incredibly easy and fast, especially when the asset pipeline came along. However,
-the JavaScript world has evolved significantly since then, and it is able to
-take care of itself now.</p>
-
-        <a class="inline-block mt-1" href="/lets-keep-frontend-outside-of-ruby/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/lets-keep-frontend-outside-of-ruby/" class="absolute z-20 inset-0"></a>
     </article>
   
-    <article>
-      <div class="flex items-baseline space-x-3 text-sm md:text-base">
-        <time class="text-gray-500 dark:text-gray-400" datetime="2015-01-31 00:00:00 +0100">
-          31 Jan 2015
+    
+    
+
+    <article class="py-2 relative group">
+      <div class="flex items-center space-x-2">
+        <time class="self-stretch min-w-[3.5rem] md:min-w-[4rem] leading-7 md:leading-7 text-xs md:text-sm text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 font-medium uppercase tracking-wide transition" datetime="2015-01-31">
+          Jan 31
         </time>
-        
-      </div>
 
-      <h1 class="text-2xl md:text-3xl underline font-medium">
-        <a class="text-pink-700 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400" href="/require-only-what-you-require/">
+        <h2 class="text-lg flex-1 md:text-xl text-slate-900 group-hover:text-slate-600 dark:text-slate-200 dark:group-hover:text-white transition">
           Require only what you require
-        </a>
-      </h1>
+        </h2>
 
-      <div class="mt-2 markdown prose-p:mb-0">
-        <p>Writing code which reveals intention is one of the most important things to me. Some time ago, I read “<a href="http://myronmars.to/n/dev-blog/2012/12/5-reasons-to-avoid-bundler-require">5 Reasons to Avoid Bundler.require</a>” by Myron Marston, which talks about how Rails requires all of your gems at startup and some of the downsides of that approach. After reading it, I started noticing how many gems, when they need to require their parts, use a similar approach as Rails by just requiring everything in one place.</p>
-
-        <a class="inline-block mt-1" href="/require-only-what-you-require/">Read more →</a>
+        <span class="group-hover:opacity-100 opacity-0 text-pink-700 group-hover:text-pink-600 dark:text-pink-500 dark:group-hover:text-pink-400 transition hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </span>
       </div>
+
+      <a href="/require-only-what-you-require/" class="absolute z-20 inset-0"></a>
     </article>
   
 </div>
 
+</div>
 
       </main>
     </div>
 
     <div class="border-t py-7 mt-10 bg-gray-50 dark:bg-slate-950 dark:border-slate-700">
       <footer class="max-w-screen-sm md:max-w-screen-md mx-auto flex flex-col space-y-2 md:flex-row md:justify-between md:space-y-0 text-base">
-        <ul class="inline-flex space-x-3 font-medium justify-center md:justify-left">
-          <li><a href="/">Articles</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="https://github.com/janko/janko.io">Source code</a></li>
+        <ul class="inline-flex space-x-4 font-medium justify-center md:justify-left">
+          <li><a class="transition hover:text-pink-600" href="/">Articles</a></li>
+          <li><a class="transition hover:text-pink-600" href="/about">About</a></li>
+          <li><a class="transition hover:text-pink-600" href="https://github.com/janko/janko.io">Source code</a></li>
         </ul>
         <p class="text-slate-500 text-center md:text-left">
           © 2023 Janko Marohnić. All rights reserved.
@@ -1087,5 +1026,58 @@ take care of itself now.</p>
 <!-- / Fathom -->
 
     
+
+    <script>
+      function toggleClass(element, classNames, force) {
+        classNames.split(' ').forEach(function(className) {
+          element.classList.toggle(className, force)
+        })
+      }
+
+      const btnToggle = document.querySelector('.theme-toggle')
+      const btnReset = document.querySelector('.theme-reset')
+
+      function syncTheme() {
+        const enabled = document.documentElement.classList.contains('dark')
+
+        const ring = btnToggle.querySelector('.theme-toggle-ring')
+        const light = btnToggle.querySelector('.theme-toggle-light')
+        const dark = btnToggle.querySelector('.theme-toggle-dark')
+
+        toggleClass(btnToggle, 'bg-pink-500', enabled)
+        toggleClass(btnToggle, 'bg-slate-200', !enabled)
+
+        toggleClass(ring, 'translate-x-5', enabled)
+        toggleClass(ring, 'translate-x-0', !enabled)
+
+        toggleClass(light, 'opacity-0 duration-100 ease-out', enabled)
+        toggleClass(light, 'opacity-100 duration-200 ease-in', !enabled)
+
+        toggleClass(dark, 'opacity-100 duration-200 ease-in', enabled)
+        toggleClass(dark, 'opacity-0 duration-100 ease-out', !enabled)
+      }
+
+      btnToggle.addEventListener('click', function() {
+        const enabled = document.documentElement.classList.toggle('dark')
+
+        localStorage.theme = enabled ? 'dark' : 'light'
+
+        syncTheme()
+
+        btnReset.classList.remove('hidden')
+      })
+
+      btnReset.addEventListener('click', function() {
+        localStorage.removeItem('theme')
+
+        updateTheme()
+        syncTheme()
+
+        btnReset.classList.add('hidden')
+      })
+
+      syncTheme()
+      btnReset.classList.toggle('hidden', !('theme' in localStorage))
+    </script>
   </body>
 </html>

@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Shrine 3.0 Released | Janko's Blog</title>
+    <title>Shrine 3.0 Released | Janko Marohnić</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Begin Jekyll SEO tag v2.7.1 -->
-<meta name="generator" content="Jekyll v4.3.1" />
+<meta name="generator" content="Jekyll v4.3.2" />
 <meta property="og:title" content="Shrine 3.0 Released" />
 <meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
@@ -13,7 +13,7 @@
 <meta property="og:description" content="I’ve just released version 3.0 of Shrine, a gem for handling file attachments in Ruby applications. It’s been months of hard work, but I feel it’s finally ready." />
 <link rel="canonical" href="https://janko.io/shrine-3-0-released/" />
 <meta property="og:url" content="https://janko.io/shrine-3-0-released/" />
-<meta property="og:site_name" content="Janko’s Blog" />
+<meta property="og:site_name" content="Janko Marohnić" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2019-10-14T00:00:00+02:00" />
 <meta name="twitter:card" content="summary" />
@@ -22,48 +22,72 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"headline":"Shrine 3.0 Released","dateModified":"2019-10-14T00:00:00+02:00","datePublished":"2019-10-14T00:00:00+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/shrine-3-0-released/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","description":"I’ve just released version 3.0 of Shrine, a gem for handling file attachments in Ruby applications. It’s been months of hard work, but I feel it’s finally ready.","url":"https://janko.io/shrine-3-0-released/","@context":"https://schema.org"}</script>
+{"headline":"Shrine 3.0 Released","dateModified":"2019-10-14T00:00:00+02:00","datePublished":"2019-10-14T00:00:00+02:00","@type":"BlogPosting","author":{"@type":"Person","name":"Janko Marohnić"},"description":"I’ve just released version 3.0 of Shrine, a gem for handling file attachments in Ruby applications. It’s been months of hard work, but I feel it’s finally ready.","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/shrine-3-0-released/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/shrine-3-0-released/","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
-    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko&apos;s Blog" />
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko Marohnić" />
     <link rel="stylesheet" href="/css/bundle.css">
+    <script>
+      function updateTheme() {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+      }
+      updateTheme()
+    </script>
   </head>
 
-  <body class="text-xl text-slate-700 dark:bg-slate-900 dark:text-slate-400">
-    <header class="py-3 px-4 flex flex-col space-y-1 bg-gray-100 border-b dark:bg-slate-800/70 dark:border-slate-700">
-      <div class="flex justify-center">
-        <a class="flex items-center space-x-2" href="/">
-          <img class="h-8" src="/images/logo.png" alt="logo">
-          <span class="text-2xl md:text-3xl font-semibold text-pink-700 dark:text-pink-500">Janko's Blog</span>
+  <body class="text-xl text-slate-700 dark:bg-slate-900 dark:text-slate-400 min-h-screen flex flex-col">
+    <header class="py-3 px-4 bg-gray-100 border-b dark:bg-slate-800/70 dark:border-slate-700">
+      <div class="max-w-screen-sm md:max-w-screen-md mx-auto flex items-center">
+        <a class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide text-pink-700/80 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400 flex-1 transition" href="/">
+          Janko Marohnić
         </a>
+
+        <a class="flex items-center space-x-2 justify-self-center" href="/">
+          <svg class="h-7 w-7 rounded lg:h-10 lg:w-10 lg:rounded-lg" role="img" aria-labelledby="logo-title" viewbox="0 0 64 64">
+            <title id="logo-title">logo</title>
+            <clippath id="topLeft"><path d="M64,0.025l-64,64l0,-64l64,0Z"></path></clippath>
+            <clippath id="bottomRight"><path d="M0,64l64,-64l0,64l-64,0Z"></path></clippath>
+            <g clip-path="url(#topLeft)"><rect class="fill-current text-pink-500" x="0.025" y="0.025" width="64" height="64"></rect><path class="fill-current text-white" d="M31.989,22.518c-0.031,-4.597 -0.902,-8.134 -2.612,-10.613c-1.71,-2.478 -4.165,-3.717 -7.365,-3.717c-3.2,0 -5.655,1.251 -7.365,3.753c-1.71,2.502 -2.565,6.114 -2.565,10.836l0,6.471c0.063,4.549 0.953,8.043 2.671,10.483c1.718,2.439 4.153,3.659 7.306,3.659c3.185,0 5.636,-1.255 7.354,-3.765c1.717,-2.51 2.576,-6.134 2.576,-10.871l0,-6.236Zm-6.682,7.647c-0.032,2.605 -0.31,4.538 -0.836,5.801c-0.525,1.263 -1.329,1.894 -2.412,1.894c-1.145,0 -1.988,-0.675 -2.529,-2.024c-0.542,-1.349 -0.812,-3.404 -0.812,-6.165l0,-8.541c0.078,-4.942 1.176,-7.413 3.294,-7.413c1.13,0 1.961,0.675 2.494,2.024c0.534,1.349 0.801,3.373 0.801,6.071l0,8.353Z"></path></g><g clip-path="url(#bottomRight)"><rect class="fill-current text-pink-700" x="0.025" y="0.025" width="64" height="64"></rect><path class="fill-current text-white" d="M44.945,55.261l-6.553,0l0,-25.659l-6.392,2.469l0,-5.446l12.253,-5.007l0.692,0l0,33.643Z"></path>&lt;
+          </g></svg>
+        </a>
+
+        <span class="flex-1 flex space-x-2 justify-end">
+          <button type="button" class="theme-reset rounded-full bg-sky-200 dark:bg-sky-900 px-2.5 py-1 text-xs font-medium text-sky-700 dark:text-white shadow-sm dark:hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-200">Reset to OS</button>
+
+          <button type="button" class="theme-toggle bg-gray-200 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transitikon-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-700 focus:ring-offset-2 dark:focus:ring-pink-500 dark:focus:ring-offset-slate-900" role="switch" aria-checked="false">
+            <span class="sr-only">Use setting</span>
+            <span class="theme-toggle-ring translate-x-0 pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out">
+              <span class="theme-toggle-light opacity-100 duration-200 ease-in absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4kkkkkkk h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"></path>
+                </svg>
+              </span>
+              <span class="theme-toggle-dark opacity-0 duration-100 ease-out absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-pink-500">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"></path>
+                </svg>
+              </span>
+            </span>
+          </button>
+        </span>
       </div>
     </header>
 
-    <div class="my-6 sm:my-8 mx-4">
+    <div class="flex-1 my-2 sm:my-4 mx-4">
       <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
-        <article>
-  <header class="space-y-4 md:space-y-5">
-    <h1 class="lg:-mx-28 text-3xl sm:text-4xl lg:text-5xl text-center font-medium text-gray-900 dark:text-gray-100">Shrine 3.0 Released</h1>
+        <article class="mt-6">
+  <time datetime="2019-10-14" class="flex items-center text-slate-400 text-sm md:text-base">
+    <span class="h-4 md:h-5 w-0.5 rounded-full bg-slate-200 dark:bg-slate-500"></span>
+    <span class="ml-3">October 14, 2019</span>
+  </time>
 
-    <div class="flex justify-center">
-      <div class="flex flex-col items-center sm:flex-row sm:items-baseline space-y-3 sm:space-y-0 sm:space-x-4 text-sm md:text-base">
-        <span class="text-gray-500 dark:text-gray-400">
-          By <a class="underline hover:text-gray-300" href="/about">Janko Marohnić</a> on
-          <time datetime="2019-10-14 00:00:00 +0200">
-            14 Oct 2019
-          </time>
-        </span>
-        
-          
-<a class="my-1 rounded-full px-3 bg-red-100 text-red-700 font-semibold py-0.5 dark:bg-red-900 dark:text-red-300" href="/shrine">shrine</a>
+  <h1 class="mt-5 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-semibold text-slate-900 tracking-tight dark:text-slate-100">Shrine 3.0 Released</h1>
 
-
-        
-      </div>
-    </div>
-  </header>
-
-  <div class="mt-4 sm:mt-6 markdown">
+  <div class="mt-6 sm:mt-8 markdown">
     <p>I’ve just released version 3.0 of <a href="https://shrinerb.com">Shrine</a>, a gem for handling file attachments
 in Ruby applications. It’s been months of hard work, but I feel it’s finally
 ready.</p>
@@ -280,6 +304,58 @@ forum</a> if you have any troubles upgrading.</p>
 </article>
 
 <div class="mt-8 md:mt-10">
+  <div class="flex items-center space-x-4 md:space-x-6 mx-0 lg:-mx-6 bg-blue-50 border border-sky-200 bg-sky-50 px-4 py-3 md:py-5 md:px-6 rounded-xl overflow-x-scroll dark:bg-sky-950 dark:border-sky-600">
+  <img src="/images/me.jpg" class="h-20 xs:h-24 sm:h-32 rounded-xl">
+  <div class="flex flex-col justify-center">
+    
+      <h3 class="font-medium text-slate-900 dark:text-slate-200 mb-2 text-xl xs:text-2xl">Janko Marohnić</h3>
+    
+    <p class="text-slate-900 dark:text-slate-200 text-sm xs:text-base md:text-lg hidden sm:block">Ruby developer, Rails critic, open source maintainer, authentication consultant.</p>
+
+    <div class="mt-2 xs:mt-4 sm:mt-5 flex items-center space-x-3 xs:space-x-5">
+      
+
+      <a href="https://github.com/janko" title="GitHub" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 dark:hidden transition hover:scale-110" viewbox="0 0 24 24">
+          <path xmlns="http://www.w3.org/2000/svg" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+        </svg>
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 hidden dark:block transition hover:scale-110" viewbox="0 0 100 100">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" fill="#fff"></path>
+        </svg>
+      </a>
+      <a href="https://twitter.com/jankomarohnic" title="Twitter" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 text-blue-400 transition hover:scale-110" viewbox="0 0 20 20" fill="currentColor">
+          <path d="M17.316 6.246c0.008 0.162 0.011 0.326 0.011 0.488 0 4.99-3.797 10.742-10.74 10.742-2.133 0-4.116-0.625-5.787-1.697 0.296 0.035 0.596 0.053 0.9 0.053 1.77 0 3.397-0.604 4.688-1.615-1.651-0.031-3.046-1.121-3.526-2.621 0.23 0.043 0.467 0.066 0.71 0.066 0.345 0 0.679-0.045 0.995-0.131-1.727-0.348-3.028-1.873-3.028-3.703 0-0.016 0-0.031 0-0.047 0.509 0.283 1.092 0.453 1.71 0.473-1.013-0.678-1.68-1.832-1.68-3.143 0-0.691 0.186-1.34 0.512-1.898 1.861 2.285 4.644 3.787 7.781 3.945-0.064-0.277-0.097-0.564-0.097-0.861 0-2.084 1.689-3.773 3.774-3.773 1.086 0 2.067 0.457 2.756 1.191 0.859-0.17 1.667-0.484 2.397-0.916-0.282 0.881-0.881 1.621-1.66 2.088 0.764-0.092 1.49-0.293 2.168-0.594-0.506 0.758-1.146 1.422-1.884 1.953z"></path>
+        </svg>
+      </a>
+      <a href="https://www.youtube.com/@jankomarohnic" title="YouTube" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-110" viewbox="0 0 159 110" fill="currentColor">
+          <path d="m154 17.5c-1.82-6.73-7.07-12-13.8-13.8-9.04-3.49-96.6-5.2-122 0.1-6.73 1.82-12 7.07-13.8 13.8-4.08 17.9-4.39 56.6 0.1 74.9 1.82 6.73 7.07 12 13.8 13.8 17.9 4.12 103 4.7 122 0 6.73-1.82 12-7.07 13.8-13.8 4.35-19.5 4.66-55.8-0.1-75z" fill="#f00"></path>
+          <path d="m105 55-40.8-23.4v46.8z" fill="#fff"></path>
+        </svg>
+      </a>
+      <a href="https://www.linkedin.com/in/janko-marohnic/" title="LinkedIn" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-110" viewbox="0 0 72 72" width="72" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" fill-rule="evenodd"><path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" fill="#007EBB"></path><path d="M62,62 L51.315625,62 L51.315625,43.8021149 C51.315625,38.8127542 49.4197917,36.0245323 45.4707031,36.0245323 C41.1746094,36.0245323 38.9300781,38.9261103 38.9300781,43.8021149 L38.9300781,62 L28.6333333,62 L28.6333333,27.3333333 L38.9300781,27.3333333 L38.9300781,32.0029283 C38.9300781,32.0029283 42.0260417,26.2742151 49.3825521,26.2742151 C56.7356771,26.2742151 62,30.7644705 62,40.051212 L62,62 Z M16.349349,22.7940133 C12.8420573,22.7940133 10,19.9296567 10,16.3970067 C10,12.8643566 12.8420573,10 16.349349,10 C19.8566406,10 22.6970052,12.8643566 22.6970052,16.3970067 C22.6970052,19.9296567 19.8566406,22.7940133 16.349349,22.7940133 Z M11.0325521,62 L21.769401,62 L21.769401,27.3333333 L11.0325521,27.3333333 L11.0325521,62 Z" fill="#FFF"></path></g>
+        </svg>
+      </a>
+      <a href="https://speakerdeck.com/janko_m" title="Speaker Deck">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-110" viewbox="0 0 256 160">
+          <g><path d="M106.932331,100 L50,100 C22.3857624,100 0,77.6142376 0,50 C0,22.3857624 22.3857624,0 50,0 L116.421053,0 C127.466748,0 136.421053,8.9543048 136.421053,20 C136.421053,31.0456952 127.466748,40 116.421053,40 L48.977444,40 C43.454596,40 38.977444,44.4771528 38.977444,50 C38.977444,55.5228472 43.454596,60 48.977444,60 L105.909774,60 C133.524012,60 155.909774,82.3857624 155.909774,110 C155.909774,137.614238 133.524012,160 105.909774,160 L20,160 C8.9543048,160 0,151.045695 0,140 C0,128.954305 8.9543048,120 20,120 L106.932331,120 C112.455178,120 116.932331,115.522847 116.932331,110 C116.932331,104.477153 112.455178,100 106.932331,100 Z M149.013633,160 C162.31303,151.005667 171.818454,136.66797 174.567639,120 L206.843433,120 C212.273117,120 216.674746,115.522847 216.674746,110 L216.674746,50 C216.674746,44.4771528 212.273117,40 206.843433,40 L148.210526,40 C152.880793,34.6924352 155.720602,27.683544 155.720602,20 C155.720602,12.316456 152.880793,5.3075648 148.210526,0 L216.674746,0 C238.393484,0 256,17.9086104 256,40 L256,120 C256,142.09139 238.393484,160 216.674746,160 L149.013633,160 Z" fill="#009287"></path></g>
+        </svg>
+      </a>
+      <a href="mailto:janko@hey.com" title="Email">
+        <svg class="w-7 h-7 text-red-500 transition hover:scale-110" viewbox="0 0 20 20" fill="currentColor">
+          <path d="M1.574 5.286c0.488 0.262 7.248 3.894 7.5 4.029s0.578 0.199 0.906 0.199c0.328 0 0.654-0.064 0.906-0.199s7.012-3.767 7.5-4.029c0.489-0.263 0.951-1.286 0.054-1.286h-16.919c-0.897 0-0.435 1.023 0.053 1.286zM18.613 7.489c-0.555 0.289-7.387 3.849-7.727 4.027s-0.578 0.199-0.906 0.199-0.566-0.021-0.906-0.199-7.133-3.739-7.688-4.028c-0.39-0.204-0.386 0.035-0.386 0.219s0 7.293 0 7.293c0 0.42 0.566 1 1 1h16c0.434 0 1-0.58 1-1 0 0 0-7.108 0-7.292s0.004-0.423-0.387-0.219z"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="mt-8 md:mt-10">
   
   <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -308,10 +384,10 @@ forum</a> if you have any troubles upgrading.</p>
 
     <div class="border-t py-7 mt-10 bg-gray-50 dark:bg-slate-950 dark:border-slate-700">
       <footer class="max-w-screen-sm md:max-w-screen-md mx-auto flex flex-col space-y-2 md:flex-row md:justify-between md:space-y-0 text-base">
-        <ul class="inline-flex space-x-3 font-medium justify-center md:justify-left">
-          <li><a href="/">Articles</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="https://github.com/janko/janko.io">Source code</a></li>
+        <ul class="inline-flex space-x-4 font-medium justify-center md:justify-left">
+          <li><a class="transition hover:text-pink-600" href="/">Articles</a></li>
+          <li><a class="transition hover:text-pink-600" href="/about">About</a></li>
+          <li><a class="transition hover:text-pink-600" href="https://github.com/janko/janko.io">Source code</a></li>
         </ul>
         <p class="text-slate-500 text-center md:text-left">
           © 2023 Janko Marohnić. All rights reserved.
@@ -325,5 +401,58 @@ forum</a> if you have any troubles upgrading.</p>
 <!-- / Fathom -->
 
     
+
+    <script>
+      function toggleClass(element, classNames, force) {
+        classNames.split(' ').forEach(function(className) {
+          element.classList.toggle(className, force)
+        })
+      }
+
+      const btnToggle = document.querySelector('.theme-toggle')
+      const btnReset = document.querySelector('.theme-reset')
+
+      function syncTheme() {
+        const enabled = document.documentElement.classList.contains('dark')
+
+        const ring = btnToggle.querySelector('.theme-toggle-ring')
+        const light = btnToggle.querySelector('.theme-toggle-light')
+        const dark = btnToggle.querySelector('.theme-toggle-dark')
+
+        toggleClass(btnToggle, 'bg-pink-500', enabled)
+        toggleClass(btnToggle, 'bg-slate-200', !enabled)
+
+        toggleClass(ring, 'translate-x-5', enabled)
+        toggleClass(ring, 'translate-x-0', !enabled)
+
+        toggleClass(light, 'opacity-0 duration-100 ease-out', enabled)
+        toggleClass(light, 'opacity-100 duration-200 ease-in', !enabled)
+
+        toggleClass(dark, 'opacity-100 duration-200 ease-in', enabled)
+        toggleClass(dark, 'opacity-0 duration-100 ease-out', !enabled)
+      }
+
+      btnToggle.addEventListener('click', function() {
+        const enabled = document.documentElement.classList.toggle('dark')
+
+        localStorage.theme = enabled ? 'dark' : 'light'
+
+        syncTheme()
+
+        btnReset.classList.remove('hidden')
+      })
+
+      btnReset.addEventListener('click', function() {
+        localStorage.removeItem('theme')
+
+        updateTheme()
+        syncTheme()
+
+        btnReset.classList.add('hidden')
+      })
+
+      syncTheme()
+      btnReset.classList.toggle('hidden', !('theme' in localStorage))
+    </script>
   </body>
 </html>
