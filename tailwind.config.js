@@ -9,6 +9,7 @@ module.exports = {
     '_layouts/**/*.html',
     '_includes/**/*.html',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       screens: {
