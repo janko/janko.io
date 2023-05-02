@@ -1,8 +1,10 @@
 <div class="flex items-center space-x-4 md:space-x-6 mx-0 lg:-mx-6 bg-blue-50 border border-sky-200 bg-sky-50 px-4 py-3 md:py-5 md:px-6 rounded-xl overflow-x-scroll dark:bg-sky-950 dark:border-sky-600">
-  <img src="/images/me.jpg" class="h-20 xs:h-24 sm:h-36 rounded-xl">
+  <img src="/images/me.jpg" class="h-20 xs:h-24 sm:h-32 rounded-xl">
   <div class="flex flex-col justify-center">
-    <h3 class="font-medium text-slate-900 dark:text-slate-200 mb-2 text-xl xs:text-2xl {% if page.url == "/" %}hidden sm:block{% endif %}">Janko Marohnić</h3>
-    <p class="text-slate-900 dark:text-slate-200 text-sm xs:text-base md:text-lg {% if page.url != "/" %}hidden sm:block{% endif %}">Ruby developer, Rails critic, open source maintainer, authentication consultant.</p>
+    {% if include.title %}
+      <h3 class="font-medium text-slate-900 dark:text-slate-200 mb-2 text-xl xs:text-2xl">{{ include.title }}</h3>
+    {% endif %}
+    <p class="text-slate-900 dark:text-slate-200 text-sm xs:text-base md:text-lg {% if include.title %}hidden sm:block{% endif %}">Ruby developer, Rails critic, open source maintainer, authentication consultant.</p>
 
     <div class="mt-2 xs:mt-4 sm:mt-5 flex items-center space-x-3 xs:space-x-5">
       {% assign icon_size = "w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7" %}
