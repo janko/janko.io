@@ -3,4 +3,4 @@
 set -e
 
 JEKYLL_ENV=production bundle exec jekyll build
-npm run build:css -- --minify
+NODE_ENV=production npm run build:css
