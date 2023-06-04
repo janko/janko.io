@@ -1,4 +1,124 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2023-05-17T00:53:30+02:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko Marohnić</title><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Social Login in Rails with Rodauth</title><link href="https://janko.io/social-login-in-rails-with-rodauth/" rel="alternate" type="text/html" title="Social Login in Rails with Rodauth" /><published>2022-12-06T00:00:00+01:00</published><updated>2022-12-06T00:00:00+01:00</updated><id>https://janko.io/social-login-in-rails-with-rodauth</id><content type="html" xml:base="https://janko.io/social-login-in-rails-with-rodauth/">&lt;p&gt;&lt;a href=&quot;https://github.com/omniauth/omniauth&quot;&gt;OmniAuth&lt;/a&gt; provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a &lt;a href=&quot;https://github.com/omniauth/omniauth/wiki/Managing-Multiple-Providers&quot;&gt;wiki page&lt;/a&gt; laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2023-06-04T11:37:21+02:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko Marohnić</title><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Upgrading from Selenium to Cuprite</title><link href="https://janko.io/upgrading-from-selenium-to-cuprite/" rel="alternate" type="text/html" title="Upgrading from Selenium to Cuprite" /><published>2023-06-04T00:00:00+02:00</published><updated>2023-06-04T00:00:00+02:00</updated><id>https://janko.io/upgrading-from-selenium-to-cuprite</id><content type="html" xml:base="https://janko.io/upgrading-from-selenium-to-cuprite/">&lt;p&gt;When I joined my current company, the system tests for our Rails app used Selenium as the Capybara driver. I didn’t have good experiences with Selenium in the past, mostly it was tedious to have to keep chromedriver up-to-date with the auto-updating Chrome. In this project, I was frequently hitting maximum number of open file descriptors on my OS when running system tests, probably in combination with Spring. We’re using the &lt;a href=&quot;https://github.com/ttusfortner/webdrivers&quot;&gt;Webdrivers&lt;/a&gt; gem, and we also needed to ignore its download URLs in VCR and WebMock. But my primary issue was that the system tests just seemed kind of slow in general.&lt;/p&gt;
+
+&lt;p&gt;I stumbled across &lt;a href=&quot;https://www.bikeshed.fm/355&quot;&gt;an episode of The Bike Shed podcast&lt;/a&gt;, where it was mentioned that Selenium can add considerable overhead, so I decided it was worth trying out &lt;a href=&quot;https://github.com/rubycdp/cuprite&quot;&gt;Cuprite&lt;/a&gt;. For those not familiar, Cuprite is a Capybara driver that interacts with Chrome directly using &lt;a href=&quot;https://chromedevtools.github.io/devtools-protocol/&quot;&gt;CDP&lt;/a&gt; (Chrome DevTools Protocol). This is in contrast to Selenium, which goes through chromedriver/geckodriver command-line tool.&lt;/p&gt;
+
+&lt;p&gt;I have to say I did not expect the performance improvements to be so significant. Running individual system tests was about 30-50% faster on my M1 MacBook Air, while our overall system test suite went &lt;strong&gt;from 9 minutes to 6 minutes&lt;/strong&gt;, which is a &lt;strong&gt;30% speedup&lt;/strong&gt;. Just from changing the Capybara driver. For someone who cares about fast tests, this was a considerable win :metal:&lt;/p&gt;
+
+&lt;p&gt;Our Capybara configuration ended up being the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;capybara/rspec&apos;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;capybara/cuprite&apos;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;default_max_wait_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;disable_animation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type: :system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;driven_by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:cuprite&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;screen_size: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1440&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;810&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;options: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;js_errors: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;headless: &lt;/span&gt;&lt;span class=&quot;sx&quot;&gt;%w[0 false]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;exclude?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;HEADLESS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;slowmo: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;SLOWMO&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;process_timeout: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;timeout: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;ss&quot;&gt;browser_options: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;DOCKER&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;no-sandbox&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;filter_gems_from_backtrace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;capybara&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;cuprite&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ferrum&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;flaky-test-failures&quot;&gt;Flaky test failures&lt;/h2&gt;
+
+&lt;p&gt;While moving to Cuprite made tests faster, we started getting dozens of new flaky test failures. After looking at them more closely, I found that each failure was caused by improper waiting for JavaScript (we’re using Hotwire). With Selenium, those issues were just masked, because the overhead was big enough that the race conditions never manifested.&lt;/p&gt;
+
+&lt;p&gt;Most failures were around clicking on a link and then waiting for text to appear, but that text was already present on the previous page, so Capybara didn’t actually wait for the new page to get navigated to. In some cases we needed to manually scroll to elements before interacting with them, where Selenium appears to have automatically scrolled.&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;click_on&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Some link&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# make sure this text was NOT present on the previous page&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;have_content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Some text&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;disabling-css-transitions&quot;&gt;Disabling CSS transitions&lt;/h3&gt;
+
+&lt;p&gt;We’re using Bootstrap, and I noticed that some modal clicks were failing. It turned out that due to CSS transitions used by Bootstrap modals, Capybara would sometimes attempt to click on a moving target. Since we don’t actually need animations in tests, I was looking for a way to disable them. By sheer luck I discovered a handy Capybara configuration that takes care of this:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# disable CSS transitions and jQuery animations&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Capybara&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;disable_animation&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;One problem is that our flash messages are set to fade away after 3 seconds, so this caused them not to disappear automatically. This was fine most of the time, but in some cases they were covering content we needed to interact with. To address this, I created a helper method that retrieves the flash message and immediatelly closes the alert:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;flash_message&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;.flash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;last&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;.flash .close&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;click&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# close alert&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;click_on&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Create Device&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;flash_message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Device was successfully created&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;disabling-turbo-previews&quot;&gt;Disabling Turbo previews&lt;/h3&gt;
+
+&lt;p&gt;In a previous project, I found that &lt;a href=&quot;https://turbo.hotwired.dev/handbook/building#opting-out-of-caching&quot;&gt;Turbo previews&lt;/a&gt; were the cause of one flaky test, so I disabled them by adding the following into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;head&amp;gt;&lt;/code&gt; of the layout:&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- disable cached Turbo previews when navigating --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;turbo-cache-control&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;content=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;no-preview&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;raising-stimulus-errors&quot;&gt;Raising Stimulus errors&lt;/h2&gt;
+
+&lt;p&gt;When a JavaScript errors occur inside Stimulus lifecycle callbacks or actions, they are &lt;a href=&quot;https://stimulus.hotwired.dev/handbook/installing#error-handling&quot;&gt;caught&lt;/a&gt; by Stimulus and logged. This avoids an error from one Stimulus controller halting JavaScript execution and preventing other Stimulus controllers from being executed (see &lt;a href=&quot;https://github.com/hotwired/stimulus/issues/236#issuecomment-479694545&quot;&gt;Sam Stephenson’s explanation&lt;/a&gt; for more details).&lt;/p&gt;
+
+&lt;p&gt;While this is useful for production, in tests we want to get alerted when JavaScript errors occur. After configuring Cuprite to convert any JS errors into Ruby exceptions by setting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;js_errors: true&lt;/code&gt;, we overrode Stimulus application’s error handler in tests to propagate errors:&lt;/p&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Application&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;@hotwired/stimulus&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;application&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Works with Webpacker (in Vite we&apos;d use `import.meta.env.MODE === &quot;test&quot;`).&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;if &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;process&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;RAILS_ENV&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// propagate errors that happen inside Stimulus controllers&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;handleError&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;precompiling-assets&quot;&gt;Precompiling assets&lt;/h2&gt;
+
+&lt;p&gt;We were initially hitting timeout errors on CI from Cuprite on the first test. The reason was that Webpacker would compile assets on the first request. We tried increasing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:process_timeout&lt;/code&gt; in Cuprite, but that didn’t help.&lt;/p&gt;
+
+&lt;p&gt;Instead of letting Webpacker compile assets on-the-fly, we chose to precompile them in advance, which fixed the issue.&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rake assets:precompile
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundle &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;rspec spec/system
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, when JS errors would occur, I noticed the JavaScript source was now minified. This not only made it more difficult to locate where the error occurred, but on CI the error message was completely absent. This is because the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;webpack:compile&lt;/code&gt; rake task &lt;a href=&quot;https://github.com/rails/webpacker/blob/3fd96bcbf495db5a24a46606465e9837fec232c1/lib/tasks/webpacker/compile.rake#L23&quot;&gt;defaults&lt;/a&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NODE_ENV&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;production&lt;/code&gt;. First I tried setting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NODE_ENV=test&lt;/code&gt;, but that didn’t skip minification, and I later found out this is intended for JavaScript tests. Setting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NODE_ENV=development&lt;/code&gt; on CI worked, which is what’s used for on-the-fly compilation.&lt;/p&gt;
+
+&lt;p&gt;I would prefer Webpacker not to merge assets into a single file in tests, but I think migrating to &lt;a href=&quot;https://vite-ruby.netlify.app/&quot;&gt;Vite&lt;/a&gt; would help with this.&lt;/p&gt;
+
+&lt;h2 id=&quot;toggling-headless-mode&quot;&gt;Toggling headless mode&lt;/h2&gt;
+
+&lt;p&gt;Cuprite runs Chrome in so-called “headless” mode by default, which means the browser doesn’t open up while tests are being run. However, if you’re debugging a failing test, it’s not always enough to look at the captured screenshots, sometimes you need to &lt;em&gt;see&lt;/em&gt; what’s happening on the page.&lt;/p&gt;
+
+&lt;p&gt;Our Cuprite configuration allowed us to pass &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HEADLESS=0&lt;/code&gt; environment variable to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rspec&lt;/code&gt; command to disable headless mode. If the interaction was happening too fast to make sense of anything, we could additionally set e.g. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SLOWMO=0.5&lt;/code&gt; to add 0.5s of overhead to every click.&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ HEADLESS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 &lt;span class=&quot;nv&quot;&gt;SLOWMO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.5 bin/rspec spec/system/something_spec.rb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;docker-handling&quot;&gt;Docker handling&lt;/h2&gt;
+
+&lt;p&gt;Some team members prefer to run the Rails app locally through Docker. To make Cuprite work, we set &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DOCKER=true&lt;/code&gt; in our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt;, and then based on that environment variable passed the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;no-sandbox&lt;/code&gt; option to Chrome.&lt;/p&gt;
+
+&lt;h2 id=&quot;closing-words&quot;&gt;Closing words&lt;/h2&gt;
+
+&lt;p&gt;The performance benefits alone will definitely make me advocate for using Cuprite every time. The only feature I found it doesn’t support yet is drag-and-drop, though &lt;a href=&quot;https://github.com/rubycdp/cuprite/pull/176&quot;&gt;initial support&lt;/a&gt; has been merged to master.&lt;/p&gt;
+
+&lt;p&gt;Flaky test failures have always been a challenge for me when writing system tests. What helped me is to trust that the root cause is always figureoutable. I would previously attribute them to complex Selenium internals, but Cuprite is much less magical in comparison, so I can make better sense of why something is happening.&lt;/p&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><summary type="html">When I joined my current company, the system tests for our Rails app used Selenium as the Capybara driver. I didn’t have good experiences with Selenium in the past, mostly it was tedious to have to keep chromedriver up-to-date with the auto-updating Chrome. In this project, I was frequently hitting maximum number of open file descriptors on my OS when running system tests, probably in combination with Spring. We’re using the Webdrivers gem, and we also needed to ignore its download URLs in VCR and WebMock. But my primary issue was that the system tests just seemed kind of slow in general.</summary></entry><entry><title type="html">Social Login in Rails with Rodauth</title><link href="https://janko.io/social-login-in-rails-with-rodauth/" rel="alternate" type="text/html" title="Social Login in Rails with Rodauth" /><published>2022-12-06T00:00:00+01:00</published><updated>2022-12-06T00:00:00+01:00</updated><id>https://janko.io/social-login-in-rails-with-rodauth</id><content type="html" xml:base="https://janko.io/social-login-in-rails-with-rodauth/">&lt;p&gt;&lt;a href=&quot;https://github.com/omniauth/omniauth&quot;&gt;OmniAuth&lt;/a&gt; provides a standardized interface for authenticating with various external providers. Once the user authenticates with the provider, it’s up to us developers to handle the callback and implement actual login and registration into the app. There is a &lt;a href=&quot;https://github.com/omniauth/omniauth/wiki/Managing-Multiple-Providers&quot;&gt;wiki page&lt;/a&gt; laying out various scenarios that need to be handled if you want to support multiple providers, showing that it’s by no means a trivial task.&lt;/p&gt;
 
 &lt;p&gt;While Devise provides a convenience layer around OmniAuth, it does nothing to actually sign the user into your app. When I started writing the OmniAuth integration for &lt;a href=&quot;https://github.com/jeremyevans/rodauth&quot;&gt;Rodauth&lt;/a&gt;, I wanted to go one step further and actually handle things like persistence of external identities, account creation and login, while still allowing the developer to customize the behaviour. That’s how &lt;a href=&quot;https://github.com/janko/rodauth-omniauth&quot;&gt;rodauth-omniauth&lt;/a&gt; was created. :sparkles:&lt;/p&gt;
 
@@ -2658,467 +2778,4 @@ that it’s more feature-rich compared to Active Record (see the &lt;a href=&quo
 pattern whenever I’m reading Sequel’s source code :wink:&lt;/p&gt;
 
 &lt;p&gt;Hopefully this article will add another point towards Sequel for people
-starting new Ruby/Rails projects.&lt;/p&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="sequel" /><summary type="html">I’ve recently picked up the sequel-activerecord_connection gem again to make some reliability improvements around database transactions. For context, this gem extends Sequel with the ability to reuse Active Record’s database connection, which should lower the barrier for trying out Sequel in apps that use Active Record.</summary></entry><entry><title type="html">Rodauth: A Refreshing Authentication Solution for Ruby</title><link href="https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/" rel="alternate" type="text/html" title="Rodauth: A Refreshing Authentication Solution for Ruby" /><published>2020-08-18T00:00:00+02:00</published><updated>2020-08-18T00:00:00+02:00</updated><id>https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby</id><content type="html" xml:base="https://janko.io/rodauth-a-refreshing-authentication-solution-for-ruby/">&lt;p&gt;If you’re working with Rails, chances are your authentication layer is
-implemented using one of the popular authentication frameworks – &lt;a href=&quot;https://github.com/heartcombo/devise&quot;&gt;Devise&lt;/a&gt;,
-&lt;a href=&quot;https://github.com/Sorcery/sorcery&quot;&gt;Sorcery&lt;/a&gt;, &lt;a href=&quot;https://github.com/thoughtbot/clearance&quot;&gt;Clearance&lt;/a&gt;, or &lt;a href=&quot;https://github.com/binarylogic/authlogic&quot;&gt;Authlogic&lt;/a&gt;. These libraries provide complete
-authentication and account management functionality for Rails, giving you more
-time to focus on the core business logic of your product.&lt;/p&gt;
-
-&lt;p&gt;One characteristic these authentication frameworks have in common is that
-they’re all built on top of Rails. This means that they plug into the existing
-Rails components (models, controllers, routes), and generally try to follow
-“The Rails Way” of doing things.&lt;/p&gt;
-
-&lt;p&gt;However, libraries that build on top of Rails often tend to inherit some of
-Rails’ &lt;em&gt;anti-patterns&lt;/em&gt; as well, such as having high coupling, burdening models
-and controllers with &lt;a href=&quot;https://en.wikipedia.org/wiki/Single-responsibility_principle&quot;&gt;additional responsibilities&lt;/a&gt;, and overusing Active
-Record callbacks. Having had my fair share of experience with the Ruby
-ecosystem outside of Rails’ &lt;a href=&quot;https://rubyonrails.org/doctrine/#omakase&quot;&gt;default menu&lt;/a&gt;, I’ve come to learn that
-taking the effort to make your library’s implementation &lt;strong&gt;decoupled from
-Rails&lt;/strong&gt; can provide significant advantages:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;breaking away from Rails gives you mental space to design your library better&lt;/li&gt;
-  &lt;li&gt;your library can now be used with other Ruby web frameworks too :innocent:&lt;/li&gt;
-  &lt;li&gt;supporting new Rails versions becomes easier too&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;If one wanted to implement authentication in another Ruby web framework, the
-most frequent advice seems to be to use &lt;a href=&quot;https://github.com/wardencommunity/warden&quot;&gt;Warden&lt;/a&gt;. Warden is a Rack-based
-library that provides a mechanism for authentication, with support for multiple
-strategies. However, the problem is that Warden doesn’t actually &lt;em&gt;do&lt;/em&gt; anything
-by itself. You still need to implement login, remembering, registration,
-account verification, password reset and other functionality yourself (which is
-what Devise does), and I’d argue &lt;em&gt;this&lt;/em&gt; is actually the hard part :sweat:&lt;/p&gt;
-
-&lt;h2 id=&quot;enter-rodauth&quot;&gt;Enter Rodauth&lt;/h2&gt;
-
-&lt;p&gt;We’ve actually had a better solution for some time now, it just hasn’t received
-enough attention. Jeremy Evans – a &lt;a href=&quot;https://rubyheroes.com/heroes/2015&quot;&gt;Ruby Hero&lt;/a&gt;, a Ruby
-committer, and an author of numerous Ruby libraries (most popular of which is
-&lt;a href=&quot;https://github.com/jeremyevans/sequel&quot;&gt;Sequel&lt;/a&gt; and &lt;a href=&quot;https://github.com/jeremyevans/roda&quot;&gt;Roda&lt;/a&gt;) – has been developing a new full-featured authentication
-framework for the past several years, called &lt;strong&gt;&lt;a href=&quot;https://github.com/jeremyevans/rodauth/&quot;&gt;Rodauth&lt;/a&gt;&lt;/strong&gt;. Recently I’ve
-finally had the opportunity to integrate Rodauth into a Rails app at work, and
-I can safely say that its tagline – &lt;em&gt;“Ruby’s most advanced authentication
-framework”&lt;/em&gt; – is in no way exaggerated :ok_hand:&lt;/p&gt;
-
-&lt;p&gt;One of the first things you’ll notice is that, in constrast to other
-authentication frameworks which are built on top of Rails and Active Record,
-Rodauth is implemented using Roda and Sequel. As a big fan of both libraries,
-for me personally this was exciting, but at the same time I was worried this
-meant Rodauth cannot be used with Rails. However, it turns out Rodauth can in
-fact be used with any Rack-based web framework, including Rails.&lt;/p&gt;
-
-&lt;p&gt;Integrating Rodauth into Rails for the first time definitely wasn’t trivial,
-but once all the kinks had been worked out, I extracted the necessary glue code
-into &lt;strong&gt;&lt;a href=&quot;https://github.com/janko/rodauth-rails&quot;&gt;rodauth-rails&lt;/a&gt;&lt;/strong&gt;. It comes with generators, controller &amp;amp; view
-integration, mailer support, CSRF &amp;amp; flash integration, HMAC security and more.
-Additionally, to make Sequel coexist better with Active Record, I’ve created
-the &lt;a href=&quot;https://github.com/janko/sequel-activerecord_connection&quot;&gt;sequel-activerecord_connection&lt;/a&gt; gem, which enables Sequel to reuse Active
-Record’s database connection. All this should make Rodauth as easy to get
-started with as its Rails-based counterparts :muscle:&lt;/p&gt;
-
-&lt;p&gt;And with its recent &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/release_notes/2_0_0_txt.html&quot;&gt;2.0 release&lt;/a&gt;, it’s time to finally take a proper look into
-Rodauth and see what makes it so special :sparkles:&lt;/p&gt;
-
-&lt;h2 id=&quot;encapsulated-authentication-logic&quot;&gt;Encapsulated authentication logic&lt;/h2&gt;
-
-&lt;p&gt;As we’ve touched on before, what characterizes most Rails-based authentication
-frameworks is that they implement their authentication behaviour directly on
-the MVC layer. While this approach keeps things close to Rails, it also shoves
-additional responsibilities into already-heavy Rails components, and generally
-causes the authentication logic to be spread out across multiple application
-layers.&lt;/p&gt;
-
-&lt;p&gt;With Rodauth, all authentication behaviour is encapsulated in a special
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rodauth::Auth&lt;/code&gt; object, which is created inside a Roda middleware and has
-access to the request context. It handles everything from routing requests to
-Rodauth endpoints to performing authentication-related commands and queries.
-We configure it as a Roda plugin and can we use it in Roda’s routing block to
-perform any actions before the request reaches the main app. This design
-enables us to keep our authentication logic contained in a single file.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Roda&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# define your Rodauth configuration&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;plugin&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rodauth&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# load authentication features you need&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:logout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:create_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:verify_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:reset_password&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# change default settings&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;password_minimum_lenth&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;login_return_to_requested_location?&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;reset_password_autologin?&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;logout_redirect&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/&quot;&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# handles requests before they reach the main app&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;route&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# handle Rodauth paths (/login, /create-account, /reset-password, ...)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;rodauth&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# require authentication for certain routes&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start_with?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/dashboard&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;require_authentication&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;When we add the above Roda app to our middleware stack, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;route&lt;/code&gt; block will
-be called for each request before it reaches our main app, yielding the request
-object. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r.rodauth&lt;/code&gt; call will handle any Rodauth routes, while
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rodauth.require_authentication&lt;/code&gt; will redirect to the login page if the session
-is not authenticated. When the end of the routing block is reached, the request
-proceeds onto our main app.&lt;/p&gt;
-
-&lt;p&gt;If you’re using Rails with rodauth-rails, the Rodauth instance will remain
-available in your controllers and views as well, so you can do things like
-require authentication at the controller level if you prefer to:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PostsController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;before_action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;require_authentication&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;or render authentication links in the views:&lt;/p&gt;
-
-&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;authenticated?&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Sign out&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;logout_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;method: :post&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Sign in&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;login_path&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Sign up&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create_account_path&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;There are many more useful authentication methods defined on the Rodauth
-instance that give us additional flexibility and introspection:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;auhenticated_by&lt;/span&gt;                   &lt;span class=&quot;c1&quot;&gt;# e.g. [&quot;password&quot;, &quot;otp&quot;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;session_value&lt;/span&gt;                     &lt;span class=&quot;c1&quot;&gt;# returns account id from the session&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;account_from_login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo@bar.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# retrieves account with given email address&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;password_match?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;secret&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;         &lt;span class=&quot;c1&quot;&gt;# returns whether given password matches current account&apos;s password&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                 &lt;span class=&quot;c1&quot;&gt;# logs the account in and redirects with a notice flash&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;logout&lt;/span&gt;                            &lt;span class=&quot;c1&quot;&gt;# logs the session out&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;feature-maturity&quot;&gt;Feature maturity&lt;/h2&gt;
-
-&lt;p&gt;Rodauth has all of the essential features you already know from other
-authentication frameworks:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/login.rb&quot;&gt;login&lt;/a&gt;/&lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/logout.rb&quot;&gt;logout&lt;/a&gt; and &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/remember.rb&quot;&gt;remember&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/create_account.rb&quot;&gt;create account&lt;/a&gt; with &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/verify_account.rb&quot;&gt;email verification&lt;/a&gt; (and a &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/verify_account_grace_period.rb&quot;&gt;grace period&lt;/a&gt;)&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/reset_password.rb&quot;&gt;reset password&lt;/a&gt; and &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/change_password.rb&quot;&gt;change password&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/change_login.rb&quot;&gt;change email&lt;/a&gt; with &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/verify_login_change.rb&quot;&gt;email verification&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/lockout.rb&quot;&gt;lockout&lt;/a&gt; and &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/close_account.rb&quot;&gt;close account&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;You’ll also find most industry-standard security features the &lt;a href=&quot;https://github.com/devise-security/devise-security&quot;&gt;devise-security&lt;/a&gt;
-extension provides:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/password_expiration_rdoc.html&quot;&gt;password expiration&lt;/a&gt; and &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/disallow_password_reuse_rdoc.html&quot;&gt;disallowing password reuse&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/password_complexity_rdoc.html&quot;&gt;password complexity checks&lt;/a&gt; and &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/disallow_common_passwords_rdoc.html&quot;&gt;disallowing common passwords&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/account_expiration_rdoc.html&quot;&gt;account expiration&lt;/a&gt; and &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/single_session_rdoc.html&quot;&gt;single session&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;There are many other useful features as well:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/http_basic_auth.rb&quot;&gt;HTTP Basic authentication&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/email_auth_rdoc.html&quot;&gt;email authentication&lt;/a&gt; (aka “passwordless”)&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/confirm_password_rdoc.html&quot;&gt;password confirmation dialog&lt;/a&gt; (with a &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/password_grace_period_rdoc.html&quot;&gt;grace period&lt;/a&gt;)&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/audit_logging_rdoc.html&quot;&gt;audit logging&lt;/a&gt; (for every action)&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;multifactor-authentication&quot;&gt;Multifactor authentication&lt;/h3&gt;
-
-&lt;p&gt;In addition to the features above, Rodauth also provides &lt;strong&gt;multifactor
-authentication&lt;/strong&gt; functionality out-of-the-box, supporting multiple MFA methods
-(&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/otp_rdoc.html&quot;&gt;TOTP&lt;/a&gt;, &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/sms_codes_rdoc.html&quot;&gt;SMS codes&lt;/a&gt;, &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/recovery_codes_rdoc.html&quot;&gt;recovery codes&lt;/a&gt;, and &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/webauthn_rdoc.html&quot;&gt;WebAuthn&lt;/a&gt;). It includes complete
-endpoints for setup, authentication, and disabling MFA methods, along with
-the related HTML templates.&lt;/p&gt;
-
-&lt;p&gt;Here is an example setup that allows a user to enable TOTP verification for
-their account, along with a backup SMS number and recovery codes (assuming
-we’ve created the necessary &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Creating+tables&quot;&gt;database tables&lt;/a&gt;):&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Roda&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;plugin&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rodauth&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:otp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:sms_codes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:recovery_codes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# use Twilio to send SMS messages&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;sms_send&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;phone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;twilio&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Twilio&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;ACCOUNT_SID&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;AUTH_TOKEN&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;twilio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;messages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;body: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;to: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;phone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;from: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;APP_PHONE_NUMBER&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- somewhere under account settings: --&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;uses_two_factor_authentication?&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Manage MFA&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;two_factor_manage_path&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Disable MFA&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;two_factor_disable_path&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link_to&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Setup MFA&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;two_factor_manage_path&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;img src=&quot;/images/rodauth-otp-setup.png&quot; alt=&quot;Rodauth TOTP setup page&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Having full-featured multifactor authentication built into the framework is a
-game changer, as it means it will work well with other features and will remain
-compatible with future Rodauth releases :raised_hands:&lt;/p&gt;
-
-&lt;h3 id=&quot;json-api&quot;&gt;JSON API&lt;/h3&gt;
-
-&lt;p&gt;Another cool feature of Rodauth is its built-in support for &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/jwt_rdoc.html&quot;&gt;JWT&lt;/a&gt; (short for
-&lt;a href=&quot;https://jwt.io/&quot;&gt;JSON Web Tokens&lt;/a&gt;), which provides token-based JSON API access for each
-authentication feature. Here is how we can configure the JWT feature:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Roda&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;plugin&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: :only&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1) enable Roda&apos;s JSON support and only allow JSON access&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:create_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:change_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:close_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:jwt&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 2) load JWT feature&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;jwt_secret&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;abc123&quot;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 3) set secret for the JWT feature&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;require_login_confirmation?&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;require_password_confirmation?&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;We can now trigger Rodauth actions via a JSON requests, using the
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Authorization&lt;/code&gt; header for authentication. Here is an example HTTP request for
-account creation:&lt;/p&gt;
-
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/create-account&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;login&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;foo@example.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;secret&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/json&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Authorization&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50X2lkIjo2NywidW52Z...&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;An email has recently been sent to you with a link to verify your account&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Other authentication frameworks haven’t yet standardized JSON API support:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Devise has multiple solutions (&lt;a href=&quot;https://github.com/lynndylanhurley/devise_token_auth&quot;&gt;DeviseTokenAuth&lt;/a&gt;, &lt;a href=&quot;https://github.com/waiting-for-dev/devise-jwt&quot;&gt;Devise::JWT&lt;/a&gt;,
-&lt;a href=&quot;https://github.com/gonzalo-bulnes/simple_token_authentication&quot;&gt;SimpleTokenAuthentication&lt;/a&gt;)&lt;/li&gt;
-  &lt;li&gt;Sorcery currently has a few unmerged pull requests (&lt;a href=&quot;https://github.com/Sorcery/sorcery/pull/239&quot;&gt;#239&lt;/a&gt;,
-&lt;a href=&quot;https://github.com/Sorcery/sorcery/pull/167&quot;&gt;#167&lt;/a&gt;, &lt;a href=&quot;https://github.com/Sorcery/sorcery/pull/70&quot;&gt;#70&lt;/a&gt;)&lt;/li&gt;
-  &lt;li&gt;Clearance doesn’t currently support JSON (&lt;a href=&quot;https://github.com/thoughtbot/clearance/issues/896#issuecomment-667257763&quot;&gt;comment&lt;/a&gt;)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;uniform-configuration-dsl&quot;&gt;Uniform configuration DSL&lt;/h2&gt;
-
-&lt;p&gt;If we look at how Devise is customized, we’ll notice there are several
-different layers on which we can configure authentication behaviour: global
-settings, model settings, controller settings, and routing settings. Some
-of these settings can be configured dynamically (based on either model or
-controller state), while other can only be configured statically. And some
-before/after hooks are triggered on the model level, while for others you need
-to override controller actions. This is pretty inconsistent :thumbsdown:&lt;/p&gt;
-
-&lt;p&gt;In contrast, Rodauth provides a uniform configuration DSL that allows changing
-virtually any authentication behaviour, which is all defined on the
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rodauth::Auth&lt;/code&gt; class. You can override a configuration method either by
-providing a static value, or by passing a dynamic block that gets evaluated in
-context of a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rodauth::Auth&lt;/code&gt; instance (and you can call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;super&lt;/code&gt; to get original
-behaviour).&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthApp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Roda&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;plugin&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rodauth&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# each feature adds its own set of configuration methods&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:create_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:verify_account_grace_period&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:reset_password&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;# examples of static values:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;login_redirect&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/dashboard&quot;&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;# redirect to /dashboard after logging in&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;verify_account_grace_period&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;days&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# allow unverified access for 3 days after registration&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;reset_password_autologin?&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;# automatically log the user in after password reset&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;# examples of dynamic blocks:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;password_minimum_length&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyConfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:min_password_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# change minimum allowed password length&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;login_valid_email?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;TrueMail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;valid?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;          &lt;span class=&quot;c1&quot;&gt;# override email validation logic&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;verify_account_redirect&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;login_redirect&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;                     &lt;span class=&quot;c1&quot;&gt;# after account verification redirect to wherever login redirects to&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Internaly, Rodauth also provides a &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html#label-Feature+Creation+Example&quot;&gt;DSL for writing new features&lt;/a&gt;, which streamlines adding new configuration methods and encourages
-making the feature behaviour as flexible as possible.&lt;/p&gt;
-
-&lt;h3 id=&quot;hooks&quot;&gt;Hooks&lt;/h3&gt;
-
-&lt;p&gt;Rodauth consistently provides hooks for virtually any action, which we can
-override inside our configuration block. We can do something before/after
-specific operations:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;after_login&lt;/span&gt;           &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;remember_login&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;before_create_account&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;throw_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;company&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;must be present&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;company&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;empty?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;after_login_failure&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;LoginAttempts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;increment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;before specific routes:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;before_change_login_route&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;require_password_authentication&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;before_create_account_route&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redirect&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/register&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;empty?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;or before each Rodauth route:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;before_rodauth&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AuthLogger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;enhanced-security&quot;&gt;Enhanced security&lt;/h2&gt;
-
-&lt;p&gt;When I would talk to people about Rodauth, one common concern was whether it’s
-secure enough, given that alternatives such as Devise are more widely-used.
-While I’m not qualified enough to provide a direct answer, what I can say is
-that there are multiple indications that Jeremy takes Rodauth’s security very
-seriously:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Rodauth incorporates some &lt;a href=&quot;https://github.com/jeremyevans/rodauth/#label-Security&quot;&gt;additional security measures&lt;/a&gt;
-that are not common in other authentication frameworks (more on this below)&lt;/li&gt;
-  &lt;li&gt;Jeremy &lt;a href=&quot;https://github.com/jeremyevans/rodauth/commit/18f26487c798cc5055cd5caf8bcafee1af719e3a&quot;&gt;proactively patches&lt;/a&gt; Rodauth when new
-security issues are found in other authentication frameworks&lt;/li&gt;
-  &lt;li&gt;Jeremy’s &lt;a href=&quot;http://confreaks.tv/videos/rubyhack2018-ruby-web-application-security-defense-in-depth&quot;&gt;talks&lt;/a&gt; showcase some very advanced knowledge
-on web application security&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;tokens&quot;&gt;Tokens&lt;/h3&gt;
-
-&lt;p&gt;Many authentication features (remembering logins, password reset, account
-verification, email change verification etc.) generate random unique tokens as
-part of their functionality. Since these tokens give permissions for performing
-sensitive actions, we don’t want others having access to them.&lt;/p&gt;
-
-&lt;p&gt;When &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hmac_secret&lt;/code&gt; is set (rodauth-rails sets it automatically), Rodauth will
-sign the tokens sent via email using HMAC, while the raw tokens will be stored
-in the database. This will make it so if the tokens in the database are leaked
-(e.g. via an SQL injection vulnerability), they will not be usable without also
-having access to the HMAC secret.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;hmac_secret&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;abc123&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;For better bruteforce protection, Rodauth tokens also include the account id.
-This way an attacker can only attempt to bruteforce the token for a single
-account at a time, instead of being able to bruteforce tokens for all accounts
-at once.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;account_id&amp;gt;_&amp;lt;random_token&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;protecting-password-hashes&quot;&gt;Protecting password hashes&lt;/h3&gt;
-
-&lt;p&gt;Because cracking password hashes is always getting faster, to additionally
-protect password hashes in case of a database breach, Devise and Sorcery enable
-you to use a password &lt;a href=&quot;https://en.wikipedia.org/wiki/Pepper_(cryptography)&quot;&gt;pepper&lt;/a&gt;, a secret key added to the password before it’s
-hashed. This is pretty secure, provided that compromise of database doesn’t
-also imply compromise of application secrets. A downside of peppers is that
-they’re not easy to rotate, as changing the pepper would invalidate all
-existing passwords stored in the database.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;bcrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pepper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Rodauth offers an alternative approach to protecting password hashes, which
-relies on &lt;strong&gt;restricting database access&lt;/strong&gt;. Password hashes are stored in a
-separate table, for which the application database user has
-INSERT/UPDATE/DELETE access, but &lt;em&gt;not&lt;/em&gt; SELECT access. This means an attacker
-cannot retrieve password hashes even in case of an SQL injection or a remote
-code execution exploit.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# full access by the app database user&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:accounts&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;primary_key&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;unique: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# *restricted* access by the app database user&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_password_hashes&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;foreign_key&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:accounts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:password_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;That’s great, but without the ability to retrieve password hashes, how is your
-app then able to check whether an entered password matches the one stored in
-the database on login? The answer: via a &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/40f9cd83e3bd2f10f44bca087c2c85bd9e3854fd/lib/rodauth/migrations.rb#L28-L38&quot;&gt;database function&lt;/a&gt;, which takes an account id and a password hash, and returns whether
-the given password hash matches the stored password hash for the given account
-id. This is effectively a limited SELECT query, but it’s all that’s needed for
-login functionality, and it’s all the attacker gets in case of a database
-breach.&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth_valid_password_hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;&amp;lt;some_bcrypt_hash&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- returns true or false&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You can read about this in more detail &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Password+Hash+Access+Via+Database+Functions&quot;&gt;here&lt;/a&gt;. Note that
-this mode is completely optional, Rodauth works just as well with storing
-password hashes in the accounts table; in this case it does password matching
-in Ruby, just like we’re used to with other authentication frameworks.&lt;/p&gt;
-
-&lt;h2 id=&quot;other-design-highlights&quot;&gt;Other design highlights&lt;/h2&gt;
-
-&lt;h3 id=&quot;decoupled-authentication-features&quot;&gt;Decoupled authentication features&lt;/h3&gt;
-
-&lt;p&gt;Rodauth really did a great job in achieving loose coupling between its
-authentication features. Additionally, each Rodauth feature is contained
-&lt;em&gt;entirely&lt;/em&gt; in a single file (and a single context), with the code being loaded
-only if the feature is enabled. All this makes it significantly easier to
-understand how each individual feature works.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:create_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;              &lt;span class=&quot;c1&quot;&gt;# create account and automatically login                -- lib/features/rodauth/create_account.rb&lt;/span&gt;
-       &lt;span class=&quot;ss&quot;&gt;:verify_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;              &lt;span class=&quot;c1&quot;&gt;# require email verification after account creation     -- lib/features/rodauth/verify_account.rb&lt;/span&gt;
-       &lt;span class=&quot;ss&quot;&gt;:verify_account_grace_period&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# allow unverified login for a certain period of time   -- lib/features/rodauth/verify_account_grace_period.rb&lt;/span&gt;
-
-       &lt;span class=&quot;ss&quot;&gt;:change_login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                &lt;span class=&quot;c1&quot;&gt;# change email immediately                              -- lib/features/rodauth/change_login.rb&lt;/span&gt;
-       &lt;span class=&quot;ss&quot;&gt;:verify_login_change&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;         &lt;span class=&quot;c1&quot;&gt;# require email verification before change is applied   -- lib/features/rodauth/verify_login_change.rb&lt;/span&gt;
-
-       &lt;span class=&quot;ss&quot;&gt;:password_complexity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;         &lt;span class=&quot;c1&quot;&gt;# add password complexity requirements                  -- lib/features/rodauth/password_complexity.rb&lt;/span&gt;
-       &lt;span class=&quot;ss&quot;&gt;:disallow_common_passwords&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# don&apos;t allow using a weak common password              -- lib/features/rodauth/disallow_common_passwords.rb&lt;/span&gt;
-       &lt;span class=&quot;ss&quot;&gt;:disallow_password_reuse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;# don&apos;t allow using a previously used password          -- lib/features/rodauth/disallow_password_reuse.rb&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;database-table-per-feature&quot;&gt;Database table per feature&lt;/h3&gt;
-
-&lt;p&gt;Rodauth features are decoupled not only in code, but also in the database.
-Instead of adding all columns to a single table, in Rodauth each feature has a
-&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Creating+tables&quot;&gt;dedicated table&lt;/a&gt;. This makes it more transparent which
-database columns belong to which features.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:accounts&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;                    &lt;span class=&quot;c1&quot;&gt;# used by base feature&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_password_reset_keys&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# used by reset_password feature&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_verification_keys&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# used by verify_account feature&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_login_change_keys&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# used by verify_login_change feature&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_remember_keys&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;# used by remember feature&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;Rodauth is one of those libraries that come and renew my interest in the Ruby
-ecosystem :heart_eyes: Its advanced and comprehensive set of authentication
-features (including multifactor authentication and JSON support), backed by a
-powerful configuration DSL that provides immense flexibility, provide
-overwhelming advantages over other authentication frameworks.&lt;/p&gt;
-
-&lt;p&gt;As someone who enjoys working in other Ruby web frameworks, I strongly believe
-in focusing on libraries that are accessible to everyone. And Rodauth is the
-first full-featured authentication solution that can be used in any Ruby web
-framework (including Rails).&lt;/p&gt;
-
-&lt;p&gt;Hopefully this overview will encourage you to try Rodauth out in your next
-project :wink:&lt;/p&gt;
-
-&lt;h2 id=&quot;further-reading&quot;&gt;Further reading&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/documentation.html&quot;&gt;Rodauth documentation&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/janko/rodauth-rails&quot;&gt;rodauth-rails&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html&quot;&gt;Rodauth internals&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="rodauth" /><summary type="html">If you’re working with Rails, chances are your authentication layer is implemented using one of the popular authentication frameworks – Devise, Sorcery, Clearance, or Authlogic. These libraries provide complete authentication and account management functionality for Rails, giving you more time to focus on the core business logic of your product.</summary></entry></feed>
+starting new Ruby/Rails projects.&lt;/p&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="sequel" /><summary type="html">I’ve recently picked up the sequel-activerecord_connection gem again to make some reliability improvements around database transactions. For context, this gem extends Sequel with the ability to reuse Active Record’s database connection, which should lower the barrier for trying out Sequel in apps that use Active Record.</summary></entry></feed>
