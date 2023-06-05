@@ -21,8 +21,8 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by(:cuprite, screen_size: [1440, 810], options: {
       js_errors: true,
-      headless: %w[0 false].exclude?(ENV.fetch("HEADLESS", nil)),
-      slowmo: ENV.fetch("SLOWMO", nil)&.to_f,
+      headless: %w[0 false].exclude?(ENV["HEADLESS"]),
+      slowmo: ENV["SLOWMO"]&.to_f,
       process_timeout: 15,
       timeout: 10,
       browser_options: ENV["DOCKER"] ? { "no-sandbox" => nil } : {}
