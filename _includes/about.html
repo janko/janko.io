@@ -2,9 +2,16 @@
   <img src="/images/me.jpg" class="h-20 w-20 xs:h-24 xs:w-24 sm:h-32 sm:w-32 rounded-xl">
   <div class="flex flex-col justify-center">
     {% if include.title %}
-      <h3 class="font-medium text-slate-900 dark:text-slate-200 mb-2 text-xl xs:text-2xl">{{ include.title }}</h3>
+      <h3 class="font-medium text-slate-900 dark:text-slate-200 mb-2 text-xl xs:text-2xl">
+        {{ include.title }}
+      </h3>
     {% endif %}
-    <p class="text-slate-900 dark:text-slate-200 text-sm xs:text-base md:text-lg {% if include.title %}hidden sm:block{% endif %}">Ruby developer, Rails critic, open source maintainer, authentication consultant.</p>
+    <p class="text-slate-900 dark:text-slate-200 text-sm xs:text-base md:text-lg {% if include.title %}hidden sm:block{% endif %}">
+      Ruby developer, Rails critic, open source maintainer, creator of
+      <a class="text-pink-700 underline dark:text-pink-500 decoration-pink-700/30 transition hover:text-pink-800 hover:decoration-pink-800 dark:hover:text-pink-400 dark:decoration-pink-500/40 dark:hover:decoration-pink-400" href="https://shrinerb.com" target="_blank">Shrine</a>,
+      <a class="text-pink-700 underline dark:text-pink-500 decoration-pink-700/30 transition hover:text-pink-800 hover:decoration-pink-800 dark:hover:text-pink-400 dark:decoration-pink-500/40 dark:hover:decoration-pink-400" href="https://github.com/vim-test/vim-test" target="_blank">vim-test</a> and
+      <a class="text-pink-700 underline dark:text-pink-500 decoration-pink-700/30 transition hover:text-pink-800 hover:decoration-pink-800 dark:hover:text-pink-400 dark:decoration-pink-500/40 dark:hover:decoration-pink-400" href="https://github.com/vim-test/vim-test" target="_blank">rodauth-rails</a>.
+    </p>
 
     <div class="mt-2 xs:mt-4 sm:mt-5 flex items-center space-x-3 xs:space-x-5">
       {% assign icon_class = "w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" %}
