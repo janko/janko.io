@@ -1,4 +1,218 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2023-06-21T17:38:10+02:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko Marohnić</title><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Upgrading from Selenium to Cuprite</title><link href="https://janko.io/upgrading-from-selenium-to-cuprite/" rel="alternate" type="text/html" title="Upgrading from Selenium to Cuprite" /><published>2023-06-04T00:00:00+02:00</published><updated>2023-06-04T00:00:00+02:00</updated><id>https://janko.io/upgrading-from-selenium-to-cuprite</id><content type="html" xml:base="https://janko.io/upgrading-from-selenium-to-cuprite/">&lt;p&gt;When I joined my current company, the system tests for our Rails app used Selenium as the Capybara driver. I didn’t have good experiences with Selenium in the past, mostly it was tedious to have to keep chromedriver up-to-date with the auto-updating Chrome. In this project, I was frequently hitting maximum number of open file descriptors on my OS when running system tests, probably in combination with Spring. We’re using the &lt;a href=&quot;https://github.com/ttusfortner/webdrivers&quot;&gt;Webdrivers&lt;/a&gt; gem, and we also needed to ignore its download URLs in VCR and WebMock. But my primary issue was that the system tests just seemed kind of slow in general.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2023-07-24T10:20:08+02:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko Marohnić</title><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Passkey Authentication with Rodauth</title><link href="https://janko.io/passkey-authentication-with-rodauth/" rel="alternate" type="text/html" title="Passkey Authentication with Rodauth" /><published>2023-07-24T00:00:00+02:00</published><updated>2023-07-24T00:00:00+02:00</updated><id>https://janko.io/passkey-authentication-with-rodauth</id><content type="html" xml:base="https://janko.io/passkey-authentication-with-rodauth/">&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/passkeys/&quot;&gt;Passkeys&lt;/a&gt; are a modern alternative to passwords, where the user’s device performs the authentication, usually requiring some form of user verification (biometric identification, PIN). Passkeys are built on top of &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/webauthn_rdoc.html&quot;&gt;WebAuthn&lt;/a&gt; specification, which is based on public-key cryptography. Keypairs are created for each website, and the public key is sent to the server, while the private key is securely stored on the device. This makes passkeys:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;stronger than any password&lt;/li&gt;
+  &lt;li&gt;safe from data breaches&lt;/li&gt;
+  &lt;li&gt;safe from phishing attacks&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;WebAuthn credentials are bound to the device that created them (think security keys like &lt;a href=&quot;https://www.yubico.com/&quot;&gt;YubiKey&lt;/a&gt;), which is good for privacy since no company has your data, but losing your device could lock you out of your account. Passkeys add the ability to be backed up to the cloud and synchronized between multiple devices, which reduces the risk of passkeys getting lost.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/jeremyevans/rodauth&quot;&gt;Rodauth&lt;/a&gt; provides first class support for passkeys, implemented on top of the excellent &lt;a href=&quot;https://github.com/cedarcode/webauthn-ruby&quot;&gt;webauthn-ruby&lt;/a&gt; gem. It enables using passkeys as a multifactor authentication method, or for passwordless login and registration. In addition to routes, views and database storage, it also provides the complete &lt;a href=&quot;https://github.com/jeremyevans/rodauth/tree/master/javascript&quot;&gt;JavaScript part&lt;/a&gt; that interacts with &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API&quot;&gt;Web Authentication API&lt;/a&gt; for zero configuration.&lt;/p&gt;
+
+&lt;p&gt;In this article, I would like to show how to set each of these up in a Rails app that uses &lt;a href=&quot;https://github.com/janko/rodauth-rails&quot;&gt;rodauth-rails&lt;/a&gt;. I’ll be using Safari on macOS Ventura, and have iCloud Keychain sync enabled, which is a requirement for Apple passkeys.&lt;/p&gt;
+
+&lt;h2 id=&quot;multifactor-authentication&quot;&gt;Multifactor authentication&lt;/h2&gt;
+
+&lt;p&gt;As I mentioned before, Rodauth supports registering passkeys as a multifactor authentication method, in addition to TOTP, recovery codes and SMS codes it already &lt;a href=&quot;https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/&quot;&gt;provides&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We’ll start by creating the necessary database tables:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails generate rodauth:migration webauthn
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails db:migrate
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CreateRodauthWebauthn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;change&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# stores WebAuthn user identifiers&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_webauthn_user_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;integer&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;foreign_key&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:accounts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;column: :id&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:webauthn_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# stores WebAuthn credentials&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_webauthn_keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary_key: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:account_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:webauthn_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;references&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foreign_key: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:webauthn_id&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:public_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;integer&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:sign_count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;datetime&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:last_use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;default: &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CURRENT_TIMESTAMP&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next, we’ll enable the &lt;a href=&quot;webauthn&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;webauthn&lt;/code&gt;&lt;/a&gt; feature in our Rodauth configuration:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:webauthn&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will add routes for setting up, authenticating via and removing passkeys:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails rodauth:routes
+&lt;span class=&quot;c&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# GET/POST  /webauthn-auth    rodauth.webauthn_auth_path&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# GET/POST  /webauthn-setup   rodauth.webauthn_setup_path&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# GET/POST  /webauthn-remove  rodauth.webauthn_remove_path&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# ...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now when the user navigates to the page for managing multifactor authentication methods, they should see a link for setting up WebAuthn authentication.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/rodauth-webauthn-setup-link.png&quot; alt=&quot;Rodauth WebAuthn setup link&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This page will show a button for registering a WebAuthn credential, which is already hooked up with the necessary JavaScript code, so clicking on it should show a native browser dialog for creating a new passkey. Once I verify biometric identification, my 2nd factor is set up.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/rodauth-passkey-registration-dialog.png&quot; alt=&quot;Rodauth passkey registration dialog&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When this user is logging in the next time, once they’ve authenticated with 1st factor, they’re given the option to authenticate via a passkey for 2nd factor.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/rodauth-webauthn-auth-link.png&quot; alt=&quot;Rodauth WebAuthn auth link&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Just like for registering passkeys, the page for authenticating via a passkey is already hooked up with the necessary JavaScript code, so clicking on the submit button should show a dialog for authenticating with the previously created passkey. Once I verify biometric identification, I’m authenticated with 2nd factor.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/rodauth-passkey-authentication-dialog.png&quot; alt=&quot;Rodauth passkey authentication dialog&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;passwordless-login&quot;&gt;Passwordless login&lt;/h2&gt;
+
+&lt;p&gt;Once the user has created a passkey for your website, in addition to multifactor authentication, they can also use it for passwordless login. This functionality is provided by the &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/webauthn_login_rdoc.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;webauthn_login&lt;/code&gt;&lt;/a&gt; feature:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:webauthn_login&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will automatically enable multi-phase login, where the user first enters their email, and then they can choose to authenticate via a password or a passkey. Note that the password field won’t be displayed if the user didn’t set one when creating their account.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/rodauth-passkey-login.png&quot; alt=&quot;Rodauth passkey login&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Verifying the passkey will log the user in. If they’re using multifactor authentication, by default this will only authenticate 1st factor, so they’ll still need 2nd factor (for pages that require it). However, passkeys are generally considered multi-factor authentication, because the user presents something they “have” (device) and – if user verification took place – something they “are” (biometrics) or “know” (PIN).&lt;/p&gt;
+
+&lt;p&gt;We can tell Rodauth to consider user verification as 2nd factor. If there was no user verification, e.g. a security key was used that only requires user presence but doesn’t have biometrics or PIN, then only 1st factor will get authenticated.&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;webauthn_login_user_verification_additional_factor?&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To make the login UX even better, WebAuthn protocol supports &lt;a href=&quot;https://passkeys.dev/docs/reference/terms/#autofill-ui&quot;&gt;autofill UI&lt;/a&gt; for passkeys when the email field is focused. Rodauth once again has this built in via the &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/webauthn_autofill_rdoc.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;webauthn_autofill&lt;/code&gt;&lt;/a&gt; feature (which happens to be a feature I added :blush:):&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:webauthn_autofill&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When the user opens the login page again and focuses the email field, they should see their passkey being offered. This is because stored passkeys include the user’s email address for identification.&lt;/p&gt;
+
+&lt;figure&gt;
+  &lt;img alt=&quot;Autofill UI on email field showing a dropdown with passkeyss&quot; src=&quot;/images/rodauth-passkey-autofill.png&quot; /&gt;
+  &lt;figcaption&gt;There is normally a drop shadow, but my Mac&apos;s screen capture removed it.&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;When the user selects their passkey and verifies it, they’ll be automatically logged in, without even having to type their email address. In fact, they don’t even have to select the passkey, they can just scan their fingerprint as soon as they focus the email field.&lt;/p&gt;
+
+&lt;p&gt;In addition to passwordless login, Rodauth also supports passwordless registration via the &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/webauthn_verify_account_rdoc.html&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;webauthn_verify_account&lt;/code&gt;&lt;/a&gt; feature. The user just needs to enter their email address in the create account form, and when they follow the link in the verification email, they’re required to register a passkey in order to verify their account.&lt;/p&gt;
+
+&lt;h2 id=&quot;multiple-credentials&quot;&gt;Multiple credentials&lt;/h2&gt;
+
+&lt;p&gt;Rodauth supports registering multiple passkeys for a single account; the user can just visit the WebAuthn setup page again and create another credential. This is useful for people wanting to register multiple devices for backup.&lt;/p&gt;
+
+&lt;p&gt;By default, credentials can only be differentiated by their last used timestamp, which is what’s displayed on the WebAuthn remove page by default.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/rodauth-webauthn-remove.png&quot; alt=&quot;Rodauth WebAuthn remove page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s add the ability for the user to choose a nickname for their credentials, so that they can more easily differentiate between them. We’ll start by adding a new &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nickname&lt;/code&gt; column to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;account_webauthn_keys&lt;/code&gt; table:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails generate migration add_nickname_to_account_webauthn_keys nickname:string
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails db:migrate
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AddNicknameToAccountWebauthnKeys&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;change&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;add_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:account_webauthn_keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:nickname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:string&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next, we’ll import the view templates used by the WebAuthn feature, and add a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nickname&lt;/code&gt; field to the setup form:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rails generate rodauth:views webauthn
+&lt;span class=&quot;c&quot;&gt;# create  app/views/rodauth/webauthn_auth.html.erb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# create  app/views/rodauth/webauthn_setup.html.erb&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# create  app/views/rodauth/webauthn_remove.html.erb&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- app/views/rodauth/webauthn_setup.html.erb --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- ... --&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;form-group mb-3&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:nickname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;form-label&quot;&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;text_field&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:nickname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;value: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:nickname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;form-control &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;is-invalid&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;field_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;aria: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;invalid: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;describedby: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname_error_message&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;field_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;content_tag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:span&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;field_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;invalid-feedback&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname_error_message&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;field_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- ... --&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/rodauth-passkey-nickname-field.png&quot; alt=&quot;Rodauth passkey nickname field&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we’ll hook into the WebAuthn setup request, validate that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nickname&lt;/code&gt; param was filled in and persist it on the new credential:&lt;/p&gt;
+
+&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# app/misc/rodauth_main.rb&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RodauthMain&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Rodauth&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Auth&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;before_webauthn_setup&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;throw_error_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;422&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;must be set&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;empty?&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;webauthn_key_insert_hash&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;credential&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;credential&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;nickname: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;nickname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally, let’s also modify the remove form to display nicknames instead of last used timestamps (we’re using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Account#webauthn_keys&lt;/code&gt; association defined by &lt;a href=&quot;https://github.com/janko/rodauth-model&quot;&gt;rodauth-model&lt;/a&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;language-erb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- app/views/rodauth/webauthn_remove.html.erb --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- ... --&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;fieldset&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;form-group mb-3&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;webauthn_key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;form-check&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;radio_button&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_remove_param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;webauthn_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;webauthn-remove-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;webauthn_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_id&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;form-check-input &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;is-invalid&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;field_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_remove_param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;aria: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;invalid: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;describedby: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;webauthn_remove_error_message&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;field_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_remove_param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;webauthn-remove-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;webauthn_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_id&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;webauthn_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;nickname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;form-check-label&quot;&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;content_tag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:span&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;field_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_remove_param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;class: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;invalid-feedback&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;id: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;webauthn_remove_error_message&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;field_error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rodauth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_remove_param&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;webauthn_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;webauthn_keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;last&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;cp&quot;&gt;&amp;lt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/fieldset&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- ... --&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/rodauth-passkey-remove-nicknames.png&quot; alt=&quot;Rodauth passkey remove nicknames&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;closing-words&quot;&gt;Closing words&lt;/h2&gt;
+
+&lt;p&gt;Passkeys still need wider support in browsers and operating systems before they can become mainstream, but they look very promising. I like that I can use devices I already have, as opposed to having to buy a separate piece of hardware such as a YubiKey. I also feel safer that passkeys are synced automatically, and it’s convenient that I don’t have to remember on which Apple device I created a passkey for a given website.&lt;/p&gt;
+
+&lt;p&gt;The fact that Rodauth provides such advanced support for passkeys with zero configuration shows that it’s really keeping up with authentication trends. It also speaks to its incredibly flexible design, as passkeys can be combined with existing authentication methods, acting both as 1st and 2nd factor. The whole flow is highly configurable, as can be seen from the vast list of &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/webauthn_rdoc.html&quot;&gt;configuration methods&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://webauthn.io/&quot;&gt;WebAuthn.io&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://fidoalliance.org/passkeys/&quot;&gt;FIDO Alliance documentation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://passkeys.dev/&quot;&gt;Passkeys.dev&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://css-tricks.com/passkeys-what-the-heck-and-why/&quot;&gt;Passkeys: What the Heck and Why?&lt;/a&gt; (CSS Tricks)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.passwordless.id/webauthn-vs-passkeys&quot;&gt;WebAuthn vs Passkeys&lt;/a&gt; (Passwordless.ID)&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><summary type="html">Passkeys are a modern alternative to passwords, where the user’s device performs the authentication, usually requiring some form of user verification (biometric identification, PIN). Passkeys are built on top of WebAuthn specification, which is based on public-key cryptography. Keypairs are created for each website, and the public key is sent to the server, while the private key is securely stored on the device. This makes passkeys:</summary></entry><entry><title type="html">Upgrading from Selenium to Cuprite</title><link href="https://janko.io/upgrading-from-selenium-to-cuprite/" rel="alternate" type="text/html" title="Upgrading from Selenium to Cuprite" /><published>2023-06-04T00:00:00+02:00</published><updated>2023-06-04T00:00:00+02:00</updated><id>https://janko.io/upgrading-from-selenium-to-cuprite</id><content type="html" xml:base="https://janko.io/upgrading-from-selenium-to-cuprite/">&lt;p&gt;When I joined my current company, the system tests for our Rails app used Selenium as the Capybara driver. I didn’t have good experiences with Selenium in the past, mostly it was tedious to have to keep chromedriver up-to-date with the auto-updating Chrome. In this project, I was frequently hitting maximum number of open file descriptors on my OS when running system tests, probably in combination with Spring. We’re using the &lt;a href=&quot;https://github.com/ttusfortner/webdrivers&quot;&gt;Webdrivers&lt;/a&gt; gem, and we also needed to ignore its download URLs in VCR and WebMock. But my primary issue was that the system tests just seemed kind of slow in general.&lt;/p&gt;
 
 &lt;p&gt;I stumbled across &lt;a href=&quot;https://www.bikeshed.fm/355&quot;&gt;an episode of The Bike Shed podcast&lt;/a&gt;, where it was mentioned that Selenium can add considerable overhead, so I decided it was worth trying out &lt;a href=&quot;https://github.com/rubycdp/cuprite&quot;&gt;Cuprite&lt;/a&gt;. For those not familiar, Cuprite is a Capybara driver that interacts with Chrome directly using &lt;a href=&quot;https://chromedevtools.github.io/devtools-protocol/&quot;&gt;CDP&lt;/a&gt; (Chrome DevTools Protocol). This is in contrast to Selenium, which goes through chromedriver/geckodriver command-line tool.&lt;/p&gt;
 
@@ -2465,317 +2679,4 @@ strategy, and the code wasn’t any more complex than the other strategies.&lt;/
 might require more complex data transformations. In this case it’s tempting to
 just do the transformations in Ruby, as we know Ruby much better than SQL.
 However, I think that learning some common SQL functions can come a long way in
-being able to make your database do the work.&lt;/p&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="sequel" /><summary type="html">At a previous company, I was working on an internal app for managing and distributing video content. Content curators would create playlists of videos, submit them for approval, and once playlists were approved they would be automatically published to target devices.</summary></entry><entry><title type="html">The Complexity of Active Record Transactions</title><link href="https://janko.io/the-complexity-of-activerecord-transactions/" rel="alternate" type="text/html" title="The Complexity of Active Record Transactions" /><published>2020-09-28T00:00:00+02:00</published><updated>2020-09-28T00:00:00+02:00</updated><id>https://janko.io/the-complexity-of-activerecord-transactions</id><content type="html" xml:base="https://janko.io/the-complexity-of-activerecord-transactions/">&lt;p&gt;I’ve recently picked up the &lt;a href=&quot;https://github.com/janko/sequel-activerecord_connection&quot;&gt;sequel-activerecord_connection&lt;/a&gt; gem again to make
-some reliability improvements around database transactions. For context, this
-gem extends &lt;a href=&quot;https://github.com/jeremyevans/sequel&quot;&gt;Sequel&lt;/a&gt; with the ability to reuse Active Record’s database
-connection, which should lower the barrier for trying out Sequel in apps that
-use Active Record.&lt;/p&gt;
-
-&lt;p&gt;After &lt;a href=&quot;https://github.com/janko/sequel-activerecord_connection/commit/a30953269cbe4bc764b055e33efb2a4acff977e2&quot;&gt;pushing some fixes&lt;/a&gt;, I was thinking how working on
-this gem has greatly increased my familiarity with the internals of database
-transaction implementations of both Active Record and Sequel. Since there
-aren’t any existing articles on this topic, I thought it would be useful to
-share the knowledge I gathered over the past few months.&lt;/p&gt;
-
-&lt;p&gt;This article will compare the transaction API implementation between Active
-Record and Sequel, and assumes the reader is already familiar with Active
-Record’s transaction API usage. As the title suggests, I will be critical of
-Active Record’s implementation. I know some will perceive this as “not nice”,
-but I think it’s important to be aware of the internal complexity of libraries
-we’re using every day (myself included).&lt;/p&gt;
-
-&lt;h2 id=&quot;model-vs-database&quot;&gt;Model vs Database&lt;/h2&gt;
-
-&lt;h3 id=&quot;active-record&quot;&gt;Active Record&lt;/h3&gt;
-
-&lt;p&gt;Active Record transactions are typically called on the model, which is shown in
-the &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html&quot;&gt;official docs&lt;/a&gt; as well. I think this can be
-misleading to novice developers, as it suggests that database transactions are
-tied to specific database tables, when in fact they’re applied to any queries
-made by the current database connection.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# opens a connection-wide transaction (unrelated to the `accounts` table)&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;balance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save!&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save!&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Active Record provides transaction callbacks as part of a model’s lifecycle,
-allowing you to execute code after the transaction commits or rolls back. This,
-for example, allows you to spawn a background job after a record is persisted,
-but wait until the transaction commits to ensure the record is up-to-date when
-the background job is picked up.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;after_create_commit&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:send_welcome_email&lt;/span&gt;
-
-  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;send_welcome_email&lt;/span&gt;
-    &lt;span class=&quot;no&quot;&gt;AccountMailer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;deliver_later&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;In my opinion, this approach has several issues. For one, it encourages putting
-business logic into your Active Record models, and generally increases
-complexity of the model lifecycle. It’s unfortunately not trivial to use
-transaction callbacks &lt;em&gt;outside&lt;/em&gt; of models, because they’re &lt;a href=&quot;https://github.com/rails/rails/blob/f40c17dcfafa57bcbd8fd2ff6745f37334ba78d9/activerecord/lib/active_record/connection_adapters/abstract/transaction.rb#L137-L154&quot;&gt;coupled to
-models&lt;/a&gt; (although there are
-&lt;a href=&quot;https://github.com/Envek/after_commit_everywhere&quot;&gt;gems&lt;/a&gt; that work around that).&lt;/p&gt;
-
-&lt;p&gt;Transaction callbacks can also negatively impact memory usage if you’re
-allocating many model instances within a transaction, as references to these
-model instances are held until the transaction is committed or rolled back,
-which prevents Ruby from garbage collecting them beforehand. Active Record will
-do this for any model that has any transaction callbacks defined.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;after_commit&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:deliver_new_mentions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;on: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;if: :body_changed?&lt;/span&gt;
-
-  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deliver_new_mentions&lt;/span&gt;
-    &lt;span class=&quot;no&quot;&gt;MentionNotificationJob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;deliver_later&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;comments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find_each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# Even though we&apos;re not triggering the `after_commit` callback here, Active&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# Record will still keep references to these model instances, preventing&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# Ruby from garbage collecting them until the transaction is closed.&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;author: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new_author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;sequel&quot;&gt;Sequel&lt;/h3&gt;
-
-&lt;p&gt;In Sequel, the transaction API is implemented on the database object, which is
-completely decoupled from models.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Sequel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;adapter: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;postgresql&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;database: &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;myapp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; #&amp;lt;Sequel::Database ...&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# calling #transaction on the database object communicates it&apos;s connection-wide&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;balance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Sequel also has transaction hooks, but they too are defined on the database
-object, and aren’t tied to models in any way – they’re just blocks of code that
-get executed after the transaction is committed or rolled back. This makes them
-possible to use in business logic that lives outside of models (of course, in
-that case one can also just move the code outside of the transaction block).&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CreateAccount&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;send_welcome_email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;api_key: &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;SecureRandom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;send_welcome_email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# queue email delivery after the enclosing transaction commits&lt;/span&gt;
-    &lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;after_commit&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-      &lt;span class=&quot;no&quot;&gt;AccountMailer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;deliver_later&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;And if you really want to register transaction hooks on the model level, you
-can do that inside regular model lifecycle hooks:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Account&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Sequel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Model&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;after_create&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;after_commit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AccountMailer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;deliver_later&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;By giving us the ability to compose APIs this way, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sequel::Model&lt;/code&gt; class
-was able to remain unaware of the existence of transaction hooks (which keeps
-it simpler), but we were still able to achieve the same functionality as we
-have with Active Record.&lt;/p&gt;
-
-&lt;p&gt;Note that the examples above will still keep references to the model instances
-until the transaction is closed. However, Sequel’s API gives us the necessary
-control to change that. For example, we can choose to register a transaction
-hook only if a certain condition holds (useful in use cases like &lt;a href=&quot;https://github.com/shrinerb/shrine/commit/08ed806110139b83401f603ac95cea5d6abf7bd2&quot;&gt;file
-attachments&lt;/a&gt;):&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Sequel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Model&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;after_save&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;column_changed?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;after_commit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MentionNotificationJob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;deliver_later&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;comments_dataset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;paged_each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# The transaction hooks aren&apos;t registered, so Ruby can garbage collect&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# these model instances while the loop is running.&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;author: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new_author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;We can also register a transaction hook in a way where it will only keep the
-reference to the record id instead of the whole record instance:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MentionNotifications&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;enqueue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;comment_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;after_commit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MentionNotificationJob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;deliver_later&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;comment_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Sequel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Model&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;after_save&lt;/span&gt;
-    &lt;span class=&quot;no&quot;&gt;NotificationMentions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;enqueue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;transaction-state&quot;&gt;Transaction state&lt;/h2&gt;
-
-&lt;h3 id=&quot;active-record-1&quot;&gt;Active Record&lt;/h3&gt;
-
-&lt;p&gt;Active Record maintains transaction state on the &lt;a href=&quot;https://github.com/rails/rails/blob/f40c17dcfafa57bcbd8fd2ff6745f37334ba78d9/activerecord/lib/active_record/connection_adapters/abstract/transaction.rb&quot;&gt;connection
-level&lt;/a&gt;, but a lot of transaction-related
-state is also maintained at the &lt;a href=&quot;https://github.com/rails/rails/blob/f40c17dcfafa57bcbd8fd2ff6745f37334ba78d9/activerecord/lib/active_record/transactions.rb&quot;&gt;model level&lt;/a&gt;.
-While the transaction manager is implemented pretty decently, the
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord::Transactions&lt;/code&gt; module is incredibly complex, and
-&lt;a href=&quot;https://github.com/rails/rails/issues/29747&quot;&gt;has&lt;/a&gt;
-&lt;a href=&quot;https://github.com/rails/rails/issues/36934&quot;&gt;been&lt;/a&gt;
-&lt;a href=&quot;https://github.com/rails/rails/issues/37152&quot;&gt;the&lt;/a&gt;
-&lt;a href=&quot;https://github.com/rails/rails/issues/39972&quot;&gt;source&lt;/a&gt;
-&lt;a href=&quot;https://github.com/rails/rails/issues/39400&quot;&gt;of&lt;/a&gt;
-&lt;a href=&quot;https://github.com/rails/rails/issues/14493&quot;&gt;numerous&lt;/a&gt;
-&lt;a href=&quot;https://github.com/rails/rails/issues/36132&quot;&gt;issues&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;The reason for this complexity is that every new incoming bug has generally
-been solved by adding yet another tweak, yet another conditional, yet another
-instance variable. And some of these instance variables even leak outside of
-the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord::Transactions&lt;/code&gt; module, which indicates a leaky abstraction.&lt;/p&gt;
-
-&lt;p&gt;Honestly, for me this reached a state where I don’t consider Active Record’s
-transaction callbacks to be safe enough for production, and I try to avoid them
-whenever possible.&lt;/p&gt;
-
-&lt;h3 id=&quot;sequel-1&quot;&gt;Sequel&lt;/h3&gt;
-
-&lt;p&gt;Sequel stores all the transaction state in a single &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@transactions&lt;/code&gt; instance
-variable on the database object. Models don’t have access to the transaction
-state, which keeps transactions fully decoupled from models.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;after_commit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;savepoint: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-    &lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;instance_variable_get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:@transactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# {&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;#   after_commit: [&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;#     &amp;lt;Proc...&amp;gt; # the block we&apos;ve registered above&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;#   ],&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;#   savepoints: [&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;#     { ... }, # transaction data&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;#     { ... }  # savepoint data&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;#   ]&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# }&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;If you’re reading &lt;a href=&quot;https://github.com/jeremyevans/sequel/blob/1bcb1996fc7be80db8001640aae6fb5a2ca5ff19/lib/sequel/database/transactions.rb&quot;&gt;Sequel’s transaction code&lt;/a&gt;, you’ll
-notice that all of it is contained in a single file and single context
-(including transaction hooks). In my experience this made the logic much easier
-to grok.&lt;/p&gt;
-
-&lt;h2 id=&quot;lazy-transactions&quot;&gt;Lazy transactions&lt;/h2&gt;
-
-&lt;h3 id=&quot;active-record-2&quot;&gt;Active Record&lt;/h3&gt;
-
-&lt;p&gt;In version 6.0, Active Record &lt;a href=&quot;https://github.com/rails/rails/commit/0ac81ee6ff3d1625fdbcc40b12c00cbff2208077&quot;&gt;introduced&lt;/a&gt; a
-performance optimization that makes transactions lazy. What this means is that
-Active Record will issue BEGIN/COMMIT queries only if there was at least one
-query exected inside the transaction block.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-  &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;execute&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;SELECT 1&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# BEGIN&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# SELECT 1&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# COMMIT&lt;/span&gt;
-
-&lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# (no queries were executed)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The main use case behind this addition seems to be saving lots of records whose
-attributes didn’t change, where each attempted update would execute empty
-BEGIN/COMMIT statements (even though no UPDATE was issued), which didn’t
-perform well. A workaround at the time would be to call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;record.save if
-record.changed?&lt;/code&gt; instead.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;article&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Article&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;article&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;published&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; true&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;article&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;published: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# executed empty BEGIN/COMMIT prior to Active Record 6.0&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;However, as &lt;a href=&quot;https://github.com/rails/rails/pull/32647#pullrequestreview-114218234&quot;&gt;Sean Griffin had pointed out&lt;/a&gt; in the pull
-request review, this added significant complexity for very little gain. In
-addition to requiring &lt;a href=&quot;https://github.com/rails/rails/blob/3803671a816232395f538c61046b00c875c1444b/activerecord/lib/active_record/connection_adapters/abstract/transaction.rb#L219-L221&quot;&gt;additional transaction state&lt;/a&gt;, each Active Record adapter is now also responsible for &lt;a href=&quot;https://github.com/rails/rails/blob/3803671a816232395f538c61046b00c875c1444b/activerecord/lib/active_record/connection_adapters/postgresql_adapter.rb#L689&quot;&gt;materializing
-transactions when necessary&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;sequel-2&quot;&gt;Sequel&lt;/h3&gt;
-
-&lt;p&gt;In Sequel, opening a transaction will always execute BEGIN/COMMIT statements
-(if the transaction commits), regardless of whether any queries were made
-inside the block or not.&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# BEGIN&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# COMMIT&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sequel::Model#save&lt;/code&gt; behaves differently than &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord::Base#save&lt;/code&gt;, in
-terms that it always executes an UPDATE statement for an existing record
-(updating all columns). To update only changed attributes, you would use
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sequel::Model#save_changes&lt;/code&gt;, which doesn’t execute UPDATE if no attributes
-have changed. And &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sequel::Model#update&lt;/code&gt; calls &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#save_changes&lt;/code&gt; under the hood:&lt;/p&gt;
-
-&lt;div class=&quot;language-rb highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;article&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Article&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;article&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;published&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; true&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;article&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;published: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# no queries executed&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Unlike &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ActiveRecord::Base#save&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sequel::Model#save_changes&lt;/code&gt; doesn’t open a
-transaction if it won’t execute the UPDATE statement. This seems like a much
-more elegant solution to the problem Active Record’s lazy transactions intended
-to solve, but with none of the complexity.&lt;/p&gt;
-
-&lt;h2 id=&quot;final-words&quot;&gt;Final words&lt;/h2&gt;
-
-&lt;p&gt;I really care that libraries I’m using at work have sufficiently
-straightforward internals that I can understand when debugging an issue. When
-it comes to database transactions, Active Record’s internal complexity is just
-too overwhelming for me (and that’s coming from someone who contributes to open
-source on a daily basis).&lt;/p&gt;
-
-&lt;p&gt;On the other hand, the Sequel’s transaction implementation was fairly
-straightforward to understand, which is all the more impressive considering
-that it’s more feature-rich compared to Active Record (see the &lt;a href=&quot;http://sequel.jeremyevans.net/rdoc/files/doc/transactions_rdoc.html&quot;&gt;docs&lt;/a&gt;). And this is not an exception – I regularly see this
-pattern whenever I’m reading Sequel’s source code :wink:&lt;/p&gt;
-
-&lt;p&gt;Hopefully this article will add another point towards Sequel for people
-starting new Ruby/Rails projects.&lt;/p&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="sequel" /><summary type="html">I’ve recently picked up the sequel-activerecord_connection gem again to make some reliability improvements around database transactions. For context, this gem extends Sequel with the ability to reuse Active Record’s database connection, which should lower the barrier for trying out Sequel in apps that use Active Record.</summary></entry></feed>
+being able to make your database do the work.&lt;/p&gt;</content><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><category term="sequel" /><summary type="html">At a previous company, I was working on an internal app for managing and distributing video content. Content curators would create playlists of videos, submit them for approval, and once playlists were approved they would be automatically published to target devices.</summary></entry></feed>
