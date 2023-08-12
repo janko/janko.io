@@ -234,12 +234,14 @@ export default class extends Controller {
 
   async setup() {
     const result = await WebAuthnJSON.create({ publicKey: this.dataValue })
+
     this.resultTarget.value = JSON.stringify(result)
     this.element.requestSubmit()
   }
 
   async auth() {
     const result = await WebAuthnJSON.get({ publicKey: this.dataValue })
+
     this.resultTarget.value = JSON.stringify(result)
     this.element.requestSubmit()
   }
@@ -262,7 +264,7 @@ export default class extends Controller {
     </div>
   <% end %>
 
-  <%= form.submit rodauth.webauthn_setup_button, class: "btn btn-primary", data: { action: "webauthn#setup" } %>
+  <%= form.submit rodauth.webauthn_setup_button, class: "btn btn-primary", data: { action: "webauthn#setup:prevent" } %>
 <% end %>
 ```
 ```erb
@@ -276,7 +278,7 @@ export default class extends Controller {
 
   <%= form.hidden_field rodauth.login_param, value: params[rodauth.login_param] if rodauth.valid_login_entered? %>
 
-  <%= form.submit rodauth.webauthn_auth_button, class: "btn btn-primary", data: { action: "webauthn#auth" } %>
+  <%= form.submit rodauth.webauthn_auth_button, class: "btn btn-primary", data: { action: "webauthn#auth:prevent" } %>
 <% end %>
 ```
 
