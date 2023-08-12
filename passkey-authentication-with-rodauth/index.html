@@ -23,7 +23,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"headline":"Passkey Authentication with Rodauth","dateModified":"2023-07-24T00:00:00+02:00","datePublished":"2023-07-24T00:00:00+02:00","@type":"BlogPosting","author":{"@type":"Person","name":"Janko Marohnić"},"description":"Passkeys are a modern alternative to passwords, where the user’s device performs the authentication, usually requiring some form of user verification (biometric identification, PIN). Passkeys are built on top of WebAuthn specification, which is based on public-key cryptography. Keypairs are created for each website, and the public key is sent to the server, while the private key is securely stored on the device. This makes passkeys:","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/passkey-authentication-with-rodauth/"},"url":"https://janko.io/passkey-authentication-with-rodauth/","@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/passkey-authentication-with-rodauth/"},"author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"BlogPosting","description":"Passkeys are a modern alternative to passwords, where the user’s device performs the authentication, usually requiring some form of user verification (biometric identification, PIN). Passkeys are built on top of WebAuthn specification, which is based on public-key cryptography. Keypairs are created for each website, and the public key is sent to the server, while the private key is securely stored on the device. This makes passkeys:","url":"https://janko.io/passkey-authentication-with-rodauth/","headline":"Passkey Authentication with Rodauth","dateModified":"2023-07-24T00:00:00+02:00","datePublished":"2023-07-24T00:00:00+02:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko Marohnić" />
@@ -314,12 +314,14 @@
 
   <span class="k">async</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">WebAuthnJSON</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span> <span class="na">publicKey</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">dataValue</span> <span class="p">})</span>
+
     <span class="k">this</span><span class="p">.</span><span class="nx">resultTarget</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nf">stringify</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nf">requestSubmit</span><span class="p">()</span>
   <span class="p">}</span>
 
   <span class="k">async</span> <span class="nf">auth</span><span class="p">()</span> <span class="p">{</span>
     <span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">WebAuthnJSON</span><span class="p">.</span><span class="nf">get</span><span class="p">({</span> <span class="na">publicKey</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">dataValue</span> <span class="p">})</span>
+
     <span class="k">this</span><span class="p">.</span><span class="nx">resultTarget</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nf">stringify</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nf">requestSubmit</span><span class="p">()</span>
   <span class="p">}</span>
@@ -341,7 +343,7 @@
     <span class="nt">&lt;/div&gt;</span>
   <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 
-  <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">submit</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">webauthn_setup_button</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-primary"</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">action: </span><span class="s2">"webauthn#setup"</span> <span class="p">}</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">submit</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">webauthn_setup_button</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-primary"</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">action: </span><span class="s2">"webauthn#setup:prevent"</span> <span class="p">}</span> <span class="cp">%&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div></div>
 <div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/rodauth/webauthn_auth.html.erb --&gt;</span>
@@ -354,7 +356,7 @@
 
   <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">hidden_field</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">login_param</span><span class="p">,</span> <span class="ss">value: </span><span class="n">params</span><span class="p">[</span><span class="n">rodauth</span><span class="p">.</span><span class="nf">login_param</span><span class="p">]</span> <span class="k">if</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">valid_login_entered?</span> <span class="cp">%&gt;</span>
 
-  <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">submit</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">webauthn_auth_button</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-primary"</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">action: </span><span class="s2">"webauthn#auth"</span> <span class="p">}</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">submit</span> <span class="n">rodauth</span><span class="p">.</span><span class="nf">webauthn_auth_button</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"btn btn-primary"</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">action: </span><span class="s2">"webauthn#auth:prevent"</span> <span class="p">}</span> <span class="cp">%&gt;</span>
 <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 </code></pre></div></div>
 
