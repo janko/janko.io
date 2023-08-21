@@ -14,7 +14,7 @@ In this article, I will show how to add social login to an existing Rails app th
 We'll start by installing the Rodauth extension and the desired OmniAuth strategies:
 
 ```sh
-$ bundle add rodauth-omniauth omniauth-facebook omniauth-google_oauth2
+$ bundle add rodauth-omniauth omniauth-facebook omniauth-google-oauth2
 ```
 
 You don't need to install any gems for CSRF protection of OmniAuth request endpoints, because rodauth-omniauth will automatically use whichever CSRF protection mechanism Rodauth was configured with, which in case of Rails will be `ActionController::RequestForgeryProtection`.
