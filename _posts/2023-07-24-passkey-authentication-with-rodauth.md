@@ -213,77 +213,6 @@ Finally, let's also modify the remove form to display nicknames instead of last 
 
 ![Rodauth passkey remove nicknames](/images/rodauth-passkey-remove-nicknames.png)
 
-## JavaScript side
-
-While the JavaScript for passkey registration & authentication that ships with Rodauth is convenient when getting started, sooner or later you'll probably want to customize it. The original Web Authentication API isn't very user-friendly, but the [@github/webauthn-json] package makes it really simple to use.
-
-The following is the simplest functional implementation using Stimulus:
-
-```js
-// app/javascript/controllers/webauthn_controller.js
-import { Controller } from "@hotwired/stimulus"
-import * as WebAuthnJSON from "@github/webauthn-json"
-
-export default class extends Controller {
-  static targets = ["result"]
-  static values = { data: Object }
-
-  connect() {
-    if (!WebAuthnJSON.supported()) alert("WebAuthn is not supported")
-  }
-
-  async setup() {
-    const result = await WebAuthnJSON.create({ publicKey: this.dataValue })
-
-    this.resultTarget.value = JSON.stringify(result)
-    this.element.requestSubmit()
-  }
-
-  async auth() {
-    const result = await WebAuthnJSON.get({ publicKey: this.dataValue })
-
-    this.resultTarget.value = JSON.stringify(result)
-    this.element.requestSubmit()
-  }
-}
-```
-```erb
-<!-- app/views/rodauth/webauthn_setup.html.erb -->
-<% cred = rodauth.new_webauthn_credential %>
-
-<%= form_with url: request.path, method: :post, data: { controller: "webauthn", webauthn_data_value: cred.as_json.to_json } do |form| %>
-  <%= form.hidden_field rodauth.webauthn_setup_param, data: { webauthn_target: "result" } %>
-  <%= form.hidden_field rodauth.webauthn_setup_challenge_param, value: cred.challenge %>
-  <%= form.hidden_field rodauth.webauthn_setup_challenge_hmac_param, value: rodauth.compute_hmac(cred.challenge) %>
-
-  <% if rodauth.two_factor_modifications_require_password? %>
-    <div class="mb-3">
-      <%= form.label "password", rodauth.password_label, class: "form-label" %>
-      <%= form.password_field rodauth.password_param, autocomplete: rodauth.password_field_autocomplete_value, required: true, class: "form-control #{"is-invalid" if rodauth.field_error(rodauth.password_param)}" %>
-      <%= content_tag(:span, rodauth.field_error(rodauth.password_param), class: "invalid-feedback") if rodauth.field_error(rodauth.password_param) %>
-    </div>
-  <% end %>
-
-  <%= form.submit rodauth.webauthn_setup_button, class: "btn btn-primary", data: { action: "webauthn#setup:prevent" } %>
-<% end %>
-```
-```erb
-<!-- app/views/rodauth/webauthn_auth.html.erb -->
-<% cred = rodauth.webauthn_credential_options_for_get %>
-
-<%= form_with url: rodauth.webauthn_auth_form_path, method: :post, data: { controller: "webauthn", webauthn_data_value: cred.as_json.to_json } do |form| %>
-  <%= form.hidden_field rodauth.webauthn_auth_param, data: { webauthn_target: "result" } %>
-  <%= form.hidden_field rodauth.webauthn_auth_challenge_param, value: cred.challenge %>
-  <%= form.hidden_field rodauth.webauthn_auth_challenge_hmac_param, value: rodauth.compute_hmac(cred.challenge) %>
-
-  <%= form.hidden_field rodauth.login_param, value: params[rodauth.login_param] if rodauth.valid_login_entered? %>
-
-  <%= form.submit rodauth.webauthn_auth_button, class: "btn btn-primary", data: { action: "webauthn#auth:prevent" } %>
-<% end %>
-```
-
-The flow works in a way that the server first generates parameters for the Web Authentication API, then when user clicks on the submit button, a JavaScript call is made with those parameters to register/authenticate a passkey on the client device. Once the browser flow is finished, the JavaScript response is submitted with the form, where the server verifies it and handles the outcome (saving passkey information in the database, logging the user in etc).
-
 ## Closing words
 
 Passkeys still need wider support in browsers and operating systems before they can become mainstream, but they look very promising. I like that I can use devices I already have, as opposed to having to buy a separate piece of hardware such as a YubiKey. I also feel safer that passkeys are synced automatically, and it's convenient that I don't have to remember on which Apple device I created a passkey for a given website.
@@ -314,4 +243,3 @@ The fact that Rodauth provides such advanced support for passkeys with zero conf
 [YubiKey]: https://www.yubico.com/
 [mfa article]: https://janko.io/adding-multifactor-authentication-in-rails-with-rodauth/
 [rodauth-model]: https://github.com/janko/rodauth-model
-[@github/webauthn-json]: https://github.com/github/webauthn-json
