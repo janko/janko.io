@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/favicon.ico?v=1" sizes="any">
     <!-- Begin Jekyll SEO tag v2.7.1 -->
-<meta name="generator" content="Jekyll v4.3.2" />
+<meta name="generator" content="Jekyll v4.3.3" />
 <meta property="og:title" content="Introduction to Roda" />
 <meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
@@ -23,7 +23,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/introduction-to-roda/"},"author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"BlogPosting","description":"When I decided that I want to move away from Rails, I have investigated and experimented with a lot of other Ruby web frameworks (Sinatra, Grape and Lotus), but this one really stood out in every regard, and it became my framework of choice. That’s why I want to show it to you.","url":"https://janko.io/introduction-to-roda/","headline":"Introduction to Roda","dateModified":"2015-08-18T00:00:00+02:00","datePublished":"2015-08-18T00:00:00+02:00","@context":"https://schema.org"}</script>
+{"url":"https://janko.io/introduction-to-roda/","description":"When I decided that I want to move away from Rails, I have investigated and experimented with a lot of other Ruby web frameworks (Sinatra, Grape and Lotus), but this one really stood out in every regard, and it became my framework of choice. That’s why I want to show it to you.","headline":"Introduction to Roda","dateModified":"2015-08-18T00:00:00+02:00","datePublished":"2015-08-18T00:00:00+02:00","author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/introduction-to-roda/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko Marohnić" />
@@ -292,28 +292,6 @@ unlike Sinatra, Roda knows what’s been returned in the block, and with the
 
   <span class="n">r</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"albums/:id"</span> <span class="k">do</span> <span class="o">|</span><span class="nb">id</span><span class="o">|</span>
     <span class="no">Album</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
-
-<h3 id="websockets"><a href="http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Websockets.html">Websockets</a></h3>
-
-<p>Roda has Websocket support using <a href="https://github.com/faye/faye-websocket-ruby">faye-websocket</a>.</p>
-
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plugin</span> <span class="ss">:websockets</span>
-
-<span class="n">route</span> <span class="k">do</span> <span class="o">|</span><span class="n">r</span><span class="o">|</span>
-  <span class="n">r</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"room"</span> <span class="k">do</span>
-    <span class="c1"># Matches if the "/ping" request is a websocket request</span>
-    <span class="n">r</span><span class="p">.</span><span class="nf">websocket</span> <span class="k">do</span> <span class="o">|</span><span class="n">ws</span><span class="o">|</span>
-      <span class="n">ws</span><span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="ss">:message</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
-      <span class="n">ws</span><span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="ss">:close</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span>
-      <span class="c1"># ...</span>
-    <span class="k">end</span>
-
-    <span class="c1"># If the request is not a websocket request, execution continues and in</span>
-    <span class="c1"># that case we render a template</span>
-    <span class="n">view</span> <span class="s2">"room"</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div></div>

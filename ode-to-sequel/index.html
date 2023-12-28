@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/favicon.ico?v=1" sizes="any">
     <!-- Begin Jekyll SEO tag v2.7.1 -->
-<meta name="generator" content="Jekyll v4.3.2" />
+<meta name="generator" content="Jekyll v4.3.3" />
 <meta property="og:title" content="Ode to Sequel" />
 <meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
@@ -23,7 +23,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/ode-to-sequel/"},"author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"BlogPosting","description":"I’ve used and loved ActiveRecord for most of my Ruby life. While I was in Rails, I couldn’t imagine why I would want to use anything else. When I moved away from Rails, I was still using ActiveRecord at first, but some things started to bother me:","url":"https://janko.io/ode-to-sequel/","headline":"Ode to Sequel","dateModified":"2015-07-28T00:00:00+02:00","datePublished":"2015-07-28T00:00:00+02:00","@context":"https://schema.org"}</script>
+{"url":"https://janko.io/ode-to-sequel/","description":"I’ve used and loved ActiveRecord for most of my Ruby life. While I was in Rails, I couldn’t imagine why I would want to use anything else. When I moved away from Rails, I was still using ActiveRecord at first, but some things started to bother me:","headline":"Ode to Sequel","dateModified":"2015-07-28T00:00:00+02:00","datePublished":"2015-07-28T00:00:00+02:00","author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/ode-to-sequel/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko Marohnić" />
@@ -322,7 +322,7 @@ the query interface!</p>
 query them as tables (Thoughtbot used views to implement <a href="https://robots.thoughtbot.com/implementing-multi-table-full-text-search-with-postgres">multi-table full-text
 search in Postgres</a>). Moreover, unlike other databases,
 Postgres has <a href="http://www.postgresql.org/docs/9.4/static/rules-materializedviews.html"><em>materialized</em> views</a>, which transforms views
-into sort of temporary tables by caching them, <a href="http://webcache.googleusercontent.com/search?q=cache:8OnCH9RMeocJ:www.matchingnotes.com/caching-with-postgres-materialized-views.html+&amp;cd=1&amp;hl=en&amp;ct=clnk&amp;gl=us">which can really help you speed
+into sort of temporary tables by caching them, <a href="https://web.archive.org/web/20170716022407/http://www.matchingnotes.com/caching-with-postgres-materialized-views.html">which can really help you speed
 up complex queries</a>. Sequel supports materialized views by
 accepting <code class="language-plaintext highlighter-rouge">materialized: true</code> in <code class="language-plaintext highlighter-rouge">DB.create_view</code>.</p>
 
@@ -374,7 +374,7 @@ in a Postgres array column instead</li>
 
 <h2 id="switching-from-activerecord">Switching from ActiveRecord</h2>
 
-<p>Sequel has a very exhaustive guide “<a href="http://sequel.jeremyevans.net/rdoc/files/doc/active_record_rdoc.html">Sequel for ActiveRecord Users</a>”, which is
+<p>Sequel has a very exhaustive guide “<a href="https://github.com/jeremyevans/sequel/blob/6251baca67c0a738b257ca5e49d69851edd3ff7f/doc/active_record.rdoc">Sequel for ActiveRecord Users</a>”, which is
 aimed at helping ActiveRecord users transition to Sequel. The guide first
 explains how <em>each</em> ActiveRecord feature is implemented in Sequel, and mentions
 some Sequel plugins you could use in your transition to make Sequel more

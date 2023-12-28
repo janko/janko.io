@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/favicon.ico?v=1" sizes="any">
     <!-- Begin Jekyll SEO tag v2.7.1 -->
-<meta name="generator" content="Jekyll v4.3.2" />
+<meta name="generator" content="Jekyll v4.3.3" />
 <meta property="og:title" content="Partial Downloads with Enumerators and Fibers" />
 <meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
@@ -23,7 +23,7 @@
 <meta name="twitter:creator" content="@jankomarohnic" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/partial-downloads-with-enumerators-and-fibers/"},"author":{"@type":"Person","name":"Janko Marohnić"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"BlogPosting","description":"Before talking about the implementation, I first want to explain where and why I needed partial downloads.","url":"https://janko.io/partial-downloads-with-enumerators-and-fibers/","headline":"Partial Downloads with Enumerators and Fibers","dateModified":"2016-07-18T00:00:00+02:00","datePublished":"2016-07-18T00:00:00+02:00","@context":"https://schema.org"}</script>
+{"url":"https://janko.io/partial-downloads-with-enumerators-and-fibers/","description":"Before talking about the implementation, I first want to explain where and why I needed partial downloads.","headline":"Partial Downloads with Enumerators and Fibers","dateModified":"2016-07-18T00:00:00+02:00","datePublished":"2016-07-18T00:00:00+02:00","author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/partial-downloads-with-enumerators-and-fibers/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko Marohnić" />
@@ -98,7 +98,7 @@
 I needed partial downloads.</p>
 
 <p>When handling file attachments with <a href="https://github.com/shrinerb/shrine">Shrine</a>, in addition to uploading files
-through your app, you can have files <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">uploaded directly</a> to Amazon S3. Then when
+through your app, you can have files <a href="https://shrinerb.com/docs/plugins/presign_endpoint">uploaded directly</a> to Amazon S3. Then when
 you submit the form to your app, only the path to the file on S3 is sent
 over-the-wire.</p>
 
@@ -110,7 +110,7 @@ extension, or it’s chosen by the client, so relying on that value isn’t secu
 
 <p>Instead, we need to determine the MIME type from file <em>content</em>. There are
 already many great and robust tools for doing this, like <a href="https://github.com/minad/mimemagic">MimeMagic</a> or the
-<a href="http://linux.die.net/man/1/file">file command</a>.</p>
+<a href="https://linux.die.net/man/1/file">file command</a>.</p>
 
 <p>This is fast for local files, but when we receive just locations to directly
 uploaded <em>remote</em> files, we would first need to download them in order to
@@ -140,7 +140,7 @@ ones which will work for all types of files. Also, images aren’t the only ones
 enjoying exploits, <a href="http://news.softpedia.com/news/zero-day-ffmpeg-vulnerability-lets-anyone-steal-files-from-remote-machines-498880.shtml">videos have them too</a>.</p>
 
 <p>Let’s remind ourselves that we already <em>have</em> robust tools for determining the
-MIME type for all types of files, tools like <a href="https://github.com/minad/mimemagic">MimeMagic</a> or <a href="http://linux.die.net/man/1/file">file command</a>
+MIME type for all types of files, tools like <a href="https://github.com/minad/mimemagic">MimeMagic</a> or <a href="https://linux.die.net/man/1/file">file command</a>
 which I’ve already mentioned. Now we just need to figure out how to download
 only the amount of bytes that we need.</p>
 
