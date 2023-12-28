@@ -210,7 +210,7 @@ nice unique features.
 [MimeMagic]: https://github.com/minad/mimemagic
 [file command]: http://linux.die.net/man/1/file
 [download_endpoint]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/DownloadEndpoint.html
-[backup]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backup.html
+[backup]: https://github.com/shrinerb/shrine/blob/1bbbf178b81ce82f2a041abe73f51c77df536e72/doc/plugins/backup.md
 [creating storages]: http://shrinerb.com/rdoc/files/doc/creating_storages_md.html
 [creating plugins]: http://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
 [CarrierWave]: http://shrinerb.com/rdoc/files/doc/carrierwave_md.html

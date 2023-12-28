@@ -236,7 +236,7 @@ next level of file uploads.
 [a lot of other plugins]: http://shrinerb.com#plugins
 [carrierwave_backgrounder]: https://github.com/lardawge/carrierwave_backgrounder
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
-[example app]: https://github.com/shrinerb/shrine-example
+[example app]: https://github.com/shrinerb/shrine/tree/master/demo
 [fastimage]: https://github.com/sdsykes/fastimage
 [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
 [#1320]: https://github.com/carrierwaveuploader/carrierwave/issues/1320

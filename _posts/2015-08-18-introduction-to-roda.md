@@ -210,29 +210,6 @@ route do |r|
 end
 ```
 
-### [Websockets]
-
-Roda has Websocket support using [faye-websocket].
-
-```ruby
-plugin :websockets
-
-route do |r|
-  r.get "room" do
-    # Matches if the "/ping" request is a websocket request
-    r.websocket do |ws|
-      ws.on(:message) { ... }
-      ws.on(:close) { ... }
-      # ...
-    end
-
-    # If the request is not a websocket request, execution continues and in
-    # that case we render a template
-    view "room"
-  end
-end
-```
-
 ### [Caching]
 
 The "caching" plugin adds helper methods for setting HTTP caching headers.
@@ -371,12 +348,10 @@ while still having this perfect simplicity that I always wanted.
 [render]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Render.html
 [assets]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Assets.html
 [json]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Json.html
-[websockets]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Websockets.html
 [caching]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Caching.html
 [path]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Path.html
 [sinatra helpers]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/SinatraHelpers.html
 [symbol matchers]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/SymbolMatchers.html
 [tilt]: https://github.com/rtomayko/tilt
-[faye-websocket]: https://github.com/faye/faye-websocket-ruby
 [roda-route_list]: https://github.com/jeremyevans/roda-route_list
 [discussion]: https://groups.google.com/forum/#!topic/ruby-roda/JbQi5SxL49A

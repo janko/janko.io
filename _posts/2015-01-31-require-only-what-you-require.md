@@ -4,7 +4,7 @@ redirect_from: /2015/01/require-only-what-you-require/
 comments: disqus
 ---
 
-Writing code which reveals intention is one of the most important things to me. Some time ago, I read "[5 Reasons to Avoid Bundler.require](http://myronmars.to/n/dev-blog/2012/12/5-reasons-to-avoid-bundler-require)" by Myron Marston, which talks about how Rails requires all of your gems at startup and some of the downsides of that approach. After reading it, I started noticing how many gems, when they need to require their parts, use a similar approach as Rails by just requiring everything in one place.
+Writing code which reveals intention is one of the most important things to me. Some time ago, I read "[5 Reasons to Avoid Bundler.require](https://web.archive.org/web/20210922232941/http://myronmars.to/n/dev-blog/2012/12/5-reasons-to-avoid-bundler-require)" by Myron Marston, which talks about how Rails requires all of your gems at startup and some of the downsides of that approach. After reading it, I started noticing how many gems, when they need to require their parts, use a similar approach as Rails by just requiring everything in one place.
 
 To illustrate, we'll take a look at a library we're all using – Rake.
 

@@ -308,9 +308,9 @@ brings me joy how powerful Ruby can be, once you have good knowledge of it.
 
 [Shrine]: https://github.com/shrinerb/shrine
 [bad things can happen]: https://imagetragick.com/
-[uploaded directly]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html
+[uploaded directly]: https://shrinerb.com/docs/plugins/presign_endpoint
 [MimeMagic]: https://github.com/minad/mimemagic
-[file command]: http://linux.die.net/man/1/file
+[file command]: https://linux.die.net/man/1/file
 [Fastimage]: https://github.com/sdsykes/fastimage
 [carrierwave-bombshelter]: https://github.com/DarthSim/carrierwave-bombshelter
 [videos have them too]: http://news.softpedia.com/news/zero-day-ffmpeg-vulnerability-lets-anyone-steal-files-from-remote-machines-498880.shtml

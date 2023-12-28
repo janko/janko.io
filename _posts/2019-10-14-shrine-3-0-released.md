@@ -220,7 +220,7 @@ forum] if you have any troubles upgrading.
 [attacher]: https://shrinerb.com/docs/attacher
 [Docusaurus]: http://docusaurus.io
 [docusaurus pr]: https://github.com/shrinerb/shrine/pull/419
-[Algolia DocSearch]: https://community.algolia.com/docsearch/
+[Algolia DocSearch]: https://docsearch.algolia.com/
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [mirroring]: https://shrinerb.com/docs/plugins/mirroring
 [activestorage mirror service]: https://guides.rubyonrails.org/active_storage_overview.html#mirror-service

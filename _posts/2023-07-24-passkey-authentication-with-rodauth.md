@@ -45,7 +45,7 @@ class CreateRodauthWebauthn < ActiveRecord::Migration
 end
 ```
 
-Next, we'll enable the [`webauthn`](webauthn) feature in our Rodauth configuration:
+Next, we'll enable the [`webauthn`][webauthn] feature in our Rodauth configuration:
 
 ```rb
 # app/misc/rodauth_main.rb

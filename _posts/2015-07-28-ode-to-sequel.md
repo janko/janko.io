@@ -330,7 +330,7 @@ try!
 [json operators]: http://www.postgresql.org/docs/9.4/static/functions-json.html#FUNCTIONS-JSON-OP-TABLE
 [thoughtbot search]: https://robots.thoughtbot.com/implementing-multi-table-full-text-search-with-postgres
 [materialized views]: http://www.postgresql.org/docs/9.4/static/rules-materializedviews.html
-[materialized post]: http://webcache.googleusercontent.com/search?q=cache:8OnCH9RMeocJ:www.matchingnotes.com/caching-with-postgres-materialized-views.html+&cd=1&hl=en&ct=clnk&gl=us
+[materialized post]: https://web.archive.org/web/20170716022407/http://www.matchingnotes.com/caching-with-postgres-materialized-views.html
 [find_each]: http://api.rubyonrails.org/classes/ActiveRecord/Batches.html#method-i-find_each
 [postgres cursors]: http://www.postgresql.org/docs/9.4/static/plpgsql-cursors.html
 [sequel_pg]: https://github.com/jeremyevans/sequel_pg
@@ -344,4 +344,4 @@ try!
 [squeel3]: https://github.com/activerecord-hackery/squeel/pull/354
 [benchmark]: https://github.com/jeremyevans/simple_orm_benchmark
 [sequel-rails]: https://github.com/TalentBox/sequel-rails
-[sequel for activerecord users]: http://sequel.jeremyevans.net/rdoc/files/doc/active_record_rdoc.html
+[sequel for activerecord users]: https://github.com/jeremyevans/sequel/blob/6251baca67c0a738b257ca5e49d69851edd3ff7f/doc/active_record.rdoc

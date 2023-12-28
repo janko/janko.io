@@ -9,7 +9,7 @@ way that it also implements the [Active Record pattern]. As of this writing
 it's 9 years old. I've already [written](/ode-to-sequel/)
 about some of the main advantages of Sequel over ActiveRecord (and other people
 have as well:
-[1](http://rosenfeld.herokuapp.com/en/articles/ruby-rails/2013-12-18-sequel-is-awesome-and-much-better-than-activerecord),
+[1](https://web.archive.org/web/20221024021902/http://rosenfeld.herokuapp.com/en/articles/ruby-rails/2013-12-18-sequel-is-awesome-and-much-better-than-activerecord),
 [2](https://mrbrdo.wordpress.com/2013/10/15/why-you-should-stop-using-activerecord-and-start-using-sequel/)).
 
 I'm using Sequel for over a year now, and am finding it to be consistently

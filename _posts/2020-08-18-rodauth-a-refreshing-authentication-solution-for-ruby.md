@@ -532,12 +532,12 @@ project :wink:
 [sorcery #70]: https://github.com/Sorcery/sorcery/pull/70
 [clearance json]: https://github.com/thoughtbot/clearance/issues/896#issuecomment-667257763
 [database tables]: http://rodauth.jeremyevans.net/rdoc/files/README_rdoc.html#label-Creating+tables
-[jeremy rubyhack2018]: http://confreaks.tv/videos/rubyhack2018-ruby-web-application-security-defense-in-depth
+[jeremy rubyhack2018]: https://www.youtube.com/watch?v=2RvbpFVhmTw
 [rodauth clearance tokens]: https://github.com/jeremyevans/rodauth/commit/18f26487c798cc5055cd5caf8bcafee1af719e3a
 [rodauth security]: https://github.com/jeremyevans/rodauth/#label-Security
 [srp]: https://en.wikipedia.org/wiki/Single-responsibility_principle
 [bcrypt]: https://en.wikipedia.org/wiki/Bcrypt
-[rubyheroes2015]: https://rubyheroes.com/heroes/2015
+[rubyheroes2015]: https://web.archive.org/web/20221128045420/https://rubyheroes.com/heroes/2015
 [2.0 release]: http://rodauth.jeremyevans.net/rdoc/files/doc/release_notes/2_0_0_txt.html
 [Rodauth documentation]: http://rodauth.jeremyevans.net/documentation.html
 [Rodauth internals]: http://rodauth.jeremyevans.net/rdoc/files/doc/guides/internals_rdoc.html

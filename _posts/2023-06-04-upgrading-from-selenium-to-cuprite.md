@@ -133,7 +133,7 @@ The performance benefits alone will definitely make me advocate for using Cuprit
 
 Flaky test failures have always been a challenge for me when writing system tests. What helped me is to trust that the root cause is always figureoutable. I would previously attribute them to complex Selenium internals, but Cuprite is much less magical in comparison, so I can make better sense of why something is happening.
 
-[Webdrivers]: https://github.com/ttusfortner/webdrivers
+[Webdrivers]: https://github.com/titusfortner/webdrivers
 [Cuprite]: https://github.com/rubycdp/cuprite
 [CDP]: https://chromedevtools.github.io/devtools-protocol/
 [stimulus error handling]: https://stimulus.hotwired.dev/handbook/installing#error-handling
