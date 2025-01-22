@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/favicon.ico?v=1" sizes="any">
     <!-- Begin Jekyll SEO tag v2.7.1 -->
-<meta name="generator" content="Jekyll v4.3.3" />
+<meta name="generator" content="Jekyll v4.3.4" />
 <meta property="og:title" content="How I Enabled Sequel to Reuse Active Record’s Database Connection" />
 <meta name="author" content="Janko Marohnić" />
 <meta property="og:locale" content="en_US" />
@@ -20,10 +20,10 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="How I Enabled Sequel to Reuse Active Record’s Database Connection" />
 <meta name="twitter:site" content="@jankomarohnic" />
-<meta name="twitter:creator" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@Janko Marohnić" />
 <meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
 <script type="application/ld+json">
-{"url":"https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/","description":"When I started developing the Rails integration for Rodauth, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses Sequel for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database.","headline":"How I Enabled Sequel to Reuse Active Record’s Database Connection","dateModified":"2022-04-24T00:00:00+02:00","datePublished":"2022-04-24T00:00:00+02:00","author":{"@type":"Person","name":"Janko Marohnić"},"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@context":"https://schema.org"}</script>
+{"headline":"How I Enabled Sequel to Reuse Active Record’s Database Connection","dateModified":"2022-04-24T00:00:00+02:00","description":"When I started developing the Rails integration for Rodauth, one of the first problems I needed to solve was how to make Rodauth work seamlessly with Active Record, given that it uses Sequel for database interaction. I believed these two could coexist together, because Sequel is mostly hidden from the Rodauth user anyway, and all that really matters is that Rodauth’s SQL statements get executed on the database.","datePublished":"2022-04-24T00:00:00+02:00","author":{"@type":"Person","name":"Janko Marohnić"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/"},"url":"https://janko.io/how-i-enabled-sequel-to-reuse-active-record-connection/","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko Marohnić" />
@@ -394,9 +394,21 @@
           <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" fill="#fff"/>
         </svg>
       </a>
-      <a href="https://twitter.com/jankomarohnic" title="Twitter" target="_blank">
-        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" viewBox="0 0 20 20" fill="currentColor">
-          <path fill="#1d9bf0" d="M17.316 6.246c0.008 0.162 0.011 0.326 0.011 0.488 0 4.99-3.797 10.742-10.74 10.742-2.133 0-4.116-0.625-5.787-1.697 0.296 0.035 0.596 0.053 0.9 0.053 1.77 0 3.397-0.604 4.688-1.615-1.651-0.031-3.046-1.121-3.526-2.621 0.23 0.043 0.467 0.066 0.71 0.066 0.345 0 0.679-0.045 0.995-0.131-1.727-0.348-3.028-1.873-3.028-3.703 0-0.016 0-0.031 0-0.047 0.509 0.283 1.092 0.453 1.71 0.473-1.013-0.678-1.68-1.832-1.68-3.143 0-0.691 0.186-1.34 0.512-1.898 1.861 2.285 4.644 3.787 7.781 3.945-0.064-0.277-0.097-0.564-0.097-0.861 0-2.084 1.689-3.773 3.774-3.773 1.086 0 2.067 0.457 2.756 1.191 0.859-0.17 1.667-0.484 2.397-0.916-0.282 0.881-0.881 1.621-1.66 2.088 0.764-0.092 1.49-0.293 2.168-0.594-0.506 0.758-1.146 1.422-1.884 1.953z"></path>
+      <a href="https://bsky.app/profile/janko.io" title="Bluesky" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" viewBox="0 0 600 530">
+         <path d="m135.72 44.03c66.496 49.921 138.02 151.14 164.28 205.46 26.262-54.316 97.782-155.54 164.28-205.46 47.98-36.021 125.72-63.892 125.72 24.795 0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.3797-3.6904-10.832-3.7077-7.8964-0.0174-2.9357-1.1937 0.51669-3.7077 7.8964-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.26 82.697-152.22-67.108 11.421-142.55-7.4491-163.25-81.433-5.9562-21.282-16.111-152.36-16.111-170.07 0-88.687 77.742-60.816 125.72-24.795z" fill="#1185fe"/>
+        </svg>
+      </a>
+      <a href="https://ruby.social/deck/@janko" title="Mastodon" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" viewBox="0 0 75 79" fill="none">
+          <path d="M73.8393 17.4898C72.6973 9.00165 65.2994 2.31235 56.5296 1.01614C55.05 0.797115 49.4441 0 36.4582 0H36.3612C23.3717 0 20.585 0.797115 19.1054 1.01614C10.5798 2.27644 2.79399 8.28712 0.904997 16.8758C-0.00358524 21.1056 -0.100549 25.7949 0.0682394 30.0965C0.308852 36.2651 0.355538 42.423 0.91577 48.5665C1.30307 52.6474 1.97872 56.6957 2.93763 60.6812C4.73325 68.042 12.0019 74.1676 19.1233 76.6666C26.7478 79.2728 34.9474 79.7055 42.8039 77.9162C43.6682 77.7151 44.5217 77.4817 45.3645 77.216C47.275 76.6092 49.5123 75.9305 51.1571 74.7385C51.1797 74.7217 51.1982 74.7001 51.2112 74.6753C51.2243 74.6504 51.2316 74.6229 51.2325 74.5948V68.6416C51.2321 68.6154 51.2259 68.5896 51.2142 68.5661C51.2025 68.5426 51.1858 68.522 51.1651 68.5058C51.1444 68.4896 51.1204 68.4783 51.0948 68.4726C51.0692 68.4669 51.0426 68.467 51.0171 68.4729C45.9835 69.675 40.8254 70.2777 35.6502 70.2682C26.7439 70.2682 24.3486 66.042 23.6626 64.2826C23.1113 62.762 22.7612 61.1759 22.6212 59.5646C22.6197 59.5375 22.6247 59.5105 22.6357 59.4857C22.6466 59.4609 22.6633 59.4391 22.6843 59.422C22.7053 59.4048 22.73 59.3929 22.7565 59.3871C22.783 59.3813 22.8104 59.3818 22.8367 59.3886C27.7864 60.5826 32.8604 61.1853 37.9522 61.1839C39.1768 61.1839 40.3978 61.1839 41.6224 61.1516C46.7435 61.008 52.1411 60.7459 57.1796 59.7621C57.3053 59.7369 57.431 59.7154 57.5387 59.6831C65.4861 58.157 73.0493 53.3672 73.8178 41.2381C73.8465 40.7606 73.9184 36.2364 73.9184 35.7409C73.9219 34.0569 74.4606 23.7949 73.8393 17.4898Z" fill="url(#paint0_linear_549_34)"/>
+          <path d="M61.2484 27.0263V48.114H52.8916V27.6475C52.8916 23.3388 51.096 21.1413 47.4437 21.1413C43.4287 21.1413 41.4177 23.7409 41.4177 28.8755V40.0782H33.1111V28.8755C33.1111 23.7409 31.0965 21.1413 27.0815 21.1413C23.4507 21.1413 21.6371 23.3388 21.6371 27.6475V48.114H13.2839V27.0263C13.2839 22.7176 14.384 19.2946 16.5843 16.7572C18.8539 14.2258 21.8311 12.926 25.5264 12.926C29.8036 12.926 33.0357 14.5705 35.1905 17.8559L37.2698 21.346L39.3527 17.8559C41.5074 14.5705 44.7395 12.926 49.0095 12.926C52.7013 12.926 55.6784 14.2258 57.9553 16.7572C60.1531 19.2922 61.2508 22.7152 61.2484 27.0263Z" fill="white"/>
+          <defs>
+            <linearGradient id="paint0_linear_549_34" x1="37.0692" y1="0" x2="37.0692" y2="79" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6364FF"/>
+            <stop offset="1" stop-color="#563ACC"/>
+            </linearGradient>
+          </defs>
         </svg>
       </a>
       <a href="https://www.youtube.com/@jankomarohnic" title="YouTube" target="_blank">
@@ -449,7 +461,7 @@
           <li><a class="transition hover:text-pink-600" href="https://github.com/janko/janko.io">Source code</a></li>
         </ul>
         <p class="text-slate-500 text-center md:text-left">
-          © 2023 Janko Marohnić. All rights reserved.
+          © 2025 Janko Marohnić. All rights reserved.
         </p>
       </footer>
     </div>

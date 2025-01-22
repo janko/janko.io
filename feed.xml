@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2023-12-28T15:38:10+01:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko Marohnić</title><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Passkey Authentication with Rodauth</title><link href="https://janko.io/passkey-authentication-with-rodauth/" rel="alternate" type="text/html" title="Passkey Authentication with Rodauth" /><published>2023-07-24T00:00:00+02:00</published><updated>2023-07-24T00:00:00+02:00</updated><id>https://janko.io/passkey-authentication-with-rodauth</id><content type="html" xml:base="https://janko.io/passkey-authentication-with-rodauth/">&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/passkeys/&quot;&gt;Passkeys&lt;/a&gt; are a modern alternative to passwords, where the user’s device performs the authentication, usually requiring some form of user verification (biometric identification, PIN). Passkeys are built on top of &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/webauthn_rdoc.html&quot;&gt;WebAuthn&lt;/a&gt; specification, which is based on public-key cryptography. Keypairs are created for each website, and the public key is sent to the server, while the private key is securely stored on the device. This makes passkeys:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.4">Jekyll</generator><link href="https://janko.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://janko.io/" rel="alternate" type="text/html" /><updated>2025-01-22T22:42:53+01:00</updated><id>https://janko.io/feed.xml</id><title type="html">Janko Marohnić</title><author><name>Janko Marohnić</name><email>janko@hey.com</email></author><entry><title type="html">Passkey Authentication with Rodauth</title><link href="https://janko.io/passkey-authentication-with-rodauth/" rel="alternate" type="text/html" title="Passkey Authentication with Rodauth" /><published>2023-07-24T00:00:00+02:00</published><updated>2023-07-24T00:00:00+02:00</updated><id>https://janko.io/passkey-authentication-with-rodauth</id><content type="html" xml:base="https://janko.io/passkey-authentication-with-rodauth/">&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/passkeys/&quot;&gt;Passkeys&lt;/a&gt; are a modern alternative to passwords, where the user’s device performs the authentication, usually requiring some form of user verification (biometric identification, PIN). Passkeys are built on top of &lt;a href=&quot;http://rodauth.jeremyevans.net/rdoc/files/doc/webauthn_rdoc.html&quot;&gt;WebAuthn&lt;/a&gt; specification, which is based on public-key cryptography. Keypairs are created for each website, and the public key is sent to the server, while the private key is securely stored on the device. This makes passkeys:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;stronger than any password&lt;/li&gt;
@@ -1659,10 +1659,10 @@ built-in platform biometric sensors (e.g. fingerprint)&lt;/p&gt;
 
 &lt;p&gt;In this article, I want to show you how to add multifactor authentication to
 a Rails app using &lt;a href=&quot;https://github.com/jeremyevans/rodauth/&quot;&gt;Rodauth&lt;/a&gt;, which has built-in support for each of the
-multifactor authentication methods mentioned above. Compared to alternatives&lt;sup id=&quot;fnref:1&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;,
+multifactor authentication methods mentioned above. Compared to alternatives&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot; role=&quot;doc-noteref&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;,
 Rodauth provides a much more integrated experience by shipping with complete
 endpoints, default HTML templates, session management, lockout logic and
-more&lt;sup id=&quot;fnref:2&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;. To keep the tutorial focused, we’ll be implementing just the first
+more&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot; role=&quot;doc-noteref&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;. To keep the tutorial focused, we’ll be implementing just the first
 three methods, as they’re by far the most common.&lt;/p&gt;
 
 &lt;p&gt;We’ll be using the &lt;a href=&quot;https://github.com/janko/rodauth-rails&quot;&gt;rodauth-rails&lt;/a&gt; gem, and we’ll be continuing off of the
@@ -1724,7 +1724,7 @@ migration generator provided by rodauth-rails:&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now when the user logs in and clicks on “Manage MFA”, they’ll get redirected to
-the OTP setup page that Rodauth provides out-of-the-box&lt;sup id=&quot;fnref:3&quot; role=&quot;doc-noteref&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
+the OTP setup page that Rodauth provides out-of-the-box&lt;sup id=&quot;fnref:3&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot; rel=&quot;footnote&quot; role=&quot;doc-noteref&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/rodauth-otp-setup.png&quot; alt=&quot;Rodauth OTP setup page&quot; /&gt;&lt;/p&gt;
 
@@ -2029,13 +2029,13 @@ other authentication features.&lt;/p&gt;
 
 &lt;div class=&quot;footnotes&quot; role=&quot;doc-endnotes&quot;&gt;
   &lt;ol&gt;
-    &lt;li id=&quot;fn:1&quot; role=&quot;doc-endnote&quot;&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
       &lt;p&gt;At the time of writing, most popular alternatives are &lt;a href=&quot;https://github.com/tinfoil/devise-two-factor&quot;&gt;devise-two-factor&lt;/a&gt;, &lt;a href=&quot;https://github.com/heapsource/active_model_otp&quot;&gt;active_model_otp&lt;/a&gt;, and &lt;a href=&quot;https://github.com/Houdini/two_factor_authentication&quot;&gt;two_factor_authentication&lt;/a&gt;. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
-    &lt;li id=&quot;fn:2&quot; role=&quot;doc-endnote&quot;&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
       &lt;p&gt;See the source code for &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/otp.rb&quot;&gt;OTP&lt;/a&gt;, &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/sms_codes.rb&quot;&gt;SMS Codes&lt;/a&gt;, &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/recovery_codes.rb&quot;&gt;Recovery Codes&lt;/a&gt;, and &lt;a href=&quot;https://github.com/jeremyevans/rodauth/blob/master/lib/rodauth/features/two_factor_base.rb&quot;&gt;Two Factor Base&lt;/a&gt; for more details. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
-    &lt;li id=&quot;fn:3&quot; role=&quot;doc-endnote&quot;&gt;
+    &lt;li id=&quot;fn:3&quot;&gt;
       &lt;p&gt;You can override the default template by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rails generate rodauth:views otp&lt;/code&gt; and modifying &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;app/views/rodauth/otp_setup.html.erb&lt;/code&gt;. &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot; role=&quot;doc-backlink&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
     &lt;/li&gt;
   &lt;/ol&gt;
