@@ -8,7 +8,6 @@ group :jekyll_plugins do
   gem "jekyll-sitemap", "~> 1.4"
   gem "jekyll-seo-tag", "~> 2.7"
   gem "jekyll-redirect-from"
-  gem "jekyll-tailwind"
   gem "jemoji"
 end
 
