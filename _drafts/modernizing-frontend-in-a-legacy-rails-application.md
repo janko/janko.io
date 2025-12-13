@@ -1,6 +1,5 @@
 ---
 title: Modernizing Frontend in a Legacy Rails Application
-published: false
 ---
 
 At my [current company](https://butterflymx.com), our central admin interface is a 8+ year old Rails app. Initially frontend assets were managed by Sprockets, then Webpacker was added for newer JavaScript code, and soon after that we started using Stimulus as well.
