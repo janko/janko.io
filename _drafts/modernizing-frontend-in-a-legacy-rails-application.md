@@ -97,12 +97,89 @@ export default defineConfig(({ mode }) => {
 })
 ```
 
-Dev server cold start went **from 4s to 0.2s** with Vite's lazy bundling, and asset compilation **from 8s to 3.7s**, and later down to **under 1 second** with Vite 8.
+Dev server cold start went **from 4s to 0.2s** with Vite's lazy bundling, while asset compilation **from 8s to 3.7s**, and then later down to **under 1 second** with Vite 8.
 
 In short, we got wins on all fronts :metal:
 
-## Introducing Tailwind
+## Bringing in Tailwind
 
-Now that we were on Vite, it was time to add Tailwind into the mix. I wanted Tailwind because it gives me a system with design tokens, I can style things much more rapidly, I don't need to keep reinventing new CSS class names, and I can remove HTML without leaving dead CSS code behind.
+Now that we were on Vite, it was time to add Tailwind into the mix. I wanted Tailwind because it provides a design framework, I can style things much more rapidly, I don't need to keep reinventing new CSS classes, and I can remove HTML without leaving dead CSS code behind.
+
+Tailwind v4 uses cascade layers (`theme`, `base`, `components` and `utilities`), so we put our existing CSS into the `components` layer, in order for `utilities` layer to have precedence. Additionally, while Tailwind v3 could be mixed with Sass (presumably because PostCSS supported it), version 4.x dropped this support after moving to Lightning CSS. We worked around this by going with two Vite entrypoints for CSS, one for Sass and one for Tailwind.
+
+```sh
+$ yarn add tailwindcss @tailwindcss/vite
+```
+```diff
+  // vite.config.mjs
+  import { defineConfig } from "vite"
+  import rails from "vite-plugin-rails"
++ import tailwind from "@tailwindcss/vite"
+
+  export default defineConfig(({ mode }) => {
+    return {
+      plugins: [
++       tailwind(),
+        rails({
+          compress: false
+        })
+      ],
+      // ...  
+    }
+  }
+```
+```css
+/* app/frontend/entrypoints/admin.css (Tailwind) */
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@source "../../{views,helpers,decorators}/**/*";
+
+@theme {
+  /* ... */
+}
+
+@import "bootstrap/dist/css/bootstrap.css" layer(components);
+@import "trix/dist/trix.css" layer(components);
+@import "flatpickr/dist/flatpickr.css" layer(components);
+/* ... */
+```
+```css
+/* app/frontend/entrypoints/admin.scss (Sass) */
+@layer components {
+  @import "../stylesheets/admin.scss"; /* our Sass code */
+}
+```
+
+We could now replace many of our utility classes that had direct Tailwind equivalents. We were still on Bootstrap 3, but had manually generated margin/padding utilities that Bootstrap 4+ has, which we now replaced with Tailwind ones. The only real clash was the `.hidden` utility, which Bootstrap declares with `!important`, breaking Tailwind idioms like `hidden md:block`. I fixed this by patching Bootstrap's source CSS file:
+
+```sh
+$ yarn add --dev patch-package postinstall-postinstall
+```
+```json
+// package.json
+{
+  // ...
+  "scripts": {
+    "postinstall": "patch-package"
+  }
+}
+```
+```diff
+// patches/bootstrap+3.4.1.patch
+diff --git a/node_modules/bootstrap/dist/css/bootstrap.css b/node_modules/bootstrap/dist/css/bootstrap.css
+index fcab415..08f5600 100644
+--- a/node_modules/bootstrap/dist/css/bootstrap.css
++++ b/node_modules/bootstrap/dist/css/bootstrap.css
+@@ -6615,9 +6615,6 @@ button.close {
+   background-color: transparent;
+   border: 0;
+ }
+-.hidden {
+-  display: none !important;
+-}
+ .affix {
+   position: fixed;
+ }
+```
 
 ## Eliminating Sass
