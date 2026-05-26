@@ -33,7 +33,7 @@ defaults:
       layout: post
       permalink: /:title/
       comments: utterances
-      image: /images/me.jpg
+      image: /images/social.jpg
   - scope:
       path: ""
       type: drafts
