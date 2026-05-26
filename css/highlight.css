@@ -1,9 +1,12 @@
 :not(:where(.dark, .dark *)) {
   .highlight table td { padding: 5px; }
   .highlight table pre { margin: 0; }
-  .highlight, .highlight .w {
+  .highlight {
     color: #24292f;
     background-color: #f6f8fa;
+  }
+  .highlight .w {
+    color: #24292f;
   }
   .highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt, .highlight .kv {
     color: #cf222e;
@@ -116,9 +119,12 @@
 :where(.dark) {
   .highlight table td { padding: 5px; }
   .highlight table pre { margin: 0; }
-  .highlight, .highlight .w {
+  .highlight {
     color: #c9d1d9;
     background-color: #161b22;
+  }
+  .highlight .w {
+    color: #c9d1d9;
   }
   .highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt, .highlight .kv {
     color: #ff7b72;
