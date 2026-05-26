@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+JEKYLL_ENV=production bundle exec jekyll build
+NODE_ENV=production npx @tailwindcss/cli --input css/application.css --output _site/css/bundle.css
