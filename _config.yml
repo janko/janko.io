@@ -1,7 +1,6 @@
 title: Janko Marohnić
 url: https://janko.io
 logo: /images/logo.png
-image: /images/me.jpg
 
 author:
   name: Janko Marohnić
@@ -34,6 +33,7 @@ defaults:
       layout: post
       permalink: /:title/
       comments: utterances
+      image: /images/me.jpg
   - scope:
       path: ""
       type: drafts
