@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Extending Ruby LSP with Prism | Janko Marohnić</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/favicon.ico?v=1" sizes="any">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Extending Ruby LSP with Prism" />
+<meta name="author" content="Janko Marohnić" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Ruby LSP is a wonderful language server built on top of Prism, Rubydex and RBS. It implements a variety of features that enrich the code editing experience in Ruby projects. Its add-on architecture allows extending it with Rails features, Rubocop support and custom functionality." />
+<meta property="og:description" content="Ruby LSP is a wonderful language server built on top of Prism, Rubydex and RBS. It implements a variety of features that enrich the code editing experience in Ruby projects. Its add-on architecture allows extending it with Rails features, Rubocop support and custom functionality." />
+<link rel="canonical" href="https://janko.io/extending-ruby-lsp-with-prism/" />
+<meta property="og:url" content="https://janko.io/extending-ruby-lsp-with-prism/" />
+<meta property="og:site_name" content="Janko Marohnić" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-05-26T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Extending Ruby LSP with Prism" />
+<meta name="twitter:site" content="@jankomarohnic" />
+<meta name="twitter:creator" content="@Janko Marohnić" />
+<meta property="article:publisher" content="https://www.facebook.com/janko.marohnic/" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Janko Marohnić"},"dateModified":"2026-05-26T00:00:00+02:00","datePublished":"2026-05-26T00:00:00+02:00","description":"Ruby LSP is a wonderful language server built on top of Prism, Rubydex and RBS. It implements a variety of features that enrich the code editing experience in Ruby projects. Its add-on architecture allows extending it with Rails features, Rubocop support and custom functionality.","headline":"Extending Ruby LSP with Prism","mainEntityOfPage":{"@type":"WebPage","@id":"https://janko.io/extending-ruby-lsp-with-prism/"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://janko.io/images/logo.png"},"name":"Janko Marohnić"},"url":"https://janko.io/extending-ruby-lsp-with-prism/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link type="application/atom+xml" rel="alternate" href="https://janko.io/feed.xml" title="Janko Marohnić" />
+    <link rel="stylesheet" href="/css/bundle.css">
+    
+      <script src="https://cdn.usefathom.com/script.js" data-site="EKJCVCTX" defer></script>
+    
+    <script>
+      function updateTheme() {
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+      }
+      updateTheme()
+    </script>
+  </head>
+
+  <body class="text-xl text-slate-700 dark:bg-slate-900 dark:text-slate-400 min-h-screen flex flex-col">
+    <header class="py-3 px-4 bg-gray-100 border-b border-slate-200 dark:bg-slate-800/70 dark:border-slate-700">
+      <div class="max-w-screen-sm md:max-w-screen-md mx-auto flex items-center">
+        <div class="flex-1">
+          <a class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide text-pink-700/80 hover:text-pink-800 dark:text-pink-500 dark:hover:text-pink-400 transition" href="/">
+            Janko Marohnić
+          </a>
+        </div>
+
+        <a class="flex items-center space-x-2 justify-self-center" href="/">
+          <svg class="h-7 w-7 rounded lg:h-10 lg:w-10 lg:rounded-lg" role="img" aria-labelledby="logo-title" viewbox="0 0 64 64">
+            <title id="logo-title">logo</title>
+            <clippath id="topLeft"><path d="M64,0.025l-64,64l0,-64l64,0Z"></path></clippath>
+            <clippath id="bottomRight"><path d="M0,64l64,-64l0,64l-64,0Z"></path></clippath>
+            <g clip-path="url(#topLeft)"><rect class="fill-current text-pink-500" x="0.025" y="0.025" width="64" height="64"></rect><path class="fill-current text-white" d="M31.989,22.518c-0.031,-4.597 -0.902,-8.134 -2.612,-10.613c-1.71,-2.478 -4.165,-3.717 -7.365,-3.717c-3.2,0 -5.655,1.251 -7.365,3.753c-1.71,2.502 -2.565,6.114 -2.565,10.836l0,6.471c0.063,4.549 0.953,8.043 2.671,10.483c1.718,2.439 4.153,3.659 7.306,3.659c3.185,0 5.636,-1.255 7.354,-3.765c1.717,-2.51 2.576,-6.134 2.576,-10.871l0,-6.236Zm-6.682,7.647c-0.032,2.605 -0.31,4.538 -0.836,5.801c-0.525,1.263 -1.329,1.894 -2.412,1.894c-1.145,0 -1.988,-0.675 -2.529,-2.024c-0.542,-1.349 -0.812,-3.404 -0.812,-6.165l0,-8.541c0.078,-4.942 1.176,-7.413 3.294,-7.413c1.13,0 1.961,0.675 2.494,2.024c0.534,1.349 0.801,3.373 0.801,6.071l0,8.353Z"></path></g><g clip-path="url(#bottomRight)"><rect class="fill-current text-pink-700" x="0.025" y="0.025" width="64" height="64"></rect><path class="fill-current text-white" d="M44.945,55.261l-6.553,0l0,-25.659l-6.392,2.469l0,-5.446l12.253,-5.007l0.692,0l0,33.643Z"></path>&lt;
+          </g></svg>
+        </a>
+
+        <span class="flex-1 flex space-x-2 justify-end">
+          <button type="button" class="theme-reset rounded-full bg-sky-200 dark:bg-sky-900 px-2.5 py-1 text-xs font-medium text-sky-700 dark:text-white shadow-sm dark:hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-200">Reset to OS</button>
+
+          <button type="button" class="theme-toggle bg-gray-200 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transitikon-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-700 focus:ring-offset-2 dark:focus:ring-pink-500 dark:focus:ring-offset-slate-900" role="switch" aria-checked="false">
+            <span class="sr-only">Use setting</span>
+            <span class="theme-toggle-ring translate-x-0 pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out">
+              <span class="theme-toggle-light opacity-100 duration-200 ease-in absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4kkkkkkk h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"></path>
+                </svg>
+              </span>
+              <span class="theme-toggle-dark opacity-0 duration-100 ease-out absolute inset-0 flex h-full w-full items-center justify-center transition-opacity" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-pink-500">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"></path>
+                </svg>
+              </span>
+            </span>
+          </button>
+        </span>
+      </div>
+    </header>
+
+    <div class="flex-1 my-2 sm:my-4 mx-4">
+      <main class="max-w-screen-sm md:max-w-screen-md mx-auto">
+        <article class="mt-6">
+  <time datetime="2026-05-26" class="flex items-center text-slate-400 text-sm md:text-base">
+    <span class="h-4 md:h-5 w-0.5 rounded-full bg-slate-200 dark:bg-slate-500"></span>
+    <span class="ml-3">May 26, 2026</span>
+  </time>
+
+  <h1 class="mt-5 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-semibold text-slate-900 tracking-tight dark:text-slate-100">Extending Ruby LSP with Prism</h1>
+
+  <div class="mt-6 sm:mt-8 markdown">
+    <p><a href="https://shopify.github.io/ruby-lsp/">Ruby LSP</a> is a wonderful language server built on top of Prism, <a href="https://github.com/shopify/rubydex">Rubydex</a> and RBS. It implements a <a href="https://shopify.github.io/ruby-lsp/#general-features">variety of features</a> that enrich the code editing experience in Ruby projects. Its <a href="https://shopify.github.io/ruby-lsp/add-ons.html">add-on</a> architecture allows extending it with <a href="https://shopify.github.io/ruby-lsp/rails-add-on">Rails features</a>, <a href="https://github.com/rubocop/rubocop/blob/master/lib/ruby_lsp/rubocop/addon.rb">Rubocop support</a> and custom functionality.</p>
+
+<p>Coming from Vim, I was really used to <a href="https://github.com/tpope/vim-rails">rails.vim</a>. When I switched to Zed, I started using Ruby LSP. In some ways I felt like I’ve gained superpowers, as now I had all these modern editor features that are possible because my Ruby code is actually being parsed. On the other hand, I found there were some features I was missing.</p>
+
+<p>One such feature was following <code class="language-plaintext highlighter-rouge">render</code> calls in view templates. Rails.vim offered a <code class="language-plaintext highlighter-rouge">gf</code> (“go to file”) mapping, which when hovering over a <code class="language-plaintext highlighter-rouge">render</code> call would take me to the partial being rendered. In LSP terminology this functionality is called “go to definition”. If I were to implement it, I knew it had to live in the Rails add-on.</p>
+
+<h2 id="lsp-mechanics">LSP mechanics</h2>
+
+<p>Before we can get into the weeds, we need to establish how language servers work. The Language Server Protocol (LSP) defines JSON-RPC messaging between a code editor and a server process.</p>
+
+<p>When you hover over a Ruby class constant and hold <code class="language-plaintext highlighter-rouge">cmd</code>, Zed will send a message to Ruby LSP in the following format:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"textDocument/definition"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"textDocument"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"uri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file:///path/to/source.rb"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"position"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"line"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="nl">"character"</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Since Ruby LSP indexes all constant declarations on initialization, it can then respond with the location where the constant is defined:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"targetUri"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file:///path/to/class.rb"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"targetRange"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"start"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"line"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nl">"character"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"end"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"line"</span><span class="p">:</span><span class="w"> </span><span class="mi">253</span><span class="p">,</span><span class="w"> </span><span class="nl">"character"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">}</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"targetSelectionRange"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"start"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"line"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nl">"character"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"end"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"line"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="nl">"character"</span><span class="p">:</span><span class="w"> </span><span class="mi">19</span><span class="w"> </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here we can see Ruby LSP returned the location of the <code class="language-plaintext highlighter-rouge">class ... end</code> block (<code class="language-plaintext highlighter-rouge">targetRange</code>) as well as the constant name the editor should select (<code class="language-plaintext highlighter-rouge">targetSelectRange</code>). Notice that the <code class="language-plaintext highlighter-rouge">result</code> field is an array, allowing for multiple locations in case the class is re-opened more than once (which Zed will open a <a href="https://zed.dev/docs/multibuffers">multibuffer</a>).</p>
+
+<h2 id="custom-add-on">Custom add-on</h2>
+
+<p>Back to the task at hand. I needed to test it out my Ruby LSP extension locally first. It turns out Ruby LSP will automatically pick up any add-ons in your project directory, they just need to match <code class="language-plaintext highlighter-rouge">**/ruby_lsp/**/addon.rb</code>. So, I put mine in <code class="language-plaintext highlighter-rouge">lib/ruby_lsp/my_app/addon.rb</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># lib/ruby_lsp/my_app/addon.rb</span>
+<span class="nb">require</span> <span class="s2">"ruby_lsp/addon"</span>
+
+<span class="k">module</span> <span class="nn">RubyLsp</span>
+  <span class="k">module</span> <span class="nn">MyApp</span>
+    <span class="k">class</span> <span class="nc">Addon</span> <span class="o">&lt;</span> <span class="no">RubyLsp</span><span class="o">::</span><span class="no">Addon</span>
+      <span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="n">global_state</span><span class="p">,</span> <span class="n">outgoing_queue</span><span class="p">)</span>
+        <span class="n">outgoing_queue</span> <span class="o">&lt;&lt;</span> <span class="no">Notification</span><span class="p">.</span><span class="nf">window_log_message</span><span class="p">(</span><span class="s2">"Activated My App addon"</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>If everything works correctly, after restarting your Ruby LSP server, you should see the “Activated My App addon” message in the language server logs.</p>
+
+<p>When Ruby LSP receives a <code class="language-plaintext highlighter-rouge">textDocument/definition</code> request, it calls <code class="language-plaintext highlighter-rouge">#create_definition_listener</code> on every add-on with some parameters, allowing them to add their own locations to the response. Let’s override it:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># lib/ruby_lsp/my_app/addon.rb</span>
+<span class="c1"># ...</span>
+<span class="nb">require_relative</span> <span class="s2">"definition"</span>
+
+<span class="k">module</span> <span class="nn">RubyLsp</span>
+  <span class="k">module</span> <span class="nn">MyApp</span>
+    <span class="k">class</span> <span class="nc">Addon</span> <span class="o">&lt;</span> <span class="no">RubyLsp</span><span class="o">::</span><span class="no">Addon</span>
+      <span class="c1"># ...</span>
+      <span class="k">def</span> <span class="nf">create_definition_listener</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+        <span class="no">Definition</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># lib/ruby_lsp/my_app/definition.rb</span>
+<span class="k">module</span> <span class="nn">RubyLsp</span>
+  <span class="k">module</span> <span class="nn">MyApp</span>
+    <span class="k">class</span> <span class="nc">Definition</span>
+      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">response_builder</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">node_context</span><span class="p">,</span> <span class="n">dispatcher</span><span class="p">)</span>
+        <span class="vi">@response_builder</span> <span class="o">=</span> <span class="n">response_builder</span>
+        <span class="vi">@path</span> <span class="o">=</span> <span class="n">uri</span><span class="p">.</span><span class="nf">to_standardized_path</span>
+        <span class="vi">@node_context</span> <span class="o">=</span> <span class="n">node_context</span>
+        <span class="vi">@dispatcher</span> <span class="o">=</span> <span class="n">dispatcher</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="prism-drilling">Prism drilling</h2>
+
+<p>Ruby LSP will use Prism to parse the source document where we activated go-to-definition, set up a <a href="https://ruby.github.io/prism/rb/Prism/Dispatcher.html">dispatcher</a> for walking the AST, and save context of the AST node you’re hovering over. In our case, we want to react on partial names passed to <code class="language-plaintext highlighter-rouge">render</code> calls. Since these are strings, let’s register a listener for entering string nodes:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># lib/ruby_lsp/my_app/definition.rb</span>
+<span class="k">module</span> <span class="nn">RubyLsp</span>
+  <span class="k">module</span> <span class="nn">MyApp</span>
+    <span class="k">class</span> <span class="nc">Definition</span>
+      <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">response_builder</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">node_context</span><span class="p">,</span> <span class="n">dispatcher</span><span class="p">)</span>
+        <span class="c1"># ...</span>
+        <span class="n">dispatcher</span><span class="p">.</span><span class="nf">register</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="ss">:on_string_node_enter</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="k">def</span> <span class="nf">on_string_node_enter</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="c1"># ...</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>First thing’s first, we can only support following <code class="language-plaintext highlighter-rouge">render</code> calls inside HTML+ERB templates, as in helpers we don’t have the view/controller context. So, let’s early return otherwise:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">on_string_node_enter</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="k">return</span> <span class="k">unless</span> <span class="n">html_erb?</span>
+<span class="k">end</span>
+
+<span class="kp">private</span>
+
+<span class="k">def</span> <span class="nf">html_erb?</span>
+  <span class="vi">@path</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">match?</span><span class="p">(</span><span class="sr">/\.html(\+\w+)?\.erb/</span><span class="p">)</span> <span class="c1"># handle template variants</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Unlike Solargraph, Ruby LSP has <a href="https://shopify.github.io/ruby-lsp/#erb-support">ERB support</a> that can extract Ruby code, allowing it to provide the same features as for regular Ruby files. Templating languages like Slim and Haml have a much more complex grammars, making it difficult to know where Ruby code is, so as of this writing they’re not supported.</p>
+
+<p>We’ll return if the string node is not a “partial argument”, which we’ll define shortly after:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">on_string_node_enter</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+  <span class="k">return</span> <span class="k">unless</span> <span class="n">partial_argument?</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="kp">private</span>
+
+<span class="k">def</span> <span class="nf">partial_argument?</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Inside <code class="language-plaintext highlighter-rouge">#partial_argument?</code>, let’s now grab the call node from the node context. For <code class="language-plaintext highlighter-rouge">render "partial"</code> code, that would be the <code class="language-plaintext highlighter-rouge">render</code> call, which is what we care about. It’s also possible there is no call node, in case a string node isn’t passed to any method invocation, so we need to handle that as well.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">partial_argument?</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="n">call_node</span> <span class="o">=</span> <span class="vi">@node_context</span><span class="p">.</span><span class="nf">call_node</span>
+  <span class="k">return</span> <span class="k">unless</span> <span class="n">call_node</span>
+  <span class="k">return</span> <span class="k">unless</span> <span class="n">call_node</span><span class="p">.</span><span class="nf">message</span> <span class="o">==</span> <span class="s2">"render"</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>We want to only accept <code class="language-plaintext highlighter-rouge">render</code> calls in template context (<code class="language-plaintext highlighter-rouge">self.render</code> technically counts here as well), so we reject any other receivers like <code class="language-plaintext highlighter-rouge">Foo.render</code>:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">partial_argument?</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+  <span class="k">return</span> <span class="k">unless</span> <span class="n">call_node</span><span class="p">.</span><span class="nf">receiver</span><span class="p">.</span><span class="nf">nil?</span> <span class="o">||</span> <span class="n">call_node</span><span class="p">.</span><span class="nf">receiver</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Prism</span><span class="o">::</span><span class="no">SelfNode</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>We’re interested whether the string node matches any of the <code class="language-plaintext highlighter-rouge">render</code> call arguments, so let’s retrieve them:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">partial_argument?</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+  <span class="n">arguments</span> <span class="o">=</span> <span class="n">call_node</span><span class="p">.</span><span class="nf">arguments</span><span class="o">&amp;</span><span class="p">.</span><span class="nf">arguments</span> <span class="c1"># an array of arguments</span>
+  <span class="k">return</span> <span class="k">unless</span> <span class="n">arguments</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>If our string node is the first positional argument of the <code class="language-plaintext highlighter-rouge">render</code> call (e.g. <code class="language-plaintext highlighter-rouge">render "foo"</code>), then we found our partial name:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">partial_argument?</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+  <span class="k">return</span> <span class="kp">true</span> <span class="k">if</span> <span class="n">arguments</span><span class="p">.</span><span class="nf">first</span> <span class="o">==</span> <span class="n">node</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Otherwise we check for keyword arguments to handle explicit <code class="language-plaintext highlighter-rouge">render partial: "foo"</code> form as well. We only accept keyword arguments as the <em>first</em> argument, as we want to exclude <code class="language-plaintext highlighter-rouge">render "bar", partial: "foo"</code>, where <code class="language-plaintext highlighter-rouge">"foo"</code> would be a value of a <code class="language-plaintext highlighter-rouge">partial</code> local variable.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">partial_argument?</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+  <span class="k">return</span> <span class="k">unless</span> <span class="n">arguments</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Prism</span><span class="o">::</span><span class="no">KeywordHashNode</span><span class="p">)</span>
+  
+  <span class="n">arguments</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">elements</span><span class="p">.</span><span class="nf">any?</span> <span class="k">do</span> <span class="o">|</span><span class="n">element</span><span class="o">|</span>
+    <span class="k">next</span> <span class="k">unless</span> <span class="n">element</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Prism</span><span class="o">::</span><span class="no">AssocNode</span><span class="p">)</span>
+    <span class="k">next</span> <span class="k">unless</span> <span class="n">element</span><span class="p">.</span><span class="nf">key</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Prism</span><span class="o">::</span><span class="no">SymbolNode</span><span class="p">)</span>
+
+    <span class="n">element</span><span class="p">.</span><span class="nf">key</span><span class="p">.</span><span class="nf">value</span> <span class="o">==</span> <span class="s2">"partial"</span> <span class="o">&amp;&amp;</span> <span class="n">element</span><span class="p">.</span><span class="nf">value</span> <span class="o">==</span> <span class="n">node</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h2 id="returning-locations">Returning locations</h2>
+
+<p>Now that we’ve identified that our string node is indeed a partial name, let’s resolve the actual template file.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">on_string_node_enter</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+  <span class="n">resolve_partial</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="kp">private</span>
+
+<span class="k">def</span> <span class="nf">resolve_partial</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>If the string contains a <code class="language-plaintext highlighter-rouge">/</code>, it holds an absolute partial path, otherwise it’s a relative partial name. Since template engines and formats can be mixed, we handle any file extension.</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">resolve_partial</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="n">partial_path</span> <span class="o">=</span> <span class="n">node</span><span class="p">.</span><span class="nf">content</span>
+
+  <span class="n">template_glob</span> <span class="o">=</span> <span class="k">if</span> <span class="n">partial_path</span><span class="p">.</span><span class="nf">include?</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+    <span class="o">*</span><span class="n">directory</span><span class="p">,</span> <span class="nb">name</span> <span class="o">=</span> <span class="n">partial_path</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+    <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s2">"app/views"</span><span class="p">,</span> <span class="o">*</span><span class="n">directory</span><span class="p">,</span> <span class="s2">"_</span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">.*"</span><span class="p">)</span>
+  <span class="k">else</span>
+    <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">File</span><span class="p">.</span><span class="nf">dirname</span><span class="p">(</span><span class="vi">@path</span><span class="p">),</span> <span class="s2">"_</span><span class="si">#{</span><span class="n">partial_path</span><span class="si">}</span><span class="s2">.*"</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">template_path</span> <span class="o">=</span> <span class="no">Dir</span><span class="p">[</span><span class="n">template_glob</span><span class="p">].</span><span class="nf">first</span>
+  <span class="k">return</span> <span class="k">unless</span> <span class="n">template_path</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Finally, we return the partial path in the response:</p>
+
+<div class="language-rb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">resolve_partial</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+  <span class="vi">@response_builder</span> <span class="o">&lt;&lt;</span> <span class="no">Interface</span><span class="o">::</span><span class="no">Location</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+    <span class="ss">uri: </span><span class="no">URI</span><span class="o">::</span><span class="no">Generic</span><span class="p">.</span><span class="nf">from_path</span><span class="p">(</span><span class="ss">path: </span><span class="n">template_path</span><span class="p">).</span><span class="nf">to_s</span><span class="p">,</span>
+    <span class="ss">range: </span><span class="no">Interface</span><span class="o">::</span><span class="no">Range</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+      <span class="ss">start: </span><span class="no">Interface</span><span class="o">::</span><span class="no">Position</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">line: </span><span class="mi">0</span><span class="p">,</span> <span class="ss">character: </span><span class="mi">0</span><span class="p">),</span>
+      <span class="ss">end: </span><span class="no">Interface</span><span class="o">::</span><span class="no">Position</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">line: </span><span class="mi">0</span><span class="p">,</span> <span class="ss">character: </span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+  <span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Once you restart Ruby LSP, you can now try it out in the editor:</p>
+
+<p><img src="/images/go-to-definition.gif" alt="go to definition demo"></p>
+
+<h2 id="closing-words">Closing words</h2>
+
+<p>I had no prior experience with Prism or any other Ruby parser, so going into this was scary at first. But working with Prism was surprisingly intuitive, I could see why it became the canonical Ruby parser. I didn’t expect needing to be so precise when defining the code, but it makes a lot of sense.</p>
+
+<p>The template resolution shown was simplified for the article. It doesn’t handle controller inheritance, <code class="language-plaintext highlighter-rouge">:variants</code>, <code class="language-plaintext highlighter-rouge">:formats</code>, <code class="language-plaintext highlighter-rouge">:handlers</code>, alternative <code class="language-plaintext highlighter-rouge">view_paths</code> etc. For that it would need to call the actual controller to perform the view template lookup. I baked all this into my <a href="https://github.com/Shopify/ruby-lsp-rails/pull/659">pull request</a> to the Rails add-on, hopefully it will get merged <img class="emoji" title=":crossed_fingers:" alt=":crossed_fingers:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f91e.png" height="20" width="20"></p>
+
+<p>I’m excited for all the improvements Shopify is doing for Ruby LSP, such as <a href="https://railsatscale.com/2026-05-12-one-engine-many-tools/">creating Rubydex</a> which makes code indexing efficient and comprehensive. It’s an important tool for making Ruby development feel modern, and the add-on architecture creates exciting possibilities.</p>
+
+
+  </div>
+</article>
+
+<div class="mt-8 md:mt-10">
+  <div class="flex items-center space-x-4 md:space-x-6 mx-0 lg:-mx-6 border border-sky-200 bg-sky-50 px-4 py-3 md:py-5 md:px-6 rounded-xl overflow-x-scroll dark:bg-sky-950 dark:border-sky-600">
+  <img src="/images/me.jpg" class="h-20 w-20 xs:h-24 xs:w-24 sm:h-32 sm:w-32 rounded-xl">
+  <div class="flex flex-col justify-center">
+    
+      <h3 class="font-medium text-slate-900 dark:text-slate-200 mb-2 text-xl xs:text-2xl">
+        Janko Marohnić
+      </h3>
+    
+    <p class="text-slate-900 dark:text-slate-200 text-sm xs:text-base md:text-lg hidden sm:block">
+      Ruby developer, Rails critic, open source maintainer, creator of
+      <a class="text-pink-700 underline dark:text-pink-500 decoration-pink-700/30 transition hover:text-pink-800 hover:decoration-pink-800 dark:hover:text-pink-400 dark:decoration-pink-500/40 dark:hover:decoration-pink-400" href="https://shrinerb.com" target="_blank">Shrine</a>,
+      <a class="text-pink-700 underline dark:text-pink-500 decoration-pink-700/30 transition hover:text-pink-800 hover:decoration-pink-800 dark:hover:text-pink-400 dark:decoration-pink-500/40 dark:hover:decoration-pink-400" href="https://github.com/vim-test/vim-test" target="_blank">vim-test</a> and
+      <a class="text-pink-700 underline dark:text-pink-500 decoration-pink-700/30 transition hover:text-pink-800 hover:decoration-pink-800 dark:hover:text-pink-400 dark:decoration-pink-500/40 dark:hover:decoration-pink-400" href="https://github.com/janko/rodauth-rails" target="_blank">rodauth-rails</a>.
+    </p>
+
+    <div class="mt-2 xs:mt-4 sm:mt-5 flex items-center space-x-3 xs:space-x-5">
+      
+
+      <a href="https://github.com/janko" title="GitHub" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out dark:hidden" viewbox="0 0 24 24">
+          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+        </svg>
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out hidden dark:block" viewbox="0 0 100 100">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" fill="#fff"></path>
+        </svg>
+      </a>
+      <a href="https://bsky.app/profile/janko.io" title="Bluesky" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" viewbox="0 0 600 530">
+         <path d="m135.72 44.03c66.496 49.921 138.02 151.14 164.28 205.46 26.262-54.316 97.782-155.54 164.28-205.46 47.98-36.021 125.72-63.892 125.72 24.795 0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.3797-3.6904-10.832-3.7077-7.8964-0.0174-2.9357-1.1937 0.51669-3.7077 7.8964-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.26 82.697-152.22-67.108 11.421-142.55-7.4491-163.25-81.433-5.9562-21.282-16.111-152.36-16.111-170.07 0-88.687 77.742-60.816 125.72-24.795z" fill="#1185fe"></path>
+        </svg>
+      </a>
+      <a href="https://ruby.social/deck/@janko" title="Mastodon" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" viewbox="0 0 75 79" fill="none">
+          <path d="M73.8393 17.4898C72.6973 9.00165 65.2994 2.31235 56.5296 1.01614C55.05 0.797115 49.4441 0 36.4582 0H36.3612C23.3717 0 20.585 0.797115 19.1054 1.01614C10.5798 2.27644 2.79399 8.28712 0.904997 16.8758C-0.00358524 21.1056 -0.100549 25.7949 0.0682394 30.0965C0.308852 36.2651 0.355538 42.423 0.91577 48.5665C1.30307 52.6474 1.97872 56.6957 2.93763 60.6812C4.73325 68.042 12.0019 74.1676 19.1233 76.6666C26.7478 79.2728 34.9474 79.7055 42.8039 77.9162C43.6682 77.7151 44.5217 77.4817 45.3645 77.216C47.275 76.6092 49.5123 75.9305 51.1571 74.7385C51.1797 74.7217 51.1982 74.7001 51.2112 74.6753C51.2243 74.6504 51.2316 74.6229 51.2325 74.5948V68.6416C51.2321 68.6154 51.2259 68.5896 51.2142 68.5661C51.2025 68.5426 51.1858 68.522 51.1651 68.5058C51.1444 68.4896 51.1204 68.4783 51.0948 68.4726C51.0692 68.4669 51.0426 68.467 51.0171 68.4729C45.9835 69.675 40.8254 70.2777 35.6502 70.2682C26.7439 70.2682 24.3486 66.042 23.6626 64.2826C23.1113 62.762 22.7612 61.1759 22.6212 59.5646C22.6197 59.5375 22.6247 59.5105 22.6357 59.4857C22.6466 59.4609 22.6633 59.4391 22.6843 59.422C22.7053 59.4048 22.73 59.3929 22.7565 59.3871C22.783 59.3813 22.8104 59.3818 22.8367 59.3886C27.7864 60.5826 32.8604 61.1853 37.9522 61.1839C39.1768 61.1839 40.3978 61.1839 41.6224 61.1516C46.7435 61.008 52.1411 60.7459 57.1796 59.7621C57.3053 59.7369 57.431 59.7154 57.5387 59.6831C65.4861 58.157 73.0493 53.3672 73.8178 41.2381C73.8465 40.7606 73.9184 36.2364 73.9184 35.7409C73.9219 34.0569 74.4606 23.7949 73.8393 17.4898Z" fill="url(#paint0_linear_549_34)"></path>
+          <path d="M61.2484 27.0263V48.114H52.8916V27.6475C52.8916 23.3388 51.096 21.1413 47.4437 21.1413C43.4287 21.1413 41.4177 23.7409 41.4177 28.8755V40.0782H33.1111V28.8755C33.1111 23.7409 31.0965 21.1413 27.0815 21.1413C23.4507 21.1413 21.6371 23.3388 21.6371 27.6475V48.114H13.2839V27.0263C13.2839 22.7176 14.384 19.2946 16.5843 16.7572C18.8539 14.2258 21.8311 12.926 25.5264 12.926C29.8036 12.926 33.0357 14.5705 35.1905 17.8559L37.2698 21.346L39.3527 17.8559C41.5074 14.5705 44.7395 12.926 49.0095 12.926C52.7013 12.926 55.6784 14.2258 57.9553 16.7572C60.1531 19.2922 61.2508 22.7152 61.2484 27.0263Z" fill="white"></path>
+          <defs>
+            <lineargradient id="paint0_linear_549_34" x1="37.0692" y1="0" x2="37.0692" y2="79" gradientunits="userSpaceOnUse">
+            <stop stop-color="#6364FF"></stop>
+            <stop offset="1" stop-color="#563ACC"></stop>
+            </lineargradient>
+          </defs>
+        </svg>
+      </a>
+      <a href="https://www.youtube.com/@jankomarohnic" title="YouTube" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" viewbox="0 0 159 110" fill="currentColor">
+          <path d="m154 17.5c-1.82-6.73-7.07-12-13.8-13.8-9.04-3.49-96.6-5.2-122 0.1-6.73 1.82-12 7.07-13.8 13.8-4.08 17.9-4.39 56.6 0.1 74.9 1.82 6.73 7.07 12 13.8 13.8 17.9 4.12 103 4.7 122 0 6.73-1.82 12-7.07 13.8-13.8 4.35-19.5 4.66-55.8-0.1-75z" fill="#f00"></path>
+          <path d="m105 55-40.8-23.4v46.8z" fill="#fff"></path>
+        </svg>
+      </a>
+      <a href="https://www.linkedin.com/in/janko-marohnic/" title="LinkedIn" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" viewbox="0 0 72 72" width="72">
+          <g fill="none" fill-rule="evenodd"><path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" fill="#007EBB"></path><path d="M62,62 L51.315625,62 L51.315625,43.8021149 C51.315625,38.8127542 49.4197917,36.0245323 45.4707031,36.0245323 C41.1746094,36.0245323 38.9300781,38.9261103 38.9300781,43.8021149 L38.9300781,62 L28.6333333,62 L28.6333333,27.3333333 L38.9300781,27.3333333 L38.9300781,32.0029283 C38.9300781,32.0029283 42.0260417,26.2742151 49.3825521,26.2742151 C56.7356771,26.2742151 62,30.7644705 62,40.051212 L62,62 Z M16.349349,22.7940133 C12.8420573,22.7940133 10,19.9296567 10,16.3970067 C10,12.8643566 12.8420573,10 16.349349,10 C19.8566406,10 22.6970052,12.8643566 22.6970052,16.3970067 C22.6970052,19.9296567 19.8566406,22.7940133 16.349349,22.7940133 Z M11.0325521,62 L21.769401,62 L21.769401,27.3333333 L11.0325521,27.3333333 L11.0325521,62 Z" fill="#FFF"></path></g>
+        </svg>
+      </a>
+      <a href="https://speakerdeck.com/janko_m" title="Speaker Deck" target="_blank">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out" viewbox="0 0 256 160">
+          <g><path d="M106.932331,100 L50,100 C22.3857624,100 0,77.6142376 0,50 C0,22.3857624 22.3857624,0 50,0 L116.421053,0 C127.466748,0 136.421053,8.9543048 136.421053,20 C136.421053,31.0456952 127.466748,40 116.421053,40 L48.977444,40 C43.454596,40 38.977444,44.4771528 38.977444,50 C38.977444,55.5228472 43.454596,60 48.977444,60 L105.909774,60 C133.524012,60 155.909774,82.3857624 155.909774,110 C155.909774,137.614238 133.524012,160 105.909774,160 L20,160 C8.9543048,160 0,151.045695 0,140 C0,128.954305 8.9543048,120 20,120 L106.932331,120 C112.455178,120 116.932331,115.522847 116.932331,110 C116.932331,104.477153 112.455178,100 106.932331,100 Z M149.013633,160 C162.31303,151.005667 171.818454,136.66797 174.567639,120 L206.843433,120 C212.273117,120 216.674746,115.522847 216.674746,110 L216.674746,50 C216.674746,44.4771528 212.273117,40 206.843433,40 L148.210526,40 C152.880793,34.6924352 155.720602,27.683544 155.720602,20 C155.720602,12.316456 152.880793,5.3075648 148.210526,0 L216.674746,0 C238.393484,0 256,17.9086104 256,40 L256,120 C256,142.09139 238.393484,160 216.674746,160 L149.013633,160 Z" fill="#009287"></path></g>
+        </svg>
+      </a>
+      <a href="mailto:janko@hey.com" title="Email">
+        <svg class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 transition hover:scale-[1.2] duration-200 ease-in ease-out text-red-500" viewbox="0 0 20 20" fill="currentColor">
+          <path d="M1.574 5.286c0.488 0.262 7.248 3.894 7.5 4.029s0.578 0.199 0.906 0.199c0.328 0 0.654-0.064 0.906-0.199s7.012-3.767 7.5-4.029c0.489-0.263 0.951-1.286 0.054-1.286h-16.919c-0.897 0-0.435 1.023 0.053 1.286zM18.613 7.489c-0.555 0.289-7.387 3.849-7.727 4.027s-0.578 0.199-0.906 0.199-0.566-0.021-0.906-0.199-7.133-3.739-7.688-4.028c-0.39-0.204-0.386 0.035-0.386 0.219s0 7.293 0 7.293c0 0.42 0.566 1 1 1h16c0.434 0 1-0.58 1-1 0 0 0-7.108 0-7.292s0.004-0.423-0.387-0.219z"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="mt-8 md:mt-10">
+  
+  <script src="https://utteranc.es/client.js" repo="janko/janko.io" issue-term="title" theme="preferred-color-scheme" crossorigin="anonymous" async>
+  </script>
+
+
+</div>
+
+      </main>
+    </div>
+
+    <div class="border-t border-slate-200 py-7 mt-10 bg-gray-50 dark:bg-slate-950 dark:border-slate-700">
+      <footer class="max-w-screen-sm md:max-w-screen-md mx-auto flex flex-col space-y-2 md:flex-row md:justify-between md:space-y-0 text-base">
+        <ul class="inline-flex space-x-4 font-medium justify-center md:justify-left">
+          <li><a class="transition hover:text-pink-600" href="/">Articles</a></li>
+          <li><a class="transition hover:text-pink-600" href="https://github.com/janko/janko.io">Source code</a></li>
+        </ul>
+        <p class="text-slate-500 text-center md:text-left">
+          © 2026 Janko Marohnić. All rights reserved.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      function toggleClass(element, classNames, force) {
+        classNames.split(' ').forEach(function(className) {
+          element.classList.toggle(className, force)
+        })
+      }
+
+      const btnToggle = document.querySelector('.theme-toggle')
+      const btnReset = document.querySelector('.theme-reset')
+
+      function syncTheme() {
+        const enabled = document.documentElement.classList.contains('dark')
+
+        const ring = btnToggle.querySelector('.theme-toggle-ring')
+        const light = btnToggle.querySelector('.theme-toggle-light')
+        const dark = btnToggle.querySelector('.theme-toggle-dark')
+
+        toggleClass(btnToggle, 'bg-pink-500', enabled)
+        toggleClass(btnToggle, 'bg-slate-200', !enabled)
+
+        toggleClass(ring, 'translate-x-5', enabled)
+        toggleClass(ring, 'translate-x-0', !enabled)
+
+        toggleClass(light, 'opacity-0 duration-100 ease-out', enabled)
+        toggleClass(light, 'opacity-100 duration-200 ease-in', !enabled)
+
+        toggleClass(dark, 'opacity-100 duration-200 ease-in', enabled)
+        toggleClass(dark, 'opacity-0 duration-100 ease-out', !enabled)
+      }
+
+      btnToggle.addEventListener('click', function() {
+        const enabled = document.documentElement.classList.toggle('dark')
+
+        localStorage.theme = enabled ? 'dark' : 'light'
+
+        syncTheme()
+
+        btnReset.classList.remove('hidden')
+      })
+
+      btnReset.addEventListener('click', function() {
+        localStorage.removeItem('theme')
+
+        updateTheme()
+        syncTheme()
+
+        btnReset.classList.add('hidden')
+      })
+
+      syncTheme()
+      btnReset.classList.toggle('hidden', !('theme' in localStorage))
+    </script>
+  </body>
+</html>
