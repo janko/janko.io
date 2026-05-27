@@ -5,7 +5,7 @@ published: true
 
 [Ruby LSP](https://shopify.github.io/ruby-lsp/) is a wonderful language server built on top of Prism, [Rubydex] and RBS. It implements a [variety of features](https://shopify.github.io/ruby-lsp/#general-features) that enrich the code editing experience in Ruby projects. Its [add-on](https://shopify.github.io/ruby-lsp/add-ons.html) architecture allows extending it with [Rails features], [Rubocop support] and custom functionality.
 
-Coming from Vim, I was really used to [rails.vim]. When I switched to Zed, I started using Ruby LSP. In some ways I felt like I've gained superpowers, as now I had all these modern editor features that are possible because my Ruby code is actually being parsed. On the other hand, I found there were some features I was missing.
+Coming from Vim, I was really used to [rails.vim]. When I switched to Zed, I started using Ruby LSP. In some ways I felt like I'd gained superpowers, as now I had all these modern editor features that are possible because my Ruby code is actually being parsed. On the other hand, I found there were some features I was missing.
 
 One such feature was following `render` calls in view templates. Rails.vim offered a `gf` ("go to file") mapping, which when hovering over a `render` call would take me to the partial being rendered. In LSP terminology this functionality is called "go to definition". If I were to implement it, I knew it had to live in the Rails add-on.
 
@@ -51,11 +51,11 @@ Since Ruby LSP indexes all constant declarations on initialization, it can then 
 }
 ```
 
-Here we can see Ruby LSP returned the location of the `class ... end` block (`targetRange`) as well as the constant name the editor should select (`targetSelectRange`). Notice that the `result` field is an array, allowing for multiple locations in case the class is re-opened more than once (which Zed will open a [multibuffer]).
+Here we can see Ruby LSP returned the location of the `class ... end` block (`targetRange`) as well as the constant name the editor should select (`targetSelectRange`). Notice that the `result` field is an array, allowing for multiple locations in case the class is re-opened more than once (for which Zed will open a [multibuffer]).
 
 ## Custom add-on
 
-Back to the task at hand. I needed to test it out my Ruby LSP extension locally first. It turns out Ruby LSP will automatically pick up any add-ons in your project directory, they just need to match `**/ruby_lsp/**/addon.rb`. So, I put mine in `lib/ruby_lsp/my_app/addon.rb`:
+Back to the task at hand. I needed to test out my Ruby LSP extension locally first. It turns out Ruby LSP will automatically pick up any add-ons in your project directory, they just need to match `**/ruby_lsp/**/addon.rb`. So, I put mine in `lib/ruby_lsp/my_app/addon.rb`:
 
 ```rb
 # lib/ruby_lsp/my_app/addon.rb
@@ -110,7 +110,7 @@ end
 
 ## Prism drilling
 
-Ruby LSP will use Prism to parse the source document where we activated go-to-definition, set up a [dispatcher] for walking the AST, and save context of the AST node you're hovering over. In our case, we want to react on partial names passed to `render` calls. Since these are strings, let's register a listener for entering string nodes:
+Ruby LSP will use Prism to parse the source document where we activated go-to-definition, set up a [dispatcher] for walking the AST, and save the context of the AST node you're hovering over. In our case, we want to react on partial names passed to `render` calls. Since these are strings, let's register a listener for entering string nodes:
 
 ```rb
 # lib/ruby_lsp/my_app/definition.rb
@@ -130,7 +130,7 @@ module RubyLsp
 end
 ```
 
-First thing's first, we can only support following `render` calls inside HTML+ERB templates, as in helpers we don't have the view/controller context. So, let's early return otherwise:
+First things first, we can only support following `render` calls inside HTML+ERB templates, as in helpers we don't have the view/controller context. So, let's early return otherwise:
 
 ```rb
 def on_string_node_enter(node)
@@ -144,7 +144,7 @@ def html_erb?
 end
 ```
 
-Unlike Solargraph, Ruby LSP has [ERB support] that can extract Ruby code, allowing it to provide the same features as for regular Ruby files. Templating languages like Slim and Haml have a much more complex grammars, making it difficult to know where Ruby code is, so as of this writing they're not supported.
+Unlike Solargraph, Ruby LSP has [ERB support] that can extract Ruby code, allowing it to provide the same features as for regular Ruby files. Templating languages like Slim and Haml have much more complex grammars, making it difficult to know where Ruby code is, so as of this writing they're not supported.
 
 We'll return if the string node is not a "partial argument", which we'll define shortly after:
 
@@ -199,7 +199,7 @@ def partial_argument?(node)
 end
 ```
 
-Otherwise we check for keyword arguments to handle explicit `render partial: "foo"` form as well. We only accept keyword arguments as the *first* argument, as we want to exclude `render "bar", partial: "foo"`, where `"foo"` would be a value of a `partial` local variable.
+Otherwise we check for keyword arguments to handle explicit `render partial: "foo"` form as well. We only accept keyword arguments as the *first* argument, as we want to exclude `render "bar", partial: "foo"`, where `"foo"` would be the value of a `partial` local variable.
 
 ```rb
 def partial_argument?(node)
@@ -271,7 +271,7 @@ Once you restart Ruby LSP, you can now try it out in the editor:
 
 ## Closing words
 
-I had no prior experience with Prism or any other Ruby parser, so going into this was scary at first. But working with Prism was surprisingly intuitive, I could see why it became the canonical Ruby parser. I didn't expect needing to be so precise when defining the code, but it makes a lot of sense.
+I had no prior experience with Prism or any other Ruby parser, so going into this was scary at first. But working with Prism was surprisingly intuitive — I could see why it became the canonical Ruby parser. I didn't expect to need to be so precise when inspecting node context, but it makes a lot of sense.
 
 The template resolution shown was simplified for the article. It doesn't handle controller inheritance, `:variants`, `:formats`, `:handlers`, alternative `view_paths` etc. For that it would need to call the actual controller to perform the view template lookup. I baked all this into my [pull request] to the Rails add-on, hopefully it will get merged :crossed_fingers:
 
